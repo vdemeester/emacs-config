@@ -1,0 +1,5 @@
+*
+!.emacs.d
+!.emacs.d/*
+!.gitignore.d
+!.gitignore.d/emacs-config
