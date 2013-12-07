@@ -29,4 +29,11 @@
 (setq font-lock-maximum-decoration 2) ; faster font-lock-mode
 (set-default 'indicate-buffer-boundaries '((up . nil) (down . nil) (t . left)))
 
-
+;; Server
+(unless (string= (user-login-name) "root")
+  (require 'server)
+  (when (or (not server-process)
+            (not (eq (process-status server-process)
+                     'listen)))
+    (unless (server-running-p server-name)
+      (server-start))))
