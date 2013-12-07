@@ -55,6 +55,7 @@
 (require 'auto-complete)
 
 (require 'ido)
+(require 'git-annex)
 
 ;; Server
 (unless (string= (user-login-name) "root")

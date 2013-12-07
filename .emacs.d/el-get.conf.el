@@ -16,6 +16,11 @@
                :pkgname "magit/git-modes")
         (:name magit
                :depends (git-modes))
+        (:name git-annex
+               :description "Emacs integration for the git-annex tool by Joey Hess"
+               :type github
+               :pkgname "jwiegley/git-annex-el"
+	       :website "http://github.com/jwiegley/git-annex-el")
         (:name znc
                :type github
                :pkgname "sshirokov/ZNC.el"
@@ -87,6 +92,7 @@
          ;; rainbow-mode                        ; Display colors
          dtrt-indent                        ; Autodetect indentation
          magit                                ; Git stuff, must-have!
+         git-annex                            ; Git-annex stuff
          ;; Modes
          ;; auctex                        ; LaTeX mode
          lua-mode                        ; Major mode for lua
