@@ -56,6 +56,8 @@
 
 (require 'ido)
 (require 'git-annex)
+(require 'powerline)
+(powerline-default-theme)
 
 ;; Server
 (unless (string= (user-login-name) "root")

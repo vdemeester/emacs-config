@@ -65,6 +65,9 @@
                :description "A modern list api for Emacs. No 'cl required."
                :type github
                :pkgname "magnars/dash.el")
+        (:name undo-tree
+               :type github
+               :pkgname "darioxfz/undo-tree")
         (:name projectile
                :description "Project navigation and management library for Emacs"
                :type github
@@ -93,6 +96,10 @@
          dtrt-indent                        ; Autodetect indentation
          magit                                ; Git stuff, must-have!
          git-annex                            ; Git-annex stuff
+         evil
+         evil-numbers
+         evil-leader
+         evil-surround
          ;; Modes
          ;; auctex                        ; LaTeX mode
          lua-mode                        ; Major mode for lua
