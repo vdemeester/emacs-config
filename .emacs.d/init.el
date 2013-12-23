@@ -52,6 +52,11 @@
 (setq-default indent-tabs-mode nil) ; don't use tabs
 (setq next-screen-context-lines 5 ; Keep more lines when scrolling
       x-stretch-cursor t) ; stretch cursor to the width of the char
+
+;; Shell
+(setq shell-file-name "bash")
+(setq shell-command-switch "-ic")
+
 (require 'auto-complete)
 
 (require 'ido)
