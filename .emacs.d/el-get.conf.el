@@ -90,6 +90,7 @@
          pkg-info
          projectile ; handling of projects
          expand-region ; smartly expand region
+         powerline
          ;; Programming
          autopair                        ; Auto pairing of parentheses
          highlight-parentheses ; Highlight parentheses surrounding the cursor
