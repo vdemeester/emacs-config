@@ -87,6 +87,7 @@
          flx ; fuzzy matching for ido
          ido-vertical-mode ; vertical mode for ido
          smex ; IDO for M-x
+         pkg-info
          projectile ; handling of projects
          expand-region ; smartly expand region
          ;; Programming
@@ -108,6 +109,8 @@
          go-mode ; Major mode for Go
          git-commit-mode ; Mode for "git commit"
          zencoding-mode ; Mode to expand CSS tags to HTML
+         haskell-mode
+         clojure-mode
          ;; gnus and other stuff
          ;;bbdb                                ; Big brother database
          ;;nognus                        ; Gnus
