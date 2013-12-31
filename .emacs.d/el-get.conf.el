@@ -111,6 +111,7 @@
          git-commit-mode ; Mode for "git commit"
          zencoding-mode ; Mode to expand CSS tags to HTML
          haskell-mode
+         cider
          clojure-mode
          ;; gnus and other stuff
          ;;bbdb                                ; Big brother database
