@@ -9,7 +9,11 @@
                :description "org html export for text/html MIME emails"
                :type http
                :url "https://raw.github.com/jwiegley/org-mode/release_7.9.3f/contrib/lisp/org-mime.el")
-
+        (:name org-bullets
+               :description "utf-8 bullets for org-mode"
+               :type github
+               :pkgname "sabof/org-bullets"
+               :website "https://github.com/sabof/org-bullets")
         (:name git-modes
                :description "GNU Emacs modes for various Git-related files"
                :type github
@@ -119,6 +123,7 @@
          ;;gnus-identities                ; Manipulate Gnus identities
          ;; org stuff
          org-mime
+         org-bullets
          ;; Misc
          znc ; znc
          gist ; gist integration
