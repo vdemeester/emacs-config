@@ -53,6 +53,15 @@
 (setq next-screen-context-lines 5 ; Keep more lines when scrolling
       x-stretch-cursor t) ; stretch cursor to the width of the char
 
+;; Save all tempfiles in $TMPDIR/emacs$UID/
+(defconst emacs-tmp-dir (format "%s/%s%s/" temporary-file-directory "emacs" (user-uid)))
+(setq backup-directory-alist
+    `((".*" . ,emacs-tmp-dir)))
+(setq auto-save-file-name-transforms
+    `((".*" ,emacs-tmp-dir t)))
+(setq auto-save-list-file-prefix
+    emacs-tmp-dir)
+
 ;; Shell
 (setq shell-file-name "bash")
 (setq shell-command-switch "-ic")
