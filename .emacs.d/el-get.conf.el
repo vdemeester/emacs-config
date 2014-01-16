@@ -83,6 +83,15 @@
         '(
          ;; General
          naquadah-theme                ; Theme from Julien Danjou
+         icicles
+         icicles-face
+         icicles-opt
+         icicles-var
+         icicles-mac
+         icicles-fn
+         icicles-mcmd
+         icicles-cmd1
+         icicles-cmd2
          boxquote ; draw boxes
          multiple-cursors ; multiple cursors
          ace-jump-mode ; fast cursor movement
