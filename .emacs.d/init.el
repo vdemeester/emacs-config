@@ -67,6 +67,7 @@
 (setq shell-command-switch "-ic")
 
 (require 'auto-complete)
+(require 'expand-region)
 
 (require 'ido)
 (require 'git-annex)
