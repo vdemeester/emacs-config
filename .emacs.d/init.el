@@ -1,14 +1,14 @@
 ;; Check we are using Emacs 24
 (when (/= emacs-major-version 24)
   (error "Only Emacs 24 is supported. You seem to use Emacs %d"
-         emacs-major-version))
-
-(dolist (file (directory-files user-emacs-directory))
-   (when (string-match (format "^\\(.+\\)\\.conf\\.el$") file)
-     (eval-after-load (match-string-no-properties 1 file)
-       `(load ,(concat user-emacs-directory file)))))
+	 emacs-major-version))
 
 (add-to-list 'load-path "~/.emacs.d/vendor/el-get")
+
+;; path to local config
+(add-to-list 'load-path
+             (concat
+              (file-name-as-directory user-emacs-directory) "site-lisp/"))
 
 ;; Initialize el-get
 (setq el-get-dir (expand-file-name "vendor" user-emacs-directory))
@@ -17,14 +17,65 @@
   (with-current-buffer
       (url-retrieve-synchronously
        "https://raw.github.com/dimitri/el-get/master/el-get-install.el")
-    (let (el-get-master-branch)
-      (goto-char (point-max))
-      (eval-print-last-sexp))))
+    (goto-char (point-max))
+    (eval-print-last-sexp)))
 
 (add-to-list 'el-get-recipe-path "~/.emacs.d/el-get-user/recipes")
 
-(el-get 'sync)
+;; el-get packages
+(setq el-get-packages
+      '(el-get
+        dash
+        s
+	powerline                           ;; Powerline is cool :D
+	naquadah-theme                      ;; Theme from Julien Danjou
+	auto-complete                       ;; universal autocompletion
+	auto-complete-css                   ;; CSS autocompletion
+	magit                               ;; Git for Emacs
+        git-modes                           ;; Various git-related modes
+        git-commit-mode                     ;; Mode for "git commit"
+	git-annex                           ;; Dired addon with git-annex support
+	gist                                ;; Gist :-)
+        expand-region
+        autopair                            ;; Auto pairing for parentheses
+        org-bullets                         ;; Org UTF-8 bullets
+        flx
+        ido-vertical-mode
+        smex
+        yasnippet
+        smartparens
+        deft
+        ;; Languages and file support
+        lua-mode
+        go-mode
+        haskell-mode
+        ;; Clojure
+        cider
+        clojure-mode
+	))
 
+;; Conditionnal recipes
+;; (unless (string-match "apple-darwin" system-configuration)
+;; ...)
+
+;; (when (ignore-errors
+;;	(el-get-executable-find "svn")
+;;	(loop for p in '(psvn                 ;; M-x svn-status
+;;			 )
+;;	      do (add-to-list 'el-get-sources p))))
+
+;; getelget -- bootstrap el-get if necessary and load the specified packages
+(load-library "getelget.el")
+;; install new packages and init already installed packages
+(let ((emacs-lisp-mode-hook nil))
+  (el-get-sync))
+
+;; Load ${package}.conf.el after loading/require
+(dolist (file (directory-files user-emacs-directory))
+  (when (string-match (format "^\\(.+\\)\\.conf\\.el$") file)
+    (eval-after-load (match-string-no-properties 1 file)
+      `(load ,(concat user-emacs-directory file)))))
+   
 ;; Appearance
 (menu-bar-mode -1)                        ; No menu
 (tool-bar-mode -1)                        ; No toolbar
@@ -62,11 +113,19 @@
 (setq auto-save-list-file-prefix
     emacs-tmp-dir)
 
+;; UTF-8 preferences
+(prefer-coding-system 'utf-8)
+(setq file-name-coding-system 'utf-8)
+(setq locale-coding-system 'utf-8)
+;; Use Emacs terminfo, not system terminfo (?)
+(setq system-uses-terminfo nil)
+
 ;; Shell
 (setq shell-file-name "bash")
 (setq shell-command-switch "-ic")
 
 (require 'auto-complete)
+(require 'expand-region)
 
 (require 'ido)
 (require 'git-annex)
@@ -86,7 +145,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(org-agenda-files (quote ("~/desktop/documents/org/xgbi.org"))))
+ '(custom-safe-themes (quote ("d6a00ef5e53adf9b6fe417d2b4404895f26210c52bb8716971be106550cea257" "1e7e097ec8cb1f8c3a912d7e1e0331caeed49fef6cff220be63bd2a6ba4cc365" "fc5fcb6f1f1c1bc01305694c59a1a861b008c534cae8d0e48e4d5e81ad718bc6" "37d0cdc1e79ae56cd1ea262dd6b84939fcc15d7977e320e2c7249c140aafc032" default))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

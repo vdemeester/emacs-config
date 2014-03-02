@@ -5,7 +5,7 @@
 (require 'auto-complete-config)
 (ac-config-default)
 
-(setq ac-use-quick-help nil) ;; It's slow
+(setq ac-use-quick-help nil)            ;; It's slow
 
 ;; Don't use up/down arrow (use M-n, M-p only) to browse list
 (define-key ac-completing-map [down] nil)
