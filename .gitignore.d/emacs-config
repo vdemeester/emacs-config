@@ -5,5 +5,8 @@
 .emacs.d/*~
 .emacs.d/*#
 .emacs.d/vendor
+.emacs.d/auto-save-list
+.emacs.d/var
+.emacs.d/eshell
 !.gitignore.d
 !.gitignore.d/emacs-config
