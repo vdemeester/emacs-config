@@ -1,0 +1,5 @@
+(:name git-annex
+       :description "Emacs integration for the git-annex tool by Joey Hess"
+       :type github
+       :pkgname "jwiegley/git-annex-el"
+       :website "http://github.com/jwiegley/git-annex-el")

@@ -1,7 +1,9 @@
 *
 !.emacs.d
 !.emacs.d/*
+!.emacs.d/**
 .emacs.d/*~
 .emacs.d/*#
+.emacs.d/vendor
 !.gitignore.d
 !.gitignore.d/emacs-config

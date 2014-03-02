@@ -1,0 +1,4 @@
+(:name magit
+       :depends (git-modes)
+       :after (progn()
+                    (global-set-key (kbd "C-x C-z") 'magit-status)))
