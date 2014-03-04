@@ -1,3 +1,7 @@
+;; Personal information
+(setq user-full-name "Vincent Demeester"
+      user-mail-address "vincent@sbr.pm")
+
 ;; Check we are using Emacs 24
 (when (/= emacs-major-version 24)
   (error "Only Emacs 24 is supported. You seem to use Emacs %d"
@@ -49,9 +53,11 @@
         lua-mode
         go-mode
         haskell-mode
+        mustache-mode
         ;; Clojure
         cider
         clojure-mode
+        keychain-environment
 	))
 
 ;; Conditionnal recipes
@@ -107,11 +113,15 @@
 ;; Save all tempfiles in $TMPDIR/emacs$UID/
 (defconst emacs-tmp-dir (format "%s/%s%s/" temporary-file-directory "emacs" (user-uid)))
 (setq backup-directory-alist
-    `((".*" . ,emacs-tmp-dir)))
-(setq auto-save-file-name-transforms
-    `((".*" ,emacs-tmp-dir t)))
-(setq auto-save-list-file-prefix
-    emacs-tmp-dir)
+    `((".*" . ,emacs-tmp-dir))
+      auto-save-file-name-transforms
+    `((".*" ,emacs-tmp-dir t))
+      auto-save-list-file-prefix emacs-tmp-dir)
+;; All tempfiles are out of the way, we'll keep more of them :)
+(setq delete-old-versions t
+  kept-new-versions 6
+  kept-old-versions 2
+  version-control t)
 
 ;; UTF-8 preferences
 (prefer-coding-system 'utf-8)
@@ -150,7 +160,8 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(custom-safe-themes (quote ("d6a00ef5e53adf9b6fe417d2b4404895f26210c52bb8716971be106550cea257" "1e7e097ec8cb1f8c3a912d7e1e0331caeed49fef6cff220be63bd2a6ba4cc365" "fc5fcb6f1f1c1bc01305694c59a1a861b008c534cae8d0e48e4d5e81ad718bc6" "37d0cdc1e79ae56cd1ea262dd6b84939fcc15d7977e320e2c7249c140aafc032" default))))
+ '(custom-safe-themes (quote ("d6a00ef5e53adf9b6fe417d2b4404895f26210c52bb8716971be106550cea257" "1e7e097ec8cb1f8c3a912d7e1e0331caeed49fef6cff220be63bd2a6ba4cc365" "fc5fcb6f1f1c1bc01305694c59a1a861b008c534cae8d0e48e4d5e81ad718bc6" "37d0cdc1e79ae56cd1ea262dd6b84939fcc15d7977e320e2c7249c140aafc032" default)))
+ '(org-agenda-files (quote ("/home/vincent/desktop/org/archlinux-installation.org" "/home/vincent/desktop/org/computers.org" "/home/vincent/desktop/org/inbox.org" "/home/vincent/desktop/org/org-mode-adventures.org" "/home/vincent/desktop/org/personal.org" "/home/vincent/desktop/org/xgbi.org"))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
