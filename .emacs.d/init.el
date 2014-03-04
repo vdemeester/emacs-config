@@ -132,6 +132,11 @@
 (require 'powerline)
 (powerline-default-theme)
 
+(require 'org)
+
+;; TODO Load machine-specifc
+;; TODO Load os-specific
+
 ;; Server
 (unless (string= (user-login-name) "root")
   (require 'server)

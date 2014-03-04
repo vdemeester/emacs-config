@@ -12,10 +12,18 @@
  org-catch-invisible-edits 'error          ;; don't edit invisible text
 )
 
-;; TODO keywords
+;; Todos keywords
 (setq org-todo-keywords
       '((sequence "TODO(t)" "NEXT(n)" "SOMEDAY(S!)" "PROGRESS(p)" "|" "DONE(d!)")
         (sequence "WAITING(w@/!)" "HOLD(h@/!)" "|" "CANCELLED(c@/!)")))
+
+
+(require 'org-mobile)
+(setq org-directory "~/desktop/org")
+;; mobileorg settings
+(setq org-mobile-directory "/scpc:vincent@sif:desktop/org/")
+(setq org-mobile-inbox-for-pull "~/desktop/org/inbox.org")
+(setq org-mobile-files '("~/desktop/org"))
 
 ;; Use bullets
 (require 'org-bullets)
