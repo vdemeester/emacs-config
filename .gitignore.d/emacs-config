@@ -4,7 +4,7 @@
 !.emacs.d/**
 .emacs.d/*~
 .emacs.d/*#
-.emacs.d/vendor
+.emacs.d/el-get
 .emacs.d/auto-save-list
 .emacs.d/var
 .emacs.d/eshell
