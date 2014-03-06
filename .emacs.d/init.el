@@ -56,6 +56,7 @@
         haskell-mode
         mustache-mode
         markdown-mode
+        pkgbuild-mode
         ;; Clojure
         cider
         clojure-mode
