@@ -12,6 +12,11 @@
  org-catch-invisible-edits 'error          ;; don't edit invisible text
 )
 
+;; org files
+(setq org-directory "~/desktop/org/")
+(setq org-agenda-files '("~/desktop/org/todos/"))
+(setq org-archive-location (concat org-directory "archive/%s_archive::"))
+
 ;; Todos keywords
 (setq org-todo-keywords
       '((sequence "TODO(t)" "NEXT(n)" "SOMEDAY(S!)" "PROGRESS(p)" "|" "DONE(d!)")
@@ -19,11 +24,10 @@
 
 
 (require 'org-mobile)
-(setq org-directory "~/desktop/org")
 ;; mobileorg settings
 (setq org-mobile-directory "/scpc:vincent@sif:desktop/org/")
-(setq org-mobile-inbox-for-pull "~/desktop/org/inbox.org")
-(setq org-mobile-files '("~/desktop/org"))
+(setq org-mobile-inbox-for-pull "~/desktop/org/todos/inbox.org")
+(setq org-mobile-files '("~/desktop/org/todos/"))
 
 ;; Use bullets
 (require 'org-bullets)
