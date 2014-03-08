@@ -100,6 +100,11 @@
 (setq font-lock-maximum-decoration 2) ; faster font-lock-mode
 (set-default 'indicate-buffer-boundaries '((up . nil) (down . nil) (t . left)))
 
+;; Font
+(set-default-font "Ubuntu Mono-14")
+(set-frame-font "Ubuntu Mono-14")
+(set-face-attribute 'default nil :family "Ubuntu Mono" :height 120)
+
 ;; Load the theme
 (load-theme 'junio t)
 
