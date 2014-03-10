@@ -4,6 +4,7 @@
 !.emacs.d/**
 .emacs.d/*~
 .emacs.d/*#
+*.elc
 .emacs.d/el-get
 .emacs.d/auto-save-list
 .emacs.d/var

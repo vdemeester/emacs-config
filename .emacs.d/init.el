@@ -62,6 +62,8 @@
         cider
         clojure-mode
         keychain-environment
+        ;; Web
+        emacs-w3m
 	))
 
 ;; Conditionnal recipes
