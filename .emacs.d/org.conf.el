@@ -37,3 +37,8 @@
 
 (require 'org-protocol)
 ;; (require 'org-mine)
+
+;; org-babel
+(require 'ob)
+(setq org-src-fontify-natively t)
+;; (setq org-confirm-babel-evaluate nil)
