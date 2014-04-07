@@ -1,3 +1,7 @@
+;; Notes
+;; makeinfo needed for magit (texinfo)
+;; Packages : cvs, autoconf
+
 ;; Personal information
 (setq user-full-name "Vincent Demeester"
       user-mail-address "vincent@sbr.pm")
@@ -66,7 +70,7 @@
         clojure-mode
         paredit
         paredit-extension
-        keychain-environment
+        ;; keychain-environment
         ;; Web
         emacs-w3m
         ))
@@ -165,11 +169,6 @@
 ;; TODO Load machine-specifc
 ;; TODO Load os-specific
 
-;; Special ensime/scala
-(add-to-list 'load-path "/usr/share/ensime/elisp")
-(add-to-list 'exec-path "/usr/share/ensime")
-(require 'ensime)
-(add-hook 'scala-mode-hook 'ensime-scala-mode-hook)
 
 ;; Clean & co
 (defun untabify-buffer ()
@@ -213,6 +212,14 @@
 
 (global-set-key (kbd "C-+") 'text-scale-increase)
 (global-set-key (kbd "C--") 'text-scale-decrease)
+
+;; Special ensime/scala
+(when (file-exists-p "/usr/share/ensime/elisp")
+  (add-to-list 'load-path "/usr/share/ensime/elisp")
+  (add-to-list 'exec-path "/usr/share/ensime")
+  (require 'ensime)
+  (add-hook 'scala-mode-hook 'ensime-scala-mode-hook)
+  )
 
 ;; Server
 (unless (string= (user-login-name) "root")
