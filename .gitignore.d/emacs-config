@@ -9,6 +9,7 @@
 .emacs.d/auto-save-list
 .emacs.d/var
 .emacs.d/eshell
+.emacs.d/.org-id-locations
 !.gnus
 !.gitignore.d
 !.gitignore.d/emacs-config
