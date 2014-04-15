@@ -79,11 +79,11 @@
 ;; (unless (string-match "apple-darwin" system-configuration)
 ;; ...)
 
-;; (when (ignore-errors
-;;      (el-get-executable-find "svn")
-;;      (loop for p in '(psvn                 ;; M-x svn-status
-;;                       )
-;;            do (add-to-list 'el-get-sources p))))
+(when (ignore-errors
+        (executable-find "sbt")
+        (loop for p in '(ensime
+                         )
+              do (add-to-list 'el-get-packages p))))
 
 ;; getelget -- bootstrap el-get if necessary and load the specified packages
 (load-library "getelget.el")
@@ -212,14 +212,6 @@
 
 (global-set-key (kbd "C-+") 'text-scale-increase)
 (global-set-key (kbd "C--") 'text-scale-decrease)
-
-;; Special ensime/scala
-(when (file-exists-p "/usr/share/ensime/elisp")
-  (add-to-list 'load-path "/usr/share/ensime/elisp")
-  (add-to-list 'exec-path "/usr/share/ensime")
-  (require 'ensime)
-  (add-hook 'scala-mode-hook 'ensime-scala-mode-hook)
-  )
 
 ;; Server
 (unless (string= (user-login-name) "root")
