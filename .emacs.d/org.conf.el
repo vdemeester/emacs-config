@@ -42,3 +42,6 @@
 (require 'ob)
 (setq org-src-fontify-natively t)
 ;; (setq org-confirm-babel-evaluate nil)
+
+;; Automatic safe of all org-buffer each hours
+(run-at-time "00:59" 3600 'org-save-all-org-buffers)
