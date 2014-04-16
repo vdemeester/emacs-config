@@ -3,7 +3,7 @@
 
 (setq
  org-completion-use-ido t                  ;; use IDO for completion
- org-startup-indented t                  ;; ident by default
+ ;; org-startup-indented t                  ;; ident by default
  org-tags-column -90                       ;; align tags on the 90th columns
  org-hide-leading-stars t                  ;; don't show leading stars
  org-cycle-separator-lines 0               ;; don't show blank lines between collapsed trees
