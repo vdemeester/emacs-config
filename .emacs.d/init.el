@@ -86,14 +86,14 @@
       (require 'ensime)
       (add-hook 'scala-mode-hook 'ensime-scala-mode-hook)
       )
-  (
-   '(when (ignore-errori
-           (executable-find "sbt")
-           (loop for p in '(ensime
-                            )
-                 do (add-to-list 'el-get-packages p))))
-   )
+  '(when (ignore-error
+          (executable-find "sbt")
+          (loop for p in '(ensime
+                           )
+                do (add-to-list 'el-get-packages p)))
+     )
   )
+
 
 ;; getelget -- bootstrap el-get if necessary and load the specified packages
 (load-library "getelget.el")
