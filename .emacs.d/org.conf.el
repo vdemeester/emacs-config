@@ -20,12 +20,13 @@
 
 ;; Todos keywords
 (setq org-todo-keywords
-      (quote ((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d)")
+      (quote ((sequence "TODO(t)" "NEXT(n)" "PROGRESS(p)" "|" "DONE(d)")
               (sequence "WAITING(w@/!)" "HOLD(h@/!)" "|" "CANCELLED(c@/!)" "PHONE" "MEETING"))))
 
 (setq org-todo-keyword-faces
       (quote (("TODO" :foreground "#EE0000" :weight bold)
               ("NEXT" :foreground "#A197BF" :weight bold)
+              ("PROGRESS" :foreground "#A197BF" :weight bold)
               ("DONE" :foreground "#8fbfdc" :weight bold)
               ("WAITING" :foreground "orange" :weight bold)
               ("HOLD" :foreground "magenta" :weight bold)
