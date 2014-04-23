@@ -170,6 +170,7 @@
 (require 'expand-region)
 
 (require 'ido)
+(require 'magit)
 (require 'git-annex)
 (require 'powerline)
 (powerline-default-theme)
