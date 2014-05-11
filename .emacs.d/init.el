@@ -73,6 +73,7 @@
         ;; keychain-environment
         ;; Web
         emacs-w3m
+        mu4e
         ))
 
 ;; Conditionnal recipes
