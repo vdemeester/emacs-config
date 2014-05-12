@@ -1,6 +1,7 @@
 ;; Notes
 ;; makeinfo needed for magit (texinfo)
 ;; Packages : cvs, autoconf
+;; (mu4e)   : libglib2.0-dev libgmime-2.6-dev libxapian-dev
 
 ;; Personal information
 (setq user-full-name "Vincent Demeester"
