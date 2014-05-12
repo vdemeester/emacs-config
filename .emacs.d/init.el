@@ -47,6 +47,11 @@
         gist                                ;; Gist :-)
         expand-region
         autopair                            ;; Auto pairing for parentheses
+        org
+        org-magit
+        org-reveal
+        org-fstree
+        org-jekyll
         org-bullets                         ;; Org UTF-8 bullets
         flx
         ido-vertical-mode
