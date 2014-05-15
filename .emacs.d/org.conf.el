@@ -75,6 +75,9 @@
 (add-to-list 'org-speed-commands-user
              '("p" ded/org-show-previous-heading-tidily))
 
+;; org-archive
+(require 'org-archive)
+
 ;; Use bullets
 (require 'org-bullets)
 (add-hook 'org-mode-hook

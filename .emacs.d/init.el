@@ -54,7 +54,7 @@
         org-fstree
         org-jekyll
         org-redmine
-        ;; org-sync
+        org-sync
         org-caldav
         org-doing
         org-bullets                         ;; Org UTF-8 bullets
