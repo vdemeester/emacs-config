@@ -93,6 +93,11 @@
 (setq org-mobile-inbox-for-pull "~/desktop/org/todos/inbox.org")
 (setq org-mobile-files '("~/desktop/org/todos/"))
 
+(require 'os)
+(require 'os-bb)
+(require 'os-rmine)
+(require 'os-github)
+
 ;; org-babel
 (require 'ob)
 (setq org-src-fontify-natively t)
