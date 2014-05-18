@@ -188,6 +188,11 @@
 
 (require 'org)
 
+(require 'uniquify)
+
+(require 'saveplace)
+(setq-default save-place t)
+
 ;; TODO Load machine-specifc
 ;; TODO Load os-specific
 
