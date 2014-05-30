@@ -81,6 +81,8 @@
         paredit
         paredit-extension
         ;; keychain-environment
+        ;; project(s)
+        projectile
         ;; Web
         emacs-w3m
         mu4e
