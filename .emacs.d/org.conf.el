@@ -75,6 +75,14 @@
 (add-to-list 'org-speed-commands-user
              '("p" ded/org-show-previous-heading-tidily))
 
+;; Org Capture
+(setq org-capture-templates
+      '(("t" "Todo" entry (file+headline (concat org-directory "/todos/inbox.org") "Tasks")
+         "* TODO %?\n %i\n")
+        ("e" "Eileo" entry (file+headline (concat org-directory "/todos/eileo.org")) "Inbox")
+        ("l" "Link" plain (file+datetree (concat org-directory "/notes/links.org"))
+         "- %?\n %x\n")))
+
 ;; org-archive
 (require 'org-archive)
 
