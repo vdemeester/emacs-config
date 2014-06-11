@@ -97,7 +97,7 @@
 
 (require 'org-mobile)
 ;; mobileorg settings
-(setq org-mobile-directory "/scpc:vincent@sif:desktop/org/")
+(setq org-mobile-directory "/scpc:vincent@sif:desktop/org-mobile/")
 (setq org-mobile-inbox-for-pull "~/desktop/org/todos/inbox.org")
 (setq org-mobile-files '("~/desktop/org/todos/"))
 
