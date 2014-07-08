@@ -135,9 +135,9 @@
 (set-default 'indicate-buffer-boundaries '((up . nil) (down . nil) (t . left)))
 
 ;; Font
-(set-default-font "Ubuntu Mono-14")
-(set-frame-font "Ubuntu Mono-14")
-(set-face-attribute 'default nil :family "Ubuntu Mono" :height 120)
+(set-default-font "Ubuntu Mono-12")
+(set-frame-font "Ubuntu Mono-12")
+(set-face-attribute 'default nil :family "Ubuntu Mono" :height 110)
 
 ;; Load the theme
 (load-theme 'junio t)
