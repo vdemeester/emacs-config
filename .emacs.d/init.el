@@ -138,6 +138,8 @@
 (set-default-font "Ubuntu Mono-12")
 (set-frame-font "Ubuntu Mono-12")
 (set-face-attribute 'default nil :family "Ubuntu Mono" :height 110)
+(set-fontset-font "fontset-default" nil 
+                  (font-spec :size 20 :name "Symbola"))
 
 ;; Load the theme
 (load-theme 'junio t)
