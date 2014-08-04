@@ -2,6 +2,8 @@
 !.emacs.d
 !.emacs.d/*
 !.emacs.d/**
+.emacs.d/emacs.el
+.emacs.d/elpa
 .emacs.d/*~
 .emacs.d/*#
 *.elc

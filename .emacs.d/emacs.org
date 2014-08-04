@@ -1,0 +1,8 @@
+
+
+** Personal information
+
+#+begin_src emacs-lisp
+(setq user-full-name "Vincent Demeester"
+      user-mail-address "vincent@demeester.fr")
+#+end_src
