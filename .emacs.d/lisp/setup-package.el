@@ -5,7 +5,7 @@
 
 ;; add melpa and melpa-stable to package repos
 (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/"))
-(add-to-list 'package-archives '("melpa-stable" . "http://melpa-stable.milkbox.net/packages/"))
+;; (add-to-list 'package-archives '("melpa-stable" . "http://melpa-stable.milkbox.net/packages/"))
 
 ;; If gpg cannot be found, signature checking will fail, so we
 ;; conditionnally enable it according wether gpg is availabel.
@@ -25,7 +25,8 @@ re-downloaded in order to locate PACKAGE."
     (if (or (assoc package package-archive-contents) no-refresh)
 	(package-install package)
       (progn
-	(package-refresh-contents)
+	(when (not package-archive-contents)
+	  (package-refresh-contents))
 	(require-package package min-version t)))))
 
 ;; Fire up package.el
