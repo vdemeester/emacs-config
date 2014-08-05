@@ -51,10 +51,12 @@ First let's install the theme...
 (require-package 'leuven-theme)
 #+end_src
 
-... and load it
+... and load it.
 #+begin_src emacs-lisp
 (load-theme 'leuven t)
 #+end_src
+
+***** TODO Specific theme for modes
 
 **** Powerline
 
