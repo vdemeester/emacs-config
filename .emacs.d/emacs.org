@@ -1,4 +1,16 @@
+#+TITLE: Vincent Demeester's emacs configuration
+#+AUTHOR: Vincent Demeester
+#+EMAIL: vincent [at] demeester [dot] fr
 
+This is my first attempt to create a readable, maintainable and self documented
+emacs configuration. I'm hopeful that using Org-Babel and a literate
+programming style will help.
+
+* How to use my configuration
+  
+
+
+* Configuration
 
 ** Personal information
 
@@ -6,3 +18,99 @@
 (setq user-full-name "Vincent Demeester"
       user-mail-address "vincent@demeester.fr")
 #+end_src
+
+** General configuration
+
+*** Appearance
+
+Unclutter the screen by removing menubar, toolbar and stuff, and by disabling
+the splash-screen.
+
+#+begin_src emacs-lisp
+(menu-bar-mode -1)
+(tool-bar-mode -1)
+(scroll-bar-mode -1)
+(setq inhibit-splash-screen t)
+#+end_src
+
+We want to see somewhere the column and line number, and also highlight the
+current line to see it easily.
+
+#+begin_src emacs-lisp
+(line-number-mode 1)
+(column-number-mode 1)
+(global-hl-line-mode 1)
+#+end_src
+
+**** Themes
+
+First let's install the theme...
+
+#+begin_src emacs-lisp
+(require-package 'sublime-themes)
+(require-package 'leuven-theme)
+#+end_src
+
+... and load it
+#+begin_src emacs-lisp
+(load-theme 'leuven t)
+#+end_src
+
+**** Powerline
+
+We are going to use [[https://github.com/milkypostman/powerline][powerline]] because it is way more sexy than the default modeline design.
+
+#+begin_src emacs-lisp
+(require-package 'powerline)
+(powerline-default-theme)
+#+end_src
+
+*** Behaviour
+**** Mouse
+Move the mouse away to not bother.
+
+#+begin_src emacs-lisp
+(mouse-avoidance-mode 'jump)
+#+end_src
+
+**** Backup files
+
+Files suffixed with ~\~~ in the current directory are ugly. We are still going to use
+backup files, as it can saves some time in case of trouble, but we'll move them
+somewhere else : ~/tmp/emacs-1001~ (for a user with the uid = 1001).
+
+Note the we store them in /tmp so in case of a reboot, we loose them.
+
+#+begin_src emacs-lisp
+(defconst emacs-tmp-dir (format "%s/%s%s/" temporary-file-directory "emacs" (user-uid)))
+(setq backup-directory-alist
+      `((".*" . ,emacs-tmp-dir))
+      auto-save-file-name-transforms
+      `((".*" ,emacs-tmp-dir t))
+      auto-save-list-file-prefix emacs-tmp-dir)
+#+end_src
+
+Now that all the temporary files are out of the way, we can keep more of them.
+
+#+begin_src emacs-lisp
+(setq delete-old-versions t
+      kept-new-versions 6
+      kept-old-versions 2
+      version-control t)
+#+end_src
+
+** TODO Modes
+
+*** TODO Org
+
+*** TODO Lua
+
+*** TODO Haskell
+
+*** TODO Go
+
+*** TODO Docker
+
+*** TODO Archlinux
+
+** TODO Mails

@@ -23,8 +23,14 @@
   (message "Loaded packages in %.3fs" elapsed))
 
 ;; Make sure we have a decent and recent org-mode version
-(package-install 'org)
-(package-install 'org-plus-contrib)
+(when (not (package-installed-p 'org))
+  do (package-install 'org))
+(when (not (package-installed-p 'org-plus-contrib))
+  do (package-install 'org-plus-contrib))
+;; 
+(when (not (package-installed-p 'org))
+  do (package-install 'org))(package-install 'org)
+;; (package-install 'org-plus-contrib)
 (require 'org)
 (when (string-match "^[1234567]" (org-version))
   (warn "Org-mode is out of date. We expect org 8 or higher, but instead we have %s" (org-version)))
