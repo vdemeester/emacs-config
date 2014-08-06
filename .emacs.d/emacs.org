@@ -6,7 +6,7 @@ This is my first attempt to create a readable, maintainable and self documented
 emacs configuration. I'm hopeful that using Org-Babel and a literate
 programming style will help.
 
-* How to use my configuration
+* TODO How to use my configuration
   
 
 
