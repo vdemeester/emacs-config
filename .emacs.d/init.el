@@ -14,6 +14,7 @@
 ;; Add custom lisp files to the load-path
 (add-to-list 'load-path "~/.emacs.d/lisp")
 
+(require 'vde-functions)
 ;; initialize all ELPA packages
 (require 'setup-package)
 
@@ -23,14 +24,15 @@
   (message "Loaded packages in %.3fs" elapsed))
 
 ;; Make sure we have a decent and recent org-mode version
-(when (not (package-installed-p 'org))
-  do (package-install 'org))
-;;(when (not (package-installed-p 'org-plus-contrib))
-;;  do (package-install 'org-plus-contrib))
-
 (require 'org)
 (when (string-match "^[1234567]" (org-version))
-  (warn "Org-mode is out of date. We expect org 8 or higher, but instead we have %s" (org-version)))
+  (progn
+    (warn "Org-mode is out of date. We expect org 8 or higher, but instead we have %s" (org-version))
+    (warn "Force the installation from org elpa.")
+    (package-install 'org)
+    (unload-org-mode)
+    (require 'org)
+    ))
 
 ;; keep customize settings in their own file
 (setq custom-file
