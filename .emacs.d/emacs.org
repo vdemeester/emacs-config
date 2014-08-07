@@ -127,6 +127,66 @@ Now that all the temporary files are out of the way, we can keep more of them.
 #+end_src
 
 ** TODO Modes
+*** Prompts
+**** ido
+
+Ido stands for “Interactively DO things”, and even though we'll try to use Helm
+for a lot of things, ido-mode replace beautifuly the default Emacs prompt.
+
+#+BEGIN_QUOTE
+There are many ways of improving your productivity when you use Emacs, and Ido (or “Interactively DO things”) is one of those packages that you enable and then never, ever turn off again. It’s simply that useful. By super-charging Emacs’s completion engine and improving the speed at which you open files and buffers, you will significantly cut down on the time spent doing these menial tasks.
+#+END_QUOTE
+
+We're gonna enhance even more ido with some additonnal package :
+
+- A vertical presentation for ido
+#+begin_src emacs-lisp
+(require-package 'ido-vertical-mode)
+#+end_src
+- Fuzzy matching for ido (killer-feature !)
+#+begin_src emacs-lisp
+(require-package 'flx)
+(require-package 'flx-ido)
+#+end_src
+- Use ido and fuzzy matching for ~M-x~, to get first to most recent command used
+#+begin_src emacs-lisp
+(require-package 'smex)
+#+end_src
+
+Let's configure ido, ido-vertical-mode and flx.
+
+#+begin_src emacs-lisp
+(require 'recentf)
+(setq ido-enable-flex-matching t
+     ido-everywhere t
+     ido-use-virtual-buffers t
+     ido-use-faces nil)
+(ido-mode 1)
+(ido-vertical-mode 1)
+(flx-ido-mode 1)
+#+end_src
+
+Let's configure smex.
+
+#+begin_src emacs-lisp
+(smex-initialize)
+
+(global-set-key (kbd "M-x") 'smex)
+(global-set-key (kbd "M-X") 'smex-major-mode-commands)
+#+end_src
+
+We bind the old ~M-x~ command to another, more complicated keys.
+
+#+begin_src emacs-lisp
+(global-set-key (kbd "C-c C-c M-x") 'execute-extended-command)
+#+end_src
+
+**** TODO helm
+
+#+begin_src emacs-lisp
+(require-package 'helm)
+#+end_src
+
 
 *** TODO Org
 
