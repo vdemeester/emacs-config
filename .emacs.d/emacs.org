@@ -48,7 +48,18 @@ can be slow, we try to limit that, to keep Emacs reactive.
 #+begin_src emacs-lisp
 (setq font-lock-maximum-decoration 2)
 #+end_src
+**** Fringe decorations
 
+   [[http://www.emacswiki.org/emacs/TheFringe][The fringe]] is the vertical region at the right and left of the
+   buffer. Emacs lets you customize it of course.
+
+   Here I set up git diffs and buffer position in the fringe.
+
+   #+NAME: look-and-feel
+   #+BEGIN_SRC emacs-lisp
+(setq-default indicate-buffer-boundaries 'left)
+(setq-default indicate-empty-lines +1)
+   #+END_SRC
 **** Fonts
 
 #+begin_src emacs-lisp
@@ -88,9 +99,10 @@ We are going to use [[https://github.com/milkypostman/powerline][powerline]] bec
 Make sur that we use ~utf-8~ by default.
 
 #+begin_src emacs-lisp
+(set-terminal-coding-system 'utf-8)
+(set-keyboard-coding-system 'utf-8)
+(set-language-environment "UTF-8")
 (prefer-coding-system 'utf-8)
-(setq file-name-coding-system 'utf-8)
-(setq locale-coding-system 'utf-8)
 #+end_src
 
 **** Mouse
@@ -128,7 +140,7 @@ Now that all the temporary files are out of the way, we can keep more of them.
 
 ** TODO Modes
 *** Prompts
-**** ido
+**** DONE ido
 
 Ido stands for “Interactively DO things”, and even though we'll try to use Helm
 for a lot of things, ido-mode replace beautifuly the default Emacs prompt.
@@ -187,6 +199,34 @@ We bind the old ~M-x~ command to another, more complicated keys.
 (require-package 'helm)
 #+end_src
 
+*** TODO Version control integration
+**** TODO Git
+
+***** TODO Magit
+
+#+begin_src emacs-lisp
+(require-package 'magit)
+#+end_src
+
+****** TODO Magit git-svn integration
+
+At work, I use ~git-svn~ to be able to use git locally but integrating in the
+subversion they use. Integrating ~magit~ and ~git-svn~ is a bonus but, as it
+exists, let's do it :).
+
+#+begin_src emacs-lisp
+(require-package 'magit-svn)
+#+end_src
+
+The /quick key/ to get the ~magit-svn~ menu is ~N~.
+
+***** TODO Git fringe decoration
+
+#+begin_src emacs-lisp
+     (when (window-system)
+       (require-package 'git-gutter-fringe)
+       (global-git-gutter-mode +1))
+#+end_src emacs-lisp
 
 *** TODO Org
 
