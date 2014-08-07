@@ -230,10 +230,29 @@ The /quick key/ to get the ~magit-svn~ menu is ~N~.
 
 *** TODO Org
 
+*** TODO Flycheck
 *** TODO Lua
 
 *** TODO Haskell
 
+#+begin_src emacs-lisp
+(require-package 'haskell-mode)
+(require-package 'ghc)
+(require-package 'ghci-completion)
+(require-package 'shm)
+#+end_src
+
+*** TODO Clojure
+
+*** TODO Scala
+
+*** TODO Java
+
+*** TODO Python
+
+*** TODO Ruby
+
+*** TODO Shell(s)
 *** TODO Go
 
 *** TODO Docker
