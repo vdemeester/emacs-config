@@ -138,8 +138,10 @@ Now that all the temporary files are out of the way, we can keep more of them.
       version-control t)
 #+end_src
 
+**** TODO Evil
 ** TODO Modes
 *** Prompts
+**** TODO deft
 **** DONE ido
 
 Ido stands for “Interactively DO things”, and even though we'll try to use Helm
@@ -202,13 +204,19 @@ We bind the old ~M-x~ command to another, more complicated keys.
 *** TODO Version control integration
 **** TODO Git
 
-***** TODO Magit
+#+begin_src emacs-lisp
+(require-package 'gitattributes-mode)
+(require-package 'gitignore-mode)
+#+end_src
+
+
+***** TODO magit
 
 #+begin_src emacs-lisp
 (require-package 'magit)
 #+end_src
 
-****** TODO Magit git-svn integration
+****** DONE Magit git-svn integration
 
 At work, I use ~git-svn~ to be able to use git locally but integrating in the
 subversion they use. Integrating ~magit~ and ~git-svn~ is a bonus but, as it
@@ -219,8 +227,7 @@ exists, let's do it :).
 #+end_src
 
 The /quick key/ to get the ~magit-svn~ menu is ~N~.
-
-***** TODO Git fringe decoration
+***** TODO git fringe decoration
 
 #+begin_src emacs-lisp
      (when (window-system)
@@ -228,9 +235,34 @@ The /quick key/ to get the ~magit-svn~ menu is ~N~.
        (global-git-gutter-mode +1))
 #+end_src emacs-lisp
 
+***** DONE git-annex
+
+[[http://git-annex.branchable.com/][Git-annex]] is a wonderful piece of software that I use a lot in my repositories.
+
+#+BEGIN_QUOTE
+git-annex allows managing files with git, without checking the file contents into git. While that may seem paradoxical, it is useful when dealing with files larger than git can currently easily handle, whether due to limitations in memory, time, or disk space.
+#+END_QUOTE
+
+In Emacs, it integrates with magit and dired mode. The annex subcommand for magit is ~@~.
+
+#+begin_src emacs-lisp
+(require-package 'git-annex)
+(require-package 'magit-annex)
+#+end_src
+
+***** TODO gitty
+***** TODO git-timemachine
+
+***** TODO git-blame
+
+***** TODO github
+
+# gist, githubclone, ..
 *** TODO Org
 
 *** TODO Flycheck
+
+*** TODO Fly{check,make)
 *** TODO Lua
 
 *** TODO Haskell
@@ -257,6 +289,7 @@ The /quick key/ to get the ~magit-svn~ menu is ~N~.
 
 *** TODO Docker
 
+*** TODO fic-mode
 *** TODO Archlinux
 
 ** TODO Mails
