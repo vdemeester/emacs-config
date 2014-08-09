@@ -6,14 +6,151 @@ This is my first attempt to create a readable, maintainable and self documented
 emacs configuration. I'm hopeful that using Org-Babel and a literate
 programming style will help.
 
-* TODO How to use my configuration
+There is a lot of inspiration for this file, I'm just gonna list the one I took
+the most of it : 
 
+- [[https://github.com/joodie/emacs-literal-config/blob/master/emacs.org][Joodie emacs-literal-config]]
+- [[https://github.com/dakrone/dakrone-dotfiles/blob/master/.emacs.d/settings.org][Dakrone emacs configuration]]
+- [[http://pages.sachachua.com/.emacs.d/Sacha.html][Sacha Chua's Emacs configuration]]
+- [[https://github.com/steckerhalter/steckemacs/blob/master/steckemacs.org]["Steckemacs" steckerhalter literal emacs config]]
+- [[https://github.com/larstvei/dot-emacs][Lartsvei dot-emacs]]
+- [[https://github.com/grettke/home/blob/master/.emacs.el][Grettke emacs configuration]]
+- [[https://github.com/jkitchin/jmax][Johns customizations to maximize emacs (jmax)]]
+- [[https://github.com/jwiegley/dot-emacs][jwiegley dot-emacs]]
 
+This file is an /always/ work-in-progress, and is currently under *heavy* modifications.
+The latest version of this file is always available at my [[https://github.com/vdemeester/emacs-config][emacs-config]] github
+repository, the [[https://github.com/vdemeester/emacs-config/blob/master/.emacs.d/emacs.org][emacs.org]] file. 
 
 * Configuration
+** How to my configuration
+
+You can obtain the source by cloning this repository somewhere, but the repository
+is made to work with [[https://github.com/RichiH/vcsh][vcsh]].
+
+#+BEGIN_SRC sh
+  vcsh clone git://github.com/vdemeester/emacs-config emacs-config
+#+END_SRC
+
+If you don't want to use =vcsh= but still want to have my =.emacs.d= folder
+in your =$HOME=, you could link it like that :
+
+
+#+BEGIN_SRC sh
+  cd $HOME
+  mkdir -p src
+  git clone git://github.com/vdemeester/emacs-config src/vde-emacs-config
+  ln -s src/vde-emacs-config/.emacs.d .
+#+END_SRC
+
+*** The =init.el=
+
+If you just want to get the =emacs.org= file, you will have to define and setup
+some stuff for this file to work with org-babel. You could take a look to my
+[[https://github.com/vdemeester/emacs-config/blob/master/.emacs.d/init.el][init.el]] file but let's show the main stuff.
+
+First you will need to setup packages repository and define a =require-package=
+function, let's see what's in there (defined in =lisp/setup-package.el=).
+
+
+#+BEGIN_SRC emacs-lisp :tangle no
+  (require 'package)
+
+  ;; add org to package repos
+  (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/"))
+
+  ;; add melpa and melpa-stable to package repos
+  (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/"))
+
+  ;; If gpg cannot be found, signature checking will fail, so we
+  ;; conditionnally enable it according wether gpg is availabel.
+  ;; We re-run this check once $PATH has been configured
+  (defun sanityinc/package-maybe-enable-signatures ()
+    (setq package-check-signature (when (executable-find "gpg") 'allow-unsigned)))
+
+  (sanityinc/package-maybe-enable-signatures)
+
+  ;; On demand installation of packages
+  (defun require-package (package &optional min-version no-refresh)
+    "Install given PACKAGE, optionally requiring MIN-VERSION.
+  if NO-REFRESH is non-nil, the available package lists will not be
+  re-downloaded in order to locate PACKAGE."
+    (if (package-installed-p package min-version)
+        t
+      (if (or (assoc package package-archive-contents) no-refresh)
+          (package-install package)
+        (progn
+          (when (not package-archive-contents)
+            (package-refresh-contents))
+          (require-package package min-version t)))))
+
+  ;; Fire up package.el
+  (package-initialize)
+
+  ;; install fullframe for list-packages
+  (require-package 'fullframe)
+  (fullframe list-packages quit-window)
+
+  (provide 'setup-package)
+#+END_SRC
+
+Let's now see how I load the =emacs.org= file. In the following lines of code,
+I'm also ensuring that a recent version of [[http://orgmode.org/][org-mode]] is present on the system ;
+if not, I'm unload the current one, installing a recent one and load it.
+
+#+BEGIN_SRC emacs-lisp :tangle no
+  ;; Support for Emacs 24 and higher only
+  (let ((minver 24))
+    (unless (>= emacs-major-version minver)
+      (error "Your Emacs is too old -- this config requires v%s or higher" minver)))
+
+  ;; Keep track of loading time
+  (defconst emacs-start-time (current-time))
+
+  ;; Add custom lisp files to the load-path
+  (add-to-list 'load-path "~/.emacs.d/lisp")
+
+  ;; the unload-org-mode is defined there
+  (require 'vde-functions)
+  ;; initialize all ELPA packages
+  (require 'setup-package)
+
+  ;; (setq package-enable-at-startup nil)
+  (let ((elapsed (float-time (time-subtract (current-time)
+                                             emacs-start-time))))
+    (message "Loaded packages in %.3fs" elapsed))
+
+  ;; Make sure we have a decent and recent org-mode version
+  (require 'org)
+  (when (string-match "^[1234567]" (org-version))
+    (progn
+      (warn "Org-mode is out of date. We expect org 8 or higher, but instead we have %s" (org-version))
+      (warn "Force the installation from org elpa.")
+      (package-install 'org)
+      (unload-org-mode)
+      (require 'org)
+      ))
+
+  ;; keep customize settings in their own file
+  (setq custom-file
+        (expand-file-name "custom.el"
+                          user-emacs-directory))
+  (when (file-exists-p custom-file)
+    (load custom-file))
+
+  ;; load the literate configuration
+  (require 'ob-tangle)
+  (org-babel-load-file "~/.emacs.d/emacs.org")
+
+  (let ((elapsed (float-time (time-subtract (current-time)
+                                             emacs-start-time))))
+    (message "Loaded settings...done in %.3fs" elapsed))
+
+#+END_SRC
+
 
 ** Personal information
-
+   
    #+begin_src emacs-lisp
      (setq user-full-name "Vincent Demeester"
            user-mail-address "vincent@demeester.fr")
@@ -70,16 +207,19 @@ programming style will help.
 
 **** Themes
 
-     First let's install the theme...
+     First let's install the theme(s)...
 
      #+begin_src emacs-lisp
 (require-package 'sublime-themes)
 (require-package 'leuven-theme)
+(require-package 'dakrone-theme)
      #+end_src
 
      ... and load it.
      #+begin_src emacs-lisp
 (load-theme 'leuven t)
+(set-face-attribute 'org-level-1 nil :height 120)
+;; (load-theme 'dakrone t)
      #+end_src
 
 ***** TODO Specific theme for modes
@@ -121,19 +261,19 @@ programming style will help.
      #+end_src
 **** DONE Backup files
 
-     Files suffixed with ~\~~ in the current directory are ugly. We are still going to use
+     Files suffixed with =~= in the current directory are ugly. We are still going to use
      backup files, as it can saves some time in case of trouble, but we'll move them
      somewhere else : ~/tmp/emacs-1001~ (for a user with the uid = 1001).
 
      Note the we store them in /tmp so in case of a reboot, we loose them.
 
      #+begin_src emacs-lisp
-(defconst emacs-tmp-dir (format "%s/%s%s/" temporary-file-directory "emacs" (user-uid)))
-(setq backup-directory-alist
-      `((".*" . ,emacs-tmp-dir))
-      auto-save-file-name-transforms
-      `((".*" ,emacs-tmp-dir t))
-      auto-save-list-file-prefix emacs-tmp-dir)
+       (defconst emacs-tmp-dir (format "%s/%s%s/" temporary-file-directory "emacs" (user-uid)))
+       (setq backup-directory-alist
+             `((".*" . ,emacs-tmp-dir))
+             auto-save-file-name-transforms
+             `((".*" ,emacs-tmp-dir t))
+             auto-save-list-file-prefix emacs-tmp-dir)
      #+end_src
 
      Now that all the temporary files are out of the way, we can keep more of them.
@@ -167,7 +307,7 @@ programming style will help.
 - untabify the buffer
 
 #+begin_src emacs-lisp
-(defun untabify-buffer ()
+(defun my/untabify-buffer ()
   (interactive)
   (untabify (point-min) (point-max)))
 #+end_src
@@ -175,7 +315,7 @@ programming style will help.
 - ident the buffer, using the mode indentation stuff
 
 #+begin_src emacs-lisp
-(defun indent-buffer ()
+(defun my/indent-buffer ()
   (interactive)
   (indent-region (point-min) (point-max)))
 #+end_src
@@ -183,18 +323,18 @@ programming style will help.
 - cleanup the buffer
 
 #+begin_src emacs-lisp
-(defun cleanup-buffer ()
-  "Perform a bunch of operations on the whitespace content of a buffer."
-  (interactive)
-  (indent-buffer)
-  (untabify-buffer)
-  (delete-trailing-whitespace))
+  (defun my/cleanup-buffer ()
+    "Perform a bunch of operations on the whitespace content of a buffer."
+    (interactive)
+    (indent-buffer)
+    (untabify-buffer)
+    (delete-trailing-whitespace))
 #+end_src
 
 - cleanup the region
 
 #+begin_src emacs-lisp
-(defun cleanup-region (beg end)
+(defun my/cleanup-region (beg end)
   "Remove tmux artifacts from region."
   (interactive "r")
   (dolist (re '("\\\\│\·*\n" "\W*│\·*"))
@@ -357,31 +497,31 @@ We bind the old ~M-x~ command to another, more complicated keys.
      Let's also define the default /todo-keywords/ and the workflow between them.
 
      #+begin_src emacs-lisp
-(setq org-todo-keywords
-      (quote ((sequence "TODO(t)" "NEXT(n)" "PROGRESS(p)" "|" "DONE(d)")
-              (sequence "WAITING(w@/!)" "HOLD(h@/!)" "|" "CANCELLED(c@/!)" "PHONE" "MEETING")
-              (sequence "REPORT" "BUG" "KNOWNCAUSE" "|" "FIXED"))))
+       (setq org-todo-keywords
+             (quote ((sequence "TODO(t)" "NEXT(n)" "PROGRESS(p)" "|" "DONE(d)")
+                     (sequence "WAITING(w@/!)" "HOLD(h@/!)" "|" "CANCELLED(c@/!)" "PHONE" "MEETING")
+                     (sequence "REPORT" "BUG" "KNOWNCAUSE" "|" "FIXED"))))
 
 
-(setq org-todo-keyword-faces
-      (quote (("TODO" :foreground "#EE0000" :weight bold)
-              ("NEXT" :foreground "#A197BF" :weight bold)
-              ("PROGRESS" :foreground "#A197BF" :weight bold)
-              ("DONE" :foreground "#8fbfdc" :weight bold)
-              ("WAITING" :foreground "orange" :weight bold)
-              ("HOLD" :foreground "magenta" :weight bold)
-              ("CANCELLED" :foreground "forest green" :weight bold)
-              ("MEETING" :foreground "forest green" :weight bold)
-              ("PHONE" :foreground "forest green" :weight bold))))
+       (setq org-todo-keyword-faces
+             (quote (("TODO" :foreground "#EE0000" :weight bold)
+                     ("NEXT" :foreground "#A197BF" :weight bold)
+                     ("PROGRESS" :foreground "#A197BF" :weight bold)
+                     ("DONE" :foreground "#8fbfdc" :weight bold)
+                     ("WAITING" :foreground "orange" :weight bold)
+                     ("HOLD" :foreground "magenta" :weight bold)
+                     ("CANCELLED" :foreground "forest green" :weight bold)
+                     ("MEETING" :foreground "forest green" :weight bold)
+                     ("PHONE" :foreground "forest green" :weight bold))))
 
-(setq org-todo-state-tags-triggers
-(quote (("CANCELLED" ("CANCELLED" . t))
-("WAITING" ("WAITING" . t))
-("HOLD" ("WAITING" . t) ("HOLD" . t))
-(done ("WAITING") ("HOLD"))
-("TODO" ("WAITING") ("CANCELLED") ("HOLD"))
-("NEXT" ("WAITING") ("CANCELLED") ("HOLD"))
-("DONE" ("WAITING") ("CANCELLED") ("HOLD")))))
+       (setq org-todo-state-tags-triggers
+             (quote (("CANCELLED" ("CANCELLED" . t))
+                     ("WAITING" ("WAITING" . t))
+                     ("HOLD" ("WAITING" . t) ("HOLD" . t))
+                     (done ("WAITING") ("HOLD"))
+                     ("TODO" ("WAITING") ("CANCELLED") ("HOLD"))
+                     ("NEXT" ("WAITING") ("CANCELLED") ("HOLD"))
+                     ("DONE" ("WAITING") ("CANCELLED") ("HOLD")))))
      #+end_src
 
      Undefine some binding (=C-c [=, =C-c ]= since this breaks org-agenda files that
@@ -399,7 +539,7 @@ We bind the old ~M-x~ command to another, more complicated keys.
 **** DONE Code blocks
 
      We are using a lot of code block in org-mode, in this file for example ; let's
-     define some /fontify/ the code blocks first.
+     /fontify/ the code blocks first.
 
      #+begin_src emacs-lisp
 (setq org-src-fontify-natively t)
@@ -408,29 +548,29 @@ We bind the old ~M-x~ command to another, more complicated keys.
      Add a function to easily add a code block and bind it.
 
      #+begin_src emacs-lisp
-(defun org-insert-src-block (src-code-type)
-  "Insert a `SRC-CODE-TYPE' type source code block in org-mode."
-  (interactive
-   (let ((src-code-types
-          '("emacs-lisp" "python" "C" "sh" "java" "js" "clojure" "C++" "css"
-            "calc" "asymptote" "dot" "gnuplot" "ledger" "lilypond" "mscgen"
-            "octave" "oz" "plantuml" "R" "sass" "screen" "sql" "awk" "ditaa"
-            "haskell" "latex" "lisp" "matlab" "ocaml" "org" "perl" "ruby"
-            "scheme" "sqlite")))
-     (list (ido-completing-read "Source code type: " src-code-types))))
-  (progn
-    (newline-and-indent)
-    (insert (format "#+BEGIN_SRC %s\n" src-code-type))
-    (newline-and-indent)
-    (insert "#+END_SRC\n")
-    (previous-line 2)
-    (org-edit-src-code)))
+       (defun my/org-insert-src-block (src-code-type)
+         "Insert a `SRC-CODE-TYPE' type source code block in org-mode."
+         (interactive
+          (let ((src-code-types
+                 '("emacs-lisp" "python" "C" "sh" "java" "js" "clojure" "C++" "css"
+                   "calc" "asymptote" "dot" "gnuplot" "ledger" "lilypond" "mscgen"
+                   "octave" "oz" "plantuml" "R" "sass" "screen" "sql" "awk" "ditaa"
+                   "haskell" "latex" "lisp" "matlab" "ocaml" "org" "perl" "ruby"
+                   "scheme" "sqlite")))
+            (list (ido-completing-read "Source code type: " src-code-types))))
+         (progn
+           (newline-and-indent)
+           (insert (format "#+BEGIN_SRC %s\n" src-code-type))
+           (newline-and-indent)
+           (insert "#+END_SRC\n")
+           (previous-line 2)
+           (org-edit-src-code)))
 
-(add-hook 'org-mode-hook
-'(lambda ()
-(local-set-key (kbd "C-c s e") 'org-edit-src-code)
-(local-set-key (kbd "C-c s i") 'org-insert-src-block))
-'append)
+       (add-hook 'org-mode-hook
+                 '(lambda ()
+                    (local-set-key (kbd "C-c s e") 'org-edit-src-code)
+                    (local-set-key (kbd "C-c s i") 'my/org-insert-src-block))
+                 'append)
      #+end_src
 
 **** TODO tags
@@ -464,6 +604,14 @@ We bind the old ~M-x~ command to another, more complicated keys.
 *** TODO Docker
 
 *** TODO fic-mode
-*** TODO Archlinux
+*** TODO Linux related modes
+**** TODO Archlinux
+     I'm using [[http://archlinux.org][Archlinux]] on my personnal computers and I maintain a few packages
+     on [[https://aur.archlinux.org][aur]], hopefully there is a mode for that.
 
+     #+BEGIN_SRC emacs-lisp
+       (require-package 'pkgbuild-mode)
+     #+END_SRC
+
+**** TODO Debian
 ** TODO Mails
