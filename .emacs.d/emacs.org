@@ -204,17 +204,18 @@ Same will goes with host-specific files and os-specific files.
     current line to see it easily.
 
     #+begin_src emacs-lisp
-(line-number-mode 1)
-(column-number-mode 1)
-(global-hl-line-mode 1)
+      (line-number-mode 1)
+      (column-number-mode 1)
+      (global-hl-line-mode 1)
     #+end_src
 
     Depending on the files opened and the syntax highlighting enabled, ~font-lock-mode~
     can be slow, we try to limit that, to keep Emacs reactive.
 
     #+begin_src emacs-lisp
-(setq font-lock-maximum-decoration 2)
+      (setq font-lock-maximum-decoration 2)
     #+end_src
+
 **** Fringe decorations
 
      [[http://www.emacswiki.org/emacs/TheFringe][The fringe]] is the vertical region at the right and left of the
@@ -224,9 +225,10 @@ Same will goes with host-specific files and os-specific files.
 
      #+NAME: look-and-feel
      #+BEGIN_SRC emacs-lisp
-(setq-default indicate-buffer-boundaries 'left)
-(setq-default indicate-empty-lines +1)
+       (setq-default indicate-buffer-boundaries 'left)
+       (setq-default indicate-empty-lines +1)
      #+END_SRC
+
 **** Fonts
 
      #+begin_src emacs-lisp
@@ -234,6 +236,19 @@ Same will goes with host-specific files and os-specific files.
 (set-frame-font "Ubuntu Mono-12")
 (set-face-attribute 'default nil :family "Ubuntu Mono" :height 110)
      #+end_src
+
+This will set Symbola as fallback-font for Emojis when it is available for the created frame.
+
+     #+BEGIN_SRC emacs-lisp
+       (defun my-after-make-frame (frame)
+         (when (find-font (font-spec :name "Symbola") frame)
+           (dolist (range '((#x2600 . #x26ff)
+                            (#x1f300 . #x1f5ff)
+                            (#x1f600 . #x1f640)
+                            (#x1f680 . #x1f6ff)))
+             (set-fontset-font "fontset-default" range "Symbola"))))
+       (add-to-list 'after-make-frame-functions 'my-after-make-frame)
+     #+END_SRC
 
 **** Themes
 
@@ -281,7 +296,7 @@ Same will goes with host-specific files and os-specific files.
     Some people at work will thank me for that ;-D.
 
     #+begin_src emacs-lisp
-(setq require-final-newline t)
+      (setq require-final-newline t)
     #+end_src
 
 Answering yes and no to each question from Emacs can be tedious, a single y or n will suffice.
@@ -393,8 +408,8 @@ Answering yes and no to each question from Emacs can be tedious, a single y or n
 And bind =cleanup-buffer= and =cleanup-region=.
 
 #+begin_src emacs-lisp
-(global-set-key (kbd "C-x M-t") 'cleanup-region)
-(global-set-key (kbd "C-c n") 'cleanup-buffer)
+(global-set-key (kbd "C-x M-t") 'my/cleanup-region)
+(global-set-key (kbd "C-c n") 'my/cleanup-buffer)
 #+end_src
 
 For writing text, I prefer Emacs to do line wrapping for me.Also, superfluous
@@ -429,9 +444,7 @@ white-space should be shown.
        (add-hook 'prog-mode-hook
                  (lambda() (rainbow-identifiers-mode)))
      #+END_SRC
-
-
-**** PROGRESS Dired
+**** DONE Dired
 
      Dired is really a cool mode, let's enhance it.
 
@@ -499,25 +512,35 @@ We bind the old ~M-x~ command to another, more complicated keys.
 
 **** TODO helm
 
+#+BEGIN_QUOTE
+Helm is incremental completion and selection narrowing framework for Emacs. It will help steer you in the right direction when you’re looking for stuff in Emacs (like buffers, files, etc).
+
+Helm is a fork of anything.el originaly written by Tamas Patrovic and can be considered to be its successor. Helm sets out to clean up the legacy code in anything.el and provide a cleaner, leaner and more modular tool, that’s not tied in the trap of backward compatibility.
+#+END_QUOTE
+
      #+begin_src emacs-lisp
-(require-package 'helm)
+       (require-package 'helm)
      #+end_src
+
 *** TODO deft
 *** TODO Version control integration
 **** TODO Git
 
-     #+begin_src emacs-lisp
-(require-package 'gitattributes-mode)
-(require-package 'gitignore-mode)
-     #+end_src
+#+begin_src emacs-lisp
+  (require-package 'git-commit-mode)
+  (require-package 'git-rebase-mode)
+  (require-package 'gitignore-mode)
+  (require-package 'gitconfig-mode)
+  (require-package 'gitattributes-mode)
+#+end_src
 
 
 ***** TODO magit
 
-      #+begin_src emacs-lisp
+#+begin_src emacs-lisp
         (require-package 'magit)
         (global-set-key "\C-cg" 'magit-status)
-      #+end_src
+#+end_src
 
 ****** DONE Magit git-svn integration
 
@@ -532,11 +555,11 @@ We bind the old ~M-x~ command to another, more complicated keys.
        The /quick key/ to get the ~magit-svn~ menu is ~N~.
 ***** TODO git fringe decoration
 
-      #+begin_src emacs-lisp
+#+begin_src emacs-lisp
      (when (window-system)
        (require-package 'git-gutter-fringe)
        (global-git-gutter-mode +1))
-      #+end_src emacs-lisp
+#+end_src emacs-lisp
 
 ***** DONE git-annex
 
@@ -737,7 +760,7 @@ parentheses.
                  )
      #+END_SRC
 
-**** PROGRESS Clojure
+**** TODO Clojure
 
      #+BEGIN_SRC emacs-lisp
        (require-package 'clojure-mode)
