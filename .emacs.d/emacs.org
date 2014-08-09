@@ -241,6 +241,18 @@ if not, I'm unload the current one, installing a recent one and load it.
 
 *** Behaviour
 
+    First thing first, let's define a shortcuts for editing this configuration.
+
+
+    #+BEGIN_SRC emacs-lisp
+      (defun my/edit-emacs-configuration ()
+        (interactive)
+        (find-file "~/.emacs.d/emacs.org"))
+
+      (global-set-key "\C-ce" 'my/edit-emacs-configuration)
+    #+END_SRC
+
+
     Although I don't really care, let's add a new line at the end of files.
     Some people at work will thank me for that ;-D.
 
@@ -249,7 +261,6 @@ if not, I'm unload the current one, installing a recent one and load it.
     #+end_src
 
 Answering yes and no to each question from Emacs can be tedious, a single y or n will suffice.
-
 
 #+BEGIN_SRC emacs-lisp
   (fset 'yes-or-no-p 'y-or-n-p)
@@ -372,7 +383,6 @@ white-space should be shown.
               (setq show-trailing-whitespace 't))
             )
 #+END_SRC
-
 **** DONE pretty-mode
 
      Pretty mode turn some stuff prettier, for example in Haskell =/== becomes =≠=, or
@@ -383,6 +393,16 @@ white-space should be shown.
        (add-hook 'prog-mode-hook
                  'turn-on-pretty-mode)
      #+END_SRC
+
+**** PROGRESS Dired
+
+     Dired is really a cool mode, let's enhance it.
+
+
+     #+BEGIN_SRC emacs-lisp
+       (require-package 'dired+)
+     #+END_SRC
+
 
 **** TODO Evil
 ** TODO Modes
@@ -458,7 +478,8 @@ We bind the old ~M-x~ command to another, more complicated keys.
 ***** TODO magit
 
       #+begin_src emacs-lisp
-(require-package 'magit)
+        (require-package 'magit)
+        (global-set-key "\C-cg" 'magit-status)
       #+end_src
 
 ****** DONE Magit git-svn integration
@@ -610,6 +631,28 @@ We bind the old ~M-x~ command to another, more complicated keys.
      #+end_src
 
 **** TODO tags
+*** DONE Compilation mode improvements
+
+See http://stackoverflow.com/questions/3072648/cucumbers-ansi-colors-messing-up-emacs-compilation-buffer
+
+
+#+BEGIN_SRC emacs-lisp
+  (require 'ansi-color)
+  (defun my/colorize-compilation-buffer ()
+    (toggle-read-only)
+    (ansi-color-apply-on-region (point-min) (point-max))
+    (toggle-read-only))
+  (add-hook 'compilation-filter-hook 'my/colorize-compilation-buffer)
+#+END_SRC
+
+And let's configure the compilation-mode to follow the compilation, not waiting
+at the top..
+
+
+#+BEGIN_SRC emacs-lisp
+  (setq compilation-scroll-output t)
+#+END_SRC
+
 *** TODO Flycheck
 
 *** TODO Fly{check,make)
@@ -646,7 +689,6 @@ parentheses.
     (highlight-parentheses-mode t))
 #+END_SRC
 
-
 **** TODO Emacs lisp
 
 
@@ -657,7 +699,6 @@ parentheses.
                    (eldoc-mode 1))
                  )
      #+END_SRC
-
 
 **** PROGRESS Clojure
 
@@ -677,14 +718,22 @@ parentheses.
 ;;        (require-package 'cider)
       #+END_SRC
 
-
-*** TODO Scala
-
 *** TODO Java
 
 *** TODO Python
 
 *** TODO Ruby
+
+I don't really use [[https://www.ruby-lang.org/][Ruby]] that much but when I need to work on a Ruby project
+I want to have a decent configuration.
+
+Tell Emacs rake, bundler files and =*.erb= are Ruby files.
+
+#+BEGIN_SRC emacs-lisp
+  (dolist (exp '("Rakefile\\'" "\\.rake\\'" "Gemfile\\'" "\\.erb\\'"))
+    (add-to-list 'auto-mode-alist
+                 (cons exp 'ruby-mode)))
+#+END_SRC
 
 *** TODO Shell(s)
 *** TODO Go
