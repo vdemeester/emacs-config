@@ -163,6 +163,30 @@ if not, I'm unload the current one, installing a recent one and load it.
            user-mail-address "vincent@demeester.fr")
    #+end_src
 
+Loads user settings if the file is available. I put all my personal modifications or sensitive information into this file.
+
+#+BEGIN_SRC emacs-lisp
+  (when (file-readable-p "~/.emacs.d/user.el")
+    (load "~/.emacs.d/user.el"))
+#+END_SRC
+
+Same will goes with host-specific files and os-specific files.
+
+
+#+BEGIN_SRC emacs-lisp
+  (setq FULLHOSTNAME (format "%s" system-name))
+  (setq HOSTNAME (substring (system-name) 0 (string-match "\\." (system-name))))
+
+  (setq HOSTNAME-FILE
+        (expand-file-name
+         (format "hosts/%s.el" HOSTNAME)
+         "~/.emacs.d"))
+
+  (when (file-readable-p HOSTNAME-FILE)
+    (load HOSTNAME-FILE))
+#+END_SRC
+
+
 ** General configuration
 *** Appearance
 
