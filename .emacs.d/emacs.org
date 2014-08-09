@@ -453,6 +453,17 @@ white-space should be shown.
        (require-package 'dired+)
      #+END_SRC
 
+**** DONE Search
+
+Make isearch-forward put the cursor at the start of the search, not the end, so that isearch can be used for navigation. See also http://www.emacswiki.org/emacs/IsearchOtherEnd.
+
+
+#+BEGIN_SRC emacs-lisp
+  (defun my-isearch-goto-match-beginning ()
+    (when (and isearch-forward (not isearch-mode-end-hook-quit)) (goto-char isearch-other-end)))
+  (add-hook 'isearch-mode-end-hook 'my-isearch-goto-match-beginning)
+#+END_SRC
+
 
 **** TODO Evil
 ** TODO Modes
