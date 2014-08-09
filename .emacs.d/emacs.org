@@ -588,9 +588,21 @@ Helm is a fork of anything.el originaly written by Tamas Patrovic and can be con
       #+end_src
 
 ***** TODO gitty
-***** TODO git-timemachine
+***** DONE git-timemachine
+I recently discovered an extremely cool package called git-timemachine that allows you to step though the git history of the file you’re currently editing in Emacs.
+
+#+BEGIN_SRC emacs-lisp
+        (require-package 'git-timemachine)
+#+END_SRC
+
 
 ***** TODO git-blame
+
+
+#+BEGIN_SRC emacs-lisp
+        (require-package 'git-blame)
+#+END_SRC
+
 
 ***** TODO github
 
