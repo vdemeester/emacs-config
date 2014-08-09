@@ -248,6 +248,14 @@ if not, I'm unload the current one, installing a recent one and load it.
 (setq require-final-newline t)
     #+end_src
 
+Answering yes and no to each question from Emacs can be tedious, a single y or n will suffice.
+
+
+#+BEGIN_SRC emacs-lisp
+  (fset 'yes-or-no-p 'y-or-n-p)
+#+END_SRC
+
+
 **** DONE Encoding
 
      Make sur that we use ~utf-8~ by default.
@@ -646,7 +654,7 @@ parentheses.
        (add-hook 'emacs-lisp-mode-hook
                  (lambda ()
                    (my/lisps-mode-hook)
-                   (eldoc-mode t))
+                   (eldoc-mode 1))
                  )
      #+END_SRC
 
