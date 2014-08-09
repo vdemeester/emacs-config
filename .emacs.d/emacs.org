@@ -43,7 +43,6 @@ is made to work with [[https://github.com/RichiH/vcsh][vcsh]].
 If you don't want to use =vcsh= but still want to have my =.emacs.d= folder
 in your =$HOME=, you could link it like that :
 
-
 #+BEGIN_SRC sh
   $ cd $HOME
   $ mkdir -p src
@@ -801,8 +800,11 @@ at the top..
   (setq compilation-scroll-output t)
 #+END_SRC
 
-*** TODO Fly{check,make)
 *** TODO Lua
+
+    #+BEGIN_SRC emacs-lisp
+      (require-package 'lua-mode)
+    #+END_SRC
 
 *** TODO Haskell
 
