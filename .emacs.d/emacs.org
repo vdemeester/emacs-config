@@ -275,7 +275,6 @@ This will set Symbola as fallback-font for Emojis when it is available for the c
 (require-package 'powerline)
 (powerline-default-theme)
      #+end_src
-
 *** Behaviour
 
     First thing first, let's define a shortcuts for editing this configuration.
@@ -464,6 +463,23 @@ Make isearch-forward put the cursor at the start of the search, not the end, so 
 
 
 **** TODO Evil
+*** Server mode
+
+Start a server in not already running. I usually start emacs as a
+daemon when at the start of the computer, but you never know =;-)=.
+
+
+#+BEGIN_SRC emacs-lisp
+  (unless (string= (user-login-name) "root")
+    (require 'server)
+    (when (or (not server-process)
+              (not (eq (process-status server-process)
+                       'listen)))
+      (unless (server-running-p server-name)
+        (server-start))))
+#+END_SRC
+
+
 ** TODO Modes
 *** TODO Prompts
 **** DONE ido
