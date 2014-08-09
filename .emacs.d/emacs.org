@@ -186,7 +186,6 @@ Same will goes with host-specific files and os-specific files.
     (load HOSTNAME-FILE))
 #+END_SRC
 
-
 ** General configuration
 *** Appearance
 
@@ -607,6 +606,72 @@ I recently discovered an extremely cool package called git-timemachine that allo
 ***** TODO github
 
       # gist, githubclone, ..
+**** TODO Mercurial
+*** DONE highlight-symbol
+
+#+BEGIN_QUOTE
+Automatic and manual symbol highlighting for Emacs
+#+END_QUOTE
+
+Highlights the word/symbol at point and any other occurrences in
+view. Also allows to jump to the next or previous occurrence.
+
+
+#+BEGIN_SRC emacs-lisp
+  (require-package 'highlight-symbol)
+  (setq highlight-symbol-on-navigation-p t)
+  (add-hook 'prog-mode-hook 'highlight-symbol-mode)
+
+  (global-set-key [(control f3)] 'highlight-symbol-at-point)
+  (global-set-key [f3] 'highlight-symbol-next)
+  (global-set-key [(shift f3)] 'highlight-symbol-prev)
+  (global-set-key [(meta f3)] 'highlight-symbol-query-replace)
+#+END_SRC
+
+*** DONE move-text
+
+Allows to move the current line or region up/down. The source code is
+on the Wiki: http://www.emacswiki.org/emacs/move-text.el
+
+    #+BEGIN_SRC emacs-lisp
+      (require-package 'move-text)
+      (move-text-default-bindings)
+    #+END_SRC
+
+*** DONE multiple-cursors
+
+Multiple cursors for Emacs, this is a pretty /badass/ functionnality.
+
+#+BEGIN_SRC emacs-lisp
+  (require-package 'multiple-cursors)
+  (global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
+  (global-set-key (kbd "C->") 'mc/mark-next-like-this)
+  (global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
+  (global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
+#+END_SRC
+
+
+*** TODO Flycheck
+
+#+BEGIN_QUOTE
+Flycheck is a modern on-the-fly syntax checking extension for GNU Emacs 24, intended as replacement for the older Flymake extension which is part of GNU Emacs.
+
+It uses various syntax checking and linting tools to check the contents of buffers, and reports warnings and errors directly in the buffer, or in an optional error list.
+#+END_QUOTE
+
+Let's install it and configure it for the common part. The language
+specifics will be defined in the corresponding language section.
+
+#+BEGIN_SRC emacs-lisp
+  (require-package 'flycheck)
+  ;; (add-hook 'prog-mode-hook 'flycheck-mode)
+  (add-hook 'after-init-hook #'global-flycheck-mode)
+
+  (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc)) ;disable the annoying doc checker
+
+  (setq flycheck-indication-mode 'right-fringe)
+#+END_SRC
+
 *** TODO Org
 
     #+BEGIN_QUOTE
@@ -736,8 +801,6 @@ at the top..
   (setq compilation-scroll-output t)
 #+END_SRC
 
-*** TODO Flycheck
-
 *** TODO Fly{check,make)
 *** TODO Lua
 
@@ -750,8 +813,16 @@ at the top..
 (require-package 'shm)
     #+end_src
 
-*** PROGRESS Lisp(s)
-**** PROGRESS General
+**** DONE Flycheck
+
+     #+BEGIN_SRC emacs-lisp
+       (require-package 'flycheck-haskell)
+       (eval-after-load 'flycheck
+         '(add-hook 'flycheck-mode-hook #'flycheck-haskell-setup))
+     #+END_SRC
+
+*** TODO Lisp(s)
+**** TODO General
 
 Let's install some LISP common useful modes.
 
