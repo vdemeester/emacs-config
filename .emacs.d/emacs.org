@@ -45,10 +45,10 @@ in your =$HOME=, you could link it like that :
 
 
 #+BEGIN_SRC sh
-  cd $HOME
-  mkdir -p src
-  git clone git://github.com/vdemeester/emacs-config src/vde-emacs-config
-  ln -s src/vde-emacs-config/.emacs.d .
+  $ cd $HOME
+  $ mkdir -p src
+  $ git clone git://github.com/vdemeester/emacs-config src/vde-emacs-config
+  $ ln -s src/vde-emacs-config/.emacs.d .
 #+END_SRC
 
 *** The =init.el=
