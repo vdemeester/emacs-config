@@ -394,6 +394,19 @@ white-space should be shown.
                  'turn-on-pretty-mode)
      #+END_SRC
 
+**** DONE raindow-identifiers
+
+     I read an intersting article about [[https://medium.com/p/3a6db2743a1e/][how to make syntax highlighting more useful]]
+     and I really like the concept. And guess what, there's a mode for that.
+
+
+     #+BEGIN_SRC emacs-lisp
+       (require-package 'rainbow-identifiers)
+       (add-hook 'prog-mode-hook
+                 (lambda() (rainbow-identifiers-mode)))
+     #+END_SRC
+
+
 **** PROGRESS Dired
 
      Dired is really a cool mode, let's enhance it.
