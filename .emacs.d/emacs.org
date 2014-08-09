@@ -2,6 +2,13 @@
 #+AUTHOR: Vincent Demeester
 #+EMAIL: vincent [at] demeester [dot] fr
 
+#+begin-src
+    .-----.--------.---.-.----.-----.______.----.-----.-----.'  _|__|.-----.
+    |  -__|        |  _  |  __|__ --|______|  __|  _  |     |   _|  ||  _  |
+    |_____|__|__|__|___._|____|_____|      |____|_____|__|__|__| |__||___  |
+                                                                     |_____|
+#+end_src
+
 This is my first attempt to create a readable, maintainable and self documented
 emacs configuration. I'm hopeful that using Org-Babel and a literate
 programming style will help.
