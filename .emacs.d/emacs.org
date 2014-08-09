@@ -3,7 +3,7 @@
 #+EMAIL: vincent [at] demeester [dot] fr
 
 #+begin_src
-                                                              ___ __        
+                                                              ___ __
     .-----.--------.---.-.----.-----.______.----.-----.-----.'  _|__|.-----.
     |  -__|        |  _  |  __|__ --|______|  __|  _  |     |   _|  ||  _  |
     |_____|__|__|__|___._|____|_____|      |____|_____|__|__|__| |__||___  |
@@ -15,7 +15,7 @@ emacs configuration. I'm hopeful that using Org-Babel and a literate
 programming style will help.
 
 There is a lot of inspiration for this file, I'm just gonna list the one I took
-the most of it : 
+the most of it :
 
 - [[https://github.com/joodie/emacs-literal-config/blob/master/emacs.org][Joodie emacs-literal-config]]
 - [[https://github.com/dakrone/dakrone-dotfiles/blob/master/.emacs.d/settings.org][Dakrone emacs configuration]]
@@ -28,7 +28,7 @@ the most of it :
 
 This file is an /always/ work-in-progress, and is currently under *heavy* modifications.
 The latest version of this file is always available at my [[https://github.com/vdemeester/emacs-config][emacs-config]] github
-repository, the [[https://github.com/vdemeester/emacs-config/blob/master/.emacs.d/emacs.org][emacs.org]] file. 
+repository, the [[https://github.com/vdemeester/emacs-config/blob/master/.emacs.d/emacs.org][emacs.org]] file.
 
 * Configuration
 ** How to my configuration
@@ -156,16 +156,14 @@ if not, I'm unload the current one, installing a recent one and load it.
 
 #+END_SRC
 
-
 ** Personal information
-   
+
    #+begin_src emacs-lisp
      (setq user-full-name "Vincent Demeester"
            user-mail-address "vincent@demeester.fr")
    #+end_src
 
 ** General configuration
-
 *** Appearance
 
     Unclutter the screen by removing menubar, toolbar and stuff, and by disabling
@@ -355,6 +353,28 @@ And bind =cleanup-buffer= and =cleanup-region=.
 (global-set-key (kbd "C-x M-t") 'cleanup-region)
 (global-set-key (kbd "C-c n") 'cleanup-buffer)
 #+end_src
+
+For writing text, I prefer Emacs to do line wrapping for me.Also, superfluous
+white-space should be shown.
+
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'text-mode-hook
+            (lambda()
+              (turn-on-auto-fill)
+              (setq show-trailing-whitespace 't))
+            )
+#+END_SRC
+
+**** DONE pretty-mode
+
+     Pretty mode turn some stuff prettier, for example in Haskell =/== becomes =≠=, or
+     =->= becomes =→=.
+
+     #+BEGIN_SRC emacs-lisp
+       (require-package 'pretty-mode)
+       (add-hook 'prog-mode-hook
+                 'turn-on-pretty-mode)
+     #+END_SRC
 
 **** TODO Evil
 ** TODO Modes
@@ -596,7 +616,59 @@ We bind the old ~M-x~ command to another, more complicated keys.
 (require-package 'shm)
     #+end_src
 
-*** TODO Clojure
+*** PROGRESS Lisp(s)
+**** PROGRESS General
+
+Let's install some LISP common useful modes.
+
+#+BEGIN_SRC emacs-lisp
+  (require-package 'paredit)
+  (require-package 'rainbow-mode)
+  (require-package 'rainbow-delimiters)
+  (require-package 'highlight-parentheses)
+#+END_SRC
+
+And define a comme lisp hook for all LISP-related prog-modes, mostly about
+parentheses.
+
+#+BEGIN_SRC emacs-lisp
+  (defun my/lisps-mode-hook ()
+    (paredit-mode t)
+    (rainbow-delimiters-mode t)
+    (highlight-parentheses-mode t))
+#+END_SRC
+
+
+**** TODO Emacs lisp
+
+
+     #+BEGIN_SRC emacs-lisp
+       (add-hook 'emacs-lisp-mode-hook
+                 (lambda ()
+                   (my/lisps-mode-hook)
+                   (eldoc-mode t))
+                 )
+     #+END_SRC
+
+
+**** PROGRESS Clojure
+
+     #+BEGIN_SRC emacs-lisp
+       (require-package 'clojure-mode)
+     #+END_SRC
+
+
+     #+BEGIN_SRC emacs-lisp
+       (add-hook 'clojure-mode-hook 'my/lisps-mode-hook)
+     #+END_SRC
+
+
+***** TODO cider
+
+      #+BEGIN_SRC emacs-lisp
+;;        (require-package 'cider)
+      #+END_SRC
+
 
 *** TODO Scala
 
