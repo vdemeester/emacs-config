@@ -7,151 +7,220 @@ emacs configuration. I'm hopeful that using Org-Babel and a literate
 programming style will help.
 
 * TODO How to use my configuration
-  
+
 
 
 * Configuration
 
 ** Personal information
 
-#+begin_src emacs-lisp
-(setq user-full-name "Vincent Demeester"
-      user-mail-address "vincent@demeester.fr")
-#+end_src
+   #+begin_src emacs-lisp
+     (setq user-full-name "Vincent Demeester"
+           user-mail-address "vincent@demeester.fr")
+   #+end_src
 
 ** General configuration
 
 *** Appearance
 
-Unclutter the screen by removing menubar, toolbar and stuff, and by disabling
-the splash-screen.
+    Unclutter the screen by removing menubar, toolbar and stuff, and by disabling
+    the splash-screen.
 
-#+begin_src emacs-lisp
-(menu-bar-mode -1)
-(tool-bar-mode -1)
-(scroll-bar-mode -1)
-(setq inhibit-splash-screen t)
-#+end_src
+    #+begin_src emacs-lisp
+      (menu-bar-mode -1)
+      (tool-bar-mode -1)
+      (scroll-bar-mode -1)
+      (setq inhibit-splash-screen t)
+    #+end_src
 
-We want to see somewhere the column and line number, and also highlight the
-current line to see it easily.
+    We want to see somewhere the column and line number, and also highlight the
+    current line to see it easily.
 
-#+begin_src emacs-lisp
+    #+begin_src emacs-lisp
 (line-number-mode 1)
 (column-number-mode 1)
 (global-hl-line-mode 1)
-#+end_src
+    #+end_src
 
-Depending on the files opened and the syntax highlighting enabled, ~font-lock-mode~
-can be slow, we try to limit that, to keep Emacs reactive.
+    Depending on the files opened and the syntax highlighting enabled, ~font-lock-mode~
+    can be slow, we try to limit that, to keep Emacs reactive.
 
-#+begin_src emacs-lisp
+    #+begin_src emacs-lisp
 (setq font-lock-maximum-decoration 2)
-#+end_src
+    #+end_src
 **** Fringe decorations
 
-   [[http://www.emacswiki.org/emacs/TheFringe][The fringe]] is the vertical region at the right and left of the
-   buffer. Emacs lets you customize it of course.
+     [[http://www.emacswiki.org/emacs/TheFringe][The fringe]] is the vertical region at the right and left of the
+     buffer. Emacs lets you customize it of course.
 
-   Here I set up git diffs and buffer position in the fringe.
+     Here I set up git diffs and buffer position in the fringe.
 
-   #+NAME: look-and-feel
-   #+BEGIN_SRC emacs-lisp
+     #+NAME: look-and-feel
+     #+BEGIN_SRC emacs-lisp
 (setq-default indicate-buffer-boundaries 'left)
 (setq-default indicate-empty-lines +1)
-   #+END_SRC
+     #+END_SRC
 **** Fonts
 
-#+begin_src emacs-lisp
+     #+begin_src emacs-lisp
 (set-default-font "Ubuntu Mono-12")
 (set-frame-font "Ubuntu Mono-12")
 (set-face-attribute 'default nil :family "Ubuntu Mono" :height 110)
-#+end_src
+     #+end_src
 
 **** Themes
 
-First let's install the theme...
+     First let's install the theme...
 
-#+begin_src emacs-lisp
+     #+begin_src emacs-lisp
 (require-package 'sublime-themes)
 (require-package 'leuven-theme)
-#+end_src
+     #+end_src
 
-... and load it.
-#+begin_src emacs-lisp
+     ... and load it.
+     #+begin_src emacs-lisp
 (load-theme 'leuven t)
-#+end_src
+     #+end_src
 
 ***** TODO Specific theme for modes
 
 **** Powerline
 
-We are going to use [[https://github.com/milkypostman/powerline][powerline]] because it is way more sexy than the default modeline design.
+     We are going to use [[https://github.com/milkypostman/powerline][powerline]] because it is way more sexy than the default modeline design.
 
-#+begin_src emacs-lisp
+     #+begin_src emacs-lisp
 (require-package 'powerline)
 (powerline-default-theme)
-#+end_src
+     #+end_src
 
 *** Behaviour
-**** Encoding
 
-Make sur that we use ~utf-8~ by default.
+    Although I don't really care, let's add a new line at the end of files.
+    Some people at work will thank me for that ;-D.
 
-#+begin_src emacs-lisp
+    #+begin_src emacs-lisp
+(setq require-final-newline t)
+    #+end_src
+
+**** DONE Encoding
+
+     Make sur that we use ~utf-8~ by default.
+
+     #+begin_src emacs-lisp
 (set-terminal-coding-system 'utf-8)
 (set-keyboard-coding-system 'utf-8)
 (set-language-environment "UTF-8")
 (prefer-coding-system 'utf-8)
-#+end_src
+     #+end_src
 
-**** Mouse
-Move the mouse away to not bother.
+**** DONE Mouse
+     Move the mouse away to not bother.
 
-#+begin_src emacs-lisp
+     #+begin_src emacs-lisp
 (mouse-avoidance-mode 'jump)
-#+end_src
+     #+end_src
+**** DONE Backup files
 
-**** Backup files
+     Files suffixed with ~\~~ in the current directory are ugly. We are still going to use
+     backup files, as it can saves some time in case of trouble, but we'll move them
+     somewhere else : ~/tmp/emacs-1001~ (for a user with the uid = 1001).
 
-Files suffixed with ~\~~ in the current directory are ugly. We are still going to use
-backup files, as it can saves some time in case of trouble, but we'll move them
-somewhere else : ~/tmp/emacs-1001~ (for a user with the uid = 1001).
+     Note the we store them in /tmp so in case of a reboot, we loose them.
 
-Note the we store them in /tmp so in case of a reboot, we loose them.
-
-#+begin_src emacs-lisp
+     #+begin_src emacs-lisp
 (defconst emacs-tmp-dir (format "%s/%s%s/" temporary-file-directory "emacs" (user-uid)))
 (setq backup-directory-alist
       `((".*" . ,emacs-tmp-dir))
       auto-save-file-name-transforms
       `((".*" ,emacs-tmp-dir t))
       auto-save-list-file-prefix emacs-tmp-dir)
-#+end_src
+     #+end_src
 
-Now that all the temporary files are out of the way, we can keep more of them.
+     Now that all the temporary files are out of the way, we can keep more of them.
 
-#+begin_src emacs-lisp
+     #+begin_src emacs-lisp
 (setq delete-old-versions t
       kept-new-versions 6
       kept-old-versions 2
       version-control t)
+     #+end_src
+**** DONE Buffer names
+
+     Setup uniquify so that non-unique buffer names get the parent path included to make them unique.
+
+     #+begin_src emacs-lisp
+(require 'uniquify)
+(setq uniquify-buffer-name-style 'forward)
+     #+end_src
+
+**** DONE Formatting
+
+     Use space instead on tabs for indentation by default (again some people at work
+     will thank me for that).
+
+     #+begin_src emacs-lisp
+(setq-default indent-tabs-mode nil)
+     #+end_src
+
+     Let's define a few /cleaning/ functions :
+
+- untabify the buffer
+
+#+begin_src emacs-lisp
+(defun untabify-buffer ()
+  (interactive)
+  (untabify (point-min) (point-max)))
+#+end_src
+
+- ident the buffer, using the mode indentation stuff
+
+#+begin_src emacs-lisp
+(defun indent-buffer ()
+  (interactive)
+  (indent-region (point-min) (point-max)))
+#+end_src
+
+- cleanup the buffer
+
+#+begin_src emacs-lisp
+(defun cleanup-buffer ()
+  "Perform a bunch of operations on the whitespace content of a buffer."
+  (interactive)
+  (indent-buffer)
+  (untabify-buffer)
+  (delete-trailing-whitespace))
+#+end_src
+
+- cleanup the region
+
+#+begin_src emacs-lisp
+(defun cleanup-region (beg end)
+  "Remove tmux artifacts from region."
+  (interactive "r")
+  (dolist (re '("\\\\│\·*\n" "\W*│\·*"))
+    (replace-regexp re "" nil beg end)))
+#+end_src
+
+And bind =cleanup-buffer= and =cleanup-region=.
+
+#+begin_src emacs-lisp
+(global-set-key (kbd "C-x M-t") 'cleanup-region)
+(global-set-key (kbd "C-c n") 'cleanup-buffer)
 #+end_src
 
 **** TODO Evil
 ** TODO Modes
-*** Prompts
-**** TODO deft
+*** TODO Prompts
 **** DONE ido
 
-Ido stands for “Interactively DO things”, and even though we'll try to use Helm
-for a lot of things, ido-mode replace beautifuly the default Emacs prompt.
+     Ido stands for “Interactively DO things”, and even though we'll try to use Helm
+     for a lot of things, ido-mode replace beautifuly the default Emacs prompt.
 
-#+BEGIN_QUOTE
-There are many ways of improving your productivity when you use Emacs, and Ido (or “Interactively DO things”) is one of those packages that you enable and then never, ever turn off again. It’s simply that useful. By super-charging Emacs’s completion engine and improving the speed at which you open files and buffers, you will significantly cut down on the time spent doing these menial tasks.
-#+END_QUOTE
+     #+BEGIN_QUOTE
+     There are many ways of improving your productivity when you use Emacs, and Ido (or “Interactively DO things”) is one of those packages that you enable and then never, ever turn off again. It’s simply that useful. By super-charging Emacs’s completion engine and improving the speed at which you open files and buffers, you will significantly cut down on the time spent doing these menial tasks.
+     #+END_QUOTE
 
-We're gonna enhance even more ido with some additonnal package :
+     We're gonna enhance even more ido with some additonnal package :
 
 - A vertical presentation for ido
 #+begin_src emacs-lisp
@@ -197,58 +266,58 @@ We bind the old ~M-x~ command to another, more complicated keys.
 
 **** TODO helm
 
-#+begin_src emacs-lisp
+     #+begin_src emacs-lisp
 (require-package 'helm)
-#+end_src
-
+     #+end_src
+*** TODO deft
 *** TODO Version control integration
 **** TODO Git
 
-#+begin_src emacs-lisp
+     #+begin_src emacs-lisp
 (require-package 'gitattributes-mode)
 (require-package 'gitignore-mode)
-#+end_src
+     #+end_src
 
 
 ***** TODO magit
 
-#+begin_src emacs-lisp
+      #+begin_src emacs-lisp
 (require-package 'magit)
-#+end_src
+      #+end_src
 
 ****** DONE Magit git-svn integration
 
-At work, I use ~git-svn~ to be able to use git locally but integrating in the
-subversion they use. Integrating ~magit~ and ~git-svn~ is a bonus but, as it
-exists, let's do it :).
+       At work, I use ~git-svn~ to be able to use git locally but integrating in the
+       subversion they use. Integrating ~magit~ and ~git-svn~ is a bonus but, as it
+       exists, let's do it :).
 
-#+begin_src emacs-lisp
+       #+begin_src emacs-lisp
 (require-package 'magit-svn)
-#+end_src
+       #+end_src
 
-The /quick key/ to get the ~magit-svn~ menu is ~N~.
+       The /quick key/ to get the ~magit-svn~ menu is ~N~.
 ***** TODO git fringe decoration
 
-#+begin_src emacs-lisp
+      #+begin_src emacs-lisp
      (when (window-system)
        (require-package 'git-gutter-fringe)
        (global-git-gutter-mode +1))
-#+end_src emacs-lisp
+      #+end_src emacs-lisp
 
 ***** DONE git-annex
 
-[[http://git-annex.branchable.com/][Git-annex]] is a wonderful piece of software that I use a lot in my repositories.
+      [[http://git-annex.branchable.com/][Git-annex]] is a wonderful piece of software that I use a lot in my repositories.
 
-#+BEGIN_QUOTE
-git-annex allows managing files with git, without checking the file contents into git. While that may seem paradoxical, it is useful when dealing with files larger than git can currently easily handle, whether due to limitations in memory, time, or disk space.
-#+END_QUOTE
+      #+BEGIN_QUOTE
+      git-annex allows managing files with git, without checking the file contents into git. While that may seem paradoxical, it is useful when dealing with files larger than git can currently easily handle, whether due to limitations in memory, time, or disk space.
+      #+END_QUOTE
 
-In Emacs, it integrates with magit and dired mode. The annex subcommand for magit is ~@~.
+      In Emacs, it integrates with magit and dired mode. The annex subcommand for magit is ~@~.
 
-#+begin_src emacs-lisp
+      #+begin_src emacs-lisp
 (require-package 'git-annex)
 (require-package 'magit-annex)
-#+end_src
+      #+end_src
 
 ***** TODO gitty
 ***** TODO git-timemachine
@@ -257,9 +326,114 @@ In Emacs, it integrates with magit and dired mode. The annex subcommand for magi
 
 ***** TODO github
 
-# gist, githubclone, ..
+      # gist, githubclone, ..
 *** TODO Org
 
+    #+BEGIN_QUOTE
+    Org-mode is a powerful system for organizing your complex life with simple plain-text files. It seamlessly integrates all your notes, mindmaps, TODO lists, calendar, day planner, and project schedules into a single system that can be easily searched (e.g. by grep), encrypted (e.g. by GnuPG), backed up and synced (e.g. by Dropbox), imported/exported, and accessed on the go (e.g. on an iPhone or Android smartphone). It can even be used for authoring web pages and documents.
+    #+END_QUOTE
+
+    Depending on how this section grows, org-mode might need its own litterate
+    org configuration file.
+
+**** Standard configuration
+
+     First let's define the default directory for the =org= files, the one to be added
+     to the agenda and the archives.
+
+     #+begin_src emacs-lisp
+(setq org-directory "~/desktop/org/")
+(setq org-agenda-files '("~/desktop/org/todos/"))
+(setq org-archive-location (concat org-directory "archive/%s_archive::"))
+     #+end_src
+
+     We'll also set which files should be opened using org-mode :
+     =*.org=, =*.org_archive=, =*.txt=.
+
+     #+begin_src emacs-lisp
+(add-to-list 'auto-mode-alist '("\\.\\(org\\|org_archive\\|txt\\)$" . org-mode))
+     #+end_src
+
+     Let's also define the default /todo-keywords/ and the workflow between them.
+
+     #+begin_src emacs-lisp
+(setq org-todo-keywords
+      (quote ((sequence "TODO(t)" "NEXT(n)" "PROGRESS(p)" "|" "DONE(d)")
+              (sequence "WAITING(w@/!)" "HOLD(h@/!)" "|" "CANCELLED(c@/!)" "PHONE" "MEETING")
+              (sequence "REPORT" "BUG" "KNOWNCAUSE" "|" "FIXED"))))
+
+
+(setq org-todo-keyword-faces
+      (quote (("TODO" :foreground "#EE0000" :weight bold)
+              ("NEXT" :foreground "#A197BF" :weight bold)
+              ("PROGRESS" :foreground "#A197BF" :weight bold)
+              ("DONE" :foreground "#8fbfdc" :weight bold)
+              ("WAITING" :foreground "orange" :weight bold)
+              ("HOLD" :foreground "magenta" :weight bold)
+              ("CANCELLED" :foreground "forest green" :weight bold)
+              ("MEETING" :foreground "forest green" :weight bold)
+              ("PHONE" :foreground "forest green" :weight bold))))
+
+(setq org-todo-state-tags-triggers
+(quote (("CANCELLED" ("CANCELLED" . t))
+("WAITING" ("WAITING" . t))
+("HOLD" ("WAITING" . t) ("HOLD" . t))
+(done ("WAITING") ("HOLD"))
+("TODO" ("WAITING") ("CANCELLED") ("HOLD"))
+("NEXT" ("WAITING") ("CANCELLED") ("HOLD"))
+("DONE" ("WAITING") ("CANCELLED") ("HOLD")))))
+     #+end_src
+
+     Undefine some binding (=C-c [=, =C-c ]= since this breaks org-agenda files that
+     have been defined in this file (a directory).
+
+     #+begin_src emacs-lisp
+       (add-hook 'org-mode-hook
+                 '(lambda ()
+                    (org-defkey org-mode-map "\C-c[" 'undefined)
+                    (org-defkey org-mode-map "\C-c]" 'undefined)
+                    (org-defkey org-mode-map "\C-c;" 'undefined))
+                 'append)
+     #+end_src
+
+**** DONE Code blocks
+
+     We are using a lot of code block in org-mode, in this file for example ; let's
+     define some /fontify/ the code blocks first.
+
+     #+begin_src emacs-lisp
+(setq org-src-fontify-natively t)
+     #+end_src
+
+     Add a function to easily add a code block and bind it.
+
+     #+begin_src emacs-lisp
+(defun org-insert-src-block (src-code-type)
+  "Insert a `SRC-CODE-TYPE' type source code block in org-mode."
+  (interactive
+   (let ((src-code-types
+          '("emacs-lisp" "python" "C" "sh" "java" "js" "clojure" "C++" "css"
+            "calc" "asymptote" "dot" "gnuplot" "ledger" "lilypond" "mscgen"
+            "octave" "oz" "plantuml" "R" "sass" "screen" "sql" "awk" "ditaa"
+            "haskell" "latex" "lisp" "matlab" "ocaml" "org" "perl" "ruby"
+            "scheme" "sqlite")))
+     (list (ido-completing-read "Source code type: " src-code-types))))
+  (progn
+    (newline-and-indent)
+    (insert (format "#+BEGIN_SRC %s\n" src-code-type))
+    (newline-and-indent)
+    (insert "#+END_SRC\n")
+    (previous-line 2)
+    (org-edit-src-code)))
+
+(add-hook 'org-mode-hook
+'(lambda ()
+(local-set-key (kbd "C-c s e") 'org-edit-src-code)
+(local-set-key (kbd "C-c s i") 'org-insert-src-block))
+'append)
+     #+end_src
+
+**** TODO tags
 *** TODO Flycheck
 
 *** TODO Fly{check,make)
@@ -267,12 +441,12 @@ In Emacs, it integrates with magit and dired mode. The annex subcommand for magi
 
 *** TODO Haskell
 
-#+begin_src emacs-lisp
+    #+begin_src emacs-lisp
 (require-package 'haskell-mode)
 (require-package 'ghc)
 (require-package 'ghci-completion)
 (require-package 'shm)
-#+end_src
+    #+end_src
 
 *** TODO Clojure
 
