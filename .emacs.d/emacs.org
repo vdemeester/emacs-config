@@ -567,7 +567,66 @@ Helm is a fork of anything.el originaly written by Tamas Patrovic and can be con
        (require-package 'helm)
      #+end_src
 
-*** TODO deft
+*** TODO Auto-complete
+
+    #+BEGIN_QUOTE
+    Auto-Complete is an intelligent auto-completion extension for
+    Emacs. It extends the standard Emacs completion interface and
+    provides an environment that allows users to concentrate more on
+    their own work.
+    #+END_QUOTE
+
+    Install and use a basic configuration for auto-complete.
+
+    #+BEGIN_SRC emacs-lisp
+      (require-package 'auto-complete)
+      (require 'auto-complete-config)
+      (global-auto-complete-mode t)
+      (setq ac-use-quick-help nil)
+    #+END_SRC
+
+    And setup default source & co.
+
+    #+BEGIN_SRC emacs-lisp
+      (set-default 'ac-sources
+                   '(ac-source-imenu
+                     ac-source-dictionary
+                     ac-source-words-in-buffer
+                     ac-source-words-in-same-mode-buffers
+                     ac-source-words-in-all-buffer))
+      (dolist (mode '(magit-log-edit-mode
+                      log-edit-mode org-mode text-mode haml-mode
+                      git-commit-mode
+                      sass-mode yaml-mode csv-mode espresso-mode haskell-mode
+                      html-mode nxml-mode sh-mode smarty-mode clojure-mode
+                      lisp-mode textile-mode markdown-mode tuareg-mode
+                      js3-mode css-mode less-css-mode sql-mode
+                      sql-interactive-mode
+                      inferior-emacs-lisp-mode))
+        (add-to-list 'ac-modes mode))
+    #+END_SRC
+
+
+*** DONE deft
+
+    #+BEGIN_QUOTE
+    Deft is an Emacs mode for quickly browsing, filtering, and editing
+    directories of plain text notes, inspired by Notational Velocity.
+    #+END_QUOTE
+
+    Deft is cool to use with org-mode, let's use it for notes.
+
+    #+BEGIN_SRC emacs-lisp
+      (require-package 'deft)
+
+      (setq deft-extension "org")
+      (setq deft-text-mode 'org-mode)
+      (setq deft-directory "~/desktop/org/notes")
+      (setq deft-use-filename-as-title t)         ;; Use filename as title
+
+      (global-set-key (kbd "<f9>") 'deft)
+    #+END_SRC
+
 *** TODO Version control integration
 **** TODO Git
 
