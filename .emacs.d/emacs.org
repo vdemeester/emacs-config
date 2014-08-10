@@ -1025,4 +1025,14 @@ Tell Emacs rake, bundler files and =*.erb= are Ruby files.
      #+END_SRC
 
 **** TODO Debian
+*** DONE vim
+
+    I tend to use vim for quick edit and other stuff and have a decent
+    configuration. And sometimes I edit the configuration, from emacs so, let's
+    had support for that.
+
+    #+BEGIN_SRC emacs-lisp
+    (require-package 'vimrc-mode)
+    #+END_SRC
+
 ** TODO Mails

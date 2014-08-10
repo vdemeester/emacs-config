@@ -3,6 +3,8 @@
 !.emacs.d/*
 !.emacs.d/**
 .emacs.d/emacs.el
+.emacs.d/user.el
+.emacs.d/.mc-lists.el
 .emacs.d/elpa
 .emacs.d/*~
 .emacs.d/*#
