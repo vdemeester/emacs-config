@@ -1049,6 +1049,12 @@ Tell Emacs rake, bundler files and =*.erb= are Ruby files.
      #+END_SRC
 
 **** TODO Debian
+*** DONE Yaml
+
+    #+BEGIN_SRC emacs-lisp
+      (require-package 'yaml-mode)
+    #+END_SRC
+
 *** DONE vim
 
     I tend to use vim for quick edit and other stuff and have a decent
