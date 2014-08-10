@@ -265,6 +265,20 @@ This will set Symbola as fallback-font for Emojis when it is available for the c
 ;; (load-theme 'dakrone t)
      #+end_src
 
+     When interactively changing the theme (using M-x load-theme), the current custom theme is not disabled. This often gives weird-looking results; we can advice load-theme to always disable themes currently enabled themes.
+
+     #+BEGIN_SRC emacs-lisp
+(defadvice load-theme
+  (before disable-before-load (theme &optional no-confirm no-enable) activate)
+  (mapc 'disable-theme custom-enabled-themes))
+     #+END_SRC
+
+     Let's also install something to have different themes by buffers.
+
+     #+BEGIN_SRC emacs-lisp
+       (require-package 'load-theme-buffer-local)
+     #+END_SRC
+
 ***** TODO Specific theme for modes
 
 **** Powerline
@@ -1010,6 +1024,16 @@ Tell Emacs rake, bundler files and =*.erb= are Ruby files.
 #+END_SRC
 
 *** TODO Shell(s)
+**** DONE Theme
+
+     Let's use a local theme for the shells.
+
+     #+BEGIN_SRC emacs-lisp
+       ;;(defun my/term-theme-hook ()
+       ;;  (load-theme-buffer-local 'dakrone))
+       ;;(add-hook 'term-mode-hook 'my/term-theme-hook)
+     #+END_SRC
+
 *** TODO Go
 
 *** TODO Docker
