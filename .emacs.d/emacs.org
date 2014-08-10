@@ -762,6 +762,78 @@ specifics will be defined in the corresponding language section.
                  'append)
      #+end_src
 
+     All org-mode buffers will be automatically saved each hours.
+
+     #+BEGIN_SRC emacs-lisp
+       (run-at-time "00:59" 3600 'org-save-all-org-buffers)
+     #+END_SRC
+
+     And add some miscellaneous stuff.
+
+     #+BEGIN_SRC emacs-lisp
+       (setq
+        org-completion-use-ido t         ;; use IDO for completion
+        org-cycle-separator-lines 0      ;; Don't show blank lines
+        org-catch-invisible-edits 'error ;; don't edit invisible text
+        )
+     #+END_SRC
+
+**** DONE Speed commands
+
+     Org-mode speed keys (or spee commands) are really cool, here is a
+     quotation from the manual
+
+     #+BEGIN_QUOTE
+     Single keys can be made to execute commands when the cursor is at the beginning of a headline, i.e., before the first star.
+     #+END_QUOTE
+
+     #+BEGIN_SRC emacs-lisp
+       (setq org-use-speed-commands t)
+     #+END_SRC
+
+     However the default =n= (next) and =p= (previous) speed keys
+     aren't optimal for my use. When I go to the next one using speed
+     commands I want the others closed. Let's redefine it.
+
+     #+BEGIN_SRC emacs-lisp
+       (defun my/org-show-next-heading-tidily ()
+         "Show next entry, keeping other entries closed."
+         (if (save-excursion (end-of-line) (outline-invisible-p))
+             (progn (org-show-entry) (show-children))
+           (outline-next-heading)
+           (unless (and (bolp) (org-on-heading-p))
+             (org-up-heading-safe)
+             (hide-subtree)
+             (error "Boundary reached"))
+           (org-overview)
+           (org-reveal t)
+           (org-show-entry)
+           (show-children)))
+
+       (defun my/org-show-previous-heading-tidily ()
+         "Show previous entry, keeping other entries closed."
+         (let ((pos (point)))
+           (outline-previous-heading)
+           (unless (and (< (point) pos) (bolp) (org-on-heading-p))
+             (goto-char pos)
+             (hide-subtree)
+             (error "Boundary reached"))
+           (org-overview)
+           (org-reveal t)
+           (org-show-entry)
+           (show-children)))
+     #+END_SRC
+
+     And let's bind it.
+
+     #+BEGIN_SRC emacs-lisp
+       (add-to-list 'org-speed-commands-user
+                    '("n" my/org-show-next-heading-tidily))
+       (add-to-list 'org-speed-commands-user
+                    '("p" my/org-show-previous-heading-tidily))
+     #+END_SRC
+
+**** TODO Captures
 **** DONE Code blocks
 
      We are using a lot of code block in org-mode, in this file for example ; let's
@@ -799,7 +871,31 @@ specifics will be defined in the corresponding language section.
                  'append)
      #+end_src
 
-**** TODO tags
+**** DONE Mobile
+
+Define some stuff for the /org-mobile/ synchronization. The
+=org-mobile-directory= is a on a remote ssh, defined in the
+=~/.emacs.d/user.el= file.
+
+#+BEGIN_SRC emacs-lisp
+  (require 'org-mobile)
+  (setq org-mobile-directory 'personal-org-mobile-directory)
+  (setq org-mobile-inbox-for-pull "~/desktop/org/todos/inbox.org")
+  (setq org-mobile-files '("~/desktop/org/todos/"))
+#+END_SRC
+
+**** TODO Archives
+
+     #+BEGIN_SRC emacs-lisp
+       (require 'org-archive)
+     #+END_SRC
+
+**** TODO Tags
+
+     #+BEGIN_SRC emacs-lisp
+       (setq org-tags-column -90)
+     #+END_SRC
+
 *** DONE Compilation mode improvements
 
 See http://stackoverflow.com/questions/3072648/cucumbers-ansi-colors-messing-up-emacs-compilation-buffer
