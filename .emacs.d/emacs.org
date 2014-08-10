@@ -468,11 +468,17 @@ Make isearch-forward put the cursor at the start of the search, not the end, so 
 Start a server in not already running. I usually start emacs as a
 daemon when at the start of the computer, but you never know =;-)=.
 
+I have an error about /unsafe directory/ for =/tmp/emacs100=, that's
+why the advice is there, to ignore the error (from [[http://stackoverflow.com/a/17069276/89249][stackoverflow]]).
+
 #+BEGIN_SRC emacs-lisp
+  (defadvice server-ensure-safe-dir (around
+                                     my-around-server-ensure-safe-dir
+                                     activate)
+    "Ignores any errors raised from server-ensure-safe-dir"
+    (ignore-errors ad-do-it))
   (unless (string= (user-login-name) "root")
     (require 'server)
-    (and (>= emacs-major-version 23)
-       (defun server-ensure-safe-dir (dir) "Noop" t))
     (when (or (not server-process)
              (not (eq (process-status server-process)
                     'listen)))
