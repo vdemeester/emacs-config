@@ -501,6 +501,21 @@ why the advice is there, to ignore the error (from [[http://stackoverflow.com/a/
 #+END_SRC
 
 ** TODO Modes
+*** DONE Discover my major
+
+#+BEGIN_QUOTE
+    Discover key bindings and their meaning for the current Emacs major mode.
+
+    The command is inspired by discover.el and also uses the makey library. I thought, “Hey! Why not parse the information about the major mode bindings somehow and display that like discover.el does…”
+#+END_QUOTE
+
+
+    #+BEGIN_SRC emacs-lisp
+      (require-package 'discover-my-major)
+      (global-set-key (kbd "C-h C-m") 'discover-my-major)
+    #+END_SRC
+
+
 *** TODO Prompts
 **** DONE ido
 
