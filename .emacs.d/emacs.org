@@ -580,7 +580,45 @@ Helm is a fork of anything.el originaly written by Tamas Patrovic and can be con
 
      #+begin_src emacs-lisp
        (require-package 'helm)
+       (require-package 'helm-descbinds)
+       (require-package 'helm-gtags)
      #+end_src
+
+     Let's define that all helm commands will be prefixed by =C-h=,
+     =C-h x= will be =Helm M-x=.
+
+     #+BEGIN_SRC emacs-lisp
+       (require 'helm-config)
+       (setq helm-mode-handle-completion-in-region nil) ; don't use helm for `completion-at-point'
+       (helm-mode 1)
+       (helm-gtags-mode 1)
+       (helm-descbinds-mode)
+       (setq helm-idle-delay 0.1)
+       (setq helm-input-idle-delay 0.1)
+       (setq helm-buffer-max-length 50)
+       (setq helm-M-x-always-save-history t)
+       (setq helm-buffer-details-flag nil)
+       (add-to-list 'helm-completing-read-handlers-alist '(org-refile)) ; helm-mode does not do org-refile well
+       (add-to-list 'helm-completing-read-handlers-alist '(org-agenda-refile)) ; same goes for org-agenda-refile
+     #+END_SRC
+
+***** DONE helm-swoop
+
+      =helm-swoop= is a great Helm powered buffer search/occur interface:
+
+      #+BEGIN_SRC emacs-lisp
+        (require-package 'helm-swoop)
+      #+END_SRC
+
+***** DONE helm-google
+
+#+BEGIN_QUOTE
+      Emacs Helm Interface for quick Google searches
+#+END_QUOTE
+
+      #+BEGIN_SRC emacs-lisp
+        (require-package 'helm-google)
+      #+END_SRC
 
 *** TODO Auto-complete
 
@@ -983,6 +1021,32 @@ Define some stuff for the /org-mobile/ synchronization. The
      #+BEGIN_SRC emacs-lisp
        (setq org-tags-column -90)
      #+END_SRC
+
+*** TODO Projectile
+
+    #+BEGIN_QUOTE
+    Projectile is a project interaction library for Emacs. Its goal is
+    to provide a nice set of features operating on a project level
+    without introducing external dependencies(when feasible). For
+    instance - finding project files has a portable implementation
+    written in pure Emacs Lisp without the use of GNU find (but for
+    performance sake an indexing mechanism backed by external commands
+    exists as well).
+    #+END_QUOTE
+
+
+    #+BEGIN_SRC emacs-lisp
+      (require-package 'projectile)
+      ;; Integrate with helm
+      (require-package 'helm-projectile)
+    #+END_SRC
+
+
+    #+BEGIN_SRC emacs-lisp
+      (projectile-global-mode)
+      (setq projectile-enable-caching t)
+    #+END_SRC
+
 
 *** DONE Compilation mode improvements
 
