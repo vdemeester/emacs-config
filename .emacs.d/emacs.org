@@ -318,7 +318,6 @@ Answering yes and no to each question from Emacs can be tedious, a single y or n
   (fset 'yes-or-no-p 'y-or-n-p)
 #+END_SRC
 
-
 **** DONE Encoding
 
      Make sur that we use ~utf-8~ by default.
@@ -477,6 +476,14 @@ Make isearch-forward put the cursor at the start of the search, not the end, so 
   (add-hook 'isearch-mode-end-hook 'my-isearch-goto-match-beginning)
 #+END_SRC
 
+
+**** DONE Notifications
+     Emacs now has notifications (freedesktop.org specifications)
+     built-in. Let's load it for potential needs.
+
+     #+BEGIN_SRC emacs-lisp
+       (require 'notifications)
+     #+END_SRC
 
 **** TODO Evil
 *** Server mode
@@ -1046,7 +1053,6 @@ Define some stuff for the /org-mobile/ synchronization. The
 
     #+BEGIN_SRC emacs-lisp
       (projectile-global-mode)
-      (setq projectile-enable-caching t)
     #+END_SRC
 
 
