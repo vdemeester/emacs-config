@@ -262,9 +262,9 @@ This will set Symbola as fallback-font for Emojis when it is available for the c
      #+begin_src emacs-lisp
        (load-theme 'leuven t)
        (set-face-attribute 'org-level-1 nil :height 120)
-       (if window-system
-           (enable-theme 'leuven)
-         (enable-theme 'junio))
+       ;;(if window-system
+       ;;    (enable-theme 'leuven)
+       ;;  (enable-theme 'junio))
      #+end_src
 
      When interactively changing the theme (using M-x load-theme), the current custom theme is not disabled. This often gives weird-looking results; we can advice load-theme to always disable themes currently enabled themes.
