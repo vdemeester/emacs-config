@@ -1195,6 +1195,13 @@ Tell Emacs rake, bundler files and =*.erb= are Ruby files.
      #+END_SRC
 
 **** TODO Debian
+*** DONE Markdown
+
+    #+BEGIN_SRC emacs-lisp
+      (require-package 'markdown-mode)
+      (require-package 'markdown-mode+)
+    #+END_SRC
+
 *** DONE Yaml
 
     #+BEGIN_SRC emacs-lisp
