@@ -4,10 +4,15 @@
 !.emacs.d/**
 .emacs.d/emacs.el
 .emacs.d/user.el
+.emacs.d/custom.el
 .emacs.d/.mc-lists.el
 .emacs.d/elpa
 .emacs.d/*~
 .emacs.d/*#
+.emacs.d/ac-comphist.dat
+.emacs.d/bookmarks
+.emacs.d/projectile-bookmarks.eld
+.emacs.d/projectile.cache
 *.elc
 .emacs.d/el-get
 .emacs.d/auto-save-list
