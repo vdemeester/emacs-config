@@ -1006,6 +1006,7 @@ specifics will be defined in the corresponding language section.
                  'append)
      #+end_src
 
+**** TODO Templates
 **** DONE Mobile
 
 Define some stuff for the /org-mobile/ synchronization. The
@@ -1018,19 +1019,26 @@ Define some stuff for the /org-mobile/ synchronization. The
   (setq org-mobile-inbox-for-pull "~/desktop/org/todos/inbox.org")
   (setq org-mobile-files '("~/desktop/org/todos/"))
 #+END_SRC
+**** DONE Archives
 
-**** TODO Archives
+We want to be able to archive some /done/ projects. Let's load
+org-archive and configure it.
 
      #+BEGIN_SRC emacs-lisp
        (require 'org-archive)
+       (setq org-archive-location (concat org-directory "archive/%s_archive::"))
      #+END_SRC
-
 **** TODO Tags
 
      #+BEGIN_SRC emacs-lisp
        (setq org-tags-column -90)
      #+END_SRC
-
+**** TODO Time tracking & Pomodoros
+**** TODO Agenda(s)
+**** TODO Integration with git
+***** TODO Auto-commit when pushing with org-mobile
+***** TODO Notifications
+**** TODO Externals (caldav, issues, ..)
 *** TODO Projectile
 
     #+BEGIN_QUOTE
@@ -1218,4 +1226,5 @@ Tell Emacs rake, bundler files and =*.erb= are Ruby files.
     (require-package 'vimrc-mode)
     #+END_SRC
 
+*** TODO Spellcheck (flyspell)
 ** TODO Mails
