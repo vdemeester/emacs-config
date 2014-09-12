@@ -296,13 +296,13 @@ This will set Symbola as fallback-font for Emojis when it is available for the c
     First thing first, let's define a shortcuts for editing this configuration.
 
 
-    #+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp
       (defun my/edit-emacs-configuration ()
         (interactive)
         (find-file "~/.emacs.d/emacs.org"))
 
       (global-set-key "\C-ce" 'my/edit-emacs-configuration)
-    #+END_SRC
+#+END_SRC
 
 
     Although I don't really care, let's add a new line at the end of files.
@@ -317,6 +317,21 @@ Answering yes and no to each question from Emacs can be tedious, a single y or n
 #+BEGIN_SRC emacs-lisp
   (fset 'yes-or-no-p 'y-or-n-p)
 #+END_SRC
+
+    Add some macros to be able to conditionnally load stuff (taken
+    from [[http://emacs-fu.blogspot.fr/2008/12/using-packages-functions-only-if-they.html][emacs-fu]].
+
+
+    #+BEGIN_SRC emacs-lisp
+      (defmacro require-maybe (feature &optional file)
+        "*Try to require FEATURE, but don't signal an error if `require' fails."
+        `(require ,feature ,file 'noerror))
+
+      (defmacro when-available (func foo)
+        "*Do something if FUNCTION is available."
+        `(when (fboundp ,func) ,foo))
+    #+END_SRC
+
 
 **** DONE Encoding
 
@@ -1300,7 +1315,7 @@ Let's bind it.
 
    #+BEGIN_SRC emacs-lisp
      (add-to-list 'load-path "/usr/local/share/emacs/site-lisp/mu4e")
-     (require 'mu4e)
+     (require-maybe 'mu4e)
    #+END_SRC
 
    Set the maildir, folders and stuff.
