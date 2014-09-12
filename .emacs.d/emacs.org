@@ -1295,3 +1295,24 @@ Let's bind it.
 
 *** TODO Spellcheck (flyspell)
 ** TODO Mails
+
+   Add mu4e to the load-path and load it.
+
+   #+BEGIN_SRC emacs-lisp
+     (add-to-list 'load-path "/usr/local/share/emacs/site-lisp/mu4e")
+     (require 'mu4e)
+   #+END_SRC
+
+   Set the maildir, folders and stuff.
+
+   #+BEGIN_SRC emacs-lisp
+     (setq mu4e-maildir (expand-file-name "~/desktop/mails"))
+     (setq mu4e-drafts-folder "/main/Drafts")
+     (setq mu4e-sent-folder   "/main/Sent")
+     (setq mu4e-trash-folder  "/main/Trash")
+
+     (setq mu4e-get-mail-command "offlineimap")
+     (setq mu4e-html2text-command "html2text")
+   #+END_SRC
+
+
