@@ -485,6 +485,17 @@ Make isearch-forward put the cursor at the start of the search, not the end, so 
        (require 'notifications)
      #+END_SRC
 
+**** DONE Zoom(ing)
+
+     Being able to zoom in and out can be cool, especially when
+     presenting something with emacs ; so that everybody can see
+     what's written.
+
+     #+BEGIN_SRC emacs-lisp
+       (global-set-key (kbd "C-+") 'text-scale-increase)
+       (global-set-key (kbd "C--") 'text-scale-decrease)
+     #+END_SRC
+
 **** TODO Evil
 *** Server mode
 
