@@ -1089,6 +1089,24 @@ org-archive and configure it.
       (projectile-global-mode)
     #+END_SRC
 
+**** Perspective
+
+    [[https://github.com/nex3/perspective-el][Perspective]] is a minor mode that provides the ability to manage
+    different workspaces. It integrates well with projectile.
+
+    #+BEGIN_SRC emacs-lisp
+      (require-package 'perspective)
+      (require-package 'persp-projectile)
+    #+END_SRC
+
+    Let's configure it and map it.
+
+    #+BEGIN_SRC emacs-lisp
+      (persp-mode)
+      (require 'persp-projectile)
+      (define-key projectile-mode-map (kbd "s-s") 'projectile-persp-switch-project)
+    #+END_SRC
+
 
 *** DONE Compilation mode improvements
 
