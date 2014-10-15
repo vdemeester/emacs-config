@@ -511,6 +511,49 @@ Make isearch-forward put the cursor at the start of the search, not the end, so 
        (global-set-key (kbd "C--") 'text-scale-decrease)
      #+END_SRC
 
+**** DONE Key maps & binding
+
+     [[http://endlessparentheses.com/][Endless Parentheses]] is a great sourse of tips & trick on
+     GNU/Emacs. Following [[http://endlessparentheses.com/the-toggle-map-and-wizardry.html][this]] and [[http://endlessparentheses.com/launcher-keymap-for-standalone-features.html][this]] articles, Let's define some
+     keymaps for some quick toggling and launching.
+
+     First, let's define a ~toogle-map~, that will allow to toggle some
+     stuff like line numbers, minor modes and stuffs.
+
+     #+BEGIN_SRC emacs-lisp
+       (define-prefix-command 'vde/toggle-map)
+       ;; The manual recommends C-c for user keys, but C-x t is
+       ;; always free, whereas C-c t is used by some modes.
+       (define-key ctl-x-map "t" 'vde/toggle-map)
+       (define-key vde/toggle-map "c" #'column-number-mode)
+       (define-key vde/toggle-map "d" #'toggle-debug-on-error)
+       (define-key vde/toggle-map "e" #'toggle-debug-on-error)
+       (define-key vde/toggle-map "f" #'auto-fill-mode)
+       (define-key vde/toggle-map "l" #'toggle-truncate-lines)
+       (define-key vde/toggle-map "q" #'toggle-debug-on-quit)
+       (define-key vde/toggle-map "r" #'dired-toggle-read-only)
+       (define-key vde/toggle-map' "w" #'whitespace-mode)
+     #+END_SRC
+
+     And now let's define a ~launcher-map~ to launch major modes and
+     useful commands.
+
+     #+BEGIN_SRC emacs-lisp
+       (define-prefix-command 'vde/launcher-map)
+       (define-key ctl-x-map "l" 'vde/launcher-map)
+       (global-set-key (kbd "s-l") 'vde/launcher-map)
+       (define-key vde/launcher-map "c" #'calc)
+       (define-key vde/launcher-map "d" #'ediff-buffers)
+       (define-key vde/launcher-map "f" #'find-dired)
+       (define-key vde/launcher-map "g" #'lgrep)
+       (define-key vde/launcher-map "G" #'rgrep)
+       (define-key vde/launcher-map "h" #'man)    ; Help
+       (define-key vde/launcher-map "s" #'shell)
+       (define-key vde/launcher-map "t" #'proced) ; top
+       (define-key vde/launcher-map "m" #'mu4e)   ; mails
+       (define-key vde/launcher-map "u" #'mu4e-update-mail-and-index)
+     #+END_SRC
+
 **** TODO Evil
 *** Server mode
 
