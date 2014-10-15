@@ -9,6 +9,7 @@
 .emacs.d/elpa
 .emacs.d/*~
 .emacs.d/*#
+.emacs.d/session.*
 .emacs.d/ac-comphist.dat
 .emacs.d/bookmarks
 .emacs.d/projectile-bookmarks.eld
