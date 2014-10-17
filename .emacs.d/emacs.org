@@ -1108,6 +1108,20 @@ org-archive and configure it.
 ***** TODO Auto-commit when pushing with org-mobile
 ***** TODO Notifications
 **** TODO Externals (caldav, issues, ..)
+***** PROGRESS Redmine
+
+      On some project (mainly @work), redmine is used. As I'm using
+      org-mode for tracking the stuff I do and the time I spent on it,
+      let's integrate org-mode and redmine.
+
+      #+BEGIN_SRC emacs-lisp
+        (require-package 'org-redmine)
+      #+END_SRC
+
+      The uri of the redmine(s) will be specified in a org-babel
+      matter in the org files that need it. Still have to define a
+      default template.
+
 *** TODO Projectile
 
     #+BEGIN_QUOTE
