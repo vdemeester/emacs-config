@@ -1291,6 +1291,21 @@ Tell Emacs rake, bundler files and =*.erb= are Ruby files.
 
 *** TODO Go
 
+*** PROGRESS SQL
+
+    Emacs is really more than an editor. The SQL mode is quick cool to
+    used (and do not eat my memory like mysql-workbench for
+    example).
+
+    By default, Emacs does not automatically truncate long lines in
+    SQL(i) mode, let's change that.
+
+    #+BEGIN_SRC emacs-lisp
+      (add-hook 'sql-interactive-mode-hook
+                (lambda ()
+                  (toggle-truncate-lines t)))
+    #+END_SRC
+
 *** TODO Docker
 
 *** TODO fic-mode
