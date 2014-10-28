@@ -1419,5 +1419,14 @@ Let's bind it.
      (setq mu4e-get-mail-command "offlineimap")
      (setq mu4e-html2text-command "html2text")
    #+END_SRC
+** TODO Twitter
+
+   Let's have a twitter timeline in Emacs, just for fun ;-P.
+
+
+   #+BEGIN_SRC emacs-lisp
+     (require-package 'twittering-mode)
+   #+END_SRC
+
 
 
