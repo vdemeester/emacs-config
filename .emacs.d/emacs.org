@@ -912,9 +912,10 @@ specifics will be defined in the corresponding language section.
      to the agenda and the archives.
 
      #+begin_src emacs-lisp
-(setq org-directory "~/desktop/org/")
-(setq org-agenda-files '("~/desktop/org/todos/"))
-(setq org-archive-location (concat org-directory "archive/%s_archive::"))
+       (require 'find-lisp)
+       (setq org-directory "~/desktop/org/")
+       (setq org-agenda-files (find-lisp-find-files "~/desktop/org/todos/" "\.org$"))
+       (setq org-archive-location (concat org-directory "archive/%s_archive::"))
      #+end_src
 
      We'll also set which files should be opened using org-mode :
@@ -1108,7 +1109,7 @@ org-archive and configure it.
 ***** TODO Auto-commit when pushing with org-mobile
 ***** TODO Notifications
 **** TODO Externals (caldav, issues, ..)
-***** PROGRESS Redmine
+***** TODO Redmine
 
       On some project (mainly @work), redmine is used. As I'm using
       org-mode for tracking the stuff I do and the time I spent on it,
@@ -1121,6 +1122,17 @@ org-archive and configure it.
       The uri of the redmine(s) will be specified in a org-babel
       matter in the org files that need it. Still have to define a
       default template.
+***** Trello
+
+      On some project, [[https://trello.com/][Trello]] is used and, there a emacs package for
+      that :).
+
+      #+BEGIN_SRC emacs-lisp
+        (require-package 'org-trello)
+      #+END_SRC
+
+      Now, a /manual/ step will be to install consumer key and stuff
+      (see [[https://org-trello.github.io/trello-setup.html][documentation]] for that).
 
 *** TODO Projectile
 
