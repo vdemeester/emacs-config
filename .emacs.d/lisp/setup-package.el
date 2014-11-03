@@ -4,7 +4,7 @@
 (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/"))
 
 ;; add melpa and melpa-stable to package repos
-(add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/"))
+(add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
 
 ;; If gpg cannot be found, signature checking will fail, so we
 ;; conditionnally enable it according wether gpg is availabel.
