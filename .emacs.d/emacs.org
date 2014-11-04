@@ -555,6 +555,50 @@ Make isearch-forward put the cursor at the start of the search, not the end, so 
      #+END_SRC
 
 **** TODO Evil
+
+     I come from a [[http://vim.org][vim]] background and the modal editor comes with some
+     really good stuff. [[http://www.emacswiki.org/Evil][Evil]] is an extensible vi layer for Emacs,
+     exacty what we need. It also few /extensions/.
+
+     #+BEGIN_SRC emacs-lisp
+       (require-package 'evil)
+     #+END_SRC
+
+     Let's change the default cursor colours to easily identify wich
+     mode we are in.
+
+     #+BEGIN_SRC emacs-lisp
+       (setq evil-emacs-state-cursor '("red" box))
+       (setq evil-normal-state-cursor '("green" box))
+       (setq evil-visual-state-cursor '("orange" box))
+       (setq evil-insert-state-cursor '("red" bar))
+       (setq evil-replace-state-cursor '("red" bar))
+       (setq evil-operator-state-cursor '("red" hollow))
+     #+END_SRC
+
+     And define some /internals/.
+
+     #+BEGIN_SRC emacs-lisp
+       (setq evil-search-module 'evil-search)
+     #+END_SRC
+
+***** DONE evil-leader
+
+      The [[https://github.com/cofi/evil-leader][evil-leader]] extension provides the <leader> feature from Vim
+      that provides an easy way to bind keys under a variable prefix
+      key.
+
+      #+BEGIN_SRC emacs-lisp
+        (require-package 'evil-leader)
+        (global-evil-leader-mode t)
+
+        (evil-leader/set-leader ",")
+        (evil-leader/set-key
+          "e" 'find-file
+          "b" 'switch-to-buffer
+          "k" 'kill-buffer)
+      #+END_SRC
+
 *** Server mode
 
 Start a server in not already running. I usually start emacs as a
@@ -897,7 +941,7 @@ specifics will be defined in the corresponding language section.
   (setq flycheck-indication-mode 'right-fringe)
 #+END_SRC
 
-*** TODO Org
+*** DONE Org
 
     #+BEGIN_QUOTE
     Org-mode is a powerful system for organizing your complex life with simple plain-text files. It seamlessly integrates all your notes, mindmaps, TODO lists, calendar, day planner, and project schedules into a single system that can be easily searched (e.g. by grep), encrypted (e.g. by GnuPG), backed up and synced (e.g. by Dropbox), imported/exported, and accessed on the go (e.g. on an iPhone or Android smartphone). It can even be used for authoring web pages and documents.
