@@ -599,6 +599,27 @@ Make isearch-forward put the cursor at the start of the search, not the end, so 
           "k" 'kill-buffer)
       #+END_SRC
 
+***** DONE evil-args
+
+      The [[https://github.com/wcsmith/evil-args][evil-args]] extension provides motions and text objects for
+      delimited arguments in Evil.
+
+
+      #+BEGIN_SRC emacs-lisp
+        (require-package 'evil-args)
+        ;; bind evil-args text objects
+        (define-key evil-inner-text-objects-map "a" 'evil-inner-arg)
+        (define-key evil-outer-text-objects-map "a" 'evil-outer-arg)
+        ;; bind evil-forward/backward-args
+        (define-key evil-normal-state-map "L" 'evil-forward-arg)
+        (define-key evil-normal-state-map "H" 'evil-backward-arg)
+        (define-key evil-motion-state-map "L" 'evil-forward-arg)
+        (define-key evil-motion-state-map "H" 'evil-backward-arg)
+        ;; bind evil-jump-out-args
+        (define-key evil-normal-state-map "K" 'evil-jump-out-args)
+      #+END_SRC
+
+
 *** Server mode
 
 Start a server in not already running. I usually start emacs as a
