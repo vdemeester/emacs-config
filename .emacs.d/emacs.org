@@ -1170,6 +1170,28 @@ org-archive and configure it.
      #+END_SRC
 **** TODO Time tracking & Pomodoros
 **** TODO Agenda(s)
+
+First thing first, bind a key sequence to org-agenda.
+
+     #+BEGIN_SRC emacs-lisp
+       (global-set-key (kbd "C-c a") 'org-agenda)
+     #+END_SRC
+
+Then set custom agendas.. 
+
+     #+BEGIN_SRC emacs-lisp
+       (setq org-agenda-custom-commands
+             '(("w" todo "TODO"
+                ((org-agenda-sorting-strategy '(priority-down))
+                 (org-agenda-prefix-format "  Mixed: ")))
+               ("Z" tags-tree "+zenika"
+                ((org-show-following-heading nil)
+                 (org-show-hierarchy-above nil)))
+               ("N" search ""
+                ((org-agenda-files '("~org/notes.org"))
+                 (org-agenda-text-search-extra-files nil)))))
+     #+END_SRC
+
 **** TODO Integration with git
 ***** TODO Auto-commit when pushing with org-mobile
 ***** TODO Notifications
