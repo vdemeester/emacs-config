@@ -1104,6 +1104,25 @@ specifics will be defined in the corresponding language section.
      #+END_SRC
 
 **** TODO Captures
+
+First thing first, bind a key sequence to org-capture.
+
+     #+BEGIN_SRC emacs-lisp
+       (global-set-key (kbd "C-c r") 'org-capture)
+     #+END_SRC
+
+Setup captures templates..
+
+     #+BEGIN_SRC emacs-lisp
+       (setq org-capture-templates
+             '(;; other entries
+               ("j" "Journal entry" plain
+                (file+datetree+prompt "~/desktop/org/journal.org")
+                "%K - %a\n%i\n%?\n")
+               ;; other entries
+               ))
+     #+END_SRC
+
 **** DONE Code blocks
 
      We are using a lot of code block in org-mode, in this file for example ; let's
