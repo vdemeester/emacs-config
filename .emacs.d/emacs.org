@@ -1607,6 +1607,13 @@ Let's bind it.
 
 
    #+BEGIN_SRC emacs-lisp
+     (setq message-send-mail-function 'message-send-mail-with-sendmail
+           sendmail-program "/usr/bin/msmtp"
+           user-full-name "Vincent Demeester")
+   #+END_SRC
+
+
+   #+BEGIN_SRC emacs-lisp
      (add-to-list 'mu4e-view-actions '("retag" . mu4e-action-retag-message))
      (add-to-list 'mu4e-headers-actions '("retag" . mu4e-action-retag-message))
    #+END_SRC
