@@ -1285,43 +1285,47 @@ searching]] and [[http://orgmode.org/worg/org-tutorials/org-custom-agenda-comman
                  (org-agenda-prefix-format "  Mixed: ")))
                ;; Panic tasks : urgent & important
                ;; Probably the most important to do, but try not have to much of them..
-               ("Pt" "Panic -emergency-" tags-todo "important&urgent/!TODO"
+               ("P" . "Panic -emergency-")
+               ("Pt" "TODOs" tags-todo "important&urgent/!TODO"
                 ((org-agenda-sorting-strategy '(priority-down))
                  (org-agenda-prefix-format "  Mixed: ")))
-               ("Pb" "Panic -emergency- blocked" tags-todo "important&urgent/!BLOCKED"
+               ("Pb" "BLOCKEDs" tags-todo "important&urgent/!BLOCKED"
                 ((org-agenda-sorting-strategy '(priority-down))
                  (org-agenda-prefix-format "  Mixed: ")))
-               ("Pr" "Panic -emergency- review" tags-todo "important&urgent/!REVIEW"
+               ("Pr" "REVIEWs" tags-todo "important&urgent/!REVIEW"
                 ((org-agenda-sorting-strategy '(priority-down))
                  (org-agenda-prefix-format "  Mixed: ")))
                ;; Kaizen tasks : important but not urgent
-               ("Kt" "Kaizen -improvement-" tags-todo "important&-urgent/!TODO"
+               ("K" . "Kaizen -improvement-")
+               ("Kt" "TODOs" tags-todo "important&-urgent/!TODO"
                 ((org-agenda-sorting-strategy '(priority-down))
                  (org-agenda-prefix-format "  Mixed: ")))
-               ("Kb" "Kaizen -improvement- blocked" tags-todo "important&-urgent/!BLOCKED"
+               ("Kb" "BLOCKEDs" tags-todo "important&-urgent/!BLOCKED"
                 ((org-agenda-sorting-strategy '(priority-down))
                  (org-agenda-prefix-format "  Mixed: ")))
-               ("Kr" "Kaizen -improvement- review" tags-todo "important&-urgent/!REVIEW"
+               ("Kr" "REVIEWs" tags-todo "important&-urgent/!REVIEW"
                 ((org-agenda-sorting-strategy '(priority-down))
                  (org-agenda-prefix-format "  Mixed: ")))
                ;; Social investment : urgent
-               ("St" "Social -investment-" tags-todo "-important&urgent/!TODO"
+               ("S" . "Social -investment-")
+               ("St" "TODOs" tags-todo "-important&urgent/!TODO"
                 ((org-agenda-sorting-strategy '(priority-down))
                  (org-agenda-prefix-format "  Mixed: ")))
-               ("Sb" "Social -investment- blocked" tags-todo "-important&urgent/!BLOCKED"
+               ("Sb" "BLOCKEDs" tags-todo "-important&urgent/!BLOCKED"
                 ((org-agenda-sorting-strategy '(priority-down))
                  (org-agenda-prefix-format "  Mixed: ")))
-               ("Sr" "Social -investment- review" tags-todo "-important&urgent/!REVIEW"
+               ("Sr" "REVIEWs" tags-todo "-important&urgent/!REVIEW"
                 ((org-agenda-sorting-strategy '(priority-down))
                  (org-agenda-prefix-format "  Mixed: ")))
                ;; Organics
-               ("Ot" "Organics -inspiration-" tags-todo "-important&-urgent/!TODO"
+               ("O" . "Organics -inspiration-")
+               ("Ot" "TODOs" tags-todo "-important&-urgent/!TODO"
                 ((org-agenda-sorting-strategy '(priority-down))
                  (org-agenda-prefix-format "  Mixed: ")))
-               ("Ob" "Organics -inspiration- blocked" tags-todo "-important&-urgent/!BLOCKED"
+               ("Ob" "BLOCKEDs" tags-todo "-important&-urgent/!BLOCKED"
                 ((org-agenda-sorting-strategy '(priority-down))
                  (org-agenda-prefix-format "  Mixed: ")))
-               ("Or" "Organics -inspiration- review" tags-todo "-important&-urgent/!REVIEW"
+               ("Or" "REVIEWs" tags-todo "-important&-urgent/!REVIEW"
                 ((org-agenda-sorting-strategy '(priority-down))
                  (org-agenda-prefix-format "  Mixed: ")))
              ("N" search ""
