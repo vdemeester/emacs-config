@@ -993,31 +993,56 @@ specifics will be defined in the corresponding language section.
      Let's also define the default /todo-keywords/ and the workflow between them.
 
      #+begin_src emacs-lisp
+       (defface org-progress ; font-lock-warning-face
+         (org-compatible-face nil
+           '((((class color) (min-colors 16) (background light)) (:foreground "#A197BF" :bold t :background "#E8E6EF" :box (:line-width 1 :color "#A197BF")))
+             (((class color) (min-colors 8)  (background light)) (:foreground "blue"  :bold t))
+             (t (:inverse-video t :bold t))))
+         "Face for PROGRESS keywords."
+         :group 'org-faces)
+       (defface org-cancelled ; font-lock-warning-face
+         (org-compatible-face nil
+           '((((class color) (min-colors 16) (background light)) (:foreground "#3D3D3D" :bold t :background "#7A7A7A" :box (:line-width 1 :color "#3D3D3D")))
+             (((class color) (min-colors 8)  (background light)) (:foreground "black"  :bold t))
+             (t (:inverse-video t :bold t))))
+         "Face for PROGRESS keywords."
+         :group 'org-faces)
+       (defface org-review ; font-lock-warning-face
+         (org-compatible-face nil
+           '((((class color) (min-colors 16) (background light)) (:foreground "#FC9B17" :bold t :background "#FEF2C2" :box (:line-width 1 :color "#FC9B17")))
+             (((class color) (min-colors 8)  (background light)) (:foreground "yellow"  :bold t))
+             (t (:inverse-video t :bold t))))
+         "Face for PROGRESS keywords."
+         :group 'org-faces)
+       (defface org-blocked ; font-lock-warning-face
+         (org-compatible-face nil
+           '((((class color) (min-colors 16) (background light)) (:foreground "#FF8A80" :bold t :background "#ffdad6" :box (:line-width 1 :color "#FF8A80")))
+             (((class color) (min-colors 8)  (background light)) (:foreground "red"  :bold t))
+             (t (:inverse-video t :bold t))))
+         "Face for PROGRESS keywords."
+         :group 'org-faces)
+
        (setq org-todo-keywords
-             (quote ((sequence "TODO(t)" "NEXT(n)" "PROGRESS(p)" "|" "DONE(d)")
-                     (sequence "WAITING(w@/!)" "HOLD(h@/!)" "|" "CANCELLED(c@/!)" "PHONE" "MEETING")
-                     (sequence "REPORT" "BUG" "KNOWNCAUSE" "|" "FIXED"))))
+             (quote ((sequence "TODO(t)" "PROGRESS(p)" "BLOCKED" "REVIEW" "|" "DONE(d)" "ARCHIVED")
+                     (sequence "REPORT" "BUG" "KNOWNCAUSE" "|" "FIXED")
+                     (sequence "|" "CANCELLED"))))
 
 
        (setq org-todo-keyword-faces
-             (quote (("TODO" :foreground "#EE0000" :weight bold)
-                     ("NEXT" :foreground "#A197BF" :weight bold)
-                     ("PROGRESS" :foreground "#A197BF" :weight bold)
-                     ("DONE" :foreground "#8fbfdc" :weight bold)
-                     ("WAITING" :foreground "orange" :weight bold)
-                     ("HOLD" :foreground "magenta" :weight bold)
-                     ("CANCELLED" :foreground "forest green" :weight bold)
-                     ("MEETING" :foreground "forest green" :weight bold)
-                     ("PHONE" :foreground "forest green" :weight bold))))
+             (quote (("TODO" . org-todo)
+                     ("PROGRESS" . org-progress)
+                     ("BLOCKED" . org-blocked)
+                     ("REVIEW" . org-review)
+                     ("DONE" . org-done)
+                     ("ARCHIVED" . org-done)
+                     ("CANCELLED" . org-cancelled)
+                     ("REPORT" . org-todo)
+                     ("BUG" . org-blocked)
+                     ("KNOWNCAUSE" . org-review)
+                     ("FIXED" . org-done))))
 
        (setq org-todo-state-tags-triggers
-             (quote (("CANCELLED" ("CANCELLED" . t))
-                     ("WAITING" ("WAITING" . t))
-                     ("HOLD" ("WAITING" . t) ("HOLD" . t))
-                     (done ("WAITING") ("HOLD"))
-                     ("TODO" ("WAITING") ("CANCELLED") ("HOLD"))
-                     ("NEXT" ("WAITING") ("CANCELLED") ("HOLD"))
-                     ("DONE" ("WAITING") ("CANCELLED") ("HOLD")))))
+             (quote (("CANCELLED" ("CANCELLED" . t)))))
      #+end_src
 
      Undefine some binding (=C-c [=, =C-c ]= since this breaks org-agenda files that
