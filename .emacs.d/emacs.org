@@ -990,7 +990,17 @@ specifics will be defined in the corresponding language section.
 (add-to-list 'auto-mode-alist '("\\.\\(org\\|org_archive\\|txt\\)$" . org-mode))
      #+end_src
 
-     Let's also define the default /todo-keywords/ and the workflow between them.
+     Let's also define the default /todo-keywords/ and the workflow
+     between them.
+
+- TODO : task not started yet, part of the backlog :)
+- PROGRESS : task that are currently in progress, should be a minimum
+- BLOCKED : task that I start working on but cannot anymore (for
+      some reason), thus they are blocked
+- REVIEW : task that should be done, but I need or wait for a
+      review (by someone else or by me)
+- DONE : task that are completed.
+- ARCHIVED : same as done but keep it here (and not moving into archive)
 
      #+begin_src emacs-lisp
        (defface org-progress ; font-lock-warning-face
@@ -1128,7 +1138,7 @@ specifics will be defined in the corresponding language section.
                     '("p" my/org-show-previous-heading-tidily))
      #+END_SRC
 
-**** TODO Captures
+**** DONE Captures
 
 First thing first, bind a key sequence to org-capture.
 
@@ -1207,13 +1217,48 @@ org-archive and configure it.
        (require 'org-archive)
        (setq org-archive-location (concat org-directory "archive/%s_archive::"))
      #+END_SRC
-**** TODO Tags
+**** DONE Tags
+
+     Tags should be displayed from the 90 column.
 
      #+BEGIN_SRC emacs-lisp
        (setq org-tags-column -90)
      #+END_SRC
+
+     Define a list of default tags that should apply for all org-mode
+     buffers.
+
+     #+BEGIN_SRC emacs-lisp
+       (set org-tag-alist '(
+                            ("important" . ?i)
+                            ("urgent" . ?u)
+                            ("@home" . ?h)     ;; needs to be done at home
+                            ("@work" . ?w)     ;; needs to be done at work
+                            ("@client" . ?c)   ;; needs to be done at a client place (consulting..)
+                            ("dev" . ?e)       ;; this is a development task
+                            ("infra" . ?a)     ;; this is a sysadmin/infra task
+                            ("document" . ?d)  ;; needs to produce a document (article, post, ..)
+                            ("download" . ?D)  ;; needs to download something
+                            ("media" . ?m)     ;; this is a media (something to watch, listen, record, ..)
+                            ("mail" . ?M)      ;; mail-related (to write & send or to read)
+                            ))
+     #+END_SRC
+
+     Note that =important= and =urgent= helps me prioritize my
+     /todos/, in a /quadrant fashion way/.
+
+| Important          | *Kaizen*        | *Panic*             |
+| /tag important/    | improvements    | emergency           |
+|--------------------+-----------------+---------------------|
+| Less Important     | *Organics*      | Social *investment* |
+| /no tag important/ | inspiration     | Social activities   |
+|--------------------+-----------------+---------------------|
+|                    | Less Urgent     | Urgent              |
+|                    | /no tag urgent/ | /tag urgent/        |
+
+
 **** TODO Time tracking & Pomodoros
-**** TODO Agenda(s)
+**** DONE Agenda(s)
 
 First thing first, bind a key sequence to org-agenda.
 
@@ -1226,6 +1271,15 @@ Then set custom agendas..
      #+BEGIN_SRC emacs-lisp
        (setq org-agenda-custom-commands
              '(("w" todo "TODO"
+                ((org-agenda-sorting-strategy '(priority-down))
+                 (org-agenda-prefix-format "  Mixed: ")))
+               ("p" todo "PROGRESS"
+                ((org-agenda-sorting-strategy '(priority-down))
+                 (org-agenda-prefix-format "  Mixed: ")))
+               ("r" todo "REVIEW"
+                ((org-agenda-sorting-strategy '(priority-down))
+                 (org-agenda-prefix-format "  Mixed: ")))
+               ("b" todo "BLOCKED"
                 ((org-agenda-sorting-strategy '(priority-down))
                  (org-agenda-prefix-format "  Mixed: ")))
                ("Z" tags-tree "+zenika"
@@ -1253,7 +1307,7 @@ Then set custom agendas..
       The uri of the redmine(s) will be specified in a org-babel
       matter in the org files that need it. Still have to define a
       default template.
-***** Trello
+***** DONE Trello
 
       On some project, [[https://trello.com/][Trello]] is used and, there a emacs package for
       that :).
