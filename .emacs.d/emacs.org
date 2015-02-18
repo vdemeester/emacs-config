@@ -1132,10 +1132,17 @@ specifics will be defined in the corresponding language section.
      And let's bind it.
 
      #+BEGIN_SRC emacs-lisp
-       (add-to-list 'org-speed-commands-user
-                    '("n" my/org-show-next-heading-tidily))
-       (add-to-list 'org-speed-commands-user
-                    '("p" my/org-show-previous-heading-tidily))
+       (setq org-speed-commands-user '(("n" . my/org-show-next-heading-tidily)
+                                       ("p" . my/org-show-previous-heading-tidily)
+                                       (":" . org-set-tags-command)
+                                       ("c" . org-toggle-checkbox)
+                                       ("d" . org-cut-special)
+                                       ("P" . org-set-property)
+                                       ("C" . org-clock-display)
+                                       ("z" . (lambda () (interactive)
+                                                (org-tree-to-indirect-buffer)
+                                                (other-window 1)
+                                                (delete-other-windows)))))
      #+END_SRC
 
 **** DONE Captures
