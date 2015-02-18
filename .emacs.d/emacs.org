@@ -1232,6 +1232,7 @@ org-archive and configure it.
        (setq org-tag-alist '(
                             ("important" . ?i)
                             ("urgent" . ?u)
+                            ("ongoing" . ?o)   ;; ongoing "project", use to filter big project that are on the go
                             ("@home" . ?h)     ;; needs to be done at home
                             ("@work" . ?w)     ;; needs to be done at work
                             ("@client" . ?c)   ;; needs to be done at a client place (consulting..)
