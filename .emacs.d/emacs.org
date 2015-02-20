@@ -1039,17 +1039,17 @@ specifics will be defined in the corresponding language section.
 
 
        (setq org-todo-keyword-faces
-             (quote (("TODO" . org-todo)
+             (quote (("TODO(t!)" . org-todo)
                      ("PROGRESS" . org-progress)
                      ("BLOCKED" . org-blocked)
                      ("REVIEW" . org-review)
-                     ("DONE" . org-done)
+                     ("DONE(d!)" . org-done)
                      ("ARCHIVED" . org-done)
-                     ("CANCELLED" . org-cancelled)
-                     ("REPORT" . org-todo)
+                     ("CANCELLED(c!)" . org-cancelled)
+                     ("REPORT(r!)" . org-todo)
                      ("BUG" . org-blocked)
                      ("KNOWNCAUSE" . org-review)
-                     ("FIXED" . org-done))))
+                     ("FIXED(f!)" . org-done))))
 
        (setq org-todo-state-tags-triggers
              (quote (("CANCELLED" ("CANCELLED" . t)))))
@@ -1207,11 +1207,11 @@ Setup captures templates..
 
 Define some stuff for the /org-mobile/ synchronization. The
 =org-mobile-directory= is a on a remote ssh, defined in the
-=~/.emacs.d/user.el= file.
+=~/.emacs.d/user.el= file (using =(setq personal-org-mobile-directory "")=).
 
 #+BEGIN_SRC emacs-lisp
   (require 'org-mobile)
-  (setq org-mobile-directory 'personal-org-mobile-directory)
+  (setq org-mobile-directory personal-org-mobile-directory)
   (setq org-mobile-inbox-for-pull "~/desktop/org/todos/inbox.org")
   (setq org-mobile-files '("~/desktop/org/todos/"))
 #+END_SRC
