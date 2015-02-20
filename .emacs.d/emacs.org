@@ -503,7 +503,7 @@ white-space should be shown.
      built-in. Let's load it for potential needs.
 
      #+BEGIN_SRC emacs-lisp
-       (use-package 'notifications)
+       (use-package notifications)
      #+END_SRC
 
      You can use it like this =\o/=.
