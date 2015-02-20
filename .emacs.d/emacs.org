@@ -1033,23 +1033,23 @@ specifics will be defined in the corresponding language section.
          :group 'org-faces)
 
        (setq org-todo-keywords
-             (quote ((sequence "TODO(t)" "PROGRESS(p)" "BLOCKED" "REVIEW" "|" "DONE(d)" "ARCHIVED")
-                     (sequence "REPORT" "BUG" "KNOWNCAUSE" "|" "FIXED")
-                     (sequence "|" "CANCELLED"))))
+             (quote ((sequence "TODO(t!)" "PROGRESS(p!)" "BLOCKED" "REVIEW" "|" "DONE(d!)" "ARCHIVED")
+                     (sequence "REPORT(r!)" "BUG" "KNOWNCAUSE" "|" "FIXED(f!)")
+                     (sequence "|" "CANCELLED(c@)"))))
 
 
        (setq org-todo-keyword-faces
-             (quote (("TODO(t!)" . org-todo)
+             (quote (("TODO" . org-todo)
                      ("PROGRESS" . org-progress)
                      ("BLOCKED" . org-blocked)
                      ("REVIEW" . org-review)
-                     ("DONE(d!)" . org-done)
+                     ("DONE" . org-done)
                      ("ARCHIVED" . org-done)
-                     ("CANCELLED(c!)" . org-cancelled)
-                     ("REPORT(r!)" . org-todo)
+                     ("CANCELLED" . org-cancelled)
+                     ("REPORT" . org-todo)
                      ("BUG" . org-blocked)
                      ("KNOWNCAUSE" . org-review)
-                     ("FIXED(f!)" . org-done))))
+                     ("FIXED" . org-done))))
 
        (setq org-todo-state-tags-triggers
              (quote (("CANCELLED" ("CANCELLED" . t)))))
