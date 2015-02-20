@@ -10,12 +10,12 @@
                                                                      |_____|
 #+end_src
 
-This is my first attempt to create a readable, maintainable and self documented
-emacs configuration. I'm hopeful that using Org-Babel and a literate
-programming style will help.
+This is my first attempt to create a readable, maintainable and self
+documented emacs configuration. I'm hopeful that using Org-Babel and a
+literate programming style will help.
 
-There is a lot of inspiration for this file, I'm just gonna list the one I took
-the most of it :
+There is a lot of inspiration for this file, I'm just gonna list the
+one I took the most of it :
 
 - [[https://github.com/joodie/emacs-literal-config/blob/master/emacs.org][Joodie emacs-literal-config]]
 - [[https://github.com/dakrone/dakrone-dotfiles/blob/master/.emacs.d/settings.org][Dakrone emacs configuration]]
@@ -26,41 +26,41 @@ the most of it :
 - [[https://github.com/jkitchin/jmax][Johns customizations to maximize emacs (jmax)]]
 - [[https://github.com/jwiegley/dot-emacs][jwiegley dot-emacs]]
 
-This file is an /always/ work-in-progress, and is currently under *heavy* modifications.
-The latest version of this file is always available at my [[https://github.com/vdemeester/emacs-config][emacs-config]] github
-repository, the [[https://github.com/vdemeester/emacs-config/blob/master/.emacs.d/emacs.org][emacs.org]] file.
+This file is an /always/ work-in-progress, and is currently under
+*heavy* modifications. The latest version of this file is always
+available at my [[https://github.com/vdemeester/emacs-config][emacs-config]] github repository, the [[https://github.com/vdemeester/emacs-config/blob/master/.emacs.d/emacs.org][emacs.org]] file.
 
 * Configuration
-** How to my configuration
+** How to use my configuration
 
-You can obtain the source by cloning this repository somewhere, but the repository
-is made to work with [[https://github.com/RichiH/vcsh][vcsh]].
+   You can obtain the source by cloning this repository somewhere, but the repository
+   is made to work with [[https://github.com/RichiH/vcsh][vcsh]].
 
-#+BEGIN_SRC sh
+   #+BEGIN_SRC sh
   vcsh clone git://github.com/vdemeester/emacs-config emacs-config
-#+END_SRC
+   #+END_SRC
 
-If you don't want to use =vcsh= but still want to have my =.emacs.d= folder
-in your =$HOME=, you could link it like that :
+   If you don't want to use =vcsh= but still want to have my =.emacs.d= folder
+   in your =$HOME=, you could link it like that :
 
-#+BEGIN_SRC sh
+   #+BEGIN_SRC sh
   $ cd $HOME
   $ mkdir -p src
   $ git clone git://github.com/vdemeester/emacs-config src/vde-emacs-config
   $ ln -s src/vde-emacs-config/.emacs.d .
-#+END_SRC
+   #+END_SRC
 
 *** The =init.el=
 
-If you just want to get the =emacs.org= file, you will have to define and setup
-some stuff for this file to work with org-babel. You could take a look to my
-[[https://github.com/vdemeester/emacs-config/blob/master/.emacs.d/init.el][init.el]] file but let's show the main stuff.
+    If you just want to get the =emacs.org= file, you will have to define and setup
+    some stuff for this file to work with org-babel. You could take a look to my
+    [[https://github.com/vdemeester/emacs-config/blob/master/.emacs.d/init.el][init.el]] file but let's show the main stuff.
 
-First you will need to setup packages repository and define a =require-package=
-function, let's see what's in there (defined in =lisp/setup-package.el=).
+    First you will need to setup packages repository and define a =require-package=
+    function, let's see what's in there (defined in =lisp/setup-package.el=).
 
 
-#+BEGIN_SRC emacs-lisp :tangle no
+    #+BEGIN_SRC emacs-lisp :tangle no
   (require 'package)
 
   ;; add org to package repos
@@ -99,13 +99,13 @@ function, let's see what's in there (defined in =lisp/setup-package.el=).
   (fullframe list-packages quit-window)
 
   (provide 'setup-package)
-#+END_SRC
+    #+END_SRC
 
-Let's now see how I load the =emacs.org= file. In the following lines of code,
-I'm also ensuring that a recent version of [[http://orgmode.org/][org-mode]] is present on the system ;
-if not, I'm unload the current one, installing a recent one and load it.
+    Let's now see how I load the =emacs.org= file. In the following lines of code,
+    I'm also ensuring that a recent version of [[http://orgmode.org/][org-mode]] is present on the system ;
+    if not, I'm unload the current one, installing a recent one and load it.
 
-#+BEGIN_SRC emacs-lisp :tangle no
+    #+BEGIN_SRC emacs-lisp :tangle no
   ;; Support for Emacs 24 and higher only
   (let ((minver 24))
     (unless (>= emacs-major-version minver)
@@ -153,7 +153,7 @@ if not, I'm unload the current one, installing a recent one and load it.
                                              emacs-start-time))))
     (message "Loaded settings...done in %.3fs" elapsed))
 
-#+END_SRC
+    #+END_SRC
 
 ** Personal information
 
@@ -162,17 +162,17 @@ if not, I'm unload the current one, installing a recent one and load it.
            user-mail-address "vincent@demeester.fr")
    #+end_src
 
-Loads user settings if the file is available. I put all my personal modifications or sensitive information into this file.
+   Loads user settings if the file is available. I put all my personal modifications or sensitive information into this file.
 
-#+BEGIN_SRC emacs-lisp
+   #+BEGIN_SRC emacs-lisp
   (when (file-readable-p "~/.emacs.d/user.el")
     (load "~/.emacs.d/user.el"))
-#+END_SRC
+   #+END_SRC
 
-Same will goes with host-specific files and os-specific files.
+   Same will goes with host-specific files and os-specific files.
 
 
-#+BEGIN_SRC emacs-lisp
+   #+BEGIN_SRC emacs-lisp
   (setq FULLHOSTNAME (format "%s" system-name))
   (setq HOSTNAME (substring (system-name) 0 (string-match "\\." (system-name))))
 
@@ -183,7 +183,7 @@ Same will goes with host-specific files and os-specific files.
 
   (when (file-readable-p HOSTNAME-FILE)
     (load HOSTNAME-FILE))
-#+END_SRC
+   #+END_SRC
 
 ** General configuration
 *** Appearance
@@ -229,13 +229,16 @@ Same will goes with host-specific files and os-specific files.
 
 **** Fonts
 
+     I tend to install Ubuntu font family on all my computers, I like
+     it :).
+
      #+begin_src emacs-lisp
-(set-default-font "Ubuntu Mono-12")
-(set-frame-font "Ubuntu Mono-12")
-(set-face-attribute 'default nil :family "Ubuntu Mono" :height 110)
+       (set-default-font "Ubuntu Mono-12")
+       (set-frame-font "Ubuntu Mono-12")
+       (set-face-attribute 'default nil :family "Ubuntu Mono" :height 110)
      #+end_src
 
-This will set Symbola as fallback-font for Emojis when it is available for the created frame.
+     This will set Symbola as fallback-font for Emojis when it is available for the created frame.
 
      #+BEGIN_SRC emacs-lisp
        (defun my-after-make-frame (frame)
@@ -260,26 +263,21 @@ This will set Symbola as fallback-font for Emojis when it is available for the c
 
      ... and load it.
      #+begin_src emacs-lisp
-       (load-theme 'leuven t)
+       (load-theme 'leuven)
        (set-face-attribute 'org-level-1 nil :height 120)
        ;;(if window-system
        ;;    (enable-theme 'leuven)
        ;;  (enable-theme 'junio))
      #+end_src
 
-     When interactively changing the theme (using M-x load-theme), the current custom theme is not disabled. This often gives weird-looking results; we can advice load-theme to always disable themes currently enabled themes.
-
-     #+BEGIN_SRC emacs-lisp
-(defadvice load-theme
-  (before disable-before-load (theme &optional no-confirm no-enable) activate)
-  (mapc 'disable-theme custom-enabled-themes))
-     #+END_SRC
-
      Let's also install something to have different themes by buffers.
 
      #+BEGIN_SRC emacs-lisp
-       (require-package 'load-theme-buffer-local)
-     #+END_SRC
+       ;; Temporarly deactivate this as it is bugged on MELPA
+       ;; (require-package 'load-theme-buffer-local)
+       (require-package 'noflet)
+       (require 'load-theme-buffer-local)
+       #+END_SRC
 
 ***** TODO Specific theme for modes
 
@@ -296,13 +294,13 @@ This will set Symbola as fallback-font for Emojis when it is available for the c
     First thing first, let's define a shortcuts for editing this configuration.
 
 
-#+BEGIN_SRC emacs-lisp
+    #+BEGIN_SRC emacs-lisp
       (defun my/edit-emacs-configuration ()
         (interactive)
         (find-file "~/.emacs.d/emacs.org"))
 
       (global-set-key "\C-ce" 'my/edit-emacs-configuration)
-#+END_SRC
+    #+END_SRC
 
 
     Although I don't really care, let's add a new line at the end of files.
@@ -312,11 +310,11 @@ This will set Symbola as fallback-font for Emojis when it is available for the c
       (setq require-final-newline t)
     #+end_src
 
-Answering yes and no to each question from Emacs can be tedious, a single y or n will suffice.
+    Answering yes and no to each question from Emacs can be tedious, a single y or n will suffice.
 
-#+BEGIN_SRC emacs-lisp
+    #+BEGIN_SRC emacs-lisp
   (fset 'yes-or-no-p 'y-or-n-p)
-#+END_SRC
+    #+END_SRC
 
     Add some macros to be able to conditionnally load stuff (taken
     from [[http://emacs-fu.blogspot.fr/2008/12/using-packages-functions-only-if-they.html][emacs-fu]].
@@ -482,14 +480,14 @@ white-space should be shown.
 
 **** DONE Search
 
-Make isearch-forward put the cursor at the start of the search, not the end, so that isearch can be used for navigation. See also http://www.emacswiki.org/emacs/IsearchOtherEnd.
+     Make isearch-forward put the cursor at the start of the search, not the end, so that isearch can be used for navigation. See also http://www.emacswiki.org/emacs/IsearchOtherEnd.
 
 
-#+BEGIN_SRC emacs-lisp
+     #+BEGIN_SRC emacs-lisp
   (defun my-isearch-goto-match-beginning ()
     (when (and isearch-forward (not isearch-mode-end-hook-quit)) (goto-char isearch-other-end)))
   (add-hook 'isearch-mode-end-hook 'my-isearch-goto-match-beginning)
-#+END_SRC
+     #+END_SRC
 
 
 **** DONE Notifications
@@ -622,13 +620,13 @@ Make isearch-forward put the cursor at the start of the search, not the end, so 
 
 *** Server mode
 
-Start a server in not already running. I usually start emacs as a
-daemon when at the start of the computer, but you never know =;-)=.
+    Start a server in not already running. I usually start emacs as a
+    daemon when at the start of the computer, but you never know =;-)=.
 
-I have an error about /unsafe directory/ for =/tmp/emacs100=, that's
-why the advice is there, to ignore the error (from [[http://stackoverflow.com/a/17069276/89249][stackoverflow]]).
+    I have an error about /unsafe directory/ for =/tmp/emacs100=, that's
+    why the advice is there, to ignore the error (from [[http://stackoverflow.com/a/17069276/89249][stackoverflow]]).
 
-#+BEGIN_SRC emacs-lisp
+    #+BEGIN_SRC emacs-lisp
   (defadvice server-ensure-safe-dir (around
                                      my-around-server-ensure-safe-dir
                                      activate)
@@ -641,16 +639,16 @@ why the advice is there, to ignore the error (from [[http://stackoverflow.com/a/
                     'listen)))
       (unless (server-running-p server-name)
         (server-start))))
-#+END_SRC
+    #+END_SRC
 
 ** TODO Modes
 *** DONE Discover my major
 
-#+BEGIN_QUOTE
+    #+BEGIN_QUOTE
     Discover key bindings and their meaning for the current Emacs major mode.
 
     The command is inspired by discover.el and also uses the makey library. I thought, “Hey! Why not parse the information about the major mode bindings somehow and display that like discover.el does…”
-#+END_QUOTE
+    #+END_QUOTE
 
 
     #+BEGIN_SRC emacs-lisp
@@ -715,11 +713,11 @@ We bind the old ~M-x~ command to another, more complicated keys.
 
 **** TODO helm
 
-#+BEGIN_QUOTE
-Helm is incremental completion and selection narrowing framework for Emacs. It will help steer you in the right direction when you’re looking for stuff in Emacs (like buffers, files, etc).
+     #+BEGIN_QUOTE
+     Helm is incremental completion and selection narrowing framework for Emacs. It will help steer you in the right direction when you’re looking for stuff in Emacs (like buffers, files, etc).
 
-Helm is a fork of anything.el originaly written by Tamas Patrovic and can be considered to be its successor. Helm sets out to clean up the legacy code in anything.el and provide a cleaner, leaner and more modular tool, that’s not tied in the trap of backward compatibility.
-#+END_QUOTE
+     Helm is a fork of anything.el originaly written by Tamas Patrovic and can be considered to be its successor. Helm sets out to clean up the legacy code in anything.el and provide a cleaner, leaner and more modular tool, that’s not tied in the trap of backward compatibility.
+     #+END_QUOTE
 
      #+begin_src emacs-lisp
        (require-package 'helm)
@@ -755,9 +753,9 @@ Helm is a fork of anything.el originaly written by Tamas Patrovic and can be con
 
 ***** DONE helm-google
 
-#+BEGIN_QUOTE
+      #+BEGIN_QUOTE
       Emacs Helm Interface for quick Google searches
-#+END_QUOTE
+      #+END_QUOTE
 
       #+BEGIN_SRC emacs-lisp
         (require-package 'helm-google)
@@ -826,21 +824,21 @@ Helm is a fork of anything.el originaly written by Tamas Patrovic and can be con
 *** TODO Version control integration
 **** TODO Git
 
-#+begin_src emacs-lisp
+     #+begin_src emacs-lisp
   (require-package 'git-commit-mode)
   (require-package 'git-rebase-mode)
   (require-package 'gitignore-mode)
   (require-package 'gitconfig-mode)
   (require-package 'gitattributes-mode)
-#+end_src
+     #+end_src
 
 
 ***** TODO magit
 
-#+begin_src emacs-lisp
+      #+begin_src emacs-lisp
         (require-package 'magit)
         (global-set-key "\C-cg" 'magit-status)
-#+end_src
+      #+end_src
 
 ****** DONE Magit git-svn integration
 
@@ -855,11 +853,11 @@ Helm is a fork of anything.el originaly written by Tamas Patrovic and can be con
        The /quick key/ to get the ~magit-svn~ menu is ~N~.
 ***** TODO git fringe decoration
 
-#+begin_src emacs-lisp
+      #+begin_src emacs-lisp
      (when (window-system)
        (require-package 'git-gutter-fringe)
        (global-git-gutter-mode +1))
-#+end_src emacs-lisp
+      #+end_src emacs-lisp
 
 ***** DONE git-annex
 
@@ -878,19 +876,19 @@ Helm is a fork of anything.el originaly written by Tamas Patrovic and can be con
 
 ***** TODO gitty
 ***** DONE git-timemachine
-I recently discovered an extremely cool package called git-timemachine that allows you to step though the git history of the file you’re currently editing in Emacs.
+      I recently discovered an extremely cool package called git-timemachine that allows you to step though the git history of the file you’re currently editing in Emacs.
 
-#+BEGIN_SRC emacs-lisp
+      #+BEGIN_SRC emacs-lisp
         (require-package 'git-timemachine)
-#+END_SRC
+      #+END_SRC
 
 
 ***** TODO git-blame
 
 
-#+BEGIN_SRC emacs-lisp
+      #+BEGIN_SRC emacs-lisp
         (require-package 'git-blame)
-#+END_SRC
+      #+END_SRC
 
 
 ***** TODO github
@@ -899,15 +897,15 @@ I recently discovered an extremely cool package called git-timemachine that allo
 **** TODO Mercurial
 *** DONE highlight-symbol
 
-#+BEGIN_QUOTE
-Automatic and manual symbol highlighting for Emacs
-#+END_QUOTE
+    #+BEGIN_QUOTE
+    Automatic and manual symbol highlighting for Emacs
+    #+END_QUOTE
 
-Highlights the word/symbol at point and any other occurrences in
-view. Also allows to jump to the next or previous occurrence.
+    Highlights the word/symbol at point and any other occurrences in
+    view. Also allows to jump to the next or previous occurrence.
 
 
-#+BEGIN_SRC emacs-lisp
+    #+BEGIN_SRC emacs-lisp
   (require-package 'highlight-symbol)
   (setq highlight-symbol-on-navigation-p t)
   (add-hook 'prog-mode-hook 'highlight-symbol-mode)
@@ -916,12 +914,12 @@ view. Also allows to jump to the next or previous occurrence.
   (global-set-key [f3] 'highlight-symbol-next)
   (global-set-key [(shift f3)] 'highlight-symbol-prev)
   (global-set-key [(meta f3)] 'highlight-symbol-query-replace)
-#+END_SRC
+    #+END_SRC
 
 *** DONE move-text
 
-Allows to move the current line or region up/down. The source code is
-on the Wiki: http://www.emacswiki.org/emacs/move-text.el
+    Allows to move the current line or region up/down. The source code is
+    on the Wiki: http://www.emacswiki.org/emacs/move-text.el
 
     #+BEGIN_SRC emacs-lisp
       (require-package 'move-text)
@@ -930,29 +928,29 @@ on the Wiki: http://www.emacswiki.org/emacs/move-text.el
 
 *** DONE multiple-cursors
 
-Multiple cursors for Emacs, this is a pretty /badass/ functionnality.
+    Multiple cursors for Emacs, this is a pretty /badass/ functionnality.
 
-#+BEGIN_SRC emacs-lisp
+    #+BEGIN_SRC emacs-lisp
   (require-package 'multiple-cursors)
   (global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
   (global-set-key (kbd "C->") 'mc/mark-next-like-this)
   (global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
   (global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
-#+END_SRC
+    #+END_SRC
 
 
 *** TODO Flycheck
 
-#+BEGIN_QUOTE
-Flycheck is a modern on-the-fly syntax checking extension for GNU Emacs 24, intended as replacement for the older Flymake extension which is part of GNU Emacs.
+    #+BEGIN_QUOTE
+    Flycheck is a modern on-the-fly syntax checking extension for GNU Emacs 24, intended as replacement for the older Flymake extension which is part of GNU Emacs.
 
-It uses various syntax checking and linting tools to check the contents of buffers, and reports warnings and errors directly in the buffer, or in an optional error list.
-#+END_QUOTE
+    It uses various syntax checking and linting tools to check the contents of buffers, and reports warnings and errors directly in the buffer, or in an optional error list.
+    #+END_QUOTE
 
-Let's install it and configure it for the common part. The language
-specifics will be defined in the corresponding language section.
+    Let's install it and configure it for the common part. The language
+    specifics will be defined in the corresponding language section.
 
-#+BEGIN_SRC emacs-lisp
+    #+BEGIN_SRC emacs-lisp
   (require-package 'flycheck)
   ;; (add-hook 'prog-mode-hook 'flycheck-mode)
   (add-hook 'after-init-hook #'global-flycheck-mode)
@@ -960,7 +958,7 @@ specifics will be defined in the corresponding language section.
   (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc)) ;disable the annoying doc checker
 
   (setq flycheck-indication-mode 'right-fringe)
-#+END_SRC
+    #+END_SRC
 
 *** DONE Org
 
@@ -996,13 +994,13 @@ specifics will be defined in the corresponding language section.
 - =TODO= : task not started yet, part of the backlog :)
 - =PROGRESS= : task that are currently in progress, should be a minimum
 - =BLOCKED= : task that I start working on but cannot anymore (for
-      some reason), thus they are blocked
+  some reason), thus they are blocked
 - =REVIEW= : task that should be done, but I need or wait for a
-      review (by someone else or by me)
+  review (by someone else or by me)
 - =DONE= : task that are completed.
 - =ARCHIVED= : same as done but keep it here (and not moving into archive)
 
-     #+begin_src emacs-lisp
+  #+begin_src emacs-lisp
        (defface org-progress ; font-lock-warning-face
          (org-compatible-face nil
            '((((class color) (min-colors 16) (background light)) (:foreground "#A197BF" :bold t :background "#E8E6EF" :box (:line-width 1 :color "#A197BF")))
@@ -1053,35 +1051,35 @@ specifics will be defined in the corresponding language section.
 
        (setq org-todo-state-tags-triggers
              (quote (("CANCELLED" ("CANCELLED" . t)))))
-     #+end_src
+  #+end_src
 
-     Undefine some binding (=C-c [=, =C-c ]= since this breaks org-agenda files that
-     have been defined in this file (a directory).
+  Undefine some binding (=C-c [=, =C-c ]= since this breaks org-agenda files that
+  have been defined in this file (a directory).
 
-     #+begin_src emacs-lisp
+  #+begin_src emacs-lisp
        (add-hook 'org-mode-hook
                  '(lambda ()
                     (org-defkey org-mode-map "\C-c[" 'undefined)
                     (org-defkey org-mode-map "\C-c]" 'undefined)
                     (org-defkey org-mode-map "\C-c;" 'undefined))
                  'append)
-     #+end_src
+  #+end_src
 
-     All org-mode buffers will be automatically saved each hours.
+  All org-mode buffers will be automatically saved each hours.
 
-     #+BEGIN_SRC emacs-lisp
+  #+BEGIN_SRC emacs-lisp
        (run-at-time "00:59" 3600 'org-save-all-org-buffers)
-     #+END_SRC
+  #+END_SRC
 
-     And add some miscellaneous stuff.
+  And add some miscellaneous stuff.
 
-     #+BEGIN_SRC emacs-lisp
+  #+BEGIN_SRC emacs-lisp
        (setq
         org-completion-use-ido t         ;; use IDO for completion
         org-cycle-separator-lines 0      ;; Don't show blank lines
         org-catch-invisible-edits 'error ;; don't edit invisible text
         )
-     #+END_SRC
+  #+END_SRC
 
 **** DONE Speed commands
 
@@ -1147,13 +1145,13 @@ specifics will be defined in the corresponding language section.
 
 **** DONE Captures
 
-First thing first, bind a key sequence to org-capture.
+     First thing first, bind a key sequence to org-capture.
 
      #+BEGIN_SRC emacs-lisp
        (global-set-key (kbd "C-c r") 'org-capture)
      #+END_SRC
 
-Setup captures templates..
+     Setup captures templates..
 
      #+BEGIN_SRC emacs-lisp
        (setq org-capture-templates
@@ -1205,20 +1203,20 @@ Setup captures templates..
 **** TODO Templates
 **** DONE Mobile
 
-Define some stuff for the /org-mobile/ synchronization. The
-=org-mobile-directory= is a on a remote ssh, defined in the
-=~/.emacs.d/user.el= file (using =(setq personal-org-mobile-directory "")=).
+     Define some stuff for the /org-mobile/ synchronization. The
+     =org-mobile-directory= is a on a remote ssh, defined in the
+     =~/.emacs.d/user.el= file (using =(setq personal-org-mobile-directory "")=).
 
-#+BEGIN_SRC emacs-lisp
+     #+BEGIN_SRC emacs-lisp
   (require 'org-mobile)
   (setq org-mobile-directory personal-org-mobile-directory)
   (setq org-mobile-inbox-for-pull "~/desktop/org/todos/inbox.org")
   (setq org-mobile-files '("~/desktop/org/todos/"))
-#+END_SRC
+     #+END_SRC
 **** DONE Archives
 
-We want to be able to archive some /done/ projects. Let's load
-org-archive and configure it.
+     We want to be able to archive some /done/ projects. Let's load
+     org-archive and configure it.
 
      #+BEGIN_SRC emacs-lisp
        (require 'org-archive)
@@ -1255,27 +1253,27 @@ org-archive and configure it.
      Note that =important= and =urgent= helps me prioritize my
      /todos/, in a /quadrant fashion way/.
 
-| Important          | *Kaizen*        | *Panic*             |
-| /tag important/    | improvements    | emergency           |
-|--------------------+-----------------+---------------------|
-| Less Important     | *Organics*      | Social *investment* |
-| /no tag important/ | inspiration     | Social activities   |
-|--------------------+-----------------+---------------------|
-|                    | Less Urgent     | Urgent              |
-|                    | /no tag urgent/ | /tag urgent/        |
+     | Important          | *Kaizen*        | *Panic*             |
+     | /tag important/    | improvements    | emergency           |
+     |--------------------+-----------------+---------------------|
+     | Less Important     | *Organics*      | Social *investment* |
+     | /no tag important/ | inspiration     | Social activities   |
+     |--------------------+-----------------+---------------------|
+     |                    | Less Urgent     | Urgent              |
+     |                    | /no tag urgent/ | /tag urgent/        |
 
 
 **** TODO Time tracking & Pomodoros
 **** DONE Agenda(s)
 
-First thing first, bind a key sequence to org-agenda.
+     First thing first, bind a key sequence to org-agenda.
 
      #+BEGIN_SRC emacs-lisp
        (global-set-key (kbd "C-c a") 'org-agenda)
      #+END_SRC
 
-Then set custom agendas.. For the syntax, look in worg : [[http://orgmode.org/worg/org-tutorials/advanced-searching.html][Advanced
-searching]] and [[http://orgmode.org/worg/org-tutorials/org-custom-agenda-commands.html][Custom Agenda Commands]].
+     Then set custom agendas.. For the syntax, look in worg : [[http://orgmode.org/worg/org-tutorials/advanced-searching.html][Advanced
+     searching]] and [[http://orgmode.org/worg/org-tutorials/org-custom-agenda-commands.html][Custom Agenda Commands]].
 
      #+BEGIN_SRC emacs-lisp
        (setq org-agenda-custom-commands
@@ -1396,44 +1394,44 @@ searching]] and [[http://orgmode.org/worg/org-tutorials/org-custom-agenda-comman
 
 **** Perspective
 
-    [[https://github.com/nex3/perspective-el][Perspective]] is a minor mode that provides the ability to manage
-    different workspaces. It integrates well with projectile.
+     [[https://github.com/nex3/perspective-el][Perspective]] is a minor mode that provides the ability to manage
+     different workspaces. It integrates well with projectile.
 
-    #+BEGIN_SRC emacs-lisp
+     #+BEGIN_SRC emacs-lisp
       (require-package 'perspective)
       (require-package 'persp-projectile)
-    #+END_SRC
+     #+END_SRC
 
-    Let's configure it and map it.
+     Let's configure it and map it.
 
-    #+BEGIN_SRC emacs-lisp
+     #+BEGIN_SRC emacs-lisp
       (persp-mode)
       (require 'persp-projectile)
       (define-key projectile-mode-map (kbd "s-s") 'projectile-persp-switch-project)
-    #+END_SRC
+     #+END_SRC
 
 
 *** DONE Compilation mode improvements
 
-See http://stackoverflow.com/questions/3072648/cucumbers-ansi-colors-messing-up-emacs-compilation-buffer
+    See http://stackoverflow.com/questions/3072648/cucumbers-ansi-colors-messing-up-emacs-compilation-buffer
 
 
-#+BEGIN_SRC emacs-lisp
+    #+BEGIN_SRC emacs-lisp
   (require 'ansi-color)
   (defun my/colorize-compilation-buffer ()
     (toggle-read-only)
     (ansi-color-apply-on-region (point-min) (point-max))
     (toggle-read-only))
   (add-hook 'compilation-filter-hook 'my/colorize-compilation-buffer)
-#+END_SRC
+    #+END_SRC
 
-And let's configure the compilation-mode to follow the compilation, not waiting
-at the top..
+    And let's configure the compilation-mode to follow the compilation, not waiting
+    at the top..
 
 
-#+BEGIN_SRC emacs-lisp
+    #+BEGIN_SRC emacs-lisp
   (setq compilation-scroll-output t)
-#+END_SRC
+    #+END_SRC
 
 *** TODO Lua
 
@@ -1461,24 +1459,25 @@ at the top..
 *** TODO Lisp(s)
 **** TODO General
 
-Let's install some LISP common useful modes.
+     Let's install some LISP common useful modes.
 
-#+BEGIN_SRC emacs-lisp
+     #+BEGIN_SRC emacs-lisp
   (require-package 'paredit)
   (require-package 'rainbow-mode)
   (require-package 'rainbow-delimiters)
   (require-package 'highlight-parentheses)
-#+END_SRC
+     #+END_SRC
 
-And define a comme lisp hook for all LISP-related prog-modes, mostly about
-parentheses.
+     And define a comme lisp hook for all LISP-related prog-modes, mostly about
+     parentheses.
 
-#+BEGIN_SRC emacs-lisp
-  (defun my/lisps-mode-hook ()
-    (paredit-mode t)
-    (rainbow-delimiters-mode t)
-    (highlight-parentheses-mode t))
-#+END_SRC
+     #+BEGIN_SRC emacs-lisp
+       (defun my/lisps-mode-hook ()
+         (paredit-mode t)
+         (rainbow-delimiters-mode t)
+         (highlight-parentheses-mode t)
+         )
+     #+END_SRC
 
 **** TODO Emacs lisp
 
@@ -1515,27 +1514,28 @@ parentheses.
 
 *** TODO Ruby
 
-I don't really use [[https://www.ruby-lang.org/][Ruby]] that much but when I need to work on a Ruby project
-I want to have a decent configuration.
+    I don't really use [[https://www.ruby-lang.org/][Ruby]] that much but when I need to work on a Ruby project
+    I want to have a decent configuration.
 
-Tell Emacs rake, bundler files and =*.erb= are Ruby files.
+    Tell Emacs rake, bundler files and =*.erb= are Ruby files.
 
-#+BEGIN_SRC emacs-lisp
+    #+BEGIN_SRC emacs-lisp
   (dolist (exp '("Rakefile\\'" "\\.rake\\'" "Gemfile\\'" "\\.erb\\'"))
     (add-to-list 'auto-mode-alist
                  (cons exp 'ruby-mode)))
-#+END_SRC
+    #+END_SRC
 
-*** TODO Shell(s)
-**** DONE Theme
+*** Compilation mode
 
      Let's use a local theme for the shells.
 
      #+BEGIN_SRC emacs-lisp
-       ;;(defun my/term-theme-hook ()
-       ;;  (load-theme-buffer-local 'dakrone))
-       ;;(add-hook 'term-mode-hook 'my/term-theme-hook)
+       (defun my/compilation-theme-hook ()
+         (load-theme-buffer-local 'wombat))
+       (add-to-list 'compilation-mode-hook 'my/compilation-theme-hook t)
      #+END_SRC
+
+*** TODO Shell(s)
 
 *** TODO Go
 
@@ -1583,18 +1583,18 @@ Tell Emacs rake, bundler files and =*.erb= are Ruby files.
 
 *** TODO Ansible
 
-[[http://docs.ansible.com/index.html][Ansible]] is a great automation tool I use to manage my servers and
-desktops.
+    [[http://docs.ansible.com/index.html][Ansible]] is a great automation tool I use to manage my servers and
+    desktops.
 
-#+BEGIN_SRC emacs-lisp
+    #+BEGIN_SRC emacs-lisp
   (require-package 'ansible)
   (add-hook 'yaml-mode-hook '(lambda () (ansible 1)))
-#+END_SRC
+    #+END_SRC
 
-The following snippet is taken from [[http://www.lunaryorn.com/2014/07/18/ansible-docs-in-emacs.html][lunaryorn article]] about getting
-ansible doc in emacs.
+    The following snippet is taken from [[http://www.lunaryorn.com/2014/07/18/ansible-docs-in-emacs.html][lunaryorn article]] about getting
+    ansible doc in emacs.
 
-#+BEGIN_SRC emacs-lisp
+    #+BEGIN_SRC emacs-lisp
   (defconst lunaryorn-ansible-doc-buffer " *Ansible Doc*"
     "The Ansible Doc buffer.")
 
@@ -1627,14 +1627,14 @@ ansible doc in emacs.
           (call-process "ansible-doc" nil t t module))
         (goto-char (point-min)))
       (display-buffer buffer)))
-#+END_SRC
+    #+END_SRC
 
-Let's bind it.
+    Let's bind it.
 
-#+BEGIN_SRC emacs-lisp
+    #+BEGIN_SRC emacs-lisp
   (eval-after-load 'yaml-mode
     '(define-key yaml-mode-map (kbd "C-c h a") 'lunaryorn-ansible-doc))
-#+END_SRC
+    #+END_SRC
 
 *** DONE vim
 
