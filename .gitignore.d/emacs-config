@@ -14,6 +14,8 @@
 .emacs.d/bookmarks
 .emacs.d/projectile-bookmarks.eld
 .emacs.d/projectile.cache
+.emacs.d/persp-confs/
+.emacs.d/tramp
 *.elc
 .emacs.d/el-get
 .emacs.d/auto-save-list
