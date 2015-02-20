@@ -5,6 +5,7 @@
 
 ;; add melpa and melpa-stable to package repos
 (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
+(add-to-list 'package-archives '("mela-stable" . "http://stable.melpa.org/packages/"))
 
 ;; If gpg cannot be found, signature checking will fail, so we
 ;; conditionnally enable it according wether gpg is availabel.
@@ -22,17 +23,24 @@ re-downloaded in order to locate PACKAGE."
   (if (package-installed-p package min-version)
       t
     (if (or (assoc package package-archive-contents) no-refresh)
-	(package-install package)
+        (package-install package)
       (progn
-	(when (not package-archive-contents)
-	  (package-refresh-contents))
-	(require-package package min-version t)))))
+        (when (not package-archive-contents)
+          (package-refresh-contents))
+        (require-package package min-version t)))))
 
 ;; Fire up package.el
 (package-initialize)
 
+;; Require use-package
+(require-package 'use-package)
+(require 'use-package)
+
 ;; install fullframe for list-packages
-(require-package 'fullframe)
-(fullframe list-packages quit-window)
+(use-package fullframe
+             :init
+             (progn
+               (fullframe list-packages quit-window))
+             :ensure t)
 
 (provide 'setup-package)

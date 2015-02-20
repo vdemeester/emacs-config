@@ -253,31 +253,30 @@ available at my [[https://github.com/vdemeester/emacs-config][emacs-config]] git
 
 **** Themes
 
-     First let's install the theme(s)...
+     First let's install the theme(s) and load the new theme
 
      #+begin_src emacs-lisp
-       (require-package 'sublime-themes)
-       (require-package 'leuven-theme)
-       (require-package 'dakrone-theme)
-     #+end_src
-
-     ... and load it.
-     #+begin_src emacs-lisp
-       (load-theme 'leuven)
-       (set-face-attribute 'org-level-1 nil :height 120)
-       ;;(if window-system
-       ;;    (enable-theme 'leuven)
-       ;;  (enable-theme 'junio))
+       (use-package sublime-themes
+                    :ensure t
+                    :defer t)
+       (use-package dakrone-theme
+                    :ensure t
+                    :defer t)
+       (use-package leuven-theme
+                    :ensure t
+                    :init
+                    (load-theme 'leuven))
      #+end_src
 
      Let's also install something to have different themes by buffers.
 
      #+BEGIN_SRC emacs-lisp
        ;; Temporarly deactivate this as it is bugged on MELPA
-       ;; (require-package 'load-theme-buffer-local)
-       (require-package 'noflet)
+       ;; (use-package load-theme-buffer-local)
+       (use-package noflet
+                    :ensure t)
        (require 'load-theme-buffer-local)
-       #+END_SRC
+     #+END_SRC
 
 ***** TODO Specific theme for modes
 
@@ -286,8 +285,10 @@ available at my [[https://github.com/vdemeester/emacs-config][emacs-config]] git
      We are going to use [[https://github.com/milkypostman/powerline][powerline]] because it is way more sexy than the default modeline design.
 
      #+begin_src emacs-lisp
-(require-package 'powerline)
-(powerline-default-theme)
+       (use-package powerline
+                    :ensure t
+                    :init
+                    (powerline-default-theme))
      #+end_src
 *** Behaviour
 
@@ -336,17 +337,17 @@ available at my [[https://github.com/vdemeester/emacs-config][emacs-config]] git
      Make sur that we use ~utf-8~ by default.
 
      #+begin_src emacs-lisp
-(set-terminal-coding-system 'utf-8)
-(set-keyboard-coding-system 'utf-8)
-(set-language-environment "UTF-8")
-(prefer-coding-system 'utf-8)
+       (set-terminal-coding-system 'utf-8)
+       (set-keyboard-coding-system 'utf-8)
+       (set-language-environment "UTF-8")
+       (prefer-coding-system 'utf-8)
      #+end_src
 
 **** DONE Mouse
      Move the mouse away to not bother.
 
      #+begin_src emacs-lisp
-(mouse-avoidance-mode 'jump)
+       (mouse-avoidance-mode 'jump)
      #+end_src
 **** DONE Backup files
 
@@ -368,18 +369,18 @@ available at my [[https://github.com/vdemeester/emacs-config][emacs-config]] git
      Now that all the temporary files are out of the way, we can keep more of them.
 
      #+begin_src emacs-lisp
-(setq delete-old-versions t
-      kept-new-versions 6
-      kept-old-versions 2
-      version-control t)
+       (setq delete-old-versions t
+             kept-new-versions 6
+             kept-old-versions 2
+             version-control t)
      #+end_src
 **** DONE Buffer names
 
      Setup uniquify so that non-unique buffer names get the parent path included to make them unique.
 
      #+begin_src emacs-lisp
-(require 'uniquify)
-(setq uniquify-buffer-name-style 'forward)
+       (use-package uniquify)
+       (setq uniquify-buffer-name-style 'forward)
      #+end_src
 
 **** DONE Formatting
@@ -388,7 +389,7 @@ available at my [[https://github.com/vdemeester/emacs-config][emacs-config]] git
      will thank me for that).
 
      #+begin_src emacs-lisp
-(setq-default indent-tabs-mode nil)
+       (setq-default indent-tabs-mode nil)
      #+end_src
 
      Let's define a few /cleaning/ functions :
@@ -396,17 +397,17 @@ available at my [[https://github.com/vdemeester/emacs-config][emacs-config]] git
 - untabify the buffer
 
 #+begin_src emacs-lisp
-(defun my/untabify-buffer ()
-  (interactive)
-  (untabify (point-min) (point-max)))
+  (defun my/untabify-buffer ()
+    (interactive)
+    (untabify (point-min) (point-max)))
 #+end_src
 
 - ident the buffer, using the mode indentation stuff
 
 #+begin_src emacs-lisp
-(defun my/indent-buffer ()
-  (interactive)
-  (indent-region (point-min) (point-max)))
+  (defun my/indent-buffer ()
+    (interactive)
+    (indent-region (point-min) (point-max)))
 #+end_src
 
 - cleanup the buffer
@@ -453,9 +454,11 @@ white-space should be shown.
      =->= becomes =→=.
 
      #+BEGIN_SRC emacs-lisp
-       (require-package 'pretty-mode)
-       (add-hook 'prog-mode-hook
-                 'turn-on-pretty-mode)
+       (use-package pretty-mode
+                    :ensure t
+                    :init
+                    (add-hook 'prog-mode-hook
+                              'turn-on-pretty-mode))
      #+END_SRC
 
 **** DONE raindow-identifiers
@@ -465,9 +468,11 @@ white-space should be shown.
 
 
      #+BEGIN_SRC emacs-lisp
-       (require-package 'rainbow-identifiers)
-       (add-hook 'prog-mode-hook
-                 (lambda() (rainbow-identifiers-mode)))
+       (use-package rainbow-identifiers
+                    :ensure t
+                    :init
+                    (add-hook 'prog-mode-hook
+                              (lambda () (rainbow-identifiers-mode))))
      #+END_SRC
 **** DONE Dired
 
@@ -475,7 +480,10 @@ white-space should be shown.
 
 
      #+BEGIN_SRC emacs-lisp
-       (require-package 'dired+)
+       (setq diredp-hide-details-initially-flag nil)
+       (use-package dired+
+                    :ensure t
+                    :init)
      #+END_SRC
 
 **** DONE Search
@@ -495,8 +503,19 @@ white-space should be shown.
      built-in. Let's load it for potential needs.
 
      #+BEGIN_SRC emacs-lisp
-       (require 'notifications)
+       (use-package 'notifications)
      #+END_SRC
+
+     You can use it like this =\o/=.
+
+     #+BEGIN_SRC emacs-lisp :tangle no
+       (notifications-notify
+           :title "You've got mail!"
+           :body "There's 34 mails unread"
+           :app-icon "~/.emacs.d/icons/mail.png"
+           :urgency 'low)
+     #+END_SRC
+
 
 **** DONE Zoom(ing)
 
@@ -1527,13 +1546,13 @@ We bind the old ~M-x~ command to another, more complicated keys.
 
 *** Compilation mode
 
-     Let's use a local theme for the shells.
+    Let's use a local theme for the shells.
 
-     #+BEGIN_SRC emacs-lisp
+    #+BEGIN_SRC emacs-lisp
        (defun my/compilation-theme-hook ()
          (load-theme-buffer-local 'wombat))
        (add-to-list 'compilation-mode-hook 'my/compilation-theme-hook t)
-     #+END_SRC
+    #+END_SRC
 
 *** TODO Shell(s)
 
