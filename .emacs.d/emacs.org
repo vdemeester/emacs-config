@@ -578,7 +578,8 @@ white-space should be shown.
      exacty what we need. It also few /extensions/.
 
      #+BEGIN_SRC emacs-lisp
-       (require-package 'evil)
+       (use-package evil
+         :ensure t)
      #+END_SRC
 
      Let's change the default cursor colours to easily identify wich
@@ -599,15 +600,18 @@ white-space should be shown.
        (setq evil-search-module 'evil-search)
      #+END_SRC
 
-***** DONE evil-leader
+***** evil-leader
 
       The [[https://github.com/cofi/evil-leader][evil-leader]] extension provides the <leader> feature from Vim
       that provides an easy way to bind keys under a variable prefix
       key.
 
       #+BEGIN_SRC emacs-lisp
-        (require-package 'evil-leader)
-        (global-evil-leader-mode t)
+        (use-package evil-leader
+          :ensure t
+          :requires evil
+          :init
+          (global-evil-leader-mode t))
 
         (evil-leader/set-leader ",")
         (evil-leader/set-key
@@ -616,24 +620,29 @@ white-space should be shown.
           "k" 'kill-buffer)
       #+END_SRC
 
-***** DONE evil-args
+***** evil-args
 
       The [[https://github.com/wcsmith/evil-args][evil-args]] extension provides motions and text objects for
       delimited arguments in Evil.
 
 
       #+BEGIN_SRC emacs-lisp
-        (require-package 'evil-args)
-        ;; bind evil-args text objects
-        (define-key evil-inner-text-objects-map "a" 'evil-inner-arg)
-        (define-key evil-outer-text-objects-map "a" 'evil-outer-arg)
-        ;; bind evil-forward/backward-args
-        (define-key evil-normal-state-map "L" 'evil-forward-arg)
-        (define-key evil-normal-state-map "H" 'evil-backward-arg)
-        (define-key evil-motion-state-map "L" 'evil-forward-arg)
-        (define-key evil-motion-state-map "H" 'evil-backward-arg)
-        ;; bind evil-jump-out-args
-        (define-key evil-normal-state-map "K" 'evil-jump-out-args)
+        (use-package evil-args
+          :ensure t
+          :requires evil
+          :config
+          (progn
+            ;; bind evil-args text objects
+            (define-key evil-inner-text-objects-map "a" 'evil-inner-arg)
+            (define-key evil-outer-text-objects-map "a" 'evil-outer-arg)
+            ;; bind evil-forward/backward-args
+            (define-key evil-normal-state-map "L" 'evil-forward-arg)
+            (define-key evil-normal-state-map "H" 'evil-backward-arg)
+            (define-key evil-motion-state-map "L" 'evil-forward-arg)
+            (define-key evil-motion-state-map "H" 'evil-backward-arg)
+            ;; bind evil-jump-out-args
+            (define-key evil-normal-state-map "K" 'evil-jump-out-args)
+            ))
       #+END_SRC
 
 
@@ -660,8 +669,8 @@ white-space should be shown.
         (server-start))))
     #+END_SRC
 
-** TODO Modes
-*** DONE Discover my major
+** Modes
+*** Discover my major
 
     #+BEGIN_QUOTE
     Discover key bindings and their meaning for the current Emacs major mode.
@@ -671,66 +680,27 @@ white-space should be shown.
 
 
     #+BEGIN_SRC emacs-lisp
-      (require-package 'discover-my-major)
-      (global-set-key (kbd "C-h C-m") 'discover-my-major)
+      (use-package discover-my-major
+        :ensure t
+        :bind ("C-h C-m" . discover-my-major))
+    #+END_SRC
+
+*** Manage my minor
+
+    Let's also use =manage-my-minor= to be able to enable/disable
+    minor-modes.
+
+
+    #+BEGIN_SRC emacs-lisp
+      (use-package manage-minor-mode
+        :ensure t
+        :bind ("C-c x n" . manage-minor-mode))
     #+END_SRC
 
 
-*** TODO Prompts
-**** DONE ido
+*** Prompts
 
-     Ido stands for “Interactively DO things”, and even though we'll try to use Helm
-     for a lot of things, ido-mode replace beautifuly the default Emacs prompt.
-
-     #+BEGIN_QUOTE
-     There are many ways of improving your productivity when you use Emacs, and Ido (or “Interactively DO things”) is one of those packages that you enable and then never, ever turn off again. It’s simply that useful. By super-charging Emacs’s completion engine and improving the speed at which you open files and buffers, you will significantly cut down on the time spent doing these menial tasks.
-     #+END_QUOTE
-
-     We're gonna enhance even more ido with some additonnal package :
-
-- A vertical presentation for ido
-#+begin_src emacs-lisp
-(require-package 'ido-vertical-mode)
-#+end_src
-- Fuzzy matching for ido (killer-feature !)
-#+begin_src emacs-lisp
-(require-package 'flx)
-(require-package 'flx-ido)
-#+end_src
-- Use ido and fuzzy matching for ~M-x~, to get first to most recent command used
-#+begin_src emacs-lisp
-(require-package 'smex)
-#+end_src
-
-Let's configure ido, ido-vertical-mode and flx.
-
-#+begin_src emacs-lisp
-(require 'recentf)
-(setq ido-enable-flex-matching t
-     ido-everywhere t
-     ido-use-virtual-buffers t
-     ido-use-faces nil)
-(ido-mode 1)
-(ido-vertical-mode 1)
-(flx-ido-mode 1)
-#+end_src
-
-Let's configure smex.
-
-#+begin_src emacs-lisp
-(smex-initialize)
-
-(global-set-key (kbd "M-x") 'smex)
-(global-set-key (kbd "M-X") 'smex-major-mode-commands)
-#+end_src
-
-We bind the old ~M-x~ command to another, more complicated keys.
-
-#+begin_src emacs-lisp
-(global-set-key (kbd "C-c C-c M-x") 'execute-extended-command)
-#+end_src
-
-**** TODO helm
+**** Helm
 
      #+BEGIN_QUOTE
      Helm is incremental completion and selection narrowing framework for Emacs. It will help steer you in the right direction when you’re looking for stuff in Emacs (like buffers, files, etc).
@@ -738,46 +708,90 @@ We bind the old ~M-x~ command to another, more complicated keys.
      Helm is a fork of anything.el originaly written by Tamas Patrovic and can be considered to be its successor. Helm sets out to clean up the legacy code in anything.el and provide a cleaner, leaner and more modular tool, that’s not tied in the trap of backward compatibility.
      #+END_QUOTE
 
-     #+begin_src emacs-lisp
-       (require-package 'helm)
-       (require-package 'helm-descbinds)
-       (require-package 'helm-gtags)
-     #+end_src
+     By default the /completion/ on the selected line is done by =C-z=
+     (the function is =helm-execute-persistent-action=) and =Tab= is
+     used for showing action you can do on it. Let's invert them as
+     =Tab= is used for completion in other tools (shells for example).
 
      Let's define that all helm commands will be prefixed by =C-h=,
      =C-h x= will be =Helm M-x=.
 
+     #+begin_src emacs-lisp
+       (use-package helm
+         :ensure t
+         :config
+         (progn
+           (require 'helm-config)
+           (setq helm-idle-delay 0.1
+                 helm-input-idle-delay 0.1
+                 helm-buffer-max-length 40
+                 helm-M-x-always-save-history t
+                 helm-move-to-line-cycle-in-source t
+                 helm-ff-file-name-history-use-recentf t
+                 ;; Enable fuzzy matching
+                 helm-M-x-fuzzy-match t
+                 helm-buffers-fuzzy-matching t
+                 helm-recentf-fuzzy-match t)
+           (add-to-list 'helm-sources-using-default-as-input 'helm-source-man-pages)
+           ;; Rebind actions
+           (define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action)
+           (define-key helm-map (kbd "C-i") 'helm-execute-persistent-action)
+           (define-key helm-map (kbd "C-z") 'helm-select-action)
+           (helm-autoresize-mode t)
+           (helm-mode 1))
+         :bind (("C-c h" . helm-command-prefix)
+                ("C-x C-f" . helm-find-files)
+                ("M-x" . helm-M-x)
+                ("C-c b" . helm-mini)
+                ("C-x C-b" . helm-buffers-list)
+                ("M-y" . helm-show-kill-ring)
+                ("C-x c o" . helm-occur)))
+       ;; (add-to-list 'helm-completing-read-handlers-alist '(org-refile)) ; helm-mode does not do org-refile well
+       ;; (add-to-list 'helm-completing-read-handlers-alist '(org-agenda-refile)) ; same goes for org-agenda-refile
+     #+end_src
+
+     Because it can be hard to remember all keybindings, let's use
+     =helm-descbinds=.
+
      #+BEGIN_SRC emacs-lisp
-       (require 'helm-config)
-       (setq helm-mode-handle-completion-in-region nil) ; don't use helm for `completion-at-point'
-       (helm-mode 1)
-       (helm-gtags-mode 1)
-       (helm-descbinds-mode)
-       (setq helm-idle-delay 0.1)
-       (setq helm-input-idle-delay 0.1)
-       (setq helm-buffer-max-length 50)
-       (setq helm-M-x-always-save-history t)
-       (setq helm-buffer-details-flag nil)
-       (add-to-list 'helm-completing-read-handlers-alist '(org-refile)) ; helm-mode does not do org-refile well
-       (add-to-list 'helm-completing-read-handlers-alist '(org-agenda-refile)) ; same goes for org-agenda-refile
+       (use-package helm-descbinds
+         :ensure t
+         :defer t
+         :bind ("C-h b" . helm-descbinds))
      #+END_SRC
 
-***** DONE helm-swoop
+
+     #+BEGIN_SRC emacs-lisp
+       (use-package helm-gtags
+         :ensure t)
+       ;; (helm-gtags-mode 1)
+     #+END_SRC
+
+***** helm-swoop
 
       =helm-swoop= is a great Helm powered buffer search/occur interface:
 
       #+BEGIN_SRC emacs-lisp
-        (require-package 'helm-swoop)
+        (use-package helm-swoop
+          :ensure t
+          :defer t
+          :bind (("C-S-s" . helm-swoop)
+                 ("M-I" . helm-swoop-back-to-last-point))
+          :config
+          (progn
+            (define-key isearch-mode-map (kbd "M-i") 'helm-swoop-from-isearch)
+            (define-key helm-swoop-map (kbd "M-i") 'helm-multi-swoop-all-from-helm-swoop)))
       #+END_SRC
 
-***** DONE helm-google
+***** helm-google
 
       #+BEGIN_QUOTE
       Emacs Helm Interface for quick Google searches
       #+END_QUOTE
 
       #+BEGIN_SRC emacs-lisp
-        (require-package 'helm-google)
+        (use-package helm-google
+          :ensure t)
       #+END_SRC
 
 *** TODO Auto-complete
