@@ -332,7 +332,7 @@ available at my [[https://github.com/vdemeester/emacs-config][emacs-config]] git
     #+END_SRC
 
 
-**** DONE Encoding
+**** Encoding
 
      Make sur that we use ~utf-8~ by default.
 
@@ -343,13 +343,13 @@ available at my [[https://github.com/vdemeester/emacs-config][emacs-config]] git
        (prefer-coding-system 'utf-8)
      #+end_src
 
-**** DONE Mouse
+**** Mouse
      Move the mouse away to not bother.
 
      #+begin_src emacs-lisp
        (mouse-avoidance-mode 'jump)
      #+end_src
-**** DONE Backup files
+**** Backup files
 
      Files suffixed with =~= in the current directory are ugly. We are still going to use
      backup files, as it can saves some time in case of trouble, but we'll move them
@@ -374,7 +374,7 @@ available at my [[https://github.com/vdemeester/emacs-config][emacs-config]] git
              kept-old-versions 2
              version-control t)
      #+end_src
-**** DONE Buffer names
+**** Buffer names
 
      Setup uniquify so that non-unique buffer names get the parent path included to make them unique.
 
@@ -383,7 +383,7 @@ available at my [[https://github.com/vdemeester/emacs-config][emacs-config]] git
        (setq uniquify-buffer-name-style 'forward)
      #+end_src
 
-**** DONE Formatting
+**** Formatting
 
      Use space instead on tabs for indentation by default (again some people at work
      will thank me for that).
@@ -448,7 +448,7 @@ white-space should be shown.
               (setq show-trailing-whitespace 't))
             )
 #+END_SRC
-**** DONE pretty-mode
+**** pretty-mode
 
      Pretty mode turn some stuff prettier, for example in Haskell =/== becomes =≠=, or
      =->= becomes =→=.
@@ -461,7 +461,7 @@ white-space should be shown.
                               'turn-on-pretty-mode))
      #+END_SRC
 
-**** DONE raindow-identifiers
+**** raindow-identifiers
 
      I read an intersting article about [[https://medium.com/p/3a6db2743a1e/][how to make syntax highlighting more useful]]
      and I really like the concept. And guess what, there's a mode for that.
@@ -474,7 +474,7 @@ white-space should be shown.
                     (add-hook 'prog-mode-hook
                               (lambda () (rainbow-identifiers-mode))))
      #+END_SRC
-**** DONE Dired
+**** Dired
 
      Dired is really a cool mode, let's enhance it.
 
@@ -486,7 +486,7 @@ white-space should be shown.
                     :init)
      #+END_SRC
 
-**** DONE Search
+**** Search
 
      Make isearch-forward put the cursor at the start of the search, not the end, so that isearch can be used for navigation. See also http://www.emacswiki.org/emacs/IsearchOtherEnd.
 
@@ -498,7 +498,7 @@ white-space should be shown.
      #+END_SRC
 
 
-**** DONE Notifications
+**** Notifications
      Emacs now has notifications (freedesktop.org specifications)
      built-in. Let's load it for potential needs.
 
@@ -517,7 +517,7 @@ white-space should be shown.
      #+END_SRC
 
 
-**** DONE Zoom(ing)
+**** Zoom(ing)
 
      Being able to zoom in and out can be cool, especially when
      presenting something with emacs ; so that everybody can see
@@ -528,7 +528,7 @@ white-space should be shown.
        (global-set-key (kbd "C--") 'text-scale-decrease)
      #+END_SRC
 
-**** DONE Key maps & binding
+**** Key maps & binding
 
      [[http://endlessparentheses.com/][Endless Parentheses]] is a great sourse of tips & trick on
      GNU/Emacs. Following [[http://endlessparentheses.com/the-toggle-map-and-wizardry.html][this]] and [[http://endlessparentheses.com/launcher-keymap-for-standalone-features.html][this]] articles, Let's define some
@@ -934,7 +934,7 @@ white-space should be shown.
           :ensure t)
       #+END_SRC
 
-*** DONE highlight-symbol
+*** highlight-symbol
 
     #+BEGIN_QUOTE
     Automatic and manual symbol highlighting for Emacs
@@ -945,70 +945,74 @@ white-space should be shown.
 
 
     #+BEGIN_SRC emacs-lisp
-  (require-package 'highlight-symbol)
-  (setq highlight-symbol-on-navigation-p t)
-  (add-hook 'prog-mode-hook 'highlight-symbol-mode)
-
-  (global-set-key [(control f3)] 'highlight-symbol-at-point)
-  (global-set-key [f3] 'highlight-symbol-next)
-  (global-set-key [(shift f3)] 'highlight-symbol-prev)
-  (global-set-key [(meta f3)] 'highlight-symbol-query-replace)
+      (use-package highlight-symbol
+        :ensure t
+        :config
+        (progn
+          (setq highlight-symbol-on-navigation-p t)
+          (add-hook 'prog-mode-hook 'highlight-symbol-mode))
+        :bind (("C-<f3>" . highlight-symbol-at-point)
+               ("<f3>" . highlight-symbol-next)
+               ("S-<f3>" . highlight-symbol-prev)
+               ("M-<f3>" . highlight-symbol-query-replace)))
     #+END_SRC
 
-*** DONE move-text
+*** move-text
 
     Allows to move the current line or region up/down. The source code is
     on the Wiki: http://www.emacswiki.org/emacs/move-text.el
 
     #+BEGIN_SRC emacs-lisp
-      (require-package 'move-text)
-      (move-text-default-bindings)
+      (use-package move-text
+        :ensure t
+        :config (move-text-default-bindings))
     #+END_SRC
 
-*** DONE multiple-cursors
+** multiple-cursors
 
-    Multiple cursors for Emacs, this is a pretty /badass/ functionnality.
+   Multiple cursors for Emacs, this is a pretty /badass/ functionnality.
 
-    #+BEGIN_SRC emacs-lisp
-  (require-package 'multiple-cursors)
-  (global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
-  (global-set-key (kbd "C->") 'mc/mark-next-like-this)
-  (global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
-  (global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
-    #+END_SRC
+   #+BEGIN_SRC emacs-lisp
+     (use-package multiple-cursors
+       :ensure t
+       :bind (("C-S-c C-S-c" . mc/edit-lines)
+              ("C->" . mc/mark-next-like-this)
+              ("C-<" . mc/mark-previous-like-this)
+              ("C-c C-<" . mc/mark-all-like-this)))
+   #+END_SRC
 
 
-*** TODO Flycheck
+** Flycheck
 
-    #+BEGIN_QUOTE
-    Flycheck is a modern on-the-fly syntax checking extension for GNU Emacs 24, intended as replacement for the older Flymake extension which is part of GNU Emacs.
+   #+BEGIN_QUOTE
+   Flycheck is a modern on-the-fly syntax checking extension for GNU Emacs 24, intended as replacement for the older Flymake extension which is part of GNU Emacs.
 
-    It uses various syntax checking and linting tools to check the contents of buffers, and reports warnings and errors directly in the buffer, or in an optional error list.
-    #+END_QUOTE
+   It uses various syntax checking and linting tools to check the contents of buffers, and reports warnings and errors directly in the buffer, or in an optional error list.
+   #+END_QUOTE
 
-    Let's install it and configure it for the common part. The language
-    specifics will be defined in the corresponding language section.
+   Let's install it and configure it for the common part. The language
+   specifics will be defined in the corresponding language section.
 
-    #+BEGIN_SRC emacs-lisp
-  (require-package 'flycheck)
-  ;; (add-hook 'prog-mode-hook 'flycheck-mode)
-  (add-hook 'after-init-hook #'global-flycheck-mode)
+   #+BEGIN_SRC emacs-lisp
+     (use-package flycheck
+       :ensure t
+       :config
+       (progn
+         (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc))
+         (setq flycheck-indication-mode 'right-fringe)
+         (add-hook 'after-init-hook #'global-flycheck-mode)))
+   #+END_SRC
 
-  (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc)) ;disable the annoying doc checker
+** Org
 
-  (setq flycheck-indication-mode 'right-fringe)
-    #+END_SRC
+   #+BEGIN_QUOTE
+   Org-mode is a powerful system for organizing your complex life with simple plain-text files. It seamlessly integrates all your notes, mindmaps, TODO lists, calendar, day planner, and project schedules into a single system that can be easily searched (e.g. by grep), encrypted (e.g. by GnuPG), backed up and synced (e.g. by Dropbox), imported/exported, and accessed on the go (e.g. on an iPhone or Android smartphone). It can even be used for authoring web pages and documents.
+   #+END_QUOTE
 
-*** DONE Org
+   Depending on how this section grows, org-mode might need its own litterate
+   org configuration file.
 
-    #+BEGIN_QUOTE
-    Org-mode is a powerful system for organizing your complex life with simple plain-text files. It seamlessly integrates all your notes, mindmaps, TODO lists, calendar, day planner, and project schedules into a single system that can be easily searched (e.g. by grep), encrypted (e.g. by GnuPG), backed up and synced (e.g. by Dropbox), imported/exported, and accessed on the go (e.g. on an iPhone or Android smartphone). It can even be used for authoring web pages and documents.
-    #+END_QUOTE
-
-    Depending on how this section grows, org-mode might need its own litterate
-    org configuration file.
-
-**** Standard configuration
+*** Standard configuration
 
      First let's define the default directory for the =org= files, the one to be added
      to the agenda and the archives.
@@ -1024,7 +1028,7 @@ white-space should be shown.
      =*.org=, =*.org_archive=, =*.txt=.
 
      #+begin_src emacs-lisp
-(add-to-list 'auto-mode-alist '("\\.\\(org\\|org_archive\\|txt\\)$" . org-mode))
+       (add-to-list 'auto-mode-alist '("\\.\\(org\\|org_archive\\|txt\\)$" . org-mode))
      #+end_src
 
      Let's also define the default /todo-keywords/ and the workflow
@@ -1120,95 +1124,95 @@ white-space should be shown.
         )
   #+END_SRC
 
-**** DONE Speed commands
+*** Speed commands
 
-     Org-mode speed keys (or spee commands) are really cool, here is a
-     quotation from the manual
+    Org-mode speed keys (or spee commands) are really cool, here is a
+    quotation from the manual
 
-     #+BEGIN_QUOTE
-     Single keys can be made to execute commands when the cursor is at the beginning of a headline, i.e., before the first star.
-     #+END_QUOTE
+    #+BEGIN_QUOTE
+    Single keys can be made to execute commands when the cursor is at the beginning of a headline, i.e., before the first star.
+    #+END_QUOTE
 
-     #+BEGIN_SRC emacs-lisp
-       (setq org-use-speed-commands t)
-     #+END_SRC
+    #+BEGIN_SRC emacs-lisp
+      (setq org-use-speed-commands t)
+    #+END_SRC
 
-     However the default =n= (next) and =p= (previous) speed keys
-     aren't optimal for my use. When I go to the next one using speed
-     commands I want the others closed. Let's redefine it.
+    However the default =n= (next) and =p= (previous) speed keys
+    aren't optimal for my use. When I go to the next one using speed
+    commands I want the others closed. Let's redefine it.
 
-     #+BEGIN_SRC emacs-lisp
-       (defun my/org-show-next-heading-tidily ()
-         "Show next entry, keeping other entries closed."
-         (if (save-excursion (end-of-line) (outline-invisible-p))
-             (progn (org-show-entry) (show-children))
-           (outline-next-heading)
-           (unless (and (bolp) (org-on-heading-p))
-             (org-up-heading-safe)
-             (hide-subtree)
-             (error "Boundary reached"))
-           (org-overview)
-           (org-reveal t)
-           (org-show-entry)
-           (show-children)))
+    #+BEGIN_SRC emacs-lisp
+      (defun my/org-show-next-heading-tidily ()
+        "Show next entry, keeping other entries closed."
+        (if (save-excursion (end-of-line) (outline-invisible-p))
+            (progn (org-show-entry) (show-children))
+          (outline-next-heading)
+          (unless (and (bolp) (org-on-heading-p))
+            (org-up-heading-safe)
+            (hide-subtree)
+            (error "Boundary reached"))
+          (org-overview)
+          (org-reveal t)
+          (org-show-entry)
+          (show-children)))
 
-       (defun my/org-show-previous-heading-tidily ()
-         "Show previous entry, keeping other entries closed."
-         (let ((pos (point)))
-           (outline-previous-heading)
-           (unless (and (< (point) pos) (bolp) (org-on-heading-p))
-             (goto-char pos)
-             (hide-subtree)
-             (error "Boundary reached"))
-           (org-overview)
-           (org-reveal t)
-           (org-show-entry)
-           (show-children)))
-     #+END_SRC
+      (defun my/org-show-previous-heading-tidily ()
+        "Show previous entry, keeping other entries closed."
+        (let ((pos (point)))
+          (outline-previous-heading)
+          (unless (and (< (point) pos) (bolp) (org-on-heading-p))
+            (goto-char pos)
+            (hide-subtree)
+            (error "Boundary reached"))
+          (org-overview)
+          (org-reveal t)
+          (org-show-entry)
+          (show-children)))
+    #+END_SRC
 
-     And let's bind it.
+    And let's bind it.
 
-     #+BEGIN_SRC emacs-lisp
-       (setq org-speed-commands-user '(("n" . my/org-show-next-heading-tidily)
-                                       ("p" . my/org-show-previous-heading-tidily)
-                                       (":" . org-set-tags-command)
-                                       ("c" . org-toggle-checkbox)
-                                       ("d" . org-cut-special)
-                                       ("P" . org-set-property)
-                                       ("C" . org-clock-display)
-                                       ("z" . (lambda () (interactive)
-                                                (org-tree-to-indirect-buffer)
-                                                (other-window 1)
-                                                (delete-other-windows)))))
-     #+END_SRC
+    #+BEGIN_SRC emacs-lisp
+      (setq org-speed-commands-user '(("n" . my/org-show-next-heading-tidily)
+                                      ("p" . my/org-show-previous-heading-tidily)
+                                      (":" . org-set-tags-command)
+                                      ("c" . org-toggle-checkbox)
+                                      ("d" . org-cut-special)
+                                      ("P" . org-set-property)
+                                      ("C" . org-clock-display)
+                                      ("z" . (lambda () (interactive)
+                                               (org-tree-to-indirect-buffer)
+                                               (other-window 1)
+                                               (delete-other-windows)))))
+    #+END_SRC
 
-**** DONE Captures
+*** Captures
 
-     First thing first, bind a key sequence to org-capture.
+    First thing first, bind a key sequence to org-capture.
 
-     #+BEGIN_SRC emacs-lisp
-       (global-set-key (kbd "C-c r") 'org-capture)
-     #+END_SRC
+    #+BEGIN_SRC emacs-lisp
+      (global-set-key (kbd "C-c r") 'org-capture)
+    #+END_SRC
 
-     Setup captures templates..
+    Setup captures templates..
 
-     #+BEGIN_SRC emacs-lisp
-       (setq org-capture-templates
-             '(;; other entries
-               ("j" "Journal entry" plain
-                (file+datetree+prompt "~/desktop/org/journal.org")
-                "%K - %a\n%i\n%?\n")
-               ;; other entries
-               ))
-     #+END_SRC
+    #+BEGIN_SRC emacs-lisp
+      (setq org-capture-templates
+            '(;; other entries
+              ("j" "Journal entry" plain
+               (file+datetree+prompt "~/desktop/org/journal.org")
+               "%K - %a\n%i\n%?\n")
+              ;; other entries
+              ))
+    #+END_SRC
 
-**** DONE Code blocks
+*** Code blocks
 
      We are using a lot of code block in org-mode, in this file for example ; let's
      /fontify/ the code blocks first.
 
      #+begin_src emacs-lisp
-(setq org-src-fontify-natively t)
+       (setq org-src-fontify-natively t)
      #+end_src
 
      Add a function to easily add a code block and bind it.
@@ -1222,7 +1226,7 @@ white-space should be shown.
                    "calc" "asymptote" "dot" "gnuplot" "ledger" "lilypond" "mscgen"
                    "octave" "oz" "plantuml" "R" "sass" "screen" "sql" "awk" "ditaa"
                    "haskell" "latex" "lisp" "matlab" "ocaml" "org" "perl" "ruby"
-                   "scheme" "sqlite")))
+                   "scheme" "sqlite" "rust" "scala" "golang")))
             (list (ido-completing-read "Source code type: " src-code-types))))
          (progn
            (newline-and-indent)
@@ -1239,519 +1243,522 @@ white-space should be shown.
                  'append)
      #+end_src
 
-**** TODO Templates
-**** DONE Mobile
+*** Mobile
 
-     Define some stuff for the /org-mobile/ synchronization. The
-     =org-mobile-directory= is a on a remote ssh, defined in the
-     =~/.emacs.d/user.el= file (using =(setq personal-org-mobile-directory "")=).
-
-     #+BEGIN_SRC emacs-lisp
-  (require 'org-mobile)
-  (setq org-mobile-directory personal-org-mobile-directory)
-  (setq org-mobile-inbox-for-pull "~/desktop/org/todos/inbox.org")
-  (setq org-mobile-files '("~/desktop/org/todos/"))
-     #+END_SRC
-**** DONE Archives
-
-     We want to be able to archive some /done/ projects. Let's load
-     org-archive and configure it.
-
-     #+BEGIN_SRC emacs-lisp
-       (require 'org-archive)
-       (setq org-archive-location (concat org-directory "archive/%s_archive::"))
-     #+END_SRC
-**** DONE Tags
-
-     Tags should be displayed from the 90 column.
-
-     #+BEGIN_SRC emacs-lisp
-       (setq org-tags-column -90)
-     #+END_SRC
-
-     Define a list of default tags that should apply for all org-mode
-     buffers.
-
-     #+BEGIN_SRC emacs-lisp
-       (setq org-tag-alist '(
-                            ("important" . ?i)
-                            ("urgent" . ?u)
-                            ("ongoing" . ?o)   ;; ongoing "project", use to filter big project that are on the go
-                            ("@home" . ?h)     ;; needs to be done at home
-                            ("@work" . ?w)     ;; needs to be done at work
-                            ("@client" . ?c)   ;; needs to be done at a client place (consulting..)
-                            ("dev" . ?e)       ;; this is a development task
-                            ("infra" . ?a)     ;; this is a sysadmin/infra task
-                            ("document" . ?d)  ;; needs to produce a document (article, post, ..)
-                            ("download" . ?D)  ;; needs to download something
-                            ("media" . ?m)     ;; this is a media (something to watch, listen, record, ..)
-                            ("mail" . ?M)      ;; mail-related (to write & send or to read)
-                            ))
-     #+END_SRC
-
-     Note that =important= and =urgent= helps me prioritize my
-     /todos/, in a /quadrant fashion way/.
-
-     | Important          | *Kaizen*        | *Panic*             |
-     | /tag important/    | improvements    | emergency           |
-     |--------------------+-----------------+---------------------|
-     | Less Important     | *Organics*      | Social *investment* |
-     | /no tag important/ | inspiration     | Social activities   |
-     |--------------------+-----------------+---------------------|
-     |                    | Less Urgent     | Urgent              |
-     |                    | /no tag urgent/ | /tag urgent/        |
-
-
-**** TODO Time tracking & Pomodoros
-**** DONE Agenda(s)
-
-     First thing first, bind a key sequence to org-agenda.
-
-     #+BEGIN_SRC emacs-lisp
-       (global-set-key (kbd "C-c a") 'org-agenda)
-     #+END_SRC
-
-     Then set custom agendas.. For the syntax, look in worg : [[http://orgmode.org/worg/org-tutorials/advanced-searching.html][Advanced
-     searching]] and [[http://orgmode.org/worg/org-tutorials/org-custom-agenda-commands.html][Custom Agenda Commands]].
-
-     #+BEGIN_SRC emacs-lisp
-       (setq org-agenda-custom-commands
-             '(("w" todo "TODO"
-                ((org-agenda-sorting-strategy '(priority-down))
-                 (org-agenda-prefix-format "  Mixed: ")))
-               ("p" todo "PROGRESS"
-                ((org-agenda-sorting-strategy '(priority-down))
-                 (org-agenda-prefix-format "  Mixed: ")))
-               ("r" todo "REVIEW"
-                ((org-agenda-sorting-strategy '(priority-down))
-                 (org-agenda-prefix-format "  Mixed: ")))
-               ("b" todo "BLOCKED"
-                ((org-agenda-sorting-strategy '(priority-down))
-                 (org-agenda-prefix-format "  Mixed: ")))
-               ;; Panic tasks : urgent & important
-               ;; Probably the most important to do, but try not have to much of them..
-               ("P" . "Panic -emergency-")
-               ("Pt" "TODOs" tags-todo "important&urgent/!TODO"
-                ((org-agenda-sorting-strategy '(priority-down))
-                 (org-agenda-prefix-format "  Mixed: ")))
-               ("Pb" "BLOCKEDs" tags-todo "important&urgent/!BLOCKED"
-                ((org-agenda-sorting-strategy '(priority-down))
-                 (org-agenda-prefix-format "  Mixed: ")))
-               ("Pr" "REVIEWs" tags-todo "important&urgent/!REVIEW"
-                ((org-agenda-sorting-strategy '(priority-down))
-                 (org-agenda-prefix-format "  Mixed: ")))
-               ;; Kaizen tasks : important but not urgent
-               ("K" . "Kaizen -improvement-")
-               ("Kt" "TODOs" tags-todo "important&-urgent/!TODO"
-                ((org-agenda-sorting-strategy '(priority-down))
-                 (org-agenda-prefix-format "  Mixed: ")))
-               ("Kb" "BLOCKEDs" tags-todo "important&-urgent/!BLOCKED"
-                ((org-agenda-sorting-strategy '(priority-down))
-                 (org-agenda-prefix-format "  Mixed: ")))
-               ("Kr" "REVIEWs" tags-todo "important&-urgent/!REVIEW"
-                ((org-agenda-sorting-strategy '(priority-down))
-                 (org-agenda-prefix-format "  Mixed: ")))
-               ;; Social investment : urgent
-               ("S" . "Social -investment-")
-               ("St" "TODOs" tags-todo "-important&urgent/!TODO"
-                ((org-agenda-sorting-strategy '(priority-down))
-                 (org-agenda-prefix-format "  Mixed: ")))
-               ("Sb" "BLOCKEDs" tags-todo "-important&urgent/!BLOCKED"
-                ((org-agenda-sorting-strategy '(priority-down))
-                 (org-agenda-prefix-format "  Mixed: ")))
-               ("Sr" "REVIEWs" tags-todo "-important&urgent/!REVIEW"
-                ((org-agenda-sorting-strategy '(priority-down))
-                 (org-agenda-prefix-format "  Mixed: ")))
-               ;; Organics
-               ("O" . "Organics -inspiration-")
-               ("Ot" "TODOs" tags-todo "-important&-urgent/!TODO"
-                ((org-agenda-sorting-strategy '(priority-down))
-                 (org-agenda-prefix-format "  Mixed: ")))
-               ("Ob" "BLOCKEDs" tags-todo "-important&-urgent/!BLOCKED"
-                ((org-agenda-sorting-strategy '(priority-down))
-                 (org-agenda-prefix-format "  Mixed: ")))
-               ("Or" "REVIEWs" tags-todo "-important&-urgent/!REVIEW"
-                ((org-agenda-sorting-strategy '(priority-down))
-                 (org-agenda-prefix-format "  Mixed: ")))
-             ("N" search ""
-              ((org-agenda-files '("~org/notes.org"))
-               (org-agenda-text-search-extra-files nil)))))
-     #+END_SRC
-
-**** TODO Integration with git
-***** TODO Auto-commit when pushing with org-mobile
-***** TODO Notifications
-**** TODO Externals (caldav, issues, ..)
-***** TODO Redmine
-
-      On some project (mainly @work), redmine is used. As I'm using
-      org-mode for tracking the stuff I do and the time I spent on it,
-      let's integrate org-mode and redmine.
-
-      #+BEGIN_SRC emacs-lisp
-        (require-package 'org-redmine)
-      #+END_SRC
-
-      The uri of the redmine(s) will be specified in a org-babel
-      matter in the org files that need it. Still have to define a
-      default template.
-***** DONE Trello
-
-      On some project, [[https://trello.com/][Trello]] is used and, there a emacs package for
-      that :).
-
-      #+BEGIN_SRC emacs-lisp
-        (require-package 'org-trello)
-      #+END_SRC
-
-      Now, a /manual/ step will be to install consumer key and stuff
-      (see [[https://org-trello.github.io/trello-setup.html][documentation]] for that).
-
-*** Projectile
-
-    #+BEGIN_QUOTE
-    Projectile is a project interaction library for Emacs. Its goal is
-    to provide a nice set of features operating on a project level
-    without introducing external dependencies(when feasible). For
-    instance - finding project files has a portable implementation
-    written in pure Emacs Lisp without the use of GNU find (but for
-    performance sake an indexing mechanism backed by external commands
-    exists as well).
-    #+END_QUOTE
-
+    Define some stuff for the /org-mobile/ synchronization. The
+    =org-mobile-directory= is a on a remote ssh, defined in the
+    =~/.emacs.d/user.el= file (using =(setq personal-org-mobile-directory "")=).
 
     #+BEGIN_SRC emacs-lisp
-      (use-package projectile
+      (require 'org-mobile)
+      (setq org-mobile-directory personal-org-mobile-directory)
+      (setq org-mobile-inbox-for-pull "~/desktop/org/todos/inbox.org")
+      (setq org-mobile-files '("~/desktop/org/todos/"))
+    #+END_SRC
+
+*** Archives
+
+    We want to be able to archive some /done/ projects. Let's load
+    org-archive and configure it.
+
+    #+BEGIN_SRC emacs-lisp
+      (require 'org-archive)
+      (setq org-archive-location (concat org-directory "archive/%s_archive::"))
+    #+END_SRC
+*** Tags
+
+    Tags should be displayed from the 90 column.
+
+    #+BEGIN_SRC emacs-lisp
+      (setq org-tags-column -90)
+    #+END_SRC
+
+    Define a list of default tags that should apply for all org-mode
+    buffers.
+
+    #+BEGIN_SRC emacs-lisp
+      (setq org-tag-alist '(
+                           ("important" . ?i)
+                           ("urgent" . ?u)
+                           ("ongoing" . ?o)   ;; ongoing "project", use to filter big project that are on the go
+                           ("@home" . ?h)     ;; needs to be done at home
+                           ("@work" . ?w)     ;; needs to be done at work
+                           ("@client" . ?c)   ;; needs to be done at a client place (consulting..)
+                           ("dev" . ?e)       ;; this is a development task
+                           ("infra" . ?a)     ;; this is a sysadmin/infra task
+                           ("document" . ?d)  ;; needs to produce a document (article, post, ..)
+                           ("download" . ?D)  ;; needs to download something
+                           ("media" . ?m)     ;; this is a media (something to watch, listen, record, ..)
+                           ("mail" . ?M)      ;; mail-related (to write & send or to read)
+                           ))
+    #+END_SRC
+
+    Note that =important= and =urgent= helps me prioritize my
+    /todos/, in a /quadrant fashion way/.
+
+    | Important          | *Kaizen*        | *Panic*             |
+    | /tag important/    | improvements    | emergency           |
+    |--------------------+-----------------+---------------------|
+    | Less Important     | *Organics*      | Social *investment* |
+    | /no tag important/ | inspiration     | Social activities   |
+    |--------------------+-----------------+---------------------|
+    |                    | Less Urgent     | Urgent              |
+    |                    | /no tag urgent/ | /tag urgent/        |
+
+
+*** Agenda(s)
+
+    First thing first, bind a key sequence to org-agenda.
+
+    #+BEGIN_SRC emacs-lisp
+      (global-set-key (kbd "C-c a") 'org-agenda)
+    #+END_SRC
+
+    Then set custom agendas.. For the syntax, look in worg : [[http://orgmode.org/worg/org-tutorials/advanced-searching.html][Advanced
+    searching]] and [[http://orgmode.org/worg/org-tutorials/org-custom-agenda-commands.html][Custom Agenda Commands]].
+
+    #+BEGIN_SRC emacs-lisp
+      (setq org-agenda-custom-commands
+            '(("w" todo "TODO"
+               ((org-agenda-sorting-strategy '(priority-down))
+                (org-agenda-prefix-format "  Mixed: ")))
+              ("p" todo "PROGRESS"
+               ((org-agenda-sorting-strategy '(priority-down))
+                (org-agenda-prefix-format "  Mixed: ")))
+              ("r" todo "REVIEW"
+               ((org-agenda-sorting-strategy '(priority-down))
+                (org-agenda-prefix-format "  Mixed: ")))
+              ("b" todo "BLOCKED"
+               ((org-agenda-sorting-strategy '(priority-down))
+                (org-agenda-prefix-format "  Mixed: ")))
+              ;; Panic tasks : urgent & important
+              ;; Probably the most important to do, but try not have to much of them..
+              ("P" . "Panic -emergency-")
+              ("Pt" "TODOs" tags-todo "important&urgent/!TODO"
+               ((org-agenda-sorting-strategy '(priority-down))
+                (org-agenda-prefix-format "  Mixed: ")))
+              ("Pb" "BLOCKEDs" tags-todo "important&urgent/!BLOCKED"
+               ((org-agenda-sorting-strategy '(priority-down))
+                (org-agenda-prefix-format "  Mixed: ")))
+              ("Pr" "REVIEWs" tags-todo "important&urgent/!REVIEW"
+               ((org-agenda-sorting-strategy '(priority-down))
+                (org-agenda-prefix-format "  Mixed: ")))
+              ;; Kaizen tasks : important but not urgent
+              ("K" . "Kaizen -improvement-")
+              ("Kt" "TODOs" tags-todo "important&-urgent/!TODO"
+               ((org-agenda-sorting-strategy '(priority-down))
+                (org-agenda-prefix-format "  Mixed: ")))
+              ("Kb" "BLOCKEDs" tags-todo "important&-urgent/!BLOCKED"
+               ((org-agenda-sorting-strategy '(priority-down))
+                (org-agenda-prefix-format "  Mixed: ")))
+              ("Kr" "REVIEWs" tags-todo "important&-urgent/!REVIEW"
+               ((org-agenda-sorting-strategy '(priority-down))
+                (org-agenda-prefix-format "  Mixed: ")))
+              ;; Social investment : urgent
+              ("S" . "Social -investment-")
+              ("St" "TODOs" tags-todo "-important&urgent/!TODO"
+               ((org-agenda-sorting-strategy '(priority-down))
+                (org-agenda-prefix-format "  Mixed: ")))
+              ("Sb" "BLOCKEDs" tags-todo "-important&urgent/!BLOCKED"
+               ((org-agenda-sorting-strategy '(priority-down))
+                (org-agenda-prefix-format "  Mixed: ")))
+              ("Sr" "REVIEWs" tags-todo "-important&urgent/!REVIEW"
+               ((org-agenda-sorting-strategy '(priority-down))
+                (org-agenda-prefix-format "  Mixed: ")))
+              ;; Organics
+              ("O" . "Organics -inspiration-")
+              ("Ot" "TODOs" tags-todo "-important&-urgent/!TODO"
+               ((org-agenda-sorting-strategy '(priority-down))
+                (org-agenda-prefix-format "  Mixed: ")))
+              ("Ob" "BLOCKEDs" tags-todo "-important&-urgent/!BLOCKED"
+               ((org-agenda-sorting-strategy '(priority-down))
+                (org-agenda-prefix-format "  Mixed: ")))
+              ("Or" "REVIEWs" tags-todo "-important&-urgent/!REVIEW"
+               ((org-agenda-sorting-strategy '(priority-down))
+                (org-agenda-prefix-format "  Mixed: ")))
+            ("N" search ""
+             ((org-agenda-files '("~org/notes.org"))
+              (org-agenda-text-search-extra-files nil)))))
+    #+END_SRC
+
+*** Externals (caldav, issues, ..)
+**** Redmine
+
+     On some project (mainly @work), redmine is used. As I'm using
+     org-mode for tracking the stuff I do and the time I spent on it,
+     let's integrate org-mode and redmine.
+
+     #+BEGIN_SRC emacs-lisp
+       (use-package org-redmine
+         :ensure t)
+     #+END_SRC
+
+     The uri of the redmine(s) will be specified in a org-babel
+     matter in the org files that need it. Still have to define a
+     default template.
+
+**** Trello
+
+     On some project, [[https://trello.com/][Trello]] is used and, there a emacs package for
+     that :).
+
+     #+BEGIN_SRC emacs-lisp
+       (use-package org-trello
+         :ensure t)
+     #+END_SRC
+
+     Now, a /manual/ step will be to install consumer key and stuff
+     (see [[https://org-trello.github.io/trello-setup.html][documentation]] for that).
+
+** Projectile
+
+   #+BEGIN_QUOTE
+   Projectile is a project interaction library for Emacs. Its goal is
+   to provide a nice set of features operating on a project level
+   without introducing external dependencies(when feasible). For
+   instance - finding project files has a portable implementation
+   written in pure Emacs Lisp without the use of GNU find (but for
+   performance sake an indexing mechanism backed by external commands
+   exists as well).
+   #+END_QUOTE
+
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package projectile
+       :ensure t
+       :config
+       (progn
+         (setq projectile-completion-system 'default)
+         (setq projectile-enable-caching t)
+         (projectile-global-mode)))
+   #+END_SRC
+
+   And let's use the helm integration too.
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package helm-projectile
+       :ensure t)
+   #+END_SRC
+
+*** Perspective
+
+    [[https://github.com/nex3/perspective-el][Perspective]] is a minor mode that provides the ability to manage
+    different workspaces. It integrates well with projectile.
+
+    #+BEGIN_SRC emacs-lisp
+      (use-package perspective
+        :ensure t)
+      (use-package persp-projectile
+        :ensure t
+        :requires perspective
+        :config
+        (progn
+          (define-key projectile-mode-map (kbd "s-s") 'projectile-persp-switch-project)
+          (persp-mode)))
+    #+END_SRC
+
+** Lua
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package lua-mode
+       :ensure t)
+   #+END_SRC
+
+** Haskell
+
+    #+begin_src emacs-lisp
+      (use-package haskell-mode
+        :ensure t)
+      (use-package ghc
+        :ensure t)
+      (use-package ghci-completion
+        :ensure t)
+      (use-package shm
+        :ensure t)
+    #+end_src
+
+*** Flycheck
+
+    #+BEGIN_SRC emacs-lisp
+      (use-package flycheck-haskell
         :ensure t
         :config
         (progn
-          (setq projectile-completion-system 'default)
-          (setq projectile-enable-caching t)
-          (projectile-global-mode)))
+          (eval-after-load 'flycheck
+            '(add-hook 'flycheck-mode-hook #'flycheck-haskell-setup))))
     #+END_SRC
 
-    And let's use the helm integration too.
+** Lisp(s)
+*** General
+
+    Let's install some LISP common useful modes.
 
     #+BEGIN_SRC emacs-lisp
-      (use-package helm-projectile
+      (use-package paredit
+        :ensure t)
+      (use-package rainbow-mode
+        :ensure t)
+      (use-package rainbow-delimiters
+        :ensure t)
+      (use-package highlight-parentheses
         :ensure t)
     #+END_SRC
 
-**** Perspective
+    And define a comme lisp hook for all LISP-related prog-modes, mostly about
+    parentheses.
 
-     [[https://github.com/nex3/perspective-el][Perspective]] is a minor mode that provides the ability to manage
-     different workspaces. It integrates well with projectile.
+    #+BEGIN_SRC emacs-lisp
+      (defun my/lisps-mode-hook ()
+        (paredit-mode t)
+        (rainbow-delimiters-mode t)
+        (highlight-parentheses-mode t)
+        )
+    #+END_SRC
+
+*** Emacs lisp
+
+
+    #+BEGIN_SRC emacs-lisp
+      (add-hook 'emacs-lisp-mode-hook
+                (lambda ()
+                  (my/lisps-mode-hook)
+                  (eldoc-mode 1))
+                )
+    #+END_SRC
+
+*** Clojure
+
+    #+BEGIN_SRC emacs-lisp
+      (use-package clojure-mode
+        :ensure t
+        :config
+        (progn
+          (add-hook 'clojure-mode-hook 'my/lisps-mode-hook)))
+    #+END_SRC
+
+**** cider
 
      #+BEGIN_SRC emacs-lisp
-      (require-package 'perspective)
-      (require-package 'persp-projectile)
+       (use-package cider
+         :ensure t)
      #+END_SRC
 
-     Let's configure it and map it.
+** Ruby
 
-     #+BEGIN_SRC emacs-lisp
-      (persp-mode)
-      (require 'persp-projectile)
-      (define-key projectile-mode-map (kbd "s-s") 'projectile-persp-switch-project)
-     #+END_SRC
+   I don't really use [[https://www.ruby-lang.org/][Ruby]] that much but when I need to work on a Ruby project
+   I want to have a decent configuration.
 
+   Tell Emacs rake, bundler files and =*.erb= are Ruby files.
 
-*** DONE Compilation mode improvements
+   #+BEGIN_SRC emacs-lisp
+     (dolist (exp '("Rakefile\\'" "\\.rake\\'" "Gemfile\\'" "\\.erb\\'"))
+       (add-to-list 'auto-mode-alist
+                    (cons exp 'ruby-mode)))
+   #+END_SRC
+
+** Compilation mode
+
+   Let's use a local theme for the shells.
+
+   #+BEGIN_SRC emacs-lisp
+      (defun my/compilation-theme-hook ()
+        (load-theme-buffer-local 'wombat))
+      (add-to-list 'compilation-mode-hook 'my/compilation-theme-hook t)
+   #+END_SRC
+
+*** Compilation mode improvements
 
     See http://stackoverflow.com/questions/3072648/cucumbers-ansi-colors-messing-up-emacs-compilation-buffer
 
 
     #+BEGIN_SRC emacs-lisp
-  (require 'ansi-color)
-  (defun my/colorize-compilation-buffer ()
-    (toggle-read-only)
-    (ansi-color-apply-on-region (point-min) (point-max))
-    (toggle-read-only))
-  (add-hook 'compilation-filter-hook 'my/colorize-compilation-buffer)
+      (require 'ansi-color)
+      (defun my/colorize-compilation-buffer ()
+        (toggle-read-only)
+        (ansi-color-apply-on-region (point-min) (point-max))
+        (toggle-read-only))
+      (add-hook 'compilation-filter-hook 'my/colorize-compilation-buffer)
     #+END_SRC
 
     And let's configure the compilation-mode to follow the compilation, not waiting
     at the top..
 
-
     #+BEGIN_SRC emacs-lisp
-  (setq compilation-scroll-output t)
+      (setq compilation-scroll-output t)
     #+END_SRC
 
-*** TODO Lua
+** SQL
+
+   Emacs is really more than an editor. The SQL mode is quick cool to
+   used (and do not eat my memory like mysql-workbench for
+   example).
+
+   By default, Emacs does not automatically truncate long lines in
+   SQL(i) mode, let's change that.
+
+   #+BEGIN_SRC emacs-lisp
+     (add-hook 'sql-interactive-mode-hook
+               (lambda ()
+                 (toggle-truncate-lines t)))
+   #+END_SRC
+
+** Linux related modes
+*** Archlinux
+    I'm using [[http://archlinux.org][Archlinux]] on my personnal computers and I maintain a few packages
+    on [[https://aur.archlinux.org][aur]], hopefully there is a mode for that.
 
     #+BEGIN_SRC emacs-lisp
-      (require-package 'lua-mode)
+      (use-package pkgbuild-mode
+        :ensure t)
     #+END_SRC
 
-*** TODO Haskell
-
-    #+begin_src emacs-lisp
-(require-package 'haskell-mode)
-(require-package 'ghc)
-(require-package 'ghci-completion)
-(require-package 'shm)
-    #+end_src
-
-**** DONE Flycheck
-
-     #+BEGIN_SRC emacs-lisp
-       (require-package 'flycheck-haskell)
-       (eval-after-load 'flycheck
-         '(add-hook 'flycheck-mode-hook #'flycheck-haskell-setup))
-     #+END_SRC
-
-*** TODO Lisp(s)
-**** TODO General
-
-     Let's install some LISP common useful modes.
-
-     #+BEGIN_SRC emacs-lisp
-  (require-package 'paredit)
-  (require-package 'rainbow-mode)
-  (require-package 'rainbow-delimiters)
-  (require-package 'highlight-parentheses)
-     #+END_SRC
-
-     And define a comme lisp hook for all LISP-related prog-modes, mostly about
-     parentheses.
-
-     #+BEGIN_SRC emacs-lisp
-       (defun my/lisps-mode-hook ()
-         (paredit-mode t)
-         (rainbow-delimiters-mode t)
-         (highlight-parentheses-mode t)
-         )
-     #+END_SRC
-
-**** TODO Emacs lisp
-
-
-     #+BEGIN_SRC emacs-lisp
-       (add-hook 'emacs-lisp-mode-hook
-                 (lambda ()
-                   (my/lisps-mode-hook)
-                   (eldoc-mode 1))
-                 )
-     #+END_SRC
-
-**** TODO Clojure
-
-     #+BEGIN_SRC emacs-lisp
-       (require-package 'clojure-mode)
-     #+END_SRC
-
-
-     #+BEGIN_SRC emacs-lisp
-       (add-hook 'clojure-mode-hook 'my/lisps-mode-hook)
-     #+END_SRC
-
-
-***** TODO cider
-
-      #+BEGIN_SRC emacs-lisp
-        (require-package 'cider)
-      #+END_SRC
-
-*** TODO Java
-
-*** TODO Python
-
-*** TODO Ruby
-
-    I don't really use [[https://www.ruby-lang.org/][Ruby]] that much but when I need to work on a Ruby project
-    I want to have a decent configuration.
-
-    Tell Emacs rake, bundler files and =*.erb= are Ruby files.
-
-    #+BEGIN_SRC emacs-lisp
-  (dolist (exp '("Rakefile\\'" "\\.rake\\'" "Gemfile\\'" "\\.erb\\'"))
-    (add-to-list 'auto-mode-alist
-                 (cons exp 'ruby-mode)))
-    #+END_SRC
-
-*** Compilation mode
-
-    Let's use a local theme for the shells.
-
-    #+BEGIN_SRC emacs-lisp
-       (defun my/compilation-theme-hook ()
-         (load-theme-buffer-local 'wombat))
-       (add-to-list 'compilation-mode-hook 'my/compilation-theme-hook t)
-    #+END_SRC
-
-*** TODO Shell(s)
-
-*** TODO Go
-
-*** PROGRESS SQL
-
-    Emacs is really more than an editor. The SQL mode is quick cool to
-    used (and do not eat my memory like mysql-workbench for
-    example).
-
-    By default, Emacs does not automatically truncate long lines in
-    SQL(i) mode, let's change that.
-
-    #+BEGIN_SRC emacs-lisp
-      (add-hook 'sql-interactive-mode-hook
-                (lambda ()
-                  (toggle-truncate-lines t)))
-    #+END_SRC
-
-*** TODO Docker
-
-*** TODO fic-mode
-*** TODO Linux related modes
-**** TODO Archlinux
-     I'm using [[http://archlinux.org][Archlinux]] on my personnal computers and I maintain a few packages
-     on [[https://aur.archlinux.org][aur]], hopefully there is a mode for that.
-
-     #+BEGIN_SRC emacs-lisp
-       (require-package 'pkgbuild-mode)
-     #+END_SRC
-
-**** TODO Debian
-*** DONE Markdown
-
-    #+BEGIN_SRC emacs-lisp
-      (require-package 'markdown-mode)
-      (require-package 'markdown-mode+)
-    #+END_SRC
-
-
-*** DONE Yaml
-
-    #+BEGIN_SRC emacs-lisp
-      (require-package 'yaml-mode)
-    #+END_SRC
-
-*** TODO Ansible
-
-    [[http://docs.ansible.com/index.html][Ansible]] is a great automation tool I use to manage my servers and
-    desktops.
-
-    #+BEGIN_SRC emacs-lisp
-  (require-package 'ansible)
-  (add-hook 'yaml-mode-hook '(lambda () (ansible 1)))
-    #+END_SRC
-
-    The following snippet is taken from [[http://www.lunaryorn.com/2014/07/18/ansible-docs-in-emacs.html][lunaryorn article]] about getting
-    ansible doc in emacs.
-
-    #+BEGIN_SRC emacs-lisp
-  (defconst lunaryorn-ansible-doc-buffer " *Ansible Doc*"
-    "The Ansible Doc buffer.")
-
-  (defvar lunaryorn-ansible-modules nil
-    "List of all known Ansible modules.")
-
-  (defun lunaryorn-ansible-modules ()
-    "Get a list of all known Ansible modules."
-    (unless lunaryorn-ansible-modules
-      (let ((lines (ignore-errors (process-lines "ansible-doc" "--list")))
-            modules)
-        (dolist (line lines)
-          (push (car (split-string line (rx (one-or-more space)))) modules))
-        (setq lunaryorn-ansible-modules (sort modules #'string<))))
-    lunaryorn-ansible-modules)
-
-  (defun lunaryorn-ansible-doc (module)
-    "Show ansible doc for MODULE."
-    (interactive
-     (list (ido-completing-read "Ansible Module: "
-                                (lunaryorn-ansible-modules)
-                                nil nil nil nil nil
-                                (thing-at-point 'symbol 'no-properties))))
-    (let ((buffer (get-buffer-create lunaryorn-ansible-doc-buffer)))
-      (with-current-buffer buffer
-        (setq buffer-read-only t)
-        (view-mode)
-        (let ((inhibit-read-only t))
-          (erase-buffer)
-          (call-process "ansible-doc" nil t t module))
-        (goto-char (point-min)))
-      (display-buffer buffer)))
-    #+END_SRC
-
-    Let's bind it.
-
-    #+BEGIN_SRC emacs-lisp
-  (eval-after-load 'yaml-mode
-    '(define-key yaml-mode-map (kbd "C-c h a") 'lunaryorn-ansible-doc))
-    #+END_SRC
-
-*** DONE vim
-
-    I tend to use vim for quick edit and other stuff and have a decent
-    configuration. And sometimes I edit the configuration, from emacs so, let's
-    had support for that.
-
-    #+BEGIN_SRC emacs-lisp
-    (require-package 'vimrc-mode)
-    #+END_SRC
-
-*** TODO Spellcheck (flyspell)
-*** Clean the modeline
-
-    With all the modes (major & minor), the modeline becomes really
-    big and unusable ; let's clean it.
-
-
-    #+BEGIN_SRC emacs-lisp
-      (defvar mode-line-cleaner-alist
-        `((auto-complete-mode       . " α")
-          (yas-minor-mode           . " γ")
-          (paredit-mode             . " Φ")
-          (eldoc-mode               . "")
-          (abbrev-mode              . "")
-          (undo-tree-mode           . " τ")
-          (volatile-highlights-mode . " υ")
-          (elisp-slime-nav-mode     . " δ")
-          (nrepl-mode               . " ηζ")
-          (nrepl-interaction-mode   . " ηζ")
-          (cider-mode               . " ηζ")
-          (cider-interaction        . " ηζ")
-          (undo-tree-mode           . "")
-          (projectile-mode          . "")
-          (helm-mode                . "")
-          ;; Major modes
-          (clojure-mode             . "λ")
-          (hi-lock-mode             . "")
-          (python-mode              . "Py")
-          (emacs-lisp-mode          . "EL")
-          (markdown-mode            . "md")
-          (magit                    . "ma")
-          (haskell-mode             . "ha")
-          (tuareg-mode              . "ml")
-          (flymake-mode             . "fm"))
-        "Alist for `clean-mode-line'.
-
-      When you add a new element to the alist, keep in mind that you
-      must pass the correct minor/major mode symbol and a string you
-      want to use in the modeline *in lieu of* the original.")
-
-      (defun clean-mode-line ()
-        (interactive)
-        (loop for cleaner in mode-line-cleaner-alist
-              do (let* ((mode (car cleaner))
-                        (mode-str (cdr cleaner))
-                        (old-mode-str (cdr (assq mode minor-mode-alist))))
-                   (when old-mode-str
-                     (setcar old-mode-str mode-str))
-                   ;; major mode
-                   (when (eq mode major-mode)
-                     (setq mode-name mode-str)))))
-
-
-      (add-hook 'after-change-major-mode-hook 'clean-mode-line)
-
-
-      ;;; Greek letters - C-u C-\ greek ;; C-\ to revert to default
-      ;;; ς ε ρ τ υ θ ι ο π α σ δ φ γ η ξ κ λ ζ χ ψ ω β ν μ
-    #+END_SRC
-
-** TODO Mails
+** Markdown
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package markdown-mode
+       :ensure t)
+     (use-package markdown-mode+
+       :ensure t)
+   #+END_SRC
+
+
+** Yaml
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package yaml-mode
+       :ensure t)
+   #+END_SRC
+
+** Ansible
+
+   [[http://docs.ansible.com/index.html][Ansible]] is a great automation tool I use to manage my servers and
+   desktops.
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package ansible
+       :ensure t
+       :config
+       (progn
+         (add-hook 'yaml-mode-hook '(lambda () (ansible 1)))))
+   #+END_SRC
+
+   The following snippet is taken from [[http://www.lunaryorn.com/2014/07/18/ansible-docs-in-emacs.html][lunaryorn article]] about getting
+   ansible doc in emacs.
+
+   #+BEGIN_SRC emacs-lisp
+     (defconst lunaryorn-ansible-doc-buffer " *Ansible Doc*"
+       "The Ansible Doc buffer.")
+
+     (defvar lunaryorn-ansible-modules nil
+       "List of all known Ansible modules.")
+
+     (defun lunaryorn-ansible-modules ()
+       "Get a list of all known Ansible modules."
+       (unless lunaryorn-ansible-modules
+         (let ((lines (ignore-errors (process-lines "ansible-doc" "--list")))
+               modules)
+           (dolist (line lines)
+             (push (car (split-string line (rx (one-or-more space)))) modules))
+           (setq lunaryorn-ansible-modules (sort modules #'string<))))
+       lunaryorn-ansible-modules)
+
+     (defun lunaryorn-ansible-doc (module)
+       "Show ansible doc for MODULE."
+       (interactive
+        (list (ido-completing-read "Ansible Module: "
+                                   (lunaryorn-ansible-modules)
+                                   nil nil nil nil nil
+                                   (thing-at-point 'symbol 'no-properties))))
+       (let ((buffer (get-buffer-create lunaryorn-ansible-doc-buffer)))
+         (with-current-buffer buffer
+           (setq buffer-read-only t)
+           (view-mode)
+           (let ((inhibit-read-only t))
+             (erase-buffer)
+             (call-process "ansible-doc" nil t t module))
+           (goto-char (point-min)))
+         (display-buffer buffer)))
+   #+END_SRC
+
+   Let's bind it.
+
+   #+BEGIN_SRC emacs-lisp
+ (eval-after-load 'yaml-mode
+   '(define-key yaml-mode-map (kbd "C-c h a") 'lunaryorn-ansible-doc))
+   #+END_SRC
+
+** vim
+
+   I tend to use vim for quick edit and other stuff and have a decent
+   configuration. And sometimes I edit the configuration, from emacs so, let's
+   had support for that.
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package vimrc-mode
+       :ensure t)
+   #+END_SRC
+
+** Clean the modeline
+
+   With all the modes (major & minor), the modeline becomes really
+   big and unusable ; let's clean it.
+
+
+   #+BEGIN_SRC emacs-lisp
+     (defvar mode-line-cleaner-alist
+       `((auto-complete-mode       . " α")
+         (yas-minor-mode           . " γ")
+         (paredit-mode             . " Φ")
+         (eldoc-mode               . "")
+         (abbrev-mode              . "")
+         (undo-tree-mode           . " τ")
+         (volatile-highlights-mode . " υ")
+         (elisp-slime-nav-mode     . " δ")
+         (nrepl-mode               . " ηζ")
+         (nrepl-interaction-mode   . " ηζ")
+         (cider-mode               . " ηζ")
+         (cider-interaction        . " ηζ")
+         (undo-tree-mode           . "")
+         (projectile-mode          . "")
+         (helm-mode                . "")
+         ;; Major modes
+         (clojure-mode             . "λ")
+         (hi-lock-mode             . "")
+         (python-mode              . "Py")
+         (emacs-lisp-mode          . "EL")
+         (markdown-mode            . "md")
+         (magit                    . "ma")
+         (haskell-mode             . "ha")
+         (tuareg-mode              . "ml")
+         (flymake-mode             . "fm")
+         (flycheck-mode            . "fc"))
+       "Alist for `clean-mode-line'.
+
+     When you add a new element to the alist, keep in mind that you
+     must pass the correct minor/major mode symbol and a string you
+     want to use in the modeline *in lieu of* the original.")
+
+     (defun clean-mode-line ()
+       (interactive)
+       (loop for cleaner in mode-line-cleaner-alist
+             do (let* ((mode (car cleaner))
+                       (mode-str (cdr cleaner))
+                       (old-mode-str (cdr (assq mode minor-mode-alist))))
+                  (when old-mode-str
+                    (setcar old-mode-str mode-str))
+                  ;; major mode
+                  (when (eq mode major-mode)
+                    (setq mode-name mode-str)))))
+
+
+     (add-hook 'after-change-major-mode-hook 'clean-mode-line)
+
+
+     ;;; Greek letters - C-u C-\ greek ;; C-\ to revert to default
+     ;;; ς ε ρ τ υ θ ι ο π α σ δ φ γ η ξ κ λ ζ χ ψ ω β ν μ
+   #+END_SRC
+
+** Mails
 
    Add mu4e to the load-path and load it.
 
@@ -1793,12 +1800,3 @@ white-space should be shown.
      (add-to-list 'mu4e-headers-actions '("retag" . mu4e-action-retag-message))
    #+END_SRC
 
-
-** TODO Twitter
-
-   Let's have a twitter timeline in Emacs, just for fun ;-P.
-
-
-   #+BEGIN_SRC emacs-lisp
-     (require-package 'twittering-mode)
-   #+END_SRC
