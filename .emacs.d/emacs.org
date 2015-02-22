@@ -794,7 +794,7 @@ white-space should be shown.
           :ensure t)
       #+END_SRC
 
-*** TODO Auto-complete
+*** Auto-complete
 
     #+BEGIN_QUOTE
     Auto-Complete is an intelligent auto-completion extension for
@@ -803,38 +803,40 @@ white-space should be shown.
     their own work.
     #+END_QUOTE
 
-    Install and use a basic configuration for auto-complete.
+    Install and use a basic configuration for auto-complete and setup defaults.
 
     #+BEGIN_SRC emacs-lisp
-      (require-package 'auto-complete)
-      (require 'auto-complete-config)
-      (global-auto-complete-mode t)
-      (setq ac-use-quick-help nil)
+      (use-package auto-complete
+        :ensure t
+        :config
+        (progn
+          (require 'auto-complete-config)
+          (setq ac-use-fuzzy t
+                ac-auto-start t
+                ac-use-quick-help nil
+                ac-ignore-case t)
+          (set-default 'ac-sources
+                       '(ac-source-imenu
+                         ac-source-dictionary
+                         ac-source-words-in-buffer
+                         ac-source-words-in-same-mode-buffers
+                         ac-source-words-in-all-buffer))
+          (dolist (mode '(magit-log-edit-mode
+                          log-edit-mode org-mode text-mode haml-mode
+                          git-commit-mode
+                          sass-mode yaml-mode csv-mode espresso-mode haskell-mode
+                          html-mode nxml-mode sh-mode smarty-mode clojure-mode
+                          lisp-mode textile-mode markdown-mode tuareg-mode
+                          js3-mode css-mode less-css-mode sql-mode
+                          sql-interactive-mode
+                          inferior-emacs-lisp-mode))
+            (add-to-list 'ac-modes mode))
+          (global-auto-complete-mode t))
+        )
     #+END_SRC
 
-    And setup default source & co.
 
-    #+BEGIN_SRC emacs-lisp
-      (set-default 'ac-sources
-                   '(ac-source-imenu
-                     ac-source-dictionary
-                     ac-source-words-in-buffer
-                     ac-source-words-in-same-mode-buffers
-                     ac-source-words-in-all-buffer))
-      (dolist (mode '(magit-log-edit-mode
-                      log-edit-mode org-mode text-mode haml-mode
-                      git-commit-mode
-                      sass-mode yaml-mode csv-mode espresso-mode haskell-mode
-                      html-mode nxml-mode sh-mode smarty-mode clojure-mode
-                      lisp-mode textile-mode markdown-mode tuareg-mode
-                      js3-mode css-mode less-css-mode sql-mode
-                      sql-interactive-mode
-                      inferior-emacs-lisp-mode))
-        (add-to-list 'ac-modes mode))
-    #+END_SRC
-
-
-*** DONE deft
+*** deft
 
     #+BEGIN_QUOTE
     Deft is an Emacs mode for quickly browsing, filtering, and editing
@@ -844,55 +846,63 @@ white-space should be shown.
     Deft is cool to use with org-mode, let's use it for notes.
 
     #+BEGIN_SRC emacs-lisp
-      (require-package 'deft)
-
-      (setq deft-extension "org")
-      (setq deft-text-mode 'org-mode)
-      (setq deft-directory "~/desktop/org/notes")
-      (setq deft-use-filename-as-title t)         ;; Use filename as title
-
-      (global-set-key (kbd "<f9>") 'deft)
+      (use-package deft
+        :ensure t
+        :config
+        (progn
+          (setq deft-extension "org"
+                deft-text-mode 'org-mode
+                deft-directory "~/desktop/org/notes"
+                deft-use-filename-as-title t))
+        :bind ("<f9>" . deft))
     #+END_SRC
 
-*** TODO Version control integration
-**** TODO Git
+*** Version control integration
+**** Git
 
      #+begin_src emacs-lisp
-  (require-package 'git-commit-mode)
-  (require-package 'git-rebase-mode)
-  (require-package 'gitignore-mode)
-  (require-package 'gitconfig-mode)
-  (require-package 'gitattributes-mode)
+       (use-package git-commit-mode
+         :ensure t)
+       (use-package git-rebase-mode
+         :ensure t)
+       (use-package gitignore-mode
+         :ensure t)
+       (use-package gitconfig-mode
+         :ensure t)
+       (use-package gitattributes-mode
+         :ensure t)
      #+end_src
 
 
-***** TODO magit
+***** magit
 
       #+begin_src emacs-lisp
-        (require-package 'magit)
-        (global-set-key "\C-cg" 'magit-status)
+        (use-package magit
+          :ensure t
+          :bind ("C-c g" . magit-status))
       #+end_src
 
-****** DONE Magit git-svn integration
+****** Magit git-svn integration
 
        At work, I use ~git-svn~ to be able to use git locally but integrating in the
        subversion they use. Integrating ~magit~ and ~git-svn~ is a bonus but, as it
        exists, let's do it :).
 
        #+begin_src emacs-lisp
-(require-package 'magit-svn)
+         (use-package magit-svn)
        #+end_src
 
        The /quick key/ to get the ~magit-svn~ menu is ~N~.
-***** TODO git fringe decoration
+***** git fringe decoration
 
       #+begin_src emacs-lisp
-     (when (window-system)
-       (require-package 'git-gutter-fringe)
-       (global-git-gutter-mode +1))
+        (when (window-system)
+          (use-package git-gutter-fringe
+            :ensure t
+            :config (global-git-gutter-mode +1)))
       #+end_src emacs-lisp
 
-***** DONE git-annex
+***** git-annex
 
       [[http://git-annex.branchable.com/][Git-annex]] is a wonderful piece of software that I use a lot in my repositories.
 
@@ -903,31 +913,27 @@ white-space should be shown.
       In Emacs, it integrates with magit and dired mode. The annex subcommand for magit is ~@~.
 
       #+begin_src emacs-lisp
-(require-package 'git-annex)
-(require-package 'magit-annex)
+        (use-package git-annex
+          :ensure t)
+        (use-package magit-annex
+          :ensure t)
       #+end_src
 
-***** TODO gitty
-***** DONE git-timemachine
+***** git-timemachine
       I recently discovered an extremely cool package called git-timemachine that allows you to step though the git history of the file you’re currently editing in Emacs.
 
       #+BEGIN_SRC emacs-lisp
-        (require-package 'git-timemachine)
+        (use-package git-timemachine
+          :ensure t)
       #+END_SRC
 
-
-***** TODO git-blame
-
+***** git-blame
 
       #+BEGIN_SRC emacs-lisp
-        (require-package 'git-blame)
+        (use-package git-blame
+          :ensure t)
       #+END_SRC
 
-
-***** TODO github
-
-      # gist, githubclone, ..
-**** TODO Mercurial
 *** DONE highlight-symbol
 
     #+BEGIN_QUOTE
@@ -1401,7 +1407,7 @@ white-space should be shown.
       Now, a /manual/ step will be to install consumer key and stuff
       (see [[https://org-trello.github.io/trello-setup.html][documentation]] for that).
 
-*** TODO Projectile
+*** Projectile
 
     #+BEGIN_QUOTE
     Projectile is a project interaction library for Emacs. Its goal is
@@ -1415,14 +1421,20 @@ white-space should be shown.
 
 
     #+BEGIN_SRC emacs-lisp
-      (require-package 'projectile)
-      ;; Integrate with helm
-      (require-package 'helm-projectile)
+      (use-package projectile
+        :ensure t
+        :config
+        (progn
+          (setq projectile-completion-system 'default)
+          (setq projectile-enable-caching t)
+          (projectile-global-mode)))
     #+END_SRC
 
+    And let's use the helm integration too.
 
     #+BEGIN_SRC emacs-lisp
-      (projectile-global-mode)
+      (use-package helm-projectile
+        :ensure t)
     #+END_SRC
 
 **** Perspective
