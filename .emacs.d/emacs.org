@@ -889,7 +889,8 @@ white-space should be shown.
        exists, let's do it :).
 
        #+begin_src emacs-lisp
-         (use-package magit-svn)
+         (use-package magit-svn
+           :ensure t)
        #+end_src
 
        The /quick key/ to get the ~magit-svn~ menu is ~N~.
