@@ -30,7 +30,8 @@ This file is an /always/ work-in-progress, and is currently under
 *heavy* modifications. The latest version of this file is always
 available at my [[https://github.com/vdemeester/emacs-config][emacs-config]] github repository, the [[https://github.com/vdemeester/emacs-config/blob/master/.emacs.d/emacs.org][emacs.org]] file.
 
-It looks like that :
+It looks kinda like that (click to open the real one) :
+
 [[./.emacs.d/images/emacs-config.png][./.emacs.d/images/emacs-config-small.png]]
 
 * Configuration
