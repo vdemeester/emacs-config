@@ -1561,6 +1561,29 @@ white-space should be shown.
                     (cons exp 'ruby-mode)))
    #+END_SRC
 
+** Go
+
+   Let's install go-mode.
+
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package go-mode
+       :ensure t)
+   #+END_SRC
+
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package go-autocomplete
+       :ensure t)
+   #+END_SRC
+
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package go-eldoc
+       :ensure t)
+   #+END_SRC
+
+
 ** Compilation mode
 
    Let's use a local theme for the shells.
