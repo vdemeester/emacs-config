@@ -1415,6 +1415,14 @@ white-space should be shown.
      Now, a /manual/ step will be to install consumer key and stuff
      (see [[https://org-trello.github.io/trello-setup.html][documentation]] for that).
 
+*** Pomodoro
+
+
+    #+BEGIN_SRC emacs-lisp
+      (use-package org-pomodoro
+        :ensure t)
+    #+END_SRC
+
 ** Projectile
 
    #+BEGIN_QUOTE
@@ -1654,6 +1662,17 @@ white-space should be shown.
 
    #+BEGIN_SRC emacs-lisp
      (use-package yaml-mode
+       :ensure t)
+   #+END_SRC
+
+** Docker
+
+   I'm playing a lot with [[http://docker.com][docker]] and most of the time editing
+   Dockerfile and stuff inside Emacs.
+
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package dockerfile-mode
        :ensure t)
    #+END_SRC
 
