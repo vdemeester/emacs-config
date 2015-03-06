@@ -1423,6 +1423,53 @@ white-space should be shown.
         :ensure t)
     #+END_SRC
 
+*** Publishing
+
+    Let's configure the publishing part of org-mode. The first
+    org-mode files we want to publish are in =~/desktop/org/{project}=,
+    and we want to publish them in =~/var/public_html/{project}= for
+    now.
+
+    #+BEGIN_SRC emacs-lisp
+      (require 'ox-publish)
+      (setq org-publish-project-alist
+            '(("experiments-notes"
+              :base-directory "~/desktop/org/notes/experiments"
+              :base-extension "org"
+              :publishing-directory "~/var/public_html/experiments"
+              :makeindex t
+              :exclude "FIXME"
+              :recursive t
+              :publishing-function org-html-publish-to-html
+              :htmlized-source t
+              :headline-levels 4
+              :auto-preamble t
+              :html-head "<link rel=\"stylesheet\" type=\"text/css\" href=\"style/style.css\" />"
+              )
+              ("experiments-static"
+               :base-directory "~/desktop/org/notes/experiments"
+               :base-extension "css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg"
+               :publishing-directory "~/var/public_html/experiments"
+               :recursive t
+               :publishing-function org-publish-attachment
+               )
+              ("experiments" :components ("experiments-notes" "experiments-static"))
+              )
+            )
+    #+END_SRC
+
+
+    Few org-export and org-html configuration.
+
+    #+BEGIN_SRC emacs-lisp
+      ;;      (setq org-html-head "<link rel=\"stylesheet\" type=\"text/css\" hrefl=\"css/stylesheet.css\" />")
+      (setq org-html-include-timestamps nil)
+      (setq org-export-htmlize-output-type 'css)
+      (setq org-html-head-include-default-style nil)
+
+    #+END_SRC
+
+
 ** Projectile
 
    #+BEGIN_QUOTE
