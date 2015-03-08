@@ -1387,6 +1387,16 @@ white-space should be shown.
     #+END_SRC
 
 *** Externals (caldav, issues, ..)
+**** General (org-sync)
+
+
+     #+BEGIN_SRC emacs-lisp
+       (add-to-list 'load-path "~/.emacs.d/lisp/org-sync")
+       (mapc 'load
+             '("org-element" "os" "os-bb" "os-github" "os-rmine"))
+     #+END_SRC
+
+
 **** Redmine
 
      On some project (mainly @work), redmine is used. As I'm using
