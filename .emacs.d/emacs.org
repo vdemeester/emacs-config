@@ -1791,17 +1791,6 @@ white-space should be shown.
    '(define-key yaml-mode-map (kbd "C-c h a") 'lunaryorn-ansible-doc))
    #+END_SRC
 
-** vim
-
-   I tend to use vim for quick edit and other stuff and have a decent
-   configuration. And sometimes I edit the configuration, from emacs so, let's
-   had support for that.
-
-   #+BEGIN_SRC emacs-lisp
-     (use-package vimrc-mode
-       :ensure t)
-   #+END_SRC
-
 ** Clean the modeline
 
    With all the modes (major & minor), the modeline becomes really
