@@ -979,7 +979,9 @@ white-space should be shown.
 
    #+BEGIN_SRC emacs-lisp
      (use-package multi-term
-       :ensure t)
+       :ensure t
+       :bind (("M-[" . multi-term-prev)
+              ("M-]" . multi-term-next)))
    #+END_SRC
 
 ** multiple-cursors
