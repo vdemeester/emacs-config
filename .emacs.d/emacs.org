@@ -1,4 +1,4 @@
-e#+TITLE: Vincent Demeester's emacs configuration
+#+TITLE: Vincent Demeester's emacs configuration
 #+AUTHOR: Vincent Demeester
 #+EMAIL: vincent [at] demeester [dot] fr
 
@@ -972,6 +972,15 @@ white-space should be shown.
         :ensure t
         :config (move-text-default-bindings))
     #+END_SRC
+
+** Terminal
+
+   Let's install and use [[http://www.emacswiki.org/emacs/MultiTerm][=multi-term=]], which is a cool addition to =term.el=.
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package multi-term
+       :ensure t)
+   #+END_SRC
 
 ** multiple-cursors
 
