@@ -975,7 +975,7 @@ white-space should be shown.
 
 ** Terminal
 
-   Let's install and use [[http://www.emacswiki.org/emacs/MultiTerm][=multi-term=]], which is a cool addition to =term.el=.
+   Let's install and use [[http://www.emacswiki.org/emacs/MultiTerm][multi-term]], which is a cool addition to =term.el=.
 
    #+BEGIN_SRC emacs-lisp
      (use-package multi-term
