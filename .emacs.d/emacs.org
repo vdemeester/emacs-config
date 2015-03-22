@@ -570,6 +570,7 @@ white-space should be shown.
        (define-key vde/launcher-map "G" #'rgrep)
        (define-key vde/launcher-map "h" #'man)    ; Help
        (define-key vde/launcher-map "s" #'shell)
+       (define-key vde/launcher-map "r" #'multi-term)
        (define-key vde/launcher-map "t" #'proced) ; top
        (define-key vde/launcher-map "m" #'mu4e)   ; mails
        (define-key vde/launcher-map "u" #'mu4e-update-mail-and-index)
