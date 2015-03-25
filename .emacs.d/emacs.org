@@ -1645,7 +1645,12 @@ white-space should be shown.
 
    #+BEGIN_SRC emacs-lisp
      (use-package go-mode
-       :ensure t)
+       :ensure t
+       :bind (("C-c a" . go-test-current-project)
+              ("C-c m" . go-test-current-file)
+              ("C-c ." . go-test-current-test)
+              ("C-c b" . go-run)
+              ("C-h f" . godoc-at-point)))
    #+END_SRC
 
 
