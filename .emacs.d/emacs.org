@@ -1896,7 +1896,19 @@ white-space should be shown.
 
    #+BEGIN_SRC emacs-lisp
      (use-package vagrant
-       :ensure t)
+       :ensure t
+       :defer t
+       :init
+       (progn
+         (evil-leader/set-key
+           "VD" 'vagrant-destroy
+           "Ve" 'vagrant-edit
+           "VH" 'vagrant-halt
+           "Vp" 'vagrant-provision
+           "Vr" 'vagrant-resume
+           "Vs" 'vagrant-status
+           "VS" 'vagrant-suspend
+           "VV" 'vagrant-up)))
    #+END_SRC
 
    And let's also add a TRAMP add-on for Vagrant. The idea is to be
@@ -1904,7 +1916,8 @@ white-space should be shown.
 
    #+BEGIN_SRC emacs-lisp
      (use-package vagrant-tramp
-       :ensure t)
+       :ensure t
+       :defer t)
    #+END_SRC
 
 
