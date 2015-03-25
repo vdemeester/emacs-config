@@ -1873,6 +1873,24 @@ white-space should be shown.
        :ensure t)
    #+END_SRC
 
+** Vagrant
+
+   Let's add support for vagrant.
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package vagrant
+       :ensure t)
+   #+END_SRC
+
+   And let's also add a TRAMP add-on for Vagrant. The idea is to be
+   able to do something like =/vagrant:mybox/etc/hostname=
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package vagrant-tramp
+       :ensure t)
+   #+END_SRC
+
+
 ** Mails
 
    Add mu4e to the load-path and load it.
