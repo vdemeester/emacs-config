@@ -336,6 +336,22 @@ It looks kinda like that (click to open the real one) :
     #+END_SRC
 
 
+**** Setting the PATH
+
+     I'm playing a lot with the =$PATH= variable in my shell, and I
+     sometimes pested that Emacs didn't have the same one. But thanks
+     to [[https://github.com/purcell/exec-path-from-shell][exec-path-from-shell]] it's all ok now =:P=.
+
+
+     #+BEGIN_SRC emacs-lisp
+       (use-package exec-path-from-shell
+         :ensure t
+         :config
+         (exec-path-from-shell-initialize)
+         (exec-path-from-shell-copy-env "HISTFILE"))
+     #+END_SRC
+
+
 **** Encoding
 
      Make sur that we use ~utf-8~ by default.
