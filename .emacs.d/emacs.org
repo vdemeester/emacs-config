@@ -1644,7 +1644,7 @@ white-space should be shown.
 
 ** Go
 
-   Let's install go-mode.
+   Let's install go-mode and configure it.
 
 
    #+BEGIN_SRC emacs-lisp
@@ -1657,26 +1657,17 @@ white-space should be shown.
               ("C-h f" . godoc-at-point)))
    #+END_SRC
 
+   And install stuffs, like autocomplete, documentation, errorcheck, tests.
 
    #+BEGIN_SRC emacs-lisp
      (use-package go-autocomplete
        :ensure t)
-   #+END_SRC
-
-
-   #+BEGIN_SRC emacs-lisp
      (use-package go-eldoc
        :ensure t)
-   #+END_SRC
-
-
-   #+BEGIN_SRC emacs-lisp
      (use-package go-projectile
        :ensure t)
-   #+END_SRC
-
-
-   #+BEGIN_SRC emacs-lisp
+     (use-package go-errcheck
+       :ensure t)
      (use-package gotest
        :ensure t)
    #+END_SRC
