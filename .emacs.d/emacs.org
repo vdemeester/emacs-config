@@ -272,18 +272,6 @@ It looks kinda like that (click to open the real one) :
                     (load-theme 'leuven))
      #+end_src
 
-     Let's also install something to have different themes by buffers.
-
-     #+BEGIN_SRC emacs-lisp
-       ;; Temporarly deactivate this as it is bugged on MELPA
-       ;; (use-package load-theme-buffer-local)
-       (use-package noflet
-                    :ensure t)
-       (require 'load-theme-buffer-local)
-     #+END_SRC
-
-***** TODO Specific theme for modes
-
 **** Powerline
 
      We are going to use [[https://github.com/milkypostman/powerline][powerline]] because it is way more sexy than the default modeline design.
@@ -1695,14 +1683,6 @@ white-space should be shown.
 
 
 ** Compilation mode
-
-   Let's use a local theme for the shells.
-
-   #+BEGIN_SRC emacs-lisp
-      (defun my/compilation-theme-hook ()
-        (load-theme-buffer-local 'wombat))
-      (add-to-list 'compilation-mode-hook 'my/compilation-theme-hook t)
-   #+END_SRC
 
 *** Compilation mode improvements
 
