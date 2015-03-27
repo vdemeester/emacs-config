@@ -592,6 +592,14 @@ white-space should be shown.
        (define-key vde/launcher-map "u" #'mu4e-update-mail-and-index)
      #+END_SRC
 
+**** Window moving
+
+
+     #+BEGIN_SRC emacs-lisp
+       (use-package ace-window
+         :ensure t)
+     #+END_SRC
+
 **** TODO Evil
 
      I come from a [[http://vim.org][vim]] background and the modal editor comes with some
