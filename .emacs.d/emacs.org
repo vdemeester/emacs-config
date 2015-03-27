@@ -506,6 +506,19 @@ white-space should be shown.
      #+END_SRC
 
 
+**** selection
+
+     One feature of IntelliJ that really rocks is the =C-w= shortcuts
+     that select "intelligently". =exand-region= is doing this for
+     emacs, see [[http://emacsrocks.com/e09.html][Emacs Rocks Episode 09]].
+
+     #+BEGIN_SRC emacs-lisp
+       (use-package expand-region
+         :ensure t
+         :bind ("C-=" . er/expand-region))
+     #+END_SRC
+
+
 **** Notifications
      Emacs now has notifications (freedesktop.org specifications)
      built-in. Let's load it for potential needs.
