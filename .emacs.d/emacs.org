@@ -485,13 +485,19 @@ white-space should be shown.
 
      Dired is really a cool mode, let's enhance it.
 
-
      #+BEGIN_SRC emacs-lisp
        (setq diredp-hide-details-initially-flag nil)
        (use-package dired+
                     :ensure t
                     :init)
      #+END_SRC
+
+     Customize a bit the dired buffer
+
+     #+BEGIN_SRC emacs-lisp
+       (setq dired-listing-switches "-laGh1v --group-directories-first")
+     #+END_SRC
+
 
 **** Search
 
