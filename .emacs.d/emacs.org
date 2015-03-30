@@ -1665,7 +1665,8 @@ white-space should be shown.
 
    #+BEGIN_SRC emacs-lisp
      (use-package helm-projectile
-       :ensure t)
+       :ensure t
+       :config (helm-projectile-on))
    #+END_SRC
 
 *** Perspective
