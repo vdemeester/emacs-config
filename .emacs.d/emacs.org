@@ -791,39 +791,46 @@ white-space should be shown.
          :bind ("C-h b" . helm-descbinds))
      #+END_SRC
 
-
      #+BEGIN_SRC emacs-lisp
        (use-package helm-gtags
          :ensure t)
        ;; (helm-gtags-mode 1)
      #+END_SRC
 
-***** helm-swoop
+**** helmp-make
 
-      =helm-swoop= is a great Helm powered buffer search/occur interface:
+     #+BEGIN_SRC emacs-lisp
+       (use-package helm-make
+         :ensure t)
+     #+END_SRC
 
-      #+BEGIN_SRC emacs-lisp
-        (use-package helm-swoop
-          :ensure t
-          :defer t
-          :bind (("C-S-s" . helm-swoop)
-                 ("M-I" . helm-swoop-back-to-last-point))
-          :config
-          (progn
-            (define-key isearch-mode-map (kbd "M-i") 'helm-swoop-from-isearch)
-            (define-key helm-swoop-map (kbd "M-i") 'helm-multi-swoop-all-from-helm-swoop)))
-      #+END_SRC
 
-***** helm-google
+**** helm-swoop
 
-      #+BEGIN_QUOTE
-      Emacs Helm Interface for quick Google searches
-      #+END_QUOTE
+     =helm-swoop= is a great Helm powered buffer search/occur interface:
 
-      #+BEGIN_SRC emacs-lisp
-        (use-package helm-google
-          :ensure t)
-      #+END_SRC
+     #+BEGIN_SRC emacs-lisp
+       (use-package helm-swoop
+         :ensure t
+         :defer t
+         :bind (("C-S-s" . helm-swoop)
+                ("M-I" . helm-swoop-back-to-last-point))
+         :config
+         (progn
+           (define-key isearch-mode-map (kbd "M-i") 'helm-swoop-from-isearch)
+           (define-key helm-swoop-map (kbd "M-i") 'helm-multi-swoop-all-from-helm-swoop)))
+     #+END_SRC
+**** helm-google
+
+     #+BEGIN_QUOTE
+     Emacs Helm Interface for quick Google searches
+     #+END_QUOTE
+
+     #+BEGIN_SRC emacs-lisp
+       (use-package helm-google
+         :ensure t)
+     #+END_SRC
+
 
 *** Hydra
 
