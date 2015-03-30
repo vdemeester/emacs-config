@@ -1609,18 +1609,18 @@ white-space should be shown.
       (require 'ox-publish)
       (setq org-publish-project-alist
             '(("experiments-notes"
-              :base-directory "~/desktop/org/notes/experiments"
-              :base-extension "org"
-              :publishing-directory "~/var/public_html/experiments"
-              :makeindex t
-              :exclude "FIXME"
-              :recursive t
-              :publishing-function org-html-publish-to-html
-              :htmlized-source t
-              :headline-levels 4
-              :auto-preamble t
-              :html-head "<link rel=\"stylesheet\" type=\"text/css\" href=\"style/style.css\" />"
-              )
+               :base-directory "~/desktop/org/notes/experiments"
+               :base-extension "org"
+               :publishing-directory "~/var/public_html/experiments"
+               :makeindex t
+               :exclude "FIXME"
+               :recursive t
+               :publishing-function org-html-publish-to-html
+               :htmlized-source t
+               :headline-levels 4
+               :auto-preamble t
+               :html-head "<link rel=\"stylesheet\" type=\"text/css\" href=\"style/style.css\" />"
+               )
               ("experiments-static"
                :base-directory "~/desktop/org/notes/experiments"
                :base-extension "css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg"
@@ -1629,6 +1629,27 @@ white-space should be shown.
                :publishing-function org-publish-attachment
                )
               ("experiments" :components ("experiments-notes" "experiments-static"))
+              ("sbr-notes"
+               :base-directory "~/desktop/org/notes/sbr"
+               :base-extension "org"
+               :publishing-directory "~/var/public_html/sbr"
+               :makeindex t
+               :exclude "FIXME"
+               :recursive t
+               :publishing-function org-html-publish-to-html
+               :htmlized-source t
+               :headline-levels 4
+               :auto-preamble t
+               :html-head "<link rel=\"stylesheet\" type=\"text/css\" href=\"style/style.css\" />"
+               )
+              ("sbr-static"
+               :base-directory "~/desktop/org/notes/sbr"
+               :base-extension "css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg"
+               :publishing-directory "~/var/public_html/sbr"
+               :recursive t
+               :publishing-function org-publish-attachment
+               )
+              ("sbr" :components ("sbr-notes" "sbr-static"))
               )
             )
     #+END_SRC
