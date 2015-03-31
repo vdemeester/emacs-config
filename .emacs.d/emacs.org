@@ -1670,8 +1670,6 @@ white-space should be shown.
       (setq org-html-head-include-default-style nil)
 
     #+END_SRC
-
-
 ** Projectile
 
    #+BEGIN_QUOTE
@@ -1719,6 +1717,67 @@ white-space should be shown.
           (define-key projectile-mode-map (kbd "s-s") 'projectile-persp-switch-project)
           (persp-mode)))
     #+END_SRC
+** Compilation mode
+
+*** Compilation mode improvements
+
+    See http://stackoverflow.com/questions/3072648/cucumbers-ansi-colors-messing-up-emacs-compilation-buffer
+
+
+    #+BEGIN_SRC emacs-lisp
+      (require 'ansi-color)
+      (defun my/colorize-compilation-buffer ()
+        (toggle-read-only)
+        (ansi-color-apply-on-region (point-min) (point-max))
+        (toggle-read-only))
+      (add-hook 'compilation-filter-hook 'my/colorize-compilation-buffer)
+    #+END_SRC
+
+    And let's configure the compilation-mode to follow the compilation, not waiting
+    at the top..
+
+    #+BEGIN_SRC emacs-lisp
+      (setq compilation-scroll-output t)
+    #+END_SRC
+
+** Provided configuration
+
+   I'm managing my configurations using [[https://github.com/RichiH/vcsh][vcsh]] and [[http://myrepos.branchable.com/][myrepos]], like [[https://github.com/vdemeester/vcsh-home#how-it-is-supposed-to-work][that]]. I have a lot
+   of different configuration repository ([[https://github.com/search?q%3Duser%253Avdemeester%2Bconfig][here]]) and the way I use it
+   is I get only the one I need on the computer I need. This means I
+   don't always want the =ruby-config= or the =go-config= on my
+   computers. And this means that I don't need these part in my emacs
+   configuration as well ; it even might need some dependencies that I
+   wouldn't have without the =*-config= repository.
+
+   So, each repository will come (or not =:-P=) with a part of emacs
+   configuration, that will be load by the following code. They will
+   put their code into =$HOME/.emacs.d/provided/=.
+
+
+   #+BEGIN_SRC emacs-lisp
+     ;; The folder is by default $HOME/.emacs.d/provided
+     (setq user-emacs-provided-directory (concat user-emacs-directory "provided/"))
+     ;; Regexp to find org files in the folder
+     (setq provided-configuration-file-regexp "\\`[^.].*\\.org\\'")
+     ;; Define the function
+     (defun load-provided-configuration (dir)
+       "Load org file from =use-emacs-provided-directory= as configuration with org-babel"
+       (unless (file-directory-p dir) (error "Not a directory '%s'" dir))
+       (dolist (file (directory-files dir nil provided-configuration-file-regexp nil) nil)
+         (unless (member file '("." ".."))
+           (let ((file (concat dir file)))
+             (unless (file-directory-p file)
+               (message "loading file %s" file)
+               (org-babel-load-file file)
+               )
+             ))
+         )
+       )
+     ;; Load it
+     (load-provided-configuration user-emacs-provided-directory)
+   #+END_SRC
+
 
 ** Lua
 
@@ -1750,7 +1809,6 @@ white-space should be shown.
           (eval-after-load 'flycheck
             '(add-hook 'flycheck-mode-hook #'flycheck-haskell-setup))))
     #+END_SRC
-
 ** Lisp(s)
 *** General
 
@@ -1805,7 +1863,6 @@ white-space should be shown.
        (use-package cider
          :ensure t)
      #+END_SRC
-
 ** Ruby
 
    I don't really use [[https://www.ruby-lang.org/][Ruby]] that much but when I need to work on a Ruby project
