@@ -1778,7 +1778,6 @@ white-space should be shown.
      (load-provided-configuration user-emacs-provided-directory)
    #+END_SRC
 
-
 ** Lua
 
    #+BEGIN_SRC emacs-lisp
@@ -1786,29 +1785,6 @@ white-space should be shown.
        :ensure t)
    #+END_SRC
 
-** Haskell
-
-    #+begin_src emacs-lisp
-      (use-package haskell-mode
-        :ensure t)
-      (use-package ghc
-        :ensure t)
-      (use-package ghci-completion
-        :ensure t)
-      (use-package shm
-        :ensure t)
-    #+end_src
-
-*** Flycheck
-
-    #+BEGIN_SRC emacs-lisp
-      (use-package flycheck-haskell
-        :ensure t
-        :config
-        (progn
-          (eval-after-load 'flycheck
-            '(add-hook 'flycheck-mode-hook #'flycheck-haskell-setup))))
-    #+END_SRC
 ** Lisp(s)
 *** General
 
@@ -1863,19 +1839,6 @@ white-space should be shown.
        (use-package cider
          :ensure t)
      #+END_SRC
-** Ruby
-
-   I don't really use [[https://www.ruby-lang.org/][Ruby]] that much but when I need to work on a Ruby project
-   I want to have a decent configuration.
-
-   Tell Emacs rake, bundler files and =*.erb= are Ruby files.
-
-   #+BEGIN_SRC emacs-lisp
-     (dolist (exp '("Rakefile\\'" "\\.rake\\'" "Gemfile\\'" "\\.erb\\'"))
-       (add-to-list 'auto-mode-alist
-                    (cons exp 'ruby-mode)))
-   #+END_SRC
-
 ** SQL
 
    Emacs is really more than an editor. The SQL mode is quick cool to
@@ -1992,8 +1955,8 @@ white-space should be shown.
    With all the modes (major & minor), the modeline becomes really
    big and unusable ; let's clean it.
 
-
    #+BEGIN_SRC emacs-lisp
+     ;; FIXME handle this with provided configuration
      (defvar mode-line-cleaner-alist
        `((auto-complete-mode       . " α")
          (yas-minor-mode           . " γ")
