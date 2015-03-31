@@ -2,6 +2,9 @@
 !.emacs.d
 !.emacs.d/*
 !.emacs.d/**
+.emacs.d/gotools
+.emacs.d/provided/*
+!.emacs.d/provided/.placeholder
 .emacs.d/emacs.el
 .emacs.d/user.el
 .emacs.d/custom.el
