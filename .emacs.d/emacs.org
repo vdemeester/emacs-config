@@ -485,6 +485,59 @@ white-space should be shown.
 
      Dired is really a cool mode, let's enhance it.
 
+     First load =dired-x= and set a list of default guess when issuing
+     =!= (=dired-do-shell-command=) or =&= (=dired-do-async-shell-command=).
+
+
+     #+BEGIN_SRC emacs-lisp
+       (use-package dired-x)
+       (setq dired-guess-shell-alist-user
+                '(("\\.pdf\\'" "evince" "okular")
+                  ("\\.\\(?:djvu\\|eps\\)\\'" "evince")
+                  ("\\.\\(?:jpg\\|jpeg\\|png\\|gif\\|xpm\\)\\'" "geeqie")
+                  ("\\.\\(?:xcf\\)\\'" "gimp")
+                  ("\\.csv\\'" "libreoffice")
+                  ("\\.tex\\'" "pdflatex" "latex")
+                  ("\\.\\(?:mp4\\|mkv\\|avi\\|flv\\|ogv\\)\\(?:\\.part\\)?\\'"
+                   "mpv")
+                  ("\\.\\(?:mp3\\|flac\\)\\'" "mpv")
+                  ("\\.html?\\'" "firefox")
+                  ("\\.cue?\\'" "audacious")))
+     #+END_SRC
+
+     Then, use nohup to not attach a process to emacs.
+
+     #+BEGIN_SRC emacs-lisp
+       (use-package dired-aux)
+
+       (defvar dired-filelist-cmd
+         '(("vlc" "-L")))
+
+       (defun dired-start-process (cmd &optional file-list)
+         (interactive
+          (let ((files (dired-get-marked-files
+                        t current-prefix-arg)))
+            (list
+             (dired-read-shell-command "& on %s: "
+                                       current-prefix-arg files)
+             files)))
+         (let (list-switch)
+           (start-process
+            cmd nil shell-file-name
+            shell-command-switch
+            (format
+             "nohup 1>/dev/null 2>/dev/null %s \"%s\""
+             (if (and (> (length file-list) 1)
+                    (setq list-switch
+                          (cadr (assoc cmd dired-filelist-cmd))))
+                 (format "%s %s" cmd list-switch)
+               cmd)
+             (mapconcat #'expand-file-name file-list "\" \"")))))
+
+       (define-key dired-mode-map "c" 'dired-start-process)
+     #+END_SRC
+
+
      #+BEGIN_SRC emacs-lisp
        (setq diredp-hide-details-initially-flag nil)
        (use-package dired+
