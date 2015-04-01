@@ -561,6 +561,12 @@ white-space should be shown.
        (define-key dired-mode-map (kbd "z") 'dired-get-size)
      #+END_SRC
 
+
+     #+BEGIN_SRC emacs-lisp
+       (define-key dired-mode-map "F" 'find-name-dired)
+     #+END_SRC
+
+
      Customize a bit the dired buffer
 
      #+BEGIN_SRC emacs-lisp
