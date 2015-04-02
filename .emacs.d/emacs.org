@@ -1450,6 +1450,9 @@ white-space should be shown.
     #+BEGIN_SRC emacs-lisp
       (setq org-capture-templates
             '(;; other entries
+              ("t" "Inbox list item" entry
+               (file+headline "~/desktop/org/todos/personal.org" "Inbox")
+               "* %?\n %i\n %a")
               ("j" "Journal entry" plain
                (file+datetree+prompt "~/desktop/org/journal.org")
                "%K - %a\n%i\n%?\n")
