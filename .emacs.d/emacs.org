@@ -1689,8 +1689,24 @@ white-space should be shown.
     and we want to publish them in =~/var/public_html/{project}= for
     now.
 
+    Few org-export and org-html configuration.
+
     #+BEGIN_SRC emacs-lisp
-      (require 'ox-publish)
+      (use-package htmlize
+        :ensure t
+        :defer t)
+      ;;      (setq org-html-head "<link rel=\"stylesheet\" type=\"text/css\" hrefl=\"css/stylesheet.css\" />")
+      (setq org-html-include-timestamps nil)
+      ;; (setq org-html-htmlize-output-type 'css)
+      (setq org-html-head-include-default-style nil)
+    #+END_SRC
+
+    And the projects.
+
+    #+BEGIN_SRC emacs-lisp
+      (use-package ox-publish)
+      (use-package ox-rss)
+      ;; Project
       (setq org-publish-project-alist
             '(("experiments-notes"
                :base-directory "~/desktop/org/notes/experiments"
@@ -1720,33 +1736,28 @@ white-space should be shown.
                :makeindex t
                :exclude "FIXME"
                :recursive t
-               :publishing-function org-html-publish-to-html
                :htmlized-source t
+               :publishing-function org-html-publish-to-html
                :headline-levels 4
                :auto-preamble t
                :html-head "<link rel=\"stylesheet\" type=\"text/css\" href=\"style/style.css\" />"
-               )
+               :html-preamble "<div id=\"nav\">
+      <ul>
+      <li><a href=\"/\" class=\"home\">Home</a></li>
+      </ul>
+      </div>"
+               :html-postamble "<div id=\"footer\">
+      %a %C %c
+      </div>")
               ("sbr-static"
                :base-directory "~/desktop/org/notes/sbr"
                :base-extension "css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg"
                :publishing-directory "~/var/public_html/sbr"
                :recursive t
                :publishing-function org-publish-attachment
-               )
-              ("sbr" :components ("sbr-notes" "sbr-static"))
               )
-            )
-    #+END_SRC
-
-
-    Few org-export and org-html configuration.
-
-    #+BEGIN_SRC emacs-lisp
-      ;;      (setq org-html-head "<link rel=\"stylesheet\" type=\"text/css\" hrefl=\"css/stylesheet.css\" />")
-      (setq org-html-include-timestamps nil)
-      (setq org-export-htmlize-output-type 'css)
-      (setq org-html-head-include-default-style nil)
-
+              ("sbr" :components ("sbr-notes" "sbr-static"))
+              ))
     #+END_SRC
 ** Projectile
 
