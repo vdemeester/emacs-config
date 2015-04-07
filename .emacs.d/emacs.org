@@ -561,11 +561,30 @@ white-space should be shown.
        (define-key dired-mode-map (kbd "z") 'dired-get-size)
      #+END_SRC
 
+     Add a binding for =find-name-dired=. It will transform a =find=
+     /search/ into a dired buffer, which is.. well.. pretty cool =:D=.
 
      #+BEGIN_SRC emacs-lisp
        (define-key dired-mode-map "F" 'find-name-dired)
      #+END_SRC
 
+     Open or re-use the =ansi-term= from the current directory in dired.
+
+     #+BEGIN_SRC emacs-lisp
+       (define-key dired-mode-map (kbd "`") 'dired-open-term)
+       ;; FIXME it seems not to work propertly..
+       (defun dired-open-term ()
+         "Open an `ansi-term' that corresponds to current directory."
+         (interactive)
+         (let ((current-dir (dired-current-directory)))
+           (term-send-string
+            (terminal)
+            (if (file-remote-p current-dir)
+                (let ((v (tramp-dissect-file-name current-dir t)))
+                  (format "ssh %s@%s\n"
+                          (aref v 1) (aref v 2)))
+              (format "cd '%s'\n" current-dir)))))
+     #+END_SRC
 
      Customize a bit the dired buffer
 
