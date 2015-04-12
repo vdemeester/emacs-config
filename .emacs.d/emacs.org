@@ -357,6 +357,7 @@ It looks kinda like that (click to open the real one) :
      #+begin_src emacs-lisp
        (mouse-avoidance-mode 'jump)
      #+end_src
+
 **** Backup files
 
      Files suffixed with =~= in the current directory are ugly. We are still going to use
@@ -777,6 +778,18 @@ white-space should be shown.
             (define-key evil-normal-state-map "K" 'evil-jump-out-args)
             ))
       #+END_SRC
+
+
+**** Async
+
+     =async.el= is a module for doing asynchronous processing in
+     Emacs. Let's load it as it's gonna be useful.
+
+
+     #+BEGIN_SRC emacs-lisp
+       (use-package async
+         :ensure t)
+     #+END_SRC
 
 
 *** Server mode
@@ -1528,6 +1541,57 @@ white-space should be shown.
       (setq org-mobile-inbox-for-pull "~/desktop/org/todos/inbox.org")
       (setq org-mobile-files '("~/desktop/org/todos/"))
     #+END_SRC
+
+    Let's also configure auto push, asynchronously like in this
+    [[https://gist.github.com/mrvdb/3111823][gist]]. One thing that I should add though is to auto-commit too
+    (because my todos are on git).
+
+    #+BEGIN_SRC emacs-lisp
+      (defun notify-push (result)
+        (notifications-notify
+         :title "Push complete"
+         :body (format "Org-mobile-push: %s" result)
+         ))
+
+      ;; Fork the work of pushing to mobile
+      (defun fork-org-push-mobile ()
+        (interactive)
+        (async-start
+         ;; What to do in the child process
+         `(lambda ()
+            (require 'org)
+            ,(async-inject-variables "org-\\(mobile-\\|directory\\)")
+            (org-mobile-push))
+                                              ; What to do when it finishes
+         (lambda (result)
+           (notify-push result))))
+
+      ;; Define a timer variable
+      (defvar org-mobile-push-timer nil
+        "Timer that `org-mobile-push-timer' used to reschedule itself, or nil.")
+
+      ;; Push to mobile when the idle timer runs out
+      (defun org-mobile-push-with-delay (secs)
+        (when org-mobile-push-timer
+          (cancel-timer org-mobile-push-timer))
+        (setq org-mobile-push-timer
+              (run-with-idle-timer
+               (* 1 secs) nil 'fork-org-push-mobile)))
+
+      ;; After saving files, start a 30 seconds idle timer after which we
+      ;; are going to push
+      (add-hook 'after-save-hook
+                (lambda ()
+                  (when (eq major-mode 'org-mode)
+                    (dolist (file (org-mobile-files-alist))
+                      (if (string= (expand-file-name (car file)) (buffer-file-name))
+                          (org-mobile-push-with-delay 30)))
+                    )))
+
+      ;; At least run it once a day, but no need for a delay this time
+      (run-at-time "12:05" 86400 '(lambda () (org-mobile-push-with-delay 1)))
+    #+END_SRC
+
 
 *** Archives
 
