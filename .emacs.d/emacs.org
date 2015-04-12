@@ -1538,6 +1538,7 @@ white-space should be shown.
       (require 'org-archive)
       (setq org-archive-location (concat org-directory "archive/%s_archive::"))
     #+END_SRC
+
 *** Tags
 
     Tags should be displayed from the 90 column.
@@ -1554,6 +1555,7 @@ white-space should be shown.
                            ("important" . ?i)
                            ("urgent" . ?u)
                            ("ongoing" . ?o)   ;; ongoing "project", use to filter big project that are on the go
+                           ("next" . ?n)      ;; next "project"/"task", use to filter next things to do
                            ("@home" . ?h)     ;; needs to be done at home
                            ("@work" . ?w)     ;; needs to be done at work
                            ("@client" . ?c)   ;; needs to be done at a client place (consulting..)
@@ -1563,6 +1565,8 @@ white-space should be shown.
                            ("download" . ?D)  ;; needs to download something
                            ("media" . ?m)     ;; this is a media (something to watch, listen, record, ..)
                            ("mail" . ?M)      ;; mail-related (to write & send or to read)
+                           ("triage" . ?t)    ;; need "triage", tag it to easily find them
+                           ("task" . ?a)      ;; a simple task (no project), the name is kinda misleading
                            ))
     #+END_SRC
 
@@ -1592,7 +1596,7 @@ white-space should be shown.
 
     #+BEGIN_SRC emacs-lisp
       (setq org-agenda-custom-commands
-            '(("w" todo "TODO"
+            '(("t" todo "TODO"
                ((org-agenda-sorting-strategy '(priority-down))
                 (org-agenda-prefix-format "  Mixed: ")))
               ("p" todo "PROGRESS"
@@ -1604,6 +1608,29 @@ white-space should be shown.
               ("b" todo "BLOCKED"
                ((org-agenda-sorting-strategy '(priority-down))
                 (org-agenda-prefix-format "  Mixed: ")))
+              ("o" "Ongoing projects" tags-todo "ongoing"
+               ((org-agenda-sorting-strategy '(priority-down))
+                (org-tags-exclude-from-inheritance '("ongoing"))
+                (org-agenda-prefix-format "  Mixed: ")))
+              ("n" "Next tasks" tags-todo "next"
+               ((org-agenda-sorting-strategy '(priority-down))
+                (org-tags-exclude-from-inheritance '("next"))
+                (org-agenda-prefix-format "  Mixed: ")))
+              ;; Timelines
+              ("d" "Timeline for today" ((agenda "" ))
+               ((org-agenda-ndays 1)
+                (org-agenda-show-log t)
+                (org-agenda-log-mode-items '(clock closed))
+                (org-agenda-clockreport-mode t)
+                (org-agenda-entry-types '())))
+              ("w" "Weekly review" agenda ""
+               ((org-agenda-span 7)
+                (org-agenda-log-mode 1)))
+              ("W" "Weekly review sans DAILY" agenda ""
+               ((org-agenda-span 7)
+                (org-agenda-log-mode 1)
+                (org-agenda-tag-filter-preset '("-DAILY"))))
+              ("2" "Bi-weekly review" agenda "" ((org-agenda-span 14) (org-agenda-log-mode 1)))
               ;; Panic tasks : urgent & important
               ;; Probably the most important to do, but try not have to much of them..
               ("P" . "Panic -emergency-")
@@ -1649,9 +1676,9 @@ white-space should be shown.
               ("Or" "REVIEWs" tags-todo "-important&-urgent/!REVIEW"
                ((org-agenda-sorting-strategy '(priority-down))
                 (org-agenda-prefix-format "  Mixed: ")))
-            ("N" search ""
-             ((org-agenda-files '("~org/notes.org"))
-              (org-agenda-text-search-extra-files nil)))))
+              ("N" search ""
+               ((org-agenda-files '("~org/notes.org"))
+                (org-agenda-text-search-extra-files nil)))))
     #+END_SRC
 
 *** Externals (caldav, issues, ..)
