@@ -569,6 +569,16 @@ white-space should be shown.
        (define-key dired-mode-map "F" 'find-name-dired)
      #+END_SRC
 
+     Also add a binding to switch to =wdired= which is the awsomeness
+     of awesome, because it let's you edit the dired buffer as a text
+     file (changing name, etc.) and will apply it when leaving (=C-c
+     C-c=)
+
+     #+BEGIN_SRC emacs-lisp
+       (define-key dired-mode "e" 'wdired-change-to-wdired-mode)
+     #+END_SRC
+
+
      Open or re-use the =ansi-term= from the current directory in dired.
 
      #+BEGIN_SRC emacs-lisp
