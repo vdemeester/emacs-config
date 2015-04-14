@@ -357,6 +357,7 @@ It looks kinda like that (click to open the real one) :
      #+begin_src emacs-lisp
        (mouse-avoidance-mode 'jump)
      #+end_src
+
 **** Backup files
 
      Files suffixed with =~= in the current directory are ugly. We are still going to use
@@ -568,6 +569,16 @@ white-space should be shown.
        (define-key dired-mode-map "F" 'find-name-dired)
      #+END_SRC
 
+     Also add a binding to switch to =wdired= which is the awsomeness
+     of awesome, because it let's you edit the dired buffer as a text
+     file (changing name, etc.) and will apply it when leaving (=C-c
+     C-c=)
+
+     #+BEGIN_SRC emacs-lisp
+       (define-key dired-mode "e" 'wdired-change-to-wdired-mode)
+     #+END_SRC
+
+
      Open or re-use the =ansi-term= from the current directory in dired.
 
      #+BEGIN_SRC emacs-lisp
@@ -777,6 +788,18 @@ white-space should be shown.
             (define-key evil-normal-state-map "K" 'evil-jump-out-args)
             ))
       #+END_SRC
+
+
+**** Async
+
+     =async.el= is a module for doing asynchronous processing in
+     Emacs. Let's load it as it's gonna be useful.
+
+
+     #+BEGIN_SRC emacs-lisp
+       (use-package async
+         :ensure t)
+     #+END_SRC
 
 
 *** Server mode
@@ -1529,6 +1552,57 @@ white-space should be shown.
       (setq org-mobile-files '("~/desktop/org/todos/"))
     #+END_SRC
 
+    Let's also configure auto push, asynchronously like in this
+    [[https://gist.github.com/mrvdb/3111823][gist]]. One thing that I should add though is to auto-commit too
+    (because my todos are on git).
+
+    #+BEGIN_SRC emacs-lisp
+      (defun notify-push (result)
+        (notifications-notify
+         :title "Push complete"
+         :body (format "Org-mobile-push: %s" result)
+         ))
+
+      ;; Fork the work of pushing to mobile
+      (defun fork-org-push-mobile ()
+        (interactive)
+        (async-start
+         ;; What to do in the child process
+         `(lambda ()
+            (require 'org)
+            ,(async-inject-variables "org-\\(mobile-\\|directory\\)")
+            (org-mobile-push))
+                                              ; What to do when it finishes
+         (lambda (result)
+           (notify-push result))))
+
+      ;; Define a timer variable
+      (defvar org-mobile-push-timer nil
+        "Timer that `org-mobile-push-timer' used to reschedule itself, or nil.")
+
+      ;; Push to mobile when the idle timer runs out
+      (defun org-mobile-push-with-delay (secs)
+        (when org-mobile-push-timer
+          (cancel-timer org-mobile-push-timer))
+        (setq org-mobile-push-timer
+              (run-with-idle-timer
+               (* 1 secs) nil 'fork-org-push-mobile)))
+
+      ;; After saving files, start a 30 seconds idle timer after which we
+      ;; are going to push
+      (add-hook 'after-save-hook
+                (lambda ()
+                  (when (eq major-mode 'org-mode)
+                    (dolist (file (org-mobile-files-alist))
+                      (if (string= (expand-file-name (car file)) (buffer-file-name))
+                          (org-mobile-push-with-delay 30)))
+                    )))
+
+      ;; At least run it once a day, but no need for a delay this time
+      (run-at-time "12:05" 86400 '(lambda () (org-mobile-push-with-delay 1)))
+    #+END_SRC
+
+
 *** Archives
 
     We want to be able to archive some /done/ projects. Let's load
@@ -1538,6 +1612,7 @@ white-space should be shown.
       (require 'org-archive)
       (setq org-archive-location (concat org-directory "archive/%s_archive::"))
     #+END_SRC
+
 *** Tags
 
     Tags should be displayed from the 90 column.
@@ -1554,6 +1629,7 @@ white-space should be shown.
                            ("important" . ?i)
                            ("urgent" . ?u)
                            ("ongoing" . ?o)   ;; ongoing "project", use to filter big project that are on the go
+                           ("next" . ?n)      ;; next "project"/"task", use to filter next things to do
                            ("@home" . ?h)     ;; needs to be done at home
                            ("@work" . ?w)     ;; needs to be done at work
                            ("@client" . ?c)   ;; needs to be done at a client place (consulting..)
@@ -1563,6 +1639,8 @@ white-space should be shown.
                            ("download" . ?D)  ;; needs to download something
                            ("media" . ?m)     ;; this is a media (something to watch, listen, record, ..)
                            ("mail" . ?M)      ;; mail-related (to write & send or to read)
+                           ("triage" . ?t)    ;; need "triage", tag it to easily find them
+                           ("task" . ?a)      ;; a simple task (no project), the name is kinda misleading
                            ))
     #+END_SRC
 
@@ -1592,7 +1670,7 @@ white-space should be shown.
 
     #+BEGIN_SRC emacs-lisp
       (setq org-agenda-custom-commands
-            '(("w" todo "TODO"
+            '(("t" todo "TODO"
                ((org-agenda-sorting-strategy '(priority-down))
                 (org-agenda-prefix-format "  Mixed: ")))
               ("p" todo "PROGRESS"
@@ -1604,6 +1682,29 @@ white-space should be shown.
               ("b" todo "BLOCKED"
                ((org-agenda-sorting-strategy '(priority-down))
                 (org-agenda-prefix-format "  Mixed: ")))
+              ("o" "Ongoing projects" tags-todo "ongoing"
+               ((org-agenda-sorting-strategy '(priority-down))
+                (org-tags-exclude-from-inheritance '("ongoing"))
+                (org-agenda-prefix-format "  Mixed: ")))
+              ("n" "Next tasks" tags-todo "next"
+               ((org-agenda-sorting-strategy '(priority-down))
+                (org-tags-exclude-from-inheritance '("next"))
+                (org-agenda-prefix-format "  Mixed: ")))
+              ;; Timelines
+              ("d" "Timeline for today" ((agenda "" ))
+               ((org-agenda-ndays 1)
+                (org-agenda-show-log t)
+                (org-agenda-log-mode-items '(clock closed))
+                (org-agenda-clockreport-mode t)
+                (org-agenda-entry-types '())))
+              ("w" "Weekly review" agenda ""
+               ((org-agenda-span 7)
+                (org-agenda-log-mode 1)))
+              ("W" "Weekly review sans DAILY" agenda ""
+               ((org-agenda-span 7)
+                (org-agenda-log-mode 1)
+                (org-agenda-tag-filter-preset '("-DAILY"))))
+              ("2" "Bi-weekly review" agenda "" ((org-agenda-span 14) (org-agenda-log-mode 1)))
               ;; Panic tasks : urgent & important
               ;; Probably the most important to do, but try not have to much of them..
               ("P" . "Panic -emergency-")
@@ -1649,9 +1750,9 @@ white-space should be shown.
               ("Or" "REVIEWs" tags-todo "-important&-urgent/!REVIEW"
                ((org-agenda-sorting-strategy '(priority-down))
                 (org-agenda-prefix-format "  Mixed: ")))
-            ("N" search ""
-             ((org-agenda-files '("~org/notes.org"))
-              (org-agenda-text-search-extra-files nil)))))
+              ("N" search ""
+               ((org-agenda-files '("~org/notes.org"))
+                (org-agenda-text-search-extra-files nil)))))
     #+END_SRC
 
 *** Externals (caldav, issues, ..)
