@@ -1995,6 +1995,15 @@ white-space should be shown.
 
 *** Emacs lisp
 
+    Define some useful alias (just because I'm lazy).
+
+
+    #+BEGIN_SRC emacs-lisp
+      (defalias 'eb 'eval-buffer)
+      (defalias 'er 'eval-region)
+      (defalias 'ed 'eval-defun)
+    #+END_SRC
+
 
     #+BEGIN_SRC emacs-lisp
       (add-hook 'emacs-lisp-mode-hook
