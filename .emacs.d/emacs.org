@@ -1284,6 +1284,27 @@ Let's also rewrite some built-in to better /default/. Let's start with
         :config (move-text-default-bindings))
     #+END_SRC
 
+*** Diff
+
+    The =diff-mode= of Emacs is pretty cool, but let's show important
+    whitespace when in this mode.
+
+    #+BEGIN_SRC emacs-lisp
+      (add-hook 'diff-mode-hook (lambda ()
+                                  (setq-local whitespace-style
+                                              '(face
+                                                tabs
+                                                tab-mark
+                                                spaces
+                                                space-mark
+                                                trailing
+                                                indentation::space
+                                                indentation::tab
+                                                newline
+                                                newline-mark))
+                                  (whitespace-mode 1)))
+    #+END_SRC
+
 ** Terminal
 
    Let's install and use [[http://www.emacswiki.org/emacs/MultiTerm][multi-term]], which is a cool addition to =term.el=.
