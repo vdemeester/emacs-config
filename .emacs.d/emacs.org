@@ -391,6 +391,42 @@ It looks kinda like that (click to open the real one) :
        (use-package uniquify)
        (setq uniquify-buffer-name-style 'forward)
      #+end_src
+
+     Most of the time, when I want to kill the current buffer so let's
+     remap the =C-x k= the a function that do that (and no ask) ; it
+     will save few keystroke per days =\o/=.
+
+
+     #+BEGIN_SRC emacs-lisp
+       (defun kill-default-buffer ()
+         "Kill the currently active buffer"
+         (interactive)
+         (let (kill-buffer-query-functions) (kill-buffer)))
+
+       (global-set-key (kbd "C-x k") 'kill-default-buffer)
+     #+END_SRC
+
+**** Kill advice
+
+     Let's define few advice with =kill-ring-save= and =kill-region=.
+
+     #+BEGIN_SRC emacs-lisp
+       (defadvice kill-region (before slick-cut activate compile)
+         "When called interactively with no active region, kill a single line instead."
+         (interactive
+          (if mark-active (list (region-beginning) (region-end))
+            (list (line-beginning-position)
+                  (line-beginning-position 2)))))
+
+       (defadvice kill-ring-save (before slick-copy activate compile)
+         "When called interactively with no active region, copy a single line instead."
+         (interactive
+          (if mark-active (list (region-beginning) (region-end))
+            (message "Copied line")
+            (list (line-beginning-position)
+                  (line-beginning-position 2)))))
+     #+END_SRC
+
 **** Formatting
 
      Use space instead on tabs for indentation by default (again some people at work
