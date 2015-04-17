@@ -822,6 +822,15 @@ Let's also rewrite some built-in to better /default/. Let's start with
            (setq aw-background nil))
      #+END_SRC
 
+**** Ace jump
+
+     #+BEGIN_SRC emacs-lisp
+       (use-package ace-jump-mode
+         :ensure t
+         :commands ace-jump-mode
+         :bind ("<f7>" . ace-jump-mode))
+     #+END_SRC
+
 **** TODO Evil
 
      I come from a [[http://vim.org][vim]] background and the modal editor comes with some
