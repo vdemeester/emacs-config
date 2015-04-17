@@ -2137,6 +2137,22 @@ Let's also rewrite some built-in to better /default/. Let's start with
     #+END_SRC
 ** Compilation mode
 
+   Set options and key binding for =compile=.
+
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package compile
+       :commands compile
+       :bind ("<f5>" . compile)
+       :config
+       (progn
+         (setq compilation-ask-about-save nil
+               compilation-always-kill t
+               compilation-scroll-output 'first-error)
+         ))
+   #+END_SRC
+
+
 *** Compilation mode improvements
 
     See http://stackoverflow.com/questions/3072648/cucumbers-ansi-colors-messing-up-emacs-compilation-buffer
