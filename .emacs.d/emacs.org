@@ -383,7 +383,7 @@ It looks kinda like that (click to open the real one) :
              kept-old-versions 2
              version-control t)
      #+end_src
-**** Buffer names
+**** Buffers
 
      Setup uniquify so that non-unique buffer names get the parent path included to make them unique.
 
