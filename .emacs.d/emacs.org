@@ -940,451 +940,450 @@ Let's also rewrite some built-in to better /default/. Let's start with
         (server-start))))
     #+END_SRC
 
-** Modes
-*** Discover my major
+** Discover my major
+
+   #+BEGIN_QUOTE
+   Discover key bindings and their meaning for the current Emacs major mode.
+
+   The command is inspired by discover.el and also uses the makey library. I thought, “Hey! Why not parse the information about the major mode bindings somehow and display that like discover.el does…”
+   #+END_QUOTE
+
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package discover-my-major
+       :ensure t
+       :bind ("C-h C-m" . discover-my-major))
+   #+END_SRC
+
+** Manage my minor
+
+   Let's also use =manage-my-minor= to be able to enable/disable
+   minor-modes.
+
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package manage-minor-mode
+       :ensure t
+       :bind ("C-c x n" . manage-minor-mode))
+   #+END_SRC
+
+
+** Helm
 
     #+BEGIN_QUOTE
-    Discover key bindings and their meaning for the current Emacs major mode.
+    Helm is incremental completion and selection narrowing framework for Emacs. It will help steer you in the right direction when you’re looking for stuff in Emacs (like buffers, files, etc).
 
-    The command is inspired by discover.el and also uses the makey library. I thought, “Hey! Why not parse the information about the major mode bindings somehow and display that like discover.el does…”
+    Helm is a fork of anything.el originaly written by Tamas Patrovic and can be considered to be its successor. Helm sets out to clean up the legacy code in anything.el and provide a cleaner, leaner and more modular tool, that’s not tied in the trap of backward compatibility.
     #+END_QUOTE
 
+    By default the /completion/ on the selected line is done by =C-z=
+    (the function is =helm-execute-persistent-action=) and =Tab= is
+    used for showing action you can do on it. Let's invert them as
+    =Tab= is used for completion in other tools (shells for example).
 
-    #+BEGIN_SRC emacs-lisp
-      (use-package discover-my-major
-        :ensure t
-        :bind ("C-h C-m" . discover-my-major))
-    #+END_SRC
+    Let's define that all helm commands will be prefixed by =C-h=,
+    =C-h x= will be =Helm M-x=.
 
-*** Manage my minor
-
-    Let's also use =manage-my-minor= to be able to enable/disable
-    minor-modes.
-
-
-    #+BEGIN_SRC emacs-lisp
-      (use-package manage-minor-mode
-        :ensure t
-        :bind ("C-c x n" . manage-minor-mode))
-    #+END_SRC
-
-
-*** Helm
-
-     #+BEGIN_QUOTE
-     Helm is incremental completion and selection narrowing framework for Emacs. It will help steer you in the right direction when you’re looking for stuff in Emacs (like buffers, files, etc).
-
-     Helm is a fork of anything.el originaly written by Tamas Patrovic and can be considered to be its successor. Helm sets out to clean up the legacy code in anything.el and provide a cleaner, leaner and more modular tool, that’s not tied in the trap of backward compatibility.
-     #+END_QUOTE
-
-     By default the /completion/ on the selected line is done by =C-z=
-     (the function is =helm-execute-persistent-action=) and =Tab= is
-     used for showing action you can do on it. Let's invert them as
-     =Tab= is used for completion in other tools (shells for example).
-
-     Let's define that all helm commands will be prefixed by =C-h=,
-     =C-h x= will be =Helm M-x=.
-
-     #+begin_src emacs-lisp
-       (use-package helm
-         :ensure t
-         :config
-         (progn
-           (require 'helm-config)
-           (setq helm-idle-delay 0.1
-                 helm-input-idle-delay 0.1
-                 helm-buffer-max-length 40
-                 helm-M-x-always-save-history t
-                 helm-move-to-line-cycle-in-source t
-                 helm-ff-file-name-history-use-recentf t
-                 ;; Enable fuzzy matching
-                 helm-M-x-fuzzy-match t
-                 helm-buffers-fuzzy-matching t
-                 helm-recentf-fuzzy-match t)
-           (add-to-list 'helm-sources-using-default-as-input 'helm-source-man-pages)
-           ;; Rebind actions
-           (define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action)
-           (define-key helm-map (kbd "C-i") 'helm-execute-persistent-action)
-           (define-key helm-map (kbd "C-z") 'helm-select-action)
-           (helm-autoresize-mode t)
-           (helm-mode 1))
-         :bind (("C-c h" . helm-command-prefix)
-                ("C-x C-f" . helm-find-files)
-                ("M-x" . helm-M-x)
-                ("C-c b" . helm-mini)
-                ("C-x C-b" . helm-buffers-list)
-                ("M-y" . helm-show-kill-ring)
-                ("C-x c o" . helm-occur)))
-       ;; (add-to-list 'helm-completing-read-handlers-alist '(org-refile)) ; helm-mode does not do org-refile well
-       ;; (add-to-list 'helm-completing-read-handlers-alist '(org-agenda-refile)) ; same goes for org-agenda-refile
-     #+end_src
-
-     Because it can be hard to remember all keybindings, let's use
-     =helm-descbinds=.
-
-     #+BEGIN_SRC emacs-lisp
-       (use-package helm-descbinds
-         :ensure t
-         :defer t
-         :bind ("C-h b" . helm-descbinds))
-     #+END_SRC
-
-     #+BEGIN_SRC emacs-lisp
-       (use-package helm-gtags
-         :ensure t)
-       ;; (helm-gtags-mode 1)
-     #+END_SRC
-
-**** helmp-make
-
-     #+BEGIN_SRC emacs-lisp
-       (use-package helm-make
-         :ensure t)
-     #+END_SRC
-
-
-**** helm-swoop
-
-     =helm-swoop= is a great Helm powered buffer search/occur interface:
-
-     #+BEGIN_SRC emacs-lisp
-       (use-package helm-swoop
-         :ensure t
-         :defer t
-         :bind (("C-S-s" . helm-swoop)
-                ("M-I" . helm-swoop-back-to-last-point))
-         :config
-         (progn
-           (define-key isearch-mode-map (kbd "M-i") 'helm-swoop-from-isearch)
-           (define-key helm-swoop-map (kbd "M-i") 'helm-multi-swoop-all-from-helm-swoop)))
-     #+END_SRC
-**** helm-google
-
-     #+BEGIN_QUOTE
-     Emacs Helm Interface for quick Google searches
-     #+END_QUOTE
-
-     #+BEGIN_SRC emacs-lisp
-       (use-package helm-google
-         :ensure t)
-     #+END_SRC
-
-
-*** Hydra
-
-     #+BEGIN_QUOTE
-     Once you summon the Hydra through the prefixed binding (the body + any one head), all heads can be called in succession with only a short extension.
-     
-     The Hydra is vanquished once Hercules, any binding that isn't the Hydra's head, arrives. Note that Hercules, besides vanquishing the Hydra, will still serve his original purpose, calling his proper command. This makes the Hydra very seamless, it's like a minor mode that disables itself auto-magically.
-     #+END_QUOTE
-
-    Hydra is quite impressive, a [[https://www.youtube.com/watch?v%3D_qZliI1BKzI][video]] is gonna be more than a long
-    explanation.
-
-
-    #+BEGIN_SRC emacs-lisp
-      (use-package hydra
-        :ensure t
-        :config
-        (hydra-add-font-lock)
-        ;; Zooming
-        (defhydra hydra-zoom (global-map "<f2>")
-          "zoom"
-          ("g" text-scale-increase "in")
-          ("l" text-scale-decrease "out"))
-        ;; Toggling modes
-        (global-set-key
-         (kbd "C-c C-v")
-         (defhydra hydra-toggle-simple (:color blue)
-           "toggle"
-           ("a" abbrev-mode "abbrev")
-           ("d" toggle-debug-on-error "debug")
-           ("f" auto-fill-mode "fill")
-           ("t" toggle-truncate-lines "truncate")
-           ("w" whitespace-mode "whitespace")
-           ("q" nil "cancel")))
-        ;; Buffer menu
-        (defhydra hydra-buffer-menu (:color pink
-                                            :hint nil)
-          "
-      ^Mark^ ^Unmark^ ^Actions^ ^Search
-      ^^^^^^^^----------------------------------------------------------------- (__)
-      _m_: mark _u_: unmark _x_: execute _R_: re-isearch (oo)
-      _s_: save _U_: unmark up _b_: bury _I_: isearch /------\\/
-      _d_: delete ^ ^ _g_: refresh _O_: multi-occur / | ||
-      _D_: delete up ^ ^ _T_: files only: % -28`Buffer-menu-files-only^^ * /\\---/\\
-      _~_: modified ^ ^ ^ ^ ^^ ~~ ~~
-      "
-          ("m" Buffer-menu-mark)
-          ("u" Buffer-menu-unmark)
-          ("U" Buffer-menu-backup-unmark)
-          ("d" Buffer-menu-delete)
-          ("D" Buffer-menu-delete-backwards)
-          ("s" Buffer-menu-save)
-          ("~" Buffer-menu-not-modified)
-          ("x" Buffer-menu-execute)
-          ("b" Buffer-menu-bury)
-          ("g" revert-buffer)
-          ("T" Buffer-menu-toggle-files-only)
-          ("O" Buffer-menu-multi-occur :color blue)
-          ("I" Buffer-menu-isearch-buffers :color blue)
-          ("R" Buffer-menu-isearch-buffers-regexp :color blue)
-          ("c" nil "cancel")
-          ("v" Buffer-menu-select "select" :color blue)
-          ("o" Buffer-menu-other-window "other-window" :color blue)
-          ("q" quit-window "quit" :color blue))
-        (define-key Buffer-menu-mode-map "." 'hydra-buffer-menu/body)
-        ;; apropos
-        (defhydra hydra-apropos (:color blue
-                                        :hint nil)
-          "
-      _a_propos _c_ommand
-      _d_ocumentation _l_ibrary
-      _v_ariable _u_ser-option
-      ^ ^ valu_e_"
-          ("a" apropos)
-          ("d" apropos-documentation)
-          ("v" apropos-variable)
-          ("c" apropos-command)
-          ("l" apropos-library)
-          ("u" apropos-user-option)
-          ("e" apropos-value))
-        (global-set-key (kbd "C-c h") 'hydra-apropos/body)
-        ;; Window managing
-        (global-set-key
-         (kbd "C-M-o")
-         (defhydra hydra-window (:color amaranth)
-           "
-      Move Point^^^^   Move Splitter   ^Ace^                       ^Split^
-      --------------------------------------------------------------------------------
-      _w_, _<up>_      Shift + Move    _C-a_: ace-window           _2_: split-window-below
-      _a_, _<left>_                    _C-s_: ace-window-swap      _3_: split-window-right
-      _s_, _<down>_                    _C-d_: ace-window-delete    ^ ^
-      _d_, _<right>_                   ^   ^                       ^ ^
-      You can use arrow-keys or WASD.
-      "
-           ("2" split-window-below nil)
-           ("3" split-window-right nil)
-           ("a" windmove-left nil)
-           ("s" windmove-down nil)
-           ("w" windmove-up nil)
-           ("d" windmove-right nil)
-           ("A" hydra-move-splitter-left nil)
-           ("S" hydra-move-splitter-down nil)
-           ("W" hydra-move-splitter-up nil)
-           ("D" hydra-move-splitter-right nil)
-           ("<left>" windmove-left nil)
-           ("<down>" windmove-down nil)
-           ("<up>" windmove-up nil)
-           ("<right>" windmove-right nil)
-           ("<S-left>" hydra-move-splitter-left nil)
-           ("<S-down>" hydra-move-splitter-down nil)
-           ("<S-up>" hydra-move-splitter-up nil)
-           ("<S-right>" hydra-move-splitter-right nil)
-           ("C-a" ace-window nil)
-           ("u" hydra--universal-argument nil)
-           ("C-s" (lambda () (interactive) (ace-window 4)) nil)
-           ("C-d" (lambda () (interactive) (ace-window 16)) nil)
-           ("q" nil "quit")))
-        )
-    #+END_SRC
-
-
-*** Auto-complete
-
-    #+BEGIN_QUOTE
-    Auto-Complete is an intelligent auto-completion extension for
-    Emacs. It extends the standard Emacs completion interface and
-    provides an environment that allows users to concentrate more on
-    their own work.
-    #+END_QUOTE
-
-    Install and use a basic configuration for auto-complete and setup defaults.
-
-    #+BEGIN_SRC emacs-lisp
-      (use-package auto-complete
+    #+begin_src emacs-lisp
+      (use-package helm
         :ensure t
         :config
         (progn
-          (require 'auto-complete-config)
-          (setq ac-use-fuzzy t
-                ac-auto-start t
-                ac-use-quick-help nil
-                ac-ignore-case t)
-          (set-default 'ac-sources
-                       '(ac-source-imenu
-                         ac-source-dictionary
-                         ac-source-words-in-buffer
-                         ac-source-words-in-same-mode-buffers
-                         ac-source-words-in-all-buffer))
-          (dolist (mode '(magit-log-edit-mode
-                          log-edit-mode org-mode text-mode haml-mode
-                          git-commit-mode
-                          sass-mode yaml-mode csv-mode espresso-mode haskell-mode
-                          html-mode nxml-mode sh-mode smarty-mode clojure-mode
-                          lisp-mode textile-mode markdown-mode tuareg-mode
-                          js3-mode css-mode less-css-mode sql-mode
-                          sql-interactive-mode
-                          inferior-emacs-lisp-mode))
-            (add-to-list 'ac-modes mode))
-          (global-auto-complete-mode t))
-        )
-    #+END_SRC
+          (require 'helm-config)
+          (setq helm-idle-delay 0.1
+                helm-input-idle-delay 0.1
+                helm-buffer-max-length 40
+                helm-M-x-always-save-history t
+                helm-move-to-line-cycle-in-source t
+                helm-ff-file-name-history-use-recentf t
+                ;; Enable fuzzy matching
+                helm-M-x-fuzzy-match t
+                helm-buffers-fuzzy-matching t
+                helm-recentf-fuzzy-match t)
+          (add-to-list 'helm-sources-using-default-as-input 'helm-source-man-pages)
+          ;; Rebind actions
+          (define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action)
+          (define-key helm-map (kbd "C-i") 'helm-execute-persistent-action)
+          (define-key helm-map (kbd "C-z") 'helm-select-action)
+          (helm-autoresize-mode t)
+          (helm-mode 1))
+        :bind (("C-c h" . helm-command-prefix)
+               ("C-x C-f" . helm-find-files)
+               ("M-x" . helm-M-x)
+               ("C-c b" . helm-mini)
+               ("C-x C-b" . helm-buffers-list)
+               ("M-y" . helm-show-kill-ring)
+               ("C-x c o" . helm-occur)))
+      ;; (add-to-list 'helm-completing-read-handlers-alist '(org-refile)) ; helm-mode does not do org-refile well
+      ;; (add-to-list 'helm-completing-read-handlers-alist '(org-agenda-refile)) ; same goes for org-agenda-refile
+    #+end_src
 
-
-*** deft
-
-    #+BEGIN_QUOTE
-    Deft is an Emacs mode for quickly browsing, filtering, and editing
-    directories of plain text notes, inspired by Notational Velocity.
-    #+END_QUOTE
-
-    Deft is cool to use with org-mode, let's use it for notes.
+    Because it can be hard to remember all keybindings, let's use
+    =helm-descbinds=.
 
     #+BEGIN_SRC emacs-lisp
-      (use-package deft
+      (use-package helm-descbinds
         :ensure t
-        :config
-        (progn
-          (setq deft-extension "org"
-                deft-text-mode 'org-mode
-                deft-directory "~/desktop/org/notes"
-                deft-use-filename-as-title t))
-        :bind ("<f9>" . deft))
+        :defer t
+        :bind ("C-h b" . helm-descbinds))
     #+END_SRC
 
-*** Version control integration
-**** Git
+    #+BEGIN_SRC emacs-lisp
+      (use-package helm-gtags
+        :ensure t)
+      ;; (helm-gtags-mode 1)
+    #+END_SRC
+
+*** helmp-make
+
+    #+BEGIN_SRC emacs-lisp
+      (use-package helm-make
+        :ensure t)
+    #+END_SRC
+
+
+*** helm-swoop
+
+    =helm-swoop= is a great Helm powered buffer search/occur interface:
+
+    #+BEGIN_SRC emacs-lisp
+      (use-package helm-swoop
+        :ensure t
+        :defer t
+        :bind (("C-S-s" . helm-swoop)
+               ("M-I" . helm-swoop-back-to-last-point))
+        :config
+        (progn
+          (define-key isearch-mode-map (kbd "M-i") 'helm-swoop-from-isearch)
+          (define-key helm-swoop-map (kbd "M-i") 'helm-multi-swoop-all-from-helm-swoop)))
+    #+END_SRC
+*** helm-google
+
+    #+BEGIN_QUOTE
+    Emacs Helm Interface for quick Google searches
+    #+END_QUOTE
+
+    #+BEGIN_SRC emacs-lisp
+      (use-package helm-google
+        :ensure t)
+    #+END_SRC
+
+
+** Hydra
+
+    #+BEGIN_QUOTE
+    Once you summon the Hydra through the prefixed binding (the body + any one head), all heads can be called in succession with only a short extension.
+    
+    The Hydra is vanquished once Hercules, any binding that isn't the Hydra's head, arrives. Note that Hercules, besides vanquishing the Hydra, will still serve his original purpose, calling his proper command. This makes the Hydra very seamless, it's like a minor mode that disables itself auto-magically.
+    #+END_QUOTE
+
+   Hydra is quite impressive, a [[https://www.youtube.com/watch?v%3D_qZliI1BKzI][video]] is gonna be more than a long
+   explanation.
+
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package hydra
+       :ensure t
+       :config
+       (hydra-add-font-lock)
+       ;; Zooming
+       (defhydra hydra-zoom (global-map "<f2>")
+         "zoom"
+         ("g" text-scale-increase "in")
+         ("l" text-scale-decrease "out"))
+       ;; Toggling modes
+       (global-set-key
+        (kbd "C-c C-v")
+        (defhydra hydra-toggle-simple (:color blue)
+          "toggle"
+          ("a" abbrev-mode "abbrev")
+          ("d" toggle-debug-on-error "debug")
+          ("f" auto-fill-mode "fill")
+          ("t" toggle-truncate-lines "truncate")
+          ("w" whitespace-mode "whitespace")
+          ("q" nil "cancel")))
+       ;; Buffer menu
+       (defhydra hydra-buffer-menu (:color pink
+                                           :hint nil)
+         "
+     ^Mark^ ^Unmark^ ^Actions^ ^Search
+     ^^^^^^^^----------------------------------------------------------------- (__)
+     _m_: mark _u_: unmark _x_: execute _R_: re-isearch (oo)
+     _s_: save _U_: unmark up _b_: bury _I_: isearch /------\\/
+     _d_: delete ^ ^ _g_: refresh _O_: multi-occur / | ||
+     _D_: delete up ^ ^ _T_: files only: % -28`Buffer-menu-files-only^^ * /\\---/\\
+     _~_: modified ^ ^ ^ ^ ^^ ~~ ~~
+     "
+         ("m" Buffer-menu-mark)
+         ("u" Buffer-menu-unmark)
+         ("U" Buffer-menu-backup-unmark)
+         ("d" Buffer-menu-delete)
+         ("D" Buffer-menu-delete-backwards)
+         ("s" Buffer-menu-save)
+         ("~" Buffer-menu-not-modified)
+         ("x" Buffer-menu-execute)
+         ("b" Buffer-menu-bury)
+         ("g" revert-buffer)
+         ("T" Buffer-menu-toggle-files-only)
+         ("O" Buffer-menu-multi-occur :color blue)
+         ("I" Buffer-menu-isearch-buffers :color blue)
+         ("R" Buffer-menu-isearch-buffers-regexp :color blue)
+         ("c" nil "cancel")
+         ("v" Buffer-menu-select "select" :color blue)
+         ("o" Buffer-menu-other-window "other-window" :color blue)
+         ("q" quit-window "quit" :color blue))
+       (define-key Buffer-menu-mode-map "." 'hydra-buffer-menu/body)
+       ;; apropos
+       (defhydra hydra-apropos (:color blue
+                                       :hint nil)
+         "
+     _a_propos _c_ommand
+     _d_ocumentation _l_ibrary
+     _v_ariable _u_ser-option
+     ^ ^ valu_e_"
+         ("a" apropos)
+         ("d" apropos-documentation)
+         ("v" apropos-variable)
+         ("c" apropos-command)
+         ("l" apropos-library)
+         ("u" apropos-user-option)
+         ("e" apropos-value))
+       (global-set-key (kbd "C-c h") 'hydra-apropos/body)
+       ;; Window managing
+       (global-set-key
+        (kbd "C-M-o")
+        (defhydra hydra-window (:color amaranth)
+          "
+     Move Point^^^^   Move Splitter   ^Ace^                       ^Split^
+     --------------------------------------------------------------------------------
+     _w_, _<up>_      Shift + Move    _C-a_: ace-window           _2_: split-window-below
+     _a_, _<left>_                    _C-s_: ace-window-swap      _3_: split-window-right
+     _s_, _<down>_                    _C-d_: ace-window-delete    ^ ^
+     _d_, _<right>_                   ^   ^                       ^ ^
+     You can use arrow-keys or WASD.
+     "
+          ("2" split-window-below nil)
+          ("3" split-window-right nil)
+          ("a" windmove-left nil)
+          ("s" windmove-down nil)
+          ("w" windmove-up nil)
+          ("d" windmove-right nil)
+          ("A" hydra-move-splitter-left nil)
+          ("S" hydra-move-splitter-down nil)
+          ("W" hydra-move-splitter-up nil)
+          ("D" hydra-move-splitter-right nil)
+          ("<left>" windmove-left nil)
+          ("<down>" windmove-down nil)
+          ("<up>" windmove-up nil)
+          ("<right>" windmove-right nil)
+          ("<S-left>" hydra-move-splitter-left nil)
+          ("<S-down>" hydra-move-splitter-down nil)
+          ("<S-up>" hydra-move-splitter-up nil)
+          ("<S-right>" hydra-move-splitter-right nil)
+          ("C-a" ace-window nil)
+          ("u" hydra--universal-argument nil)
+          ("C-s" (lambda () (interactive) (ace-window 4)) nil)
+          ("C-d" (lambda () (interactive) (ace-window 16)) nil)
+          ("q" nil "quit")))
+       )
+   #+END_SRC
+
+
+** Auto-complete
+
+   #+BEGIN_QUOTE
+   Auto-Complete is an intelligent auto-completion extension for
+   Emacs. It extends the standard Emacs completion interface and
+   provides an environment that allows users to concentrate more on
+   their own work.
+   #+END_QUOTE
+
+   Install and use a basic configuration for auto-complete and setup defaults.
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package auto-complete
+       :ensure t
+       :config
+       (progn
+         (require 'auto-complete-config)
+         (setq ac-use-fuzzy t
+               ac-auto-start t
+               ac-use-quick-help nil
+               ac-ignore-case t)
+         (set-default 'ac-sources
+                      '(ac-source-imenu
+                        ac-source-dictionary
+                        ac-source-words-in-buffer
+                        ac-source-words-in-same-mode-buffers
+                        ac-source-words-in-all-buffer))
+         (dolist (mode '(magit-log-edit-mode
+                         log-edit-mode org-mode text-mode haml-mode
+                         git-commit-mode
+                         sass-mode yaml-mode csv-mode espresso-mode haskell-mode
+                         html-mode nxml-mode sh-mode smarty-mode clojure-mode
+                         lisp-mode textile-mode markdown-mode tuareg-mode
+                         js3-mode css-mode less-css-mode sql-mode
+                         sql-interactive-mode
+                         inferior-emacs-lisp-mode))
+           (add-to-list 'ac-modes mode))
+         (global-auto-complete-mode t))
+       )
+   #+END_SRC
+
+
+** deft
+
+   #+BEGIN_QUOTE
+   Deft is an Emacs mode for quickly browsing, filtering, and editing
+   directories of plain text notes, inspired by Notational Velocity.
+   #+END_QUOTE
+
+   Deft is cool to use with org-mode, let's use it for notes.
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package deft
+       :ensure t
+       :config
+       (progn
+         (setq deft-extension "org"
+               deft-text-mode 'org-mode
+               deft-directory "~/desktop/org/notes"
+               deft-use-filename-as-title t))
+       :bind ("<f9>" . deft))
+   #+END_SRC
+
+** Version control integration
+*** Git
+
+    #+begin_src emacs-lisp
+      (use-package git-commit-mode
+        :ensure t)
+      (use-package git-rebase-mode
+        :ensure t)
+      (use-package gitignore-mode
+        :ensure t)
+      (use-package gitconfig-mode
+        :ensure t)
+      (use-package gitattributes-mode
+        :ensure t)
+    #+end_src
+
+
+**** magit
 
      #+begin_src emacs-lisp
-       (use-package git-commit-mode
-         :ensure t)
-       (use-package git-rebase-mode
-         :ensure t)
-       (use-package gitignore-mode
-         :ensure t)
-       (use-package gitconfig-mode
-         :ensure t)
-       (use-package gitattributes-mode
-         :ensure t)
+       (use-package magit
+         :ensure t
+         :bind ("C-c g" . magit-status))
      #+end_src
 
+***** Magit git-svn integration
 
-***** magit
-
-      #+begin_src emacs-lisp
-        (use-package magit
-          :ensure t
-          :bind ("C-c g" . magit-status))
-      #+end_src
-
-****** Magit git-svn integration
-
-       At work, I use ~git-svn~ to be able to use git locally but integrating in the
-       subversion they use. Integrating ~magit~ and ~git-svn~ is a bonus but, as it
-       exists, let's do it :).
-
-       #+begin_src emacs-lisp
-         (use-package magit-svn
-           :ensure t)
-       #+end_src
-
-       The /quick key/ to get the ~magit-svn~ menu is ~N~.
-***** git fringe decoration
+      At work, I use ~git-svn~ to be able to use git locally but integrating in the
+      subversion they use. Integrating ~magit~ and ~git-svn~ is a bonus but, as it
+      exists, let's do it :).
 
       #+begin_src emacs-lisp
-        (when (window-system)
-          (use-package git-gutter-fringe
-            :ensure t
-            :config (global-git-gutter-mode +1)))
-      #+end_src emacs-lisp
-
-***** git-annex
-
-      [[http://git-annex.branchable.com/][Git-annex]] is a wonderful piece of software that I use a lot in my repositories.
-
-      #+BEGIN_QUOTE
-      git-annex allows managing files with git, without checking the file contents into git. While that may seem paradoxical, it is useful when dealing with files larger than git can currently easily handle, whether due to limitations in memory, time, or disk space.
-      #+END_QUOTE
-
-      In Emacs, it integrates with magit and dired mode. The annex subcommand for magit is ~@~.
-
-      #+begin_src emacs-lisp
-        (use-package git-annex
-          :ensure t)
-        (use-package magit-annex
+        (use-package magit-svn
           :ensure t)
       #+end_src
 
-***** git-timemachine
-      I recently discovered an extremely cool package called git-timemachine that allows you to step though the git history of the file you’re currently editing in Emacs.
+      The /quick key/ to get the ~magit-svn~ menu is ~N~.
+**** git fringe decoration
 
-      #+BEGIN_SRC emacs-lisp
-        (use-package git-timemachine
-          :ensure t)
-      #+END_SRC
+     #+begin_src emacs-lisp
+       (when (window-system)
+         (use-package git-gutter-fringe
+           :ensure t
+           :config (global-git-gutter-mode +1)))
+     #+end_src emacs-lisp
 
-***** git-blame
+**** git-annex
 
-      #+BEGIN_SRC emacs-lisp
-        (use-package git-blame
-          :ensure t)
-      #+END_SRC
+     [[http://git-annex.branchable.com/][Git-annex]] is a wonderful piece of software that I use a lot in my repositories.
 
-*** highlight-symbol
+     #+BEGIN_QUOTE
+     git-annex allows managing files with git, without checking the file contents into git. While that may seem paradoxical, it is useful when dealing with files larger than git can currently easily handle, whether due to limitations in memory, time, or disk space.
+     #+END_QUOTE
 
-    #+BEGIN_QUOTE
-    Automatic and manual symbol highlighting for Emacs
-    #+END_QUOTE
+     In Emacs, it integrates with magit and dired mode. The annex subcommand for magit is ~@~.
 
-    Highlights the word/symbol at point and any other occurrences in
-    view. Also allows to jump to the next or previous occurrence.
+     #+begin_src emacs-lisp
+       (use-package git-annex
+         :ensure t)
+       (use-package magit-annex
+         :ensure t)
+     #+end_src
+
+**** git-timemachine
+     I recently discovered an extremely cool package called git-timemachine that allows you to step though the git history of the file you’re currently editing in Emacs.
+
+     #+BEGIN_SRC emacs-lisp
+       (use-package git-timemachine
+         :ensure t)
+     #+END_SRC
+
+**** git-blame
+
+     #+BEGIN_SRC emacs-lisp
+       (use-package git-blame
+         :ensure t)
+     #+END_SRC
+
+** highlight-symbol
+
+   #+BEGIN_QUOTE
+   Automatic and manual symbol highlighting for Emacs
+   #+END_QUOTE
+
+   Highlights the word/symbol at point and any other occurrences in
+   view. Also allows to jump to the next or previous occurrence.
 
 
-    #+BEGIN_SRC emacs-lisp
-      (use-package highlight-symbol
-        :ensure t
-        :config
-        (progn
-          (setq highlight-symbol-on-navigation-p t)
-          (add-hook 'prog-mode-hook 'highlight-symbol-mode))
-        :bind (("C-<f3>" . highlight-symbol-at-point)
-               ("<f3>" . highlight-symbol-next)
-               ("S-<f3>" . highlight-symbol-prev)
-               ("M-<f3>" . highlight-symbol-query-replace)))
-    #+END_SRC
+   #+BEGIN_SRC emacs-lisp
+     (use-package highlight-symbol
+       :ensure t
+       :config
+       (progn
+         (setq highlight-symbol-on-navigation-p t)
+         (add-hook 'prog-mode-hook 'highlight-symbol-mode))
+       :bind (("C-<f3>" . highlight-symbol-at-point)
+              ("<f3>" . highlight-symbol-next)
+              ("S-<f3>" . highlight-symbol-prev)
+              ("M-<f3>" . highlight-symbol-query-replace)))
+   #+END_SRC
 
-*** move-text
+** move-text
 
-    Allows to move the current line or region up/down. The source code is
-    on the Wiki: http://www.emacswiki.org/emacs/move-text.el
+   Allows to move the current line or region up/down. The source code is
+   on the Wiki: http://www.emacswiki.org/emacs/move-text.el
 
-    #+BEGIN_SRC emacs-lisp
-      (use-package move-text
-        :ensure t
-        :config (move-text-default-bindings))
-    #+END_SRC
+   #+BEGIN_SRC emacs-lisp
+     (use-package move-text
+       :ensure t
+       :config (move-text-default-bindings))
+   #+END_SRC
 
-*** Diff
+** Diff
 
-    The =diff-mode= of Emacs is pretty cool, but let's show important
-    whitespace when in this mode.
+   The =diff-mode= of Emacs is pretty cool, but let's show important
+   whitespace when in this mode.
 
-    #+BEGIN_SRC emacs-lisp
-      (add-hook 'diff-mode-hook (lambda ()
-                                  (setq-local whitespace-style
-                                              '(face
-                                                tabs
-                                                tab-mark
-                                                spaces
-                                                space-mark
-                                                trailing
-                                                indentation::space
-                                                indentation::tab
-                                                newline
-                                                newline-mark))
-                                  (whitespace-mode 1)))
-    #+END_SRC
+   #+BEGIN_SRC emacs-lisp
+     (add-hook 'diff-mode-hook (lambda ()
+                                 (setq-local whitespace-style
+                                             '(face
+                                               tabs
+                                               tab-mark
+                                               spaces
+                                               space-mark
+                                               trailing
+                                               indentation::space
+                                               indentation::tab
+                                               newline
+                                               newline-mark))
+                                 (whitespace-mode 1)))
+   #+END_SRC
 
 ** Terminal
 
