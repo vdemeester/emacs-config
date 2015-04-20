@@ -809,7 +809,7 @@ Let's also rewrite some built-in to better /default/. Let's start with
        (define-key vde/launcher-map "u" #'mu4e-update-mail-and-index)
      #+END_SRC
 
-**** Window moving
+**** Window moving & resizing
 
      Use ace-window to switch easily windows.
 
@@ -821,6 +821,16 @@ Let's also rewrite some built-in to better /default/. Let's start with
            (setq aw-keys '(?a ?t ?u ?s ?i ?r ?e ?n))
            (setq aw-background nil))
      #+END_SRC
+
+     Use =shift + control + arrows= to change the size of windows.
+
+     #+BEGIN_SRC emacs-lisp
+       (global-set-key (kbd "S-C-<left>") 'shrink-window-horizontally)
+       (global-set-key (kbd "S-C-<right>") 'enlarge-window-horizontally)
+       (global-set-key (kbd "S-C-<up>") 'enlarge-window)
+       (global-set-key (kbd "S-C-<down>") 'shrink-window)
+     #+END_SRC
+
 
 **** Ace jump
 
