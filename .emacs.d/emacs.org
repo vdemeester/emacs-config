@@ -825,10 +825,10 @@ Let's also rewrite some built-in to better /default/. Let's start with
      Use =shift + control + arrows= to change the size of windows.
 
      #+BEGIN_SRC emacs-lisp
-       (global-set-key (kbd "S-C-<left>") 'shrink-window-horizontally)
-       (global-set-key (kbd "S-C-<right>") 'enlarge-window-horizontally)
-       (global-set-key (kbd "S-C-<up>") 'enlarge-window)
-       (global-set-key (kbd "S-C-<down>") 'shrink-window)
+       (global-set-key (kbd "S-C-<right>") 'shrink-window-horizontally)
+       (global-set-key (kbd "S-C-<left>") 'enlarge-window-horizontally)
+       (global-set-key (kbd "S-C-<down>") 'enlarge-window)
+       (global-set-key (kbd "S-C-<up>") 'shrink-window)
      #+END_SRC
 
 
