@@ -65,44 +65,52 @@ It looks kinda like that (click to open the real one) :
 
 
     #+BEGIN_SRC emacs-lisp :tangle no
-  (require 'package)
+      (require 'package)
 
-  ;; add org to package repos
-  (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/"))
+      ;; add org to package repos
+      (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/"))
 
-  ;; add melpa and melpa-stable to package repos
-  (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
+      ;; add melpa and melpa-stable to package repos
+      (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
+      (add-to-list 'package-archives '("mela-stable" . "http://stable.melpa.org/packages/"))
 
-  ;; If gpg cannot be found, signature checking will fail, so we
-  ;; conditionnally enable it according wether gpg is available.
-  ;; We re-run this check once $PATH has been configured
-  (defun sanityinc/package-maybe-enable-signatures ()
-    (setq package-check-signature (when (executable-find "gpg") 'allow-unsigned)))
+      ;; If gpg cannot be found, signature checking will fail, so we
+      ;; conditionnally enable it according wether gpg is availabel.
+      ;; We re-run this check once $PATH has been configured
+      (defun sanityinc/package-maybe-enable-signatures ()
+        (setq package-check-signature (when (executable-find "gpg") 'allow-unsigned)))
 
-  (sanityinc/package-maybe-enable-signatures)
+      (sanityinc/package-maybe-enable-signatures)
 
-  ;; On demand installation of packages
-  (defun require-package (package &optional min-version no-refresh)
-    "Install given PACKAGE, optionally requiring MIN-VERSION.
-  if NO-REFRESH is non-nil, the available package lists will not be
-  re-downloaded in order to locate PACKAGE."
-    (if (package-installed-p package min-version)
-        t
-      (if (or (assoc package package-archive-contents) no-refresh)
-          (package-install package)
-        (progn
-          (when (not package-archive-contents)
-            (package-refresh-contents))
-          (require-package package min-version t)))))
+      ;; On demand installation of packages
+      (defun require-package (package &optional min-version no-refresh)
+        "Install given PACKAGE, optionally requiring MIN-VERSION.
+      if NO-REFRESH is non-nil, the available package lists will not be
+      re-downloaded in order to locate PACKAGE."
+        (if (package-installed-p package min-version)
+            t
+          (if (or (assoc package package-archive-contents) no-refresh)
+              (package-install package)
+            (progn
+              (when (not package-archive-contents)
+                (package-refresh-contents))
+              (require-package package min-version t)))))
 
-  ;; Fire up package.el
-  (package-initialize)
+      ;; Fire up package.el
+      (package-initialize)
 
-  ;; install fullframe for list-packages
-  (require-package 'fullframe)
-  (fullframe list-packages quit-window)
+      ;; Require use-package
+      (require-package 'use-package)
+      (require 'use-package)
 
-  (provide 'setup-package)
+      ;; install fullframe for list-packages
+      (use-package fullframe
+                   :init
+                   (progn
+                     (fullframe list-packages quit-window))
+                   :ensure t)
+
+      (provide 'setup-package)
     #+END_SRC
 
     Let's now see how I load the =emacs.org= file. In the following lines of code,
@@ -110,53 +118,54 @@ It looks kinda like that (click to open the real one) :
     if not, I'm unload the current one, installing a recent one and load it.
 
     #+BEGIN_SRC emacs-lisp :tangle no
-  ;; Support for Emacs 24 and higher only
-  (let ((minver 24))
-    (unless (>= emacs-major-version minver)
-      (error "Your Emacs is too old -- this config requires v%s or higher" minver)))
+      ;; Support for Emacs 24 and higher only
+      (let ((minver 24))
+        (unless (>= emacs-major-version minver)
+          (error "Your Emacs is too old -- this config requires v%s or higher" minver)))
 
-  ;; Keep track of loading time
-  (defconst emacs-start-time (current-time))
+      ;; Keep track of loading time
+      (defconst emacs-start-time (current-time))
 
-  ;; Add custom lisp files to the load-path
-  (add-to-list 'load-path "~/.emacs.d/lisp")
+      ;; Add custom lisp files to the load-path
+      (add-to-list 'load-path "~/.emacs.d/lisp")
 
-  ;; the unload-org-mode is defined there
-  (require 'vde-functions)
-  ;; initialize all ELPA packages
-  (require 'setup-package)
+      (require 'vde-functions)
+      ;; initialize all ELPA packages
+      (require 'setup-package)
 
-  ;; (setq package-enable-at-startup nil)
-  (let ((elapsed (float-time (time-subtract (current-time)
-                                             emacs-start-time))))
-    (message "Loaded packages in %.3fs" elapsed))
+      ;; (setq package-enable-at-startup nil)
+      (let ((elapsed (float-time (time-subtract (current-time)
+                                                 emacs-start-time))))
+        (message "Loaded packages in %.3fs" elapsed))
 
-  ;; Make sure we have a decent and recent org-mode version
-  (require 'org)
-  (when (string-match "^[1234567]" (org-version))
-    (progn
-      (warn "Org-mode is out of date. We expect org 8 or higher, but instead we have %s" (org-version))
-      (warn "Force the installation from org elpa.")
-      (package-install 'org)
-      (unload-org-mode)
+      ;; Make sure we have a decent and recent org-mode version
       (require 'org)
-      ))
+      (when (string-match "^[1234567]" (org-version))
+        (progn
+          (warn "Org-mode is out of date. We expect org 8 or higher, but instead we have %s" (org-version))
+          (warn "Force the installation from org elpa.")
+          (package-install 'org)
+          (unload-org-mode)
+          (require 'org)
+          ))
 
-  ;; keep customize settings in their own file
-  (setq custom-file
-        (expand-file-name "custom.el"
-                          user-emacs-directory))
-  (when (file-exists-p custom-file)
-    (load custom-file))
+      ;; keep customize settings in their own file
+      (setq custom-file
+            (expand-file-name "custom.el"
+                              user-emacs-directory))
+      (when (file-exists-p custom-file)
+        (load custom-file))
 
-  ;; load the literate configuration
-  (require 'ob-tangle)
-  (org-babel-load-file "~/.emacs.d/emacs.org")
+      ;; load the literate configuration
+      (require 'ob-tangle)
+      ;;(org-babel-load-file
+      ;; (expand-file-name "emacs.org"
+      ;;                 user-emacs-directory))
+      (org-babel-load-file "~/.emacs.d/emacs.org")
 
-  (let ((elapsed (float-time (time-subtract (current-time)
-                                             emacs-start-time))))
-    (message "Loaded settings...done in %.3fs" elapsed))
-
+      (let ((elapsed (float-time (time-subtract (current-time)
+                                                 emacs-start-time))))
+        (message "Loaded settings...done in %.3fs" elapsed))
     #+END_SRC
 
 ** Personal information
