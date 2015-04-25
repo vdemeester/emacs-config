@@ -618,6 +618,7 @@ Let's also rewrite some built-in to better /default/. Let's start with
                   ("\\.\\(?:mp3\\|flac\\)\\'" "mpv")
                   ("\\.html?\\'" "firefox")
                   ("\\.cue?\\'" "audacious")))
+       (put 'dired-find-alternate-file 'disabled nil)
      #+END_SRC
 
      Install dired+.
