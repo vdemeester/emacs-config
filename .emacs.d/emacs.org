@@ -2032,6 +2032,34 @@ Let's also rewrite some built-in to better /default/. Let's start with
                :publishing-function org-publish-attachment
               )
               ("sbr" :components ("sbr-notes" "sbr-static"))
+              ("znk-notes"
+               :base-directory "~/desktop/org/notes/zenika"
+               :base-extension "org"
+               :publishing-directory "~/var/public_html/zenika"
+               :makeindex t
+               :exclude "FIXME"
+               :recursive t
+               :htmlized-source t
+               :publishing-function org-html-publish-to-html
+               :headline-levels 4
+               :auto-preamble t
+               :html-head "<link rel=\"stylesheet\" type=\"text/css\" href=\"style/style.css\" />"
+               :html-preamble "<div id=\"nav\">
+      <ul>
+      <li><a href=\"/\" class=\"home\">Home</a></li>
+      </ul>
+      </div>"
+               :html-postamble "<div id=\"footer\">
+      %a %C %c
+      </div>")
+              ("znk-static"
+               :base-directory "~/desktop/org/notes/zenika"
+               :base-extension "css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg"
+               :publishing-directory "~/var/public_html/zenika"
+               :recursive t
+               :publishing-function org-publish-attachment
+              )
+              ("znk" :components ("znk-notes" "znk-static"))
               ))
     #+END_SRC
 *** Protocol
@@ -2547,7 +2575,6 @@ Let's also rewrite some built-in to better /default/. Let's start with
    #+BEGIN_SRC emacs-lisp
      (use-package gist
        :ensure t
-       :bind ("C-c g p" . gist-region-or-buffer-private)
        :config
        (setq gist-view-gist t))
    #+END_SRC
