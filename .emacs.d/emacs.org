@@ -244,25 +244,45 @@ It looks kinda like that (click to open the real one) :
 **** Fonts
 
      I tend to install Ubuntu font family on all my computers, I like
-     it :).
+     it :). But I don't want emacs to fail loading because they aren't
+     there yet, so let's define =Ubuntu Mono= as fonts, only if they
+     are available.
 
      #+begin_src emacs-lisp
-       (set-default-font "Ubuntu Mono-12")
-       (set-frame-font "Ubuntu Mono-12")
-       (set-face-attribute 'default nil :family "Ubuntu Mono" :height 110)
+       (when (member "Ubuntu Mono" (font-family-list))
+         (set-default-font "Ubuntu Mono-12")
+         (set-frame-font "Ubuntu Mono-12")
+         (set-face-attribute 'default nil :family "Ubuntu Mono" :height 110)
+         )
      #+end_src
 
-     This will set Symbola as fallback-font for Emojis when it is available for the created frame.
+     This will set Symbola as fallback-font for Emojis when it is
+     available for the created frame. Because emojis and unicode are
+     cool : 🙆 😆 😁 ♨ ⛅ 🚲.
 
      #+BEGIN_SRC emacs-lisp
-       (defun my-after-make-frame (frame)
-         (when (find-font (font-spec :name "Symbola") frame)
-           (dolist (range '((#x2600 . #x26ff)
-                            (#x1f300 . #x1f5ff)
-                            (#x1f600 . #x1f640)
-                            (#x1f680 . #x1f6ff)))
-             (set-fontset-font "fontset-default" range "Symbola"))))
-       (add-to-list 'after-make-frame-functions 'my-after-make-frame)
+       (when (member "Symbola" (font-family-list))
+         (set-fontset-font "fontset-default"
+                           (cons (decode-char 'ucs #x1f600)
+                                 (decode-char 'ucs #x1f640))
+                           "Symbola")
+         (set-fontset-font "fontset-default"
+                           (cons (decode-char 'ucs #x1f300)
+                                 (decode-char 'ucs #x1f5ff))
+                           "Symbola")
+         (set-fontset-font "fontset-default"
+                           (cons (decode-char 'ucs #x1f680)
+                                 (decode-char 'ucs #x1f6ff))
+                           "Symbola")
+         (set-fontset-font "fontset-default"
+                           (cons (decode-char 'ucs #x2600)
+                                 (decode-char 'ucs #x26ff))
+                           "Symbola")
+         (set-fontset-font "fontset-default"
+                           (cons (decode-char 'ucs #x2702)
+                                 (decode-char 'ucs #x27b0))
+                           "Symbola")
+         )
      #+END_SRC
 
 **** Themes
