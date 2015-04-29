@@ -1590,9 +1590,6 @@ Let's also rewrite some built-in to better /default/. Let's start with
      org-cycle-separator-lines 0      ;; Don't show blank lines
      org-catch-invisible-edits 'error ;; don't edit invisible text
      )
-    ;; Emphasis on more than one line
-    (setcar (nthcdr 2 org-emphasis-regexp-components) " \t\r\n\"'")
-    (org-set-emph-re 'org-emphasis-regexp-components org-emphasis-regexp-components)
   #+END_SRC
 
 *** Speed commands
