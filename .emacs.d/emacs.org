@@ -2512,6 +2512,7 @@ Let's also rewrite some built-in to better /default/. Let's start with
          (clojure-mode               . "λ")
          (hi-lock-mode               . "")
          (visual-line-mode           . "ω")
+         (auto-fill-mode             . "ψ")
          (python-mode                . "Py")
          (emacs-lisp-mode            . "EL")
          (markdown-mode              . "md")
