@@ -2624,6 +2624,14 @@ Let's also rewrite some built-in to better /default/. Let's start with
 
 ** Mails
 
+   Don't load if not on a computer where there is mails.
+
+   #+BEGIN_SRC emacs-lisp
+     (defvar load-mail-setup (file-exists-p "~/desktop/mails/main"))
+     (when load-mail-setup
+   #+END_SRC
+
+
    Add mu4e to the load-path and load it.
 
    #+BEGIN_SRC emacs-lisp
@@ -2663,4 +2671,9 @@ Let's also rewrite some built-in to better /default/. Let's start with
    #+BEGIN_SRC emacs-lisp
      (add-to-list 'mu4e-view-actions '("retag" . mu4e-action-retag-message))
      (add-to-list 'mu4e-headers-actions '("retag" . mu4e-action-retag-message))
+   #+END_SRC
+
+
+   #+BEGIN_SRC emacs-lisp
+     )
    #+END_SRC
