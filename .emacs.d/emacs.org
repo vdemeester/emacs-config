@@ -526,8 +526,13 @@ And bind =cleanup-buffer= and =cleanup-region=.
   (global-set-key (kbd "C-C i") 'my/indent-region-or-buffer)
 #+end_src
 
-For writing text, I prefer Emacs to do line wrapping for me.Also, superfluous
-white-space should be shown.
+For writing text, I prefer Emacs to do line wrapping for me. Also, superfluous
+white-space should be shown. There is two choices here :
+=auto-fill-mode= and =visual-line-mode= ; the difference is the one is
+actually inserting linke breaks, when the other is just a visual
+thing. Most of the time I want =auto-fill-mode= in my text files (or
+=org-mode= files), so let's add this as default and handle special
+cases.
 
 #+BEGIN_SRC emacs-lisp
   (add-hook 'text-mode-hook
@@ -1544,16 +1549,31 @@ Let's also rewrite some built-in to better /default/. Let's start with
              (quote (("CANCELLED" ("CANCELLED" . t)))))
   #+end_src
 
+
+  I have a folder with notes, where I don't want =auto-fill-mode=
+  enabled, but =visual-line-mode=, let's do that.
+
+#+BEGIN_SRC emacs-lisp
+  (defun turn-on-auto-visual-line (expression)
+    (cond ((string-match expression buffer-file-name)
+           (progn
+             (auto-fill-mode -1)
+             (visual-line-mode 1))
+           )))
+#+END_SRC
+
+
   Undefine some binding (=C-c [=, =C-c ]= since this breaks org-agenda files that
   have been defined in this file (a directory).
 
   #+begin_src emacs-lisp
-       (add-hook 'org-mode-hook
-                 '(lambda ()
-                    (org-defkey org-mode-map "\C-c[" 'undefined)
-                    (org-defkey org-mode-map "\C-c]" 'undefined)
-                    (org-defkey org-mode-map "\C-c;" 'undefined))
-                 'append)
+    (add-hook 'org-mode-hook
+              '(lambda ()
+                 (org-defkey org-mode-map "\C-c[" 'undefined)
+                 (org-defkey org-mode-map "\C-c]" 'undefined)
+                 (org-defkey org-mode-map "\C-c;" 'undefined)
+                 (turn-on-auto-visual-line (substitute-env-in-file-name "$HOME/desktop/org/notes/*")))
+              'append)
   #+end_src
 
   All org-mode buffers will be automatically saved each hours.
@@ -1565,11 +1585,14 @@ Let's also rewrite some built-in to better /default/. Let's start with
   And add some miscellaneous stuff.
 
   #+BEGIN_SRC emacs-lisp
-       (setq
-        org-completion-use-ido t         ;; use IDO for completion
-        org-cycle-separator-lines 0      ;; Don't show blank lines
-        org-catch-invisible-edits 'error ;; don't edit invisible text
-        )
+    (setq
+     org-completion-use-ido t         ;; use IDO for completion
+     org-cycle-separator-lines 0      ;; Don't show blank lines
+     org-catch-invisible-edits 'error ;; don't edit invisible text
+     )
+    ;; Emphasis on more than one line
+    (setcar (nthcdr 2 org-emphasis-regexp-components) " \t\r\n\"'")
+    (org-set-emph-re 'org-emphasis-regexp-components org-emphasis-regexp-components)
   #+END_SRC
 
 *** Speed commands
@@ -2470,6 +2493,7 @@ Let's also rewrite some built-in to better /default/. Let's start with
          ;; Major modes
          (clojure-mode               . "λ")
          (hi-lock-mode               . "")
+         (visual-line-mode           . "ω")
          (python-mode                . "Py")
          (emacs-lisp-mode            . "EL")
          (markdown-mode              . "md")
