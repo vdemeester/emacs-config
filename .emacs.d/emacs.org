@@ -175,6 +175,35 @@ It looks kinda like that (click to open the real one) :
            user-mail-address "vincent@demeester.fr")
    #+end_src
 
+   Let's define default value that could be owerwritten by the host
+   and user file.
+
+   #+BEGIN_SRC emacs-lisp
+     (setq
+      ;; General
+      ;; TODO use xdg to get these
+      desktop-folder (substitute-env-in-file-name "$HOME/desktop")
+      videos-folder (expand-file-name "videos" desktop-folder)
+      downloads-folder (expand-file-name "downloads" desktop-folder)
+      music-folder (expand-file-name "music" desktop-folder)
+      pictures-folder (expand-file-name "pictures" desktop-folder)
+      ;; Orgmode related
+      org-root-directory (substitute-env-in-file-name "$HOME/desktop/org")
+      org-todos-directory-name "todos"
+      org-notes-directory-name "notes"
+      org-archive-directory-name "archive"
+      org-archive-file-pattern "%s_archive::"
+      org-inbox-file "inbox.org"
+      org-main-file "personal.org"
+      org-journal-file "journal.org"
+      org-stackoverflow-file "stack.org"
+      org-web-article-file "ent.org"
+      org-publish-folder (substitute-env-in-file-name "$HOME/var/public_html")
+      ;; Github related
+      github-general-folder (substitute-env-in-file-name "$HOME/src/github")
+      github-username "vdemeester")
+   #+END_SRC
+
    Loads user settings if the file is available. I put all my personal modifications or sensitive information into this file.
 
    #+BEGIN_SRC emacs-lisp
@@ -183,7 +212,6 @@ It looks kinda like that (click to open the real one) :
    #+END_SRC
 
    Same will goes with host-specific files and os-specific files.
-
 
    #+BEGIN_SRC emacs-lisp
   (setq FULLHOSTNAME (format "%s" system-name))
@@ -197,6 +225,20 @@ It looks kinda like that (click to open the real one) :
   (when (file-readable-p HOSTNAME-FILE)
     (load HOSTNAME-FILE))
    #+END_SRC
+
+   And build the /final/ variables with the possibly overwritten ones.
+
+
+   #+BEGIN_SRC emacs-lisp
+     (setq
+      ;; Orgmode related
+      org-todos-directory (expand-file-name org-todos-directory-name org-root-directory)
+      org-notes-directory (expand-file-name org-notes-directory-name org-root-directory)
+      org-archive-directory (expand-file-name org-archive-directory-name org-root-directory)
+      ;; Github related
+      github-personal-folder (expand-file-name github-username github-general-folder))
+   #+END_SRC
+
 
 ** General configuration
 *** Appearance
@@ -435,6 +477,10 @@ It looks kinda like that (click to open the real one) :
 
        (global-set-key (kbd "C-x k") 'kill-default-buffer)
      #+END_SRC
+
+**** TODO Comment/Uncomment region
+
+     If not present, comment/uncomment line
 
 **** Kill advice
 
@@ -1293,7 +1339,7 @@ Let's also rewrite some built-in to better /default/. Let's start with
        (progn
          (setq deft-extension "org"
                deft-text-mode 'org-mode
-               deft-directory "~/desktop/org/notes"
+               deft-directory org-notes-directory
                deft-use-filename-as-title t))
        :bind ("<f9>" . deft))
    #+END_SRC
@@ -1493,9 +1539,8 @@ Let's also rewrite some built-in to better /default/. Let's start with
 
      #+begin_src emacs-lisp
        (require 'find-lisp)
-       (setq org-directory "~/desktop/org/")
-       (setq org-agenda-files (find-lisp-find-files "~/desktop/org/todos/" "\.org$"))
-       (setq org-archive-location (concat org-directory "archive/%s_archive::"))
+       (setq org-directory org-root-directory)
+       (setq org-agenda-files (find-lisp-find-files org-todos-directory "\.org$"))
      #+end_src
 
      We'll also set which files should be opened using org-mode :
@@ -1593,7 +1638,7 @@ Let's also rewrite some built-in to better /default/. Let's start with
                  (org-defkey org-mode-map "\C-c[" 'undefined)
                  (org-defkey org-mode-map "\C-c]" 'undefined)
                  (org-defkey org-mode-map "\C-c;" 'undefined)
-                 (turn-on-auto-visual-line (substitute-env-in-file-name "$HOME/desktop/org/notes/*")))
+                 (turn-on-auto-visual-line (concat org-notes-directory "/*")))
               'append)
   #+end_src
 
@@ -1689,10 +1734,10 @@ Let's also rewrite some built-in to better /default/. Let's start with
       (setq org-capture-templates
             '(;; other entries
               ("t" "Inbox list item" entry
-               (file+headline "~/desktop/org/todos/personal.org" "Inbox")
+               (file+headline (expand-file-name org-main-file org-todos-directory) "Inbox")
                "* %?\n %i\n %a")
               ("j" "Journal entry" plain
-               (file+datetree+prompt "~/desktop/org/journal.org")
+               (file+datetree+prompt (exand-file-name org-journal-file org-root-directory))
                "%K - %a\n%i\n%?\n")
               ;; other entries
               ))
@@ -1710,29 +1755,28 @@ Let's also rewrite some built-in to better /default/. Let's start with
      Add a function to easily add a code block and bind it.
 
      #+begin_src emacs-lisp
-       (defun my/org-insert-src-block (src-code-type)
-         "Insert a `SRC-CODE-TYPE' type source code block in org-mode."
-         (interactive
-          (let ((src-code-types
-                 '("emacs-lisp" "python" "C" "sh" "java" "js" "clojure" "C++" "css"
-                   "calc" "asymptote" "dot" "gnuplot" "ledger" "lilypond" "mscgen"
-                   "octave" "oz" "plantuml" "R" "sass" "screen" "sql" "awk" "ditaa"
-                   "haskell" "latex" "lisp" "matlab" "ocaml" "org" "perl" "ruby"
-                   "scheme" "sqlite" "rust" "scala" "golang")))
-            (list (ido-completing-read "Source code type: " src-code-types))))
-         (progn
-           (newline-and-indent)
-           (insert (format "#+BEGIN_SRC %s\n" src-code-type))
-           (newline-and-indent)
-           (insert "#+END_SRC\n")
-           (previous-line 2)
-           (org-edit-src-code)))
+              (defun my/org-insert-src-block (src-code-type)
+                "Insert a `SRC-CODE-TYPE' type source code block in org-mode."
+                (interactive
+                 (let ((src-code-types
+                        '("emacs-lisp" "python" "C" "sh" "java" "js" "clojure" "C++" "css"
+                          "calc" "dot" "gnuplot" "ledger" "R" "sass" "screen" "sql" "awk" 
+                          "ditaa" "haskell" "latex" "lisp" "matlab" "org" "perl" "ruby"
+                          "sqlite" "rust" "scala" "golang")))
+                   (list (ido-completing-read "Source code type: " src-code-types))))
+                (progn
+                  (newline-and-indent)
+                  (insert (format "#+BEGIN_SRC %s\n" src-code-type))
+                  (newline-and-indent)
+                  (insert "#+END_SRC\n")
+                  (previous-line 2)
+                  (org-edit-src-code)))
 
-       (add-hook 'org-mode-hook
-                 '(lambda ()
-                    (local-set-key (kbd "C-c s e") 'org-edit-src-code)
-                    (local-set-key (kbd "C-c s i") 'my/org-insert-src-block))
-                 'append)
+              (add-hook 'org-mode-hook
+                        '(lambda ()
+                           (local-set-key (kbd "C-c s e") 'org-edit-src-code)
+                           (local-set-key (kbd "C-c s i") 'my/org-insert-src-block))
+                        'append)
      #+end_src
 
 *** Mobile
@@ -1743,9 +1787,9 @@ Let's also rewrite some built-in to better /default/. Let's start with
 
     #+BEGIN_SRC emacs-lisp
       (require 'org-mobile)
-      (setq org-mobile-directory personal-org-mobile-directory)
-      (setq org-mobile-inbox-for-pull "~/desktop/org/todos/inbox.org")
-      (setq org-mobile-files '("~/desktop/org/todos/"))
+      (setq org-mobile-directory personal-org-mobile-directory
+            org-mobile-inbox-for-pull (expand-file-name org-inbox-file org-todos-directory)
+            org-mobile-files '(org-todos-directory))
     #+END_SRC
 
     Let's also configure auto push, asynchronously like in this
@@ -1806,7 +1850,7 @@ Let's also rewrite some built-in to better /default/. Let's start with
 
     #+BEGIN_SRC emacs-lisp
       (require 'org-archive)
-      (setq org-archive-location (concat org-directory "archive/%s_archive::"))
+      (setq org-archive-location (concat org-archive-directory "%s_archive::"))
     #+END_SRC
 
 *** Tags
@@ -2024,31 +2068,10 @@ Let's also rewrite some built-in to better /default/. Let's start with
       (use-package ox-rss)
       ;; Project
       (setq org-publish-project-alist
-            '(("experiments-notes"
-               :base-directory "~/desktop/org/notes/experiments"
+            '(("sbr-notes"
+               :base-directory (expand-file-name "sbr" org-notes-directory)
                :base-extension "org"
-               :publishing-directory "~/var/public_html/experiments"
-               :makeindex t
-               :exclude "FIXME"
-               :recursive t
-               :publishing-function org-html-publish-to-html
-               :htmlized-source t
-               :headline-levels 4
-               :auto-preamble t
-               :html-head "<link rel=\"stylesheet\" type=\"text/css\" href=\"style/style.css\" />"
-               )
-              ("experiments-static"
-               :base-directory "~/desktop/org/notes/experiments"
-               :base-extension "css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg"
-               :publishing-directory "~/var/public_html/experiments"
-               :recursive t
-               :publishing-function org-publish-attachment
-               )
-              ("experiments" :components ("experiments-notes" "experiments-static"))
-              ("sbr-notes"
-               :base-directory "~/desktop/org/notes/sbr"
-               :base-extension "org"
-               :publishing-directory "~/var/public_html/sbr"
+               :publishing-directory (expand-file-name "sbr" org-publish-folder)
                :makeindex t
                :exclude "FIXME"
                :recursive t
@@ -2066,17 +2089,17 @@ Let's also rewrite some built-in to better /default/. Let's start with
       %a %C %c
       </div>")
               ("sbr-static"
-               :base-directory "~/desktop/org/notes/sbr"
+               :base-directory (expand-file-name "sbr" org-notes-directory)
                :base-extension "css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg"
-               :publishing-directory "~/var/public_html/sbr"
+               :publishing-directory (expand-file-name "sbr" org-publish-folder)
                :recursive t
                :publishing-function org-publish-attachment
               )
               ("sbr" :components ("sbr-notes" "sbr-static"))
               ("znk-notes"
-               :base-directory "~/desktop/org/notes/zenika"
+               :base-directory (expand-file-name "zenika" org-notes-directory)
                :base-extension "org"
-               :publishing-directory "~/var/public_html/zenika"
+               :publishing-directory (expand-file-name "zenika" org-publish-folder)
                :makeindex t
                :exclude "FIXME"
                :recursive t
@@ -2094,9 +2117,9 @@ Let's also rewrite some built-in to better /default/. Let's start with
       %a %C %c
       </div>")
               ("znk-static"
-               :base-directory "~/desktop/org/notes/zenika"
+               :base-directory (expand-file-name "zenika" org-notes-directory)
                :base-extension "css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg"
-               :publishing-directory "~/var/public_html/zenika"
+               :publishing-directory (expand-file-name "zenika" org-publish-folder)
                :recursive t
                :publishing-function org-publish-attachment
               )
@@ -2118,7 +2141,7 @@ Let's also rewrite some built-in to better /default/. Let's start with
       (setq org-protocol-default-template-key "l")
       (push '("l" "Link" entry (function org-handle-link)
               "* TODO %(org-wash-link)\nAdded: %U\n%(org-link-hooks)\n%?")
-              org-capture-templates)
+            org-capture-templates)
 
       (defun org-wash-link ()
         (let ((link (caar org-stored-links))
@@ -2143,11 +2166,11 @@ Let's also rewrite some built-in to better /default/. Let's start with
                  (org-handle-link-youtube link))
                 ((string-match (regexp-quote
                                 "http://stackoverflow.com/") link)
-                 (find-file ("~/desktop/org/notes/stack.org"))
+                 (find-file ((expand-file-name org-stackoverflow-file org-notes-directory)))
                  (goto-char (point-min))
                  (re-search-forward "^\\*+ +Questions" nil t))
                 (t
-                 (find-file ("~/desktop/org/notes/ent.org"))
+                 (find-file ((expand-file-name org-web-article-file org-notes-directory)))
                  (goto-char (point-min))
                  (re-search-forward "^\\*+ +Articles" nil t)))))
 
@@ -2160,7 +2183,7 @@ Let's also rewrite some built-in to better /default/. Let's start with
                            link
                            "\""
                            " -o \"%(title)s.%(ext)s\" --get-filename"))))
-             (dir "~/desktop/videos/")
+             (dir videos-folder)
              (full-name
               (expand-file-name file-name dir)))
           (add-hook 'org-link-hook
