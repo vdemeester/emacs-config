@@ -2430,7 +2430,7 @@ Let's also rewrite some built-in to better /default/. Let's start with
         :ensure t)
     #+END_SRC
 
-** Markdown
+** Markdown, Yaml & Toml
 
    #+BEGIN_SRC emacs-lisp
      (use-package markdown-mode
@@ -2439,11 +2439,14 @@ Let's also rewrite some built-in to better /default/. Let's start with
        :ensure t)
    #+END_SRC
 
-
-** Yaml
-
    #+BEGIN_SRC emacs-lisp
      (use-package yaml-mode
+       :ensure t)
+   #+END_SRC
+
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package toml-mode
        :ensure t)
    #+END_SRC
 
