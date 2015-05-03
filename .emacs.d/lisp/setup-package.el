@@ -15,32 +15,14 @@
 
 (sanityinc/package-maybe-enable-signatures)
 
-;; On demand installation of packages
-(defun require-package (package &optional min-version no-refresh)
-  "Install given PACKAGE, optionally requiring MIN-VERSION.
-if NO-REFRESH is non-nil, the available package lists will not be
-re-downloaded in order to locate PACKAGE."
-  (if (package-installed-p package min-version)
-      t
-    (if (or (assoc package package-archive-contents) no-refresh)
-        (package-install package)
-      (progn
-        (when (not package-archive-contents)
-          (package-refresh-contents))
-        (require-package package min-version t)))))
-
 ;; Fire up package.el
 (package-initialize)
 
-;; Require use-package
-(require-package 'use-package)
-(require 'use-package)
+;; Load package contents if not present
+(when (not package-archive-contents)
+  (package-refresh-contents))
 
-;; install fullframe for list-packages
-(use-package fullframe
-             :init
-             (progn
-               (fullframe list-packages quit-window))
-             :ensure t)
+;; Load use-package
+(require 'use-package)
 
 (provide 'setup-package)

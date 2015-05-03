@@ -13,6 +13,8 @@
 
 ;; Add custom lisp files to the load-path
 (add-to-list 'load-path "~/.emacs.d/lisp")
+;; Add a specific version of use-package
+(add-to-list 'load-path "~/.emacs.d/lisp/use-package")
 
 (require 'vde-functions)
 ;; initialize all ELPA packages
@@ -43,9 +45,7 @@
 
 ;; load the literate configuration
 (require 'ob-tangle)
-;;(org-babel-load-file
-;; (expand-file-name "emacs.org"
-;;		   user-emacs-directory))
+
 (org-babel-load-file "~/.emacs.d/emacs.org")
 
 (let ((elapsed (float-time (time-subtract (current-time)
