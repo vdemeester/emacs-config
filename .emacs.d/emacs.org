@@ -1367,6 +1367,7 @@ Let's also rewrite some built-in to better /default/. Let's start with
        (use-package magit
          :ensure t
          :bind ("C-c g" . magit-status))
+       (setq magit-last-seen-setup-instructions "1.4.0")
      #+end_src
 
 ***** Magit git-svn integration
