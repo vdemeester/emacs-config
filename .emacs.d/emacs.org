@@ -1995,45 +1995,6 @@ Let's also rewrite some built-in to better /default/. Let's start with
                 (org-agenda-text-search-extra-files nil)))))
     #+END_SRC
 
-*** Externals (caldav, issues, ..)
-**** General (org-sync)
-
-
-     #+BEGIN_SRC emacs-lisp
-       (add-to-list 'load-path "~/.emacs.d/lisp/org-sync")
-       (mapc 'load
-             '("org-element" "os" "os-bb" "os-github" "os-rmine"))
-     #+END_SRC
-
-
-**** Redmine
-
-     On some project (mainly @work), redmine is used. As I'm using
-     org-mode for tracking the stuff I do and the time I spent on it,
-     let's integrate org-mode and redmine.
-
-     #+BEGIN_SRC emacs-lisp
-       (use-package org-redmine
-         :ensure t)
-     #+END_SRC
-
-     The uri of the redmine(s) will be specified in a org-babel
-     matter in the org files that need it. Still have to define a
-     default template.
-
-**** Trello
-
-     On some project, [[https://trello.com/][Trello]] is used and, there a emacs package for
-     that :).
-
-     #+BEGIN_SRC emacs-lisp
-       (use-package org-trello
-         :ensure t)
-     #+END_SRC
-
-     Now, a /manual/ step will be to install consumer key and stuff
-     (see [[https://org-trello.github.io/trello-setup.html][documentation]] for that).
-
 *** Pomodoro
 
 
