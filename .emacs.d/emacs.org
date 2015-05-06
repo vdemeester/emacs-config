@@ -1650,8 +1650,20 @@ Let's also rewrite some built-in to better /default/. Let's start with
      org-completion-use-ido t         ;; use IDO for completion
      org-cycle-separator-lines 0      ;; Don't show blank lines
      org-catch-invisible-edits 'error ;; don't edit invisible text
+     org-refile-targets '((org-agenda-files . (:maxlevel . 6)))
      )
   #+END_SRC
+
+  Let's also define a =org= related keymap map.
+
+
+  #+BEGIN_SRC emacs-lisp
+    (define-prefix-command 'vde/org-map)
+    (global-set-key (kbd "C-c o") 'vde/org-map)
+    (define-key vde/org-map "p" (lambda () (interactive) (find-file (expand-file-name org-main-file org-todos-directory))))
+    (define-key vde/org-map "n" (lambda () (interactive) (find-file org-notes-directory)))
+  #+END_SRC
+
 
 *** Speed commands
 
@@ -1720,7 +1732,7 @@ Let's also rewrite some built-in to better /default/. Let's start with
     First thing first, bind a key sequence to org-capture.
 
     #+BEGIN_SRC emacs-lisp
-      (global-set-key (kbd "C-c r") 'org-capture)
+      (define-key vde/org-map "r" 'org-capture)
     #+END_SRC
 
     Setup captures templates..
