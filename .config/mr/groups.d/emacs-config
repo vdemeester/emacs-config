@@ -1,0 +1,2 @@
+[$HOME/.emacs.d/snippets/andreaCrotti-snippets]
+checkout = git clone https://github.com/AndreaCrotti/yasnippet-snippets.git

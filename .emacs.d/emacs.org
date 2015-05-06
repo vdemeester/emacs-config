@@ -2514,6 +2514,22 @@ Let's also rewrite some built-in to better /default/. Let's start with
    '(define-key yaml-mode-map (kbd "C-c h a") 'lunaryorn-ansible-doc))
    #+END_SRC
 
+** Yasnippet
+
+   Use YASnippet for snippets.
+
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package yasnippet
+       :ensure t
+       :config
+       (progn
+         (setq yas-verbosity 1
+               yas-snippet-dir (expand-file-name "snippets" user-emacs-directory))
+         (yas-global-mode 1)))
+   #+END_SRC
+
+
 ** Clean the modeline
 
    With all the modes (major & minor), the modeline becomes really

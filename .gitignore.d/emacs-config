@@ -2,6 +2,7 @@
 !.emacs.d
 !.emacs.d/*
 !.emacs.d/**
+.emacs.d/snippets
 .emacs.d/gotools
 .emacs.d/provided/*
 !.emacs.d/provided/.placeholder
