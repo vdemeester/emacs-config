@@ -899,7 +899,7 @@ Let's also rewrite some built-in to better /default/. Let's start with
        (use-package ace-window
            :ensure t
            :bind (("C-x C-o" . ace-window)
-                  ("C-x M-s" . avi-goto-word-1)) 
+                  ("C-x M-s" . avi-goto-word-1))
            :init
            (setq aw-keys '(?a ?t ?u ?s ?i ?r ?e ?n))
            (setq aw-background nil))
