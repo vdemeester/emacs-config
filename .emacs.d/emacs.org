@@ -34,458 +34,457 @@ It looks kinda like that (click to open the real one) :
 
 [[./.emacs.d/images/emacs-config.png][./.emacs.d/images/emacs-config-small.png]]
 
-* Configuration
-** How to use my configuration
+* How to use my configuration
 
-   You can obtain the source by cloning this repository somewhere, but the repository
-   is made to work with [[https://github.com/RichiH/vcsh][vcsh]].
+  You can obtain the source by cloning this repository somewhere, but the repository
+  is made to work with [[https://github.com/RichiH/vcsh][vcsh]].
 
-   #+BEGIN_SRC sh
-  vcsh clone git://github.com/vdemeester/emacs-config emacs-config
+  #+BEGIN_SRC sh
+ vcsh clone git://github.com/vdemeester/emacs-config emacs-config
+  #+END_SRC
+
+  If you don't want to use =vcsh= but still want to have my =.emacs.d= folder
+  in your =$HOME=, you could link it like that :
+
+  #+BEGIN_SRC sh
+ $ cd $HOME
+ $ mkdir -p src
+ $ git clone git://github.com/vdemeester/emacs-config src/vde-emacs-config
+ $ ln -s src/vde-emacs-config/.emacs.d .
+  #+END_SRC
+
+** The =init.el=
+
+   If you just want to get the =emacs.org= file, you will have to define and setup
+   some stuff for this file to work with org-babel. You could take a look to my
+   [[https://github.com/vdemeester/emacs-config/blob/master/.emacs.d/init.el][init.el]] file but let's show the main stuff.
+
+   First you will need to setup packages repository and define a =require-package=
+   function, let's see what's in there (defined in =lisp/setup-package.el=).
+
+
+   #+BEGIN_SRC emacs-lisp :tangle no
+     (require 'package)
+
+     ;; add org to package repos
+     (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/"))
+
+     ;; add melpa and melpa-stable to package repos
+     (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
+     (add-to-list 'package-archives '("mela-stable" . "http://stable.melpa.org/packages/"))
+
+     ;; If gpg cannot be found, signature checking will fail, so we
+     ;; conditionnally enable it according wether gpg is availabel.
+     ;; We re-run this check once $PATH has been configured
+     (defun sanityinc/package-maybe-enable-signatures ()
+       (setq package-check-signature (when (executable-find "gpg") 'allow-unsigned)))
+
+     (sanityinc/package-maybe-enable-signatures)
+
+     ;; Fire up package.el
+     (package-initialize)
+
+     ;; Load package contents if not present
+     (when (not package-archive-contents)
+       (package-refresh-contents))
+
+     ;; Load use-package
+     (require 'use-package)
+
+     (provide 'setup-package)
    #+END_SRC
 
-   If you don't want to use =vcsh= but still want to have my =.emacs.d= folder
-   in your =$HOME=, you could link it like that :
+   Let's now see how I load the =emacs.org= file. In the following lines of code,
+   I'm also ensuring that a recent version of [[http://orgmode.org/][org-mode]] is present on the system ;
+   if not, I'm unload the current one, installing a recent one and load it.
 
-   #+BEGIN_SRC sh
-  $ cd $HOME
-  $ mkdir -p src
-  $ git clone git://github.com/vdemeester/emacs-config src/vde-emacs-config
-  $ ln -s src/vde-emacs-config/.emacs.d .
+   #+BEGIN_SRC emacs-lisp :tangle no
+     ;; Support for Emacs 24 and higher only
+     (let ((minver 24))
+       (unless (>= emacs-major-version minver)
+         (error "Your Emacs is too old -- this config requires v%s or higher" minver)))
+
+     ;; Keep track of loading time
+     (defconst emacs-start-time (current-time))
+
+     ;; Add custom lisp files to the load-path
+     (add-to-list 'load-path "~/.emacs.d/lisp")
+     ;; Add a specific version of use-package
+     (add-to-list 'load-path "~/.emacs.d/lisp/use-package")
+
+     (require 'vde-functions)
+     ;; initialize all ELPA packages
+     (require 'setup-package)
+
+     ;; (setq package-enable-at-startup nil)
+     (let ((elapsed (float-time (time-subtract (current-time)
+                                                emacs-start-time))))
+       (message "Loaded packages in %.3fs" elapsed))
+
+     ;; Make sure we have a decent and recent org-mode version
+     (require 'org)
+     (when (string-match "^[1234567]" (org-version))
+       (progn
+         (warn "Org-mode is out of date. We expect org 8 or higher, but instead we have %s" (org-version))
+         (warn "Force the installation from org elpa.")
+         (package-install 'org)
+         (unload-org-mode)
+         (require 'org)
+         ))
+
+     ;; keep customize settings in their own file
+     (setq custom-file
+           (expand-file-name "custom.el"
+                             user-emacs-directory))
+     (when (file-exists-p custom-file)
+       (load custom-file))
+
+     ;; load the literate configuration
+     (require 'ob-tangle)
+
+     (org-babel-load-file "~/.emacs.d/emacs.org")
+
+     (let ((elapsed (float-time (time-subtract (current-time)
+                                                emacs-start-time))))
+       (message "Loaded settings...done in %.3fs" elapsed))
    #+END_SRC
 
-*** The =init.el=
+* Personal information
 
-    If you just want to get the =emacs.org= file, you will have to define and setup
-    some stuff for this file to work with org-babel. You could take a look to my
-    [[https://github.com/vdemeester/emacs-config/blob/master/.emacs.d/init.el][init.el]] file but let's show the main stuff.
+  #+begin_src emacs-lisp
+    (setq user-full-name "Vincent Demeester"
+          user-mail-address "vincent@demeester.fr")
+  #+end_src
 
-    First you will need to setup packages repository and define a =require-package=
-    function, let's see what's in there (defined in =lisp/setup-package.el=).
+  Let's define default value that could be owerwritten by the host
+  and user file.
+
+  #+BEGIN_SRC emacs-lisp
+    (setq
+     ;; General
+     ;; TODO use xdg to get these
+     desktop-folder (substitute-env-in-file-name "$HOME/desktop")
+     videos-folder (expand-file-name "videos" desktop-folder)
+     downloads-folder (expand-file-name "downloads" desktop-folder)
+     music-folder (expand-file-name "music" desktop-folder)
+     pictures-folder (expand-file-name "pictures" desktop-folder)
+     ;; Orgmode related
+     org-root-directory (substitute-env-in-file-name "$HOME/desktop/org")
+     org-todos-directory-name "todos"
+     org-notes-directory-name "notes"
+     org-archive-directory-name "archive"
+     org-archive-file-pattern "%s_archive::"
+     org-inbox-file "inbox.org"
+     org-main-file "personal.org"
+     org-journal-file "journal.org"
+     org-stackoverflow-file "stack.org"
+     org-web-article-file "ent.org"
+     org-publish-folder (substitute-env-in-file-name "$HOME/var/public_html")
+     ;; Github related
+     github-general-folder (substitute-env-in-file-name "$HOME/src/github")
+     github-username "vdemeester")
+  #+END_SRC
+
+  Loads user settings if the file is available. I put all my personal modifications or sensitive information into this file.
+
+  #+BEGIN_SRC emacs-lisp
+ (when (file-readable-p "~/.emacs.d/user.el")
+   (load "~/.emacs.d/user.el"))
+  #+END_SRC
+
+  Same will goes with host-specific files and os-specific files.
+
+  #+BEGIN_SRC emacs-lisp
+ (setq FULLHOSTNAME (format "%s" system-name))
+ (setq HOSTNAME (substring (system-name) 0 (string-match "\\." (system-name))))
+
+ (setq HOSTNAME-FILE
+       (expand-file-name
+        (format "hosts/%s.el" HOSTNAME)
+        "~/.emacs.d"))
+
+ (when (file-readable-p HOSTNAME-FILE)
+   (load HOSTNAME-FILE))
+  #+END_SRC
+
+  And build the /final/ variables with the possibly overwritten ones.
 
 
-    #+BEGIN_SRC emacs-lisp :tangle no
-      (require 'package)
+  #+BEGIN_SRC emacs-lisp
+    (setq
+     ;; Orgmode related
+     org-todos-directory (expand-file-name org-todos-directory-name org-root-directory)
+     org-notes-directory (expand-file-name org-notes-directory-name org-root-directory)
+     org-archive-directory (expand-file-name org-archive-directory-name org-root-directory)
+     ;; Github related
+     github-personal-folder (expand-file-name github-username github-general-folder))
+  #+END_SRC
 
-      ;; add org to package repos
-      (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/"))
 
-      ;; add melpa and melpa-stable to package repos
-      (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
-      (add-to-list 'package-archives '("mela-stable" . "http://stable.melpa.org/packages/"))
+* General configuration
+** Appearance
 
-      ;; If gpg cannot be found, signature checking will fail, so we
-      ;; conditionnally enable it according wether gpg is availabel.
-      ;; We re-run this check once $PATH has been configured
-      (defun sanityinc/package-maybe-enable-signatures ()
-        (setq package-check-signature (when (executable-find "gpg") 'allow-unsigned)))
-
-      (sanityinc/package-maybe-enable-signatures)
-
-      ;; Fire up package.el
-      (package-initialize)
-
-      ;; Load package contents if not present
-      (when (not package-archive-contents)
-        (package-refresh-contents))
-
-      ;; Load use-package
-      (require 'use-package)
-
-      (provide 'setup-package)
-    #+END_SRC
-
-    Let's now see how I load the =emacs.org= file. In the following lines of code,
-    I'm also ensuring that a recent version of [[http://orgmode.org/][org-mode]] is present on the system ;
-    if not, I'm unload the current one, installing a recent one and load it.
-
-    #+BEGIN_SRC emacs-lisp :tangle no
-      ;; Support for Emacs 24 and higher only
-      (let ((minver 24))
-        (unless (>= emacs-major-version minver)
-          (error "Your Emacs is too old -- this config requires v%s or higher" minver)))
-
-      ;; Keep track of loading time
-      (defconst emacs-start-time (current-time))
-
-      ;; Add custom lisp files to the load-path
-      (add-to-list 'load-path "~/.emacs.d/lisp")
-      ;; Add a specific version of use-package
-      (add-to-list 'load-path "~/.emacs.d/lisp/use-package")
-
-      (require 'vde-functions)
-      ;; initialize all ELPA packages
-      (require 'setup-package)
-
-      ;; (setq package-enable-at-startup nil)
-      (let ((elapsed (float-time (time-subtract (current-time)
-                                                 emacs-start-time))))
-        (message "Loaded packages in %.3fs" elapsed))
-
-      ;; Make sure we have a decent and recent org-mode version
-      (require 'org)
-      (when (string-match "^[1234567]" (org-version))
-        (progn
-          (warn "Org-mode is out of date. We expect org 8 or higher, but instead we have %s" (org-version))
-          (warn "Force the installation from org elpa.")
-          (package-install 'org)
-          (unload-org-mode)
-          (require 'org)
-          ))
-
-      ;; keep customize settings in their own file
-      (setq custom-file
-            (expand-file-name "custom.el"
-                              user-emacs-directory))
-      (when (file-exists-p custom-file)
-        (load custom-file))
-
-      ;; load the literate configuration
-      (require 'ob-tangle)
-
-      (org-babel-load-file "~/.emacs.d/emacs.org")
-
-      (let ((elapsed (float-time (time-subtract (current-time)
-                                                 emacs-start-time))))
-        (message "Loaded settings...done in %.3fs" elapsed))
-    #+END_SRC
-
-** Personal information
+   Unclutter the screen by removing menubar, toolbar and stuff, and by disabling
+   the splash-screen.
 
    #+begin_src emacs-lisp
-     (setq user-full-name "Vincent Demeester"
-           user-mail-address "vincent@demeester.fr")
+     (menu-bar-mode -1)
+     (tool-bar-mode -1)
+     (scroll-bar-mode -1)
+     (blink-cursor-mode -1)
+     (setq inhibit-splash-screen t)
    #+end_src
 
-   Let's define default value that could be owerwritten by the host
-   and user file.
+   We want to see somewhere the column and line number, and also highlight the
+   current line to see it easily.
 
-   #+BEGIN_SRC emacs-lisp
-     (setq
-      ;; General
-      ;; TODO use xdg to get these
-      desktop-folder (substitute-env-in-file-name "$HOME/desktop")
-      videos-folder (expand-file-name "videos" desktop-folder)
-      downloads-folder (expand-file-name "downloads" desktop-folder)
-      music-folder (expand-file-name "music" desktop-folder)
-      pictures-folder (expand-file-name "pictures" desktop-folder)
-      ;; Orgmode related
-      org-root-directory (substitute-env-in-file-name "$HOME/desktop/org")
-      org-todos-directory-name "todos"
-      org-notes-directory-name "notes"
-      org-archive-directory-name "archive"
-      org-archive-file-pattern "%s_archive::"
-      org-inbox-file "inbox.org"
-      org-main-file "personal.org"
-      org-journal-file "journal.org"
-      org-stackoverflow-file "stack.org"
-      org-web-article-file "ent.org"
-      org-publish-folder (substitute-env-in-file-name "$HOME/var/public_html")
-      ;; Github related
-      github-general-folder (substitute-env-in-file-name "$HOME/src/github")
-      github-username "vdemeester")
-   #+END_SRC
+   #+begin_src emacs-lisp
+     (line-number-mode 1)
+     (column-number-mode 1)
+     (global-hl-line-mode 1)
+   #+end_src
 
-   Loads user settings if the file is available. I put all my personal modifications or sensitive information into this file.
+   Depending on the files opened and the syntax highlighting enabled, ~font-lock-mode~
+   can be slow, we try to limit that, to keep Emacs reactive.
 
-   #+BEGIN_SRC emacs-lisp
-  (when (file-readable-p "~/.emacs.d/user.el")
-    (load "~/.emacs.d/user.el"))
-   #+END_SRC
+   #+begin_src emacs-lisp
+     (setq font-lock-maximum-decoration 2)
+   #+end_src
 
-   Same will goes with host-specific files and os-specific files.
+*** Fringe decorations
 
-   #+BEGIN_SRC emacs-lisp
-  (setq FULLHOSTNAME (format "%s" system-name))
-  (setq HOSTNAME (substring (system-name) 0 (string-match "\\." (system-name))))
+    [[http://www.emacswiki.org/emacs/TheFringe][The fringe]] is the vertical region at the right and left of the
+    buffer. Emacs lets you customize it of course.
 
-  (setq HOSTNAME-FILE
-        (expand-file-name
-         (format "hosts/%s.el" HOSTNAME)
-         "~/.emacs.d"))
+    Here I set up git diffs and buffer position in the fringe.
 
-  (when (file-readable-p HOSTNAME-FILE)
-    (load HOSTNAME-FILE))
-   #+END_SRC
+    #+NAME: look-and-feel
+    #+BEGIN_SRC emacs-lisp
+      (setq-default indicate-buffer-boundaries 'left)
+      (setq-default indicate-empty-lines +1)
+    #+END_SRC
 
-   And build the /final/ variables with the possibly overwritten ones.
+*** Fonts
 
-
-   #+BEGIN_SRC emacs-lisp
-     (setq
-      ;; Orgmode related
-      org-todos-directory (expand-file-name org-todos-directory-name org-root-directory)
-      org-notes-directory (expand-file-name org-notes-directory-name org-root-directory)
-      org-archive-directory (expand-file-name org-archive-directory-name org-root-directory)
-      ;; Github related
-      github-personal-folder (expand-file-name github-username github-general-folder))
-   #+END_SRC
-
-
-** General configuration
-*** Appearance
-
-    Unclutter the screen by removing menubar, toolbar and stuff, and by disabling
-    the splash-screen.
+    I tend to install Ubuntu font family on all my computers, I like
+    it :). But I don't want emacs to fail loading because they aren't
+    there yet, so let's define =Ubuntu Mono= as fonts, only if they
+    are available.
 
     #+begin_src emacs-lisp
-      (menu-bar-mode -1)
-      (tool-bar-mode -1)
-      (scroll-bar-mode -1)
-      (blink-cursor-mode -1)
-      (setq inhibit-splash-screen t)
+      (when (member "Ubuntu Mono" (font-family-list))
+        (set-default-font "Ubuntu Mono-12")
+        (set-frame-font "Ubuntu Mono-12")
+        (set-face-attribute 'default nil :family "Ubuntu Mono" :height 110)
+        )
     #+end_src
 
-    We want to see somewhere the column and line number, and also highlight the
-    current line to see it easily.
+    This will set Symbola as fallback-font for Emojis when it is
+    available for the created frame. Because emojis and unicode are
+    cool : 🙆 😆 😁 ♨ ⛅ 🚲.
+
+    #+BEGIN_SRC emacs-lisp
+      (when (member "Symbola" (font-family-list))
+        (set-fontset-font "fontset-default"
+                          (cons (decode-char 'ucs #x1f600)
+                                (decode-char 'ucs #x1f640))
+                          "Symbola")
+        (set-fontset-font "fontset-default"
+                          (cons (decode-char 'ucs #x1f300)
+                                (decode-char 'ucs #x1f5ff))
+                          "Symbola")
+        (set-fontset-font "fontset-default"
+                          (cons (decode-char 'ucs #x1f680)
+                                (decode-char 'ucs #x1f6ff))
+                          "Symbola")
+        (set-fontset-font "fontset-default"
+                          (cons (decode-char 'ucs #x2600)
+                                (decode-char 'ucs #x26ff))
+                          "Symbola")
+        (set-fontset-font "fontset-default"
+                          (cons (decode-char 'ucs #x2702)
+                                (decode-char 'ucs #x27b0))
+                          "Symbola")
+        )
+    #+END_SRC
+
+*** Themes
+
+    First let's install the theme(s) and load the new theme
 
     #+begin_src emacs-lisp
-      (line-number-mode 1)
-      (column-number-mode 1)
-      (global-hl-line-mode 1)
+      (use-package sublime-themes
+                   :ensure t
+                   :defer t)
+      (use-package dakrone-theme
+                   :ensure t
+                   :defer t)
+      (use-package leuven-theme
+                   :ensure t
+                   :init
+                   (load-theme 'leuven))
     #+end_src
 
-    Depending on the files opened and the syntax highlighting enabled, ~font-lock-mode~
-    can be slow, we try to limit that, to keep Emacs reactive.
+*** Powerline
+
+    We are going to use [[https://github.com/milkypostman/powerline][powerline]] because it is way more sexy than the default modeline design.
 
     #+begin_src emacs-lisp
-      (setq font-lock-maximum-decoration 2)
+      (use-package powerline
+                   :ensure t
+                   :init
+                   (powerline-default-theme))
     #+end_src
+** Behaviour
 
-**** Fringe decorations
+   First thing first, let's define a shortcuts for editing this configuration.
 
-     [[http://www.emacswiki.org/emacs/TheFringe][The fringe]] is the vertical region at the right and left of the
-     buffer. Emacs lets you customize it of course.
 
-     Here I set up git diffs and buffer position in the fringe.
+   #+BEGIN_SRC emacs-lisp
+     (defun my/edit-emacs-configuration ()
+       (interactive)
+       (find-file "~/.emacs.d/emacs.org"))
 
-     #+NAME: look-and-feel
-     #+BEGIN_SRC emacs-lisp
-       (setq-default indicate-buffer-boundaries 'left)
-       (setq-default indicate-empty-lines +1)
-     #+END_SRC
+     (global-set-key "\C-ce" 'my/edit-emacs-configuration)
+   #+END_SRC
 
-**** Fonts
 
-     I tend to install Ubuntu font family on all my computers, I like
-     it :). But I don't want emacs to fail loading because they aren't
-     there yet, so let's define =Ubuntu Mono= as fonts, only if they
-     are available.
+   Although I don't really care, let's add a new line at the end of files.
+   Some people at work will thank me for that ;-D.
 
-     #+begin_src emacs-lisp
-       (when (member "Ubuntu Mono" (font-family-list))
-         (set-default-font "Ubuntu Mono-12")
-         (set-frame-font "Ubuntu Mono-12")
-         (set-face-attribute 'default nil :family "Ubuntu Mono" :height 110)
-         )
-     #+end_src
+   #+begin_src emacs-lisp
+     (setq require-final-newline t)
+   #+end_src
 
-     This will set Symbola as fallback-font for Emojis when it is
-     available for the created frame. Because emojis and unicode are
-     cool : 🙆 😆 😁 ♨ ⛅ 🚲.
+   Answering yes and no to each question from Emacs can be tedious, a single y or n will suffice.
 
-     #+BEGIN_SRC emacs-lisp
-       (when (member "Symbola" (font-family-list))
-         (set-fontset-font "fontset-default"
-                           (cons (decode-char 'ucs #x1f600)
-                                 (decode-char 'ucs #x1f640))
-                           "Symbola")
-         (set-fontset-font "fontset-default"
-                           (cons (decode-char 'ucs #x1f300)
-                                 (decode-char 'ucs #x1f5ff))
-                           "Symbola")
-         (set-fontset-font "fontset-default"
-                           (cons (decode-char 'ucs #x1f680)
-                                 (decode-char 'ucs #x1f6ff))
-                           "Symbola")
-         (set-fontset-font "fontset-default"
-                           (cons (decode-char 'ucs #x2600)
-                                 (decode-char 'ucs #x26ff))
-                           "Symbola")
-         (set-fontset-font "fontset-default"
-                           (cons (decode-char 'ucs #x2702)
-                                 (decode-char 'ucs #x27b0))
-                           "Symbola")
-         )
-     #+END_SRC
+   #+BEGIN_SRC emacs-lisp
+ (fset 'yes-or-no-p 'y-or-n-p)
+   #+END_SRC
 
-**** Themes
+   Add some macros to be able to conditionnally load stuff (taken
+   from [[http://emacs-fu.blogspot.fr/2008/12/using-packages-functions-only-if-they.html][emacs-fu]].
 
-     First let's install the theme(s) and load the new theme
 
-     #+begin_src emacs-lisp
-       (use-package sublime-themes
-                    :ensure t
-                    :defer t)
-       (use-package dakrone-theme
-                    :ensure t
-                    :defer t)
-       (use-package leuven-theme
-                    :ensure t
-                    :init
-                    (load-theme 'leuven))
-     #+end_src
+   #+BEGIN_SRC emacs-lisp
+     (defmacro require-maybe (feature &optional file)
+       "*Try to require FEATURE, but don't signal an error if `require' fails."
+       `(require ,feature ,file 'noerror))
 
-**** Powerline
+     (defmacro when-available (func foo)
+       "*Do something if FUNCTION is available."
+       `(when (fboundp ,func) ,foo))
+   #+END_SRC
 
-     We are going to use [[https://github.com/milkypostman/powerline][powerline]] because it is way more sexy than the default modeline design.
 
-     #+begin_src emacs-lisp
-       (use-package powerline
-                    :ensure t
-                    :init
-                    (powerline-default-theme))
-     #+end_src
-*** Behaviour
+*** Setting the PATH
 
-    First thing first, let's define a shortcuts for editing this configuration.
+    I'm playing a lot with the =$PATH= variable in my shell, and I
+    sometimes pested that Emacs didn't have the same one. But thanks
+    to [[https://github.com/purcell/exec-path-from-shell][exec-path-from-shell]] it's all ok now =:P=.
 
 
     #+BEGIN_SRC emacs-lisp
-      (defun my/edit-emacs-configuration ()
+      (use-package exec-path-from-shell
+        :ensure t
+        :config
+        (exec-path-from-shell-initialize)
+        (exec-path-from-shell-copy-env "HISTFILE"))
+    #+END_SRC
+
+
+*** Encoding
+
+    Make sur that we use ~utf-8~ by default.
+
+    #+begin_src emacs-lisp
+      (set-terminal-coding-system 'utf-8)
+      (set-keyboard-coding-system 'utf-8)
+      (set-language-environment "UTF-8")
+      (prefer-coding-system 'utf-8)
+    #+end_src
+
+*** Mouse
+    Move the mouse away to not bother.
+
+    #+begin_src emacs-lisp
+      (mouse-avoidance-mode 'jump)
+    #+end_src
+
+*** Backup files
+
+    Files suffixed with =~= in the current directory are ugly. We are still going to use
+    backup files, as it can saves some time in case of trouble, but we'll move them
+    somewhere else : ~/tmp/emacs-1001~ (for a user with the uid = 1001).
+
+    Note the we store them in /tmp so in case of a reboot, we loose them.
+
+    #+begin_src emacs-lisp
+      (defconst emacs-tmp-dir (format "%s/%s%s/" temporary-file-directory "emacs" (user-uid)))
+      (setq backup-directory-alist
+            `((".*" . ,emacs-tmp-dir))
+            auto-save-file-name-transforms
+            `((".*" ,emacs-tmp-dir t))
+            auto-save-list-file-prefix emacs-tmp-dir)
+    #+end_src
+
+    Now that all the temporary files are out of the way, we can keep more of them.
+
+    #+begin_src emacs-lisp
+      (setq delete-old-versions t
+            kept-new-versions 6
+            kept-old-versions 2
+            version-control t)
+    #+end_src
+*** Buffers
+
+    Setup uniquify so that non-unique buffer names get the parent path included to make them unique.
+
+    #+begin_src emacs-lisp
+      (use-package uniquify)
+      (setq uniquify-buffer-name-style 'forward)
+    #+end_src
+
+    Most of the time, when I want to kill the current buffer so let's
+    remap the =C-x k= the a function that do that (and no ask) ; it
+    will save few keystroke per days =\o/=.
+
+
+    #+BEGIN_SRC emacs-lisp
+      (defun kill-default-buffer ()
+        "Kill the currently active buffer"
         (interactive)
-        (find-file "~/.emacs.d/emacs.org"))
+        (let (kill-buffer-query-functions) (kill-buffer)))
 
-      (global-set-key "\C-ce" 'my/edit-emacs-configuration)
+      (global-set-key (kbd "C-x k") 'kill-default-buffer)
     #+END_SRC
 
+*** TODO Comment/Uncomment region
 
-    Although I don't really care, let's add a new line at the end of files.
-    Some people at work will thank me for that ;-D.
+    If not present, comment/uncomment line
 
-    #+begin_src emacs-lisp
-      (setq require-final-newline t)
-    #+end_src
+*** Kill advice
 
-    Answering yes and no to each question from Emacs can be tedious, a single y or n will suffice.
+    Let's define few advice with =kill-ring-save= and =kill-region=.
 
     #+BEGIN_SRC emacs-lisp
-  (fset 'yes-or-no-p 'y-or-n-p)
+      (defadvice kill-region (before slick-cut activate compile)
+        "When called interactively with no active region, kill a single line instead."
+        (interactive
+         (if mark-active (list (region-beginning) (region-end))
+           (list (line-beginning-position)
+                 (line-beginning-position 2)))))
+
+      (defadvice kill-ring-save (before slick-copy activate compile)
+        "When called interactively with no active region, copy a single line instead."
+        (interactive
+         (if mark-active (list (region-beginning) (region-end))
+           (message "Copied line")
+           (list (line-beginning-position)
+                 (line-beginning-position 2)))))
     #+END_SRC
 
-    Add some macros to be able to conditionnally load stuff (taken
-    from [[http://emacs-fu.blogspot.fr/2008/12/using-packages-functions-only-if-they.html][emacs-fu]].
-
-
-    #+BEGIN_SRC emacs-lisp
-      (defmacro require-maybe (feature &optional file)
-        "*Try to require FEATURE, but don't signal an error if `require' fails."
-        `(require ,feature ,file 'noerror))
-
-      (defmacro when-available (func foo)
-        "*Do something if FUNCTION is available."
-        `(when (fboundp ,func) ,foo))
-    #+END_SRC
-
-
-**** Setting the PATH
-
-     I'm playing a lot with the =$PATH= variable in my shell, and I
-     sometimes pested that Emacs didn't have the same one. But thanks
-     to [[https://github.com/purcell/exec-path-from-shell][exec-path-from-shell]] it's all ok now =:P=.
-
-
-     #+BEGIN_SRC emacs-lisp
-       (use-package exec-path-from-shell
-         :ensure t
-         :config
-         (exec-path-from-shell-initialize)
-         (exec-path-from-shell-copy-env "HISTFILE"))
-     #+END_SRC
-
-
-**** Encoding
-
-     Make sur that we use ~utf-8~ by default.
-
-     #+begin_src emacs-lisp
-       (set-terminal-coding-system 'utf-8)
-       (set-keyboard-coding-system 'utf-8)
-       (set-language-environment "UTF-8")
-       (prefer-coding-system 'utf-8)
-     #+end_src
-
-**** Mouse
-     Move the mouse away to not bother.
-
-     #+begin_src emacs-lisp
-       (mouse-avoidance-mode 'jump)
-     #+end_src
-
-**** Backup files
-
-     Files suffixed with =~= in the current directory are ugly. We are still going to use
-     backup files, as it can saves some time in case of trouble, but we'll move them
-     somewhere else : ~/tmp/emacs-1001~ (for a user with the uid = 1001).
-
-     Note the we store them in /tmp so in case of a reboot, we loose them.
-
-     #+begin_src emacs-lisp
-       (defconst emacs-tmp-dir (format "%s/%s%s/" temporary-file-directory "emacs" (user-uid)))
-       (setq backup-directory-alist
-             `((".*" . ,emacs-tmp-dir))
-             auto-save-file-name-transforms
-             `((".*" ,emacs-tmp-dir t))
-             auto-save-list-file-prefix emacs-tmp-dir)
-     #+end_src
-
-     Now that all the temporary files are out of the way, we can keep more of them.
-
-     #+begin_src emacs-lisp
-       (setq delete-old-versions t
-             kept-new-versions 6
-             kept-old-versions 2
-             version-control t)
-     #+end_src
-**** Buffers
-
-     Setup uniquify so that non-unique buffer names get the parent path included to make them unique.
-
-     #+begin_src emacs-lisp
-       (use-package uniquify)
-       (setq uniquify-buffer-name-style 'forward)
-     #+end_src
-
-     Most of the time, when I want to kill the current buffer so let's
-     remap the =C-x k= the a function that do that (and no ask) ; it
-     will save few keystroke per days =\o/=.
-
-
-     #+BEGIN_SRC emacs-lisp
-       (defun kill-default-buffer ()
-         "Kill the currently active buffer"
-         (interactive)
-         (let (kill-buffer-query-functions) (kill-buffer)))
-
-       (global-set-key (kbd "C-x k") 'kill-default-buffer)
-     #+END_SRC
-
-**** TODO Comment/Uncomment region
-
-     If not present, comment/uncomment line
-
-**** Kill advice
-
-     Let's define few advice with =kill-ring-save= and =kill-region=.
-
-     #+BEGIN_SRC emacs-lisp
-       (defadvice kill-region (before slick-cut activate compile)
-         "When called interactively with no active region, kill a single line instead."
-         (interactive
-          (if mark-active (list (region-beginning) (region-end))
-            (list (line-beginning-position)
-                  (line-beginning-position 2)))))
-
-       (defadvice kill-ring-save (before slick-copy activate compile)
-         "When called interactively with no active region, copy a single line instead."
-         (interactive
-          (if mark-active (list (region-beginning) (region-end))
-            (message "Copied line")
-            (list (line-beginning-position)
-                  (line-beginning-position 2)))))
-     #+END_SRC
-
-**** Formatting
+*** Formatting
 
      Use space instead on tabs for indentation by default (again some people at work
      will thank me for that).
@@ -625,407 +624,408 @@ Let's also rewrite some built-in to better /default/. Let's start with
 #+END_SRC
 
 
-**** pretty-mode
+*** pretty-mode
 
-     Pretty mode turn some stuff prettier, for example in Haskell =/== becomes =≠=, or
-     =->= becomes =→=.
-
-     #+BEGIN_SRC emacs-lisp
-       (use-package pretty-mode
-                    :ensure t
-                    :init
-                    (add-hook 'prog-mode-hook
-                              'turn-on-pretty-mode))
-     #+END_SRC
-
-**** raindow-identifiers
-
-     I read an intersting article about [[https://medium.com/p/3a6db2743a1e/][how to make syntax highlighting more useful]]
-     and I really like the concept. And guess what, there's a mode for that.
-
-
-     #+BEGIN_SRC emacs-lisp
-       (use-package rainbow-identifiers
-                    :ensure t
-                    :init
-                    (add-hook 'prog-mode-hook
-                              (lambda () (rainbow-identifiers-mode))))
-     #+END_SRC
-**** Dired
-
-     Dired is really a cool mode, let's enhance it.
-
-     First load =dired-x= and set a list of default guess when issuing
-     =!= (=dired-do-shell-command=) or =&= (=dired-do-async-shell-command=).
-
-     #+BEGIN_SRC emacs-lisp
-       (use-package dired-x)
-       (setq dired-guess-shell-alist-user
-                '(("\\.pdf\\'" "evince" "okular")
-                  ("\\.\\(?:djvu\\|eps\\)\\'" "evince")
-                  ("\\.\\(?:jpg\\|jpeg\\|png\\|gif\\|xpm\\)\\'" "geeqie")
-                  ("\\.\\(?:xcf\\)\\'" "gimp")
-                  ("\\.csv\\'" "libreoffice")
-                  ("\\.tex\\'" "pdflatex" "latex")
-                  ("\\.\\(?:mp4\\|mkv\\|avi\\|flv\\|ogv\\)\\(?:\\.part\\)?\\'"
-                   "mpv")
-                  ("\\.\\(?:mp3\\|flac\\)\\'" "mpv")
-                  ("\\.html?\\'" "firefox")
-                  ("\\.cue?\\'" "audacious")))
-       (put 'dired-find-alternate-file 'disabled nil)
-     #+END_SRC
-
-     Install dired+.
-
-     #+BEGIN_SRC emacs-lisp
-       (setq diredp-hide-details-initially-flag nil)
-       (use-package dired+
-                    :ensure t
-                    :init)
-     #+END_SRC
-
-     Then, use nohup to not attach a process to emacs.
-
-     #+BEGIN_SRC emacs-lisp
-       (use-package dired-aux)
-
-       (defvar dired-filelist-cmd
-         '(("vlc" "-L")))
-
-       (defun dired-start-process (cmd &optional file-list)
-         (interactive
-          (let ((files (dired-get-marked-files
-                        t current-prefix-arg)))
-            (list
-             (dired-read-shell-command "& on %s: "
-                                       current-prefix-arg files)
-             files)))
-         (let (list-switch)
-           (start-process
-            cmd nil shell-file-name
-            shell-command-switch
-            (format
-             "nohup 1>/dev/null 2>/dev/null %s \"%s\""
-             (if (and (> (length file-list) 1)
-                    (setq list-switch
-                          (cadr (assoc cmd dired-filelist-cmd))))
-                 (format "%s %s" cmd list-switch)
-               cmd)
-             (mapconcat #'expand-file-name file-list "\" \"")))))
-
-       (define-key dired-mode-map "c" 'dired-start-process)
-     #+END_SRC
-
-     Let's also add a command to display the size of marked files.
-
-     #+BEGIN_SRC emacs-lisp
-       (defun dired-get-size ()
-         (interactive)
-         (let ((files (dired-get-marked-files)))
-           (with-temp-buffer
-             (apply 'call-process "/usr/bin/du" nil t nil "-schL" files) ;; -L to dereference (git-annex folder)
-             (message
-              "Size of all marked files: %s"
-              (progn
-                (re-search-backward "\\(^[ 0-9.,]+[A-Za-z]+\\).*total$")
-                (match-string 1))))))
-       (define-key dired-mode-map (kbd "z") 'dired-get-size)
-     #+END_SRC
-
-     Add a binding for =find-name-dired=. It will transform a =find=
-     /search/ into a dired buffer, which is.. well.. pretty cool =:D=.
-
-     #+BEGIN_SRC emacs-lisp
-       (define-key dired-mode-map "F" 'find-name-dired)
-     #+END_SRC
-
-     Also add a binding to switch to =wdired= which is the awsomeness
-     of awesome, because it let's you edit the dired buffer as a text
-     file (changing name, etc.) and will apply it when leaving (=C-c
-     C-c=)
-
-     #+BEGIN_SRC emacs-lisp
-       (define-key dired-mode-map "e" 'wdired-change-to-wdired-mode)
-     #+END_SRC
-
-
-     Open or re-use the =ansi-term= from the current directory in dired.
-
-     #+BEGIN_SRC emacs-lisp
-       (define-key dired-mode-map (kbd "`") 'dired-open-term)
-       ;; FIXME it seems not to work propertly..
-       (defun dired-open-term ()
-         "Open an `ansi-term' that corresponds to current directory."
-         (interactive)
-         (let ((current-dir (dired-current-directory)))
-           (term-send-string
-            (terminal)
-            (if (file-remote-p current-dir)
-                (let ((v (tramp-dissect-file-name current-dir t)))
-                  (format "ssh %s@%s\n"
-                          (aref v 1) (aref v 2)))
-              (format "cd '%s'\n" current-dir)))))
-     #+END_SRC
-
-     Customize a bit the dired buffer
-
-     #+BEGIN_SRC emacs-lisp
-       (setq dired-listing-switches "-laGh1v --group-directories-first")
-     #+END_SRC
-
-
-**** Search
-
-     Make isearch-forward put the cursor at the start of the search, not the end, so that isearch can be used for navigation. See also http://www.emacswiki.org/emacs/IsearchOtherEnd.
-
-
-     #+BEGIN_SRC emacs-lisp
-  (defun my-isearch-goto-match-beginning ()
-    (when (and isearch-forward (not isearch-mode-end-hook-quit)) (goto-char isearch-other-end)))
-  (add-hook 'isearch-mode-end-hook 'my-isearch-goto-match-beginning)
-     #+END_SRC
-
-
-**** selection
-
-     One feature of IntelliJ that really rocks is the =C-w= shortcuts
-     that select "intelligently". =exand-region= is doing this for
-     emacs, see [[http://emacsrocks.com/e09.html][Emacs Rocks Episode 09]].
-
-     #+BEGIN_SRC emacs-lisp
-       (use-package expand-region
-         :ensure t
-         :bind ("C-=" . er/expand-region))
-     #+END_SRC
-
-
-**** Notifications
-     Emacs now has notifications (freedesktop.org specifications)
-     built-in. Let's load it for potential needs.
-
-     #+BEGIN_SRC emacs-lisp
-       (use-package notifications)
-     #+END_SRC
-
-     You can use it like this =\o/=.
-
-     #+BEGIN_SRC emacs-lisp :tangle no
-       (notifications-notify
-           :title "You've got mail!"
-           :body "There's 34 mails unread"
-           :app-icon "~/.emacs.d/icons/mail.png"
-           :urgency 'low)
-     #+END_SRC
-
-
-**** Zoom(ing)
-
-     Being able to zoom in and out can be cool, especially when
-     presenting something with emacs ; so that everybody can see
-     what's written.
-
-     #+BEGIN_SRC emacs-lisp
-       (global-set-key (kbd "C-+") 'text-scale-increase)
-       (global-set-key (kbd "C--") 'text-scale-decrease)
-     #+END_SRC
-
-**** Key maps & binding
-
-     [[http://endlessparentheses.com/][Endless Parentheses]] is a great sourse of tips & trick on
-     GNU/Emacs. Following [[http://endlessparentheses.com/the-toggle-map-and-wizardry.html][this]] and [[http://endlessparentheses.com/launcher-keymap-for-standalone-features.html][this]] articles, Let's define some
-     keymaps for some quick toggling and launching.
-
-     First, let's define a ~toogle-map~, that will allow to toggle some
-     stuff like line numbers, minor modes and stuffs.
-
-     #+BEGIN_SRC emacs-lisp
-       (define-prefix-command 'vde/toggle-map)
-       ;; The manual recommends C-c for user keys, but C-x t is
-       ;; always free, whereas C-c t is used by some modes.
-       (define-key ctl-x-map "t" 'vde/toggle-map)
-       (define-key vde/toggle-map "c" #'column-number-mode)
-       (define-key vde/toggle-map "d" #'toggle-debug-on-error)
-       (define-key vde/toggle-map "e" #'toggle-debug-on-error)
-       (define-key vde/toggle-map "f" #'auto-fill-mode)
-       (define-key vde/toggle-map "l" #'toggle-truncate-lines)
-       (define-key vde/toggle-map "q" #'toggle-debug-on-quit)
-       (define-key vde/toggle-map "r" #'dired-toggle-read-only)
-       (define-key vde/toggle-map' "w" #'whitespace-mode)
-     #+END_SRC
-
-     And now let's define a ~launcher-map~ to launch major modes and
-     useful commands.
-
-     #+BEGIN_SRC emacs-lisp
-       (define-prefix-command 'vde/launcher-map)
-       (define-key ctl-x-map "l" 'vde/launcher-map)
-       (global-set-key (kbd "s-l") 'vde/launcher-map)
-       (define-key vde/launcher-map "c" #'calc)
-       (define-key vde/launcher-map "d" #'ediff-buffers)
-       (define-key vde/launcher-map "f" #'find-dired)
-       (define-key vde/launcher-map "g" #'lgrep)
-       (define-key vde/launcher-map "G" #'rgrep)
-       (define-key vde/launcher-map "h" #'man)    ; Help
-       (define-key vde/launcher-map "s" #'shell)
-       (define-key vde/launcher-map "r" #'multi-term)
-       (define-key vde/launcher-map "t" #'proced) ; top
-       (define-key vde/launcher-map "m" #'mu4e)   ; mails
-       (define-key vde/launcher-map "u" #'mu4e-update-mail-and-index)
-     #+END_SRC
-
-**** Window moving & resizing
-
-     Use ace-window to switch easily windows.
-
-     #+BEGIN_SRC emacs-lisp
-       (use-package ace-window
-           :ensure t
-           :bind (("C-x C-o" . ace-window)
-                  ("C-x M-s" . avi-goto-word-1))
-           :init
-           (setq aw-keys '(?a ?t ?u ?s ?i ?r ?e ?n))
-           (setq aw-background nil))
-     #+END_SRC
-
-     Use =shift + control + arrows= to change the size of windows.
-
-     #+BEGIN_SRC emacs-lisp
-       (global-set-key (kbd "S-C-<right>") 'shrink-window-horizontally)
-       (global-set-key (kbd "S-C-<left>") 'enlarge-window-horizontally)
-       (global-set-key (kbd "S-C-<down>") 'enlarge-window)
-       (global-set-key (kbd "S-C-<up>") 'shrink-window)
-     #+END_SRC
-
-
-
-     #+BEGIN_SRC emacs-lisp
-       ;; install fullframe for list-packages
-       (use-package fullframe
-         :init
-         (progn
-           (fullframe list-packages quit-window))
-         :ensure t)
-     #+END_SRC
-
-
-**** Ace jump
-
-     #+BEGIN_SRC emacs-lisp
-       (use-package ace-jump-mode
-         :ensure t
-         :commands ace-jump-mode
-         :bind ("<f7>" . ace-jump-mode))
-     #+END_SRC
-
-**** TODO Evil
-
-     I come from a [[http://vim.org][vim]] background and the modal editor comes with some
-     really good stuff. [[http://www.emacswiki.org/Evil][Evil]] is an extensible vi layer for Emacs,
-     exacty what we need. It also few /extensions/.
-
-     #+BEGIN_SRC emacs-lisp
-       (use-package evil
-         :ensure t)
-     #+END_SRC
-
-     Let's change the default cursor colours to easily identify wich
-     mode we are in.
-
-     #+BEGIN_SRC emacs-lisp
-       (setq evil-emacs-state-cursor '("red" box))
-       (setq evil-normal-state-cursor '("green" box))
-       (setq evil-visual-state-cursor '("orange" box))
-       (setq evil-insert-state-cursor '("red" bar))
-       (setq evil-replace-state-cursor '("red" bar))
-       (setq evil-operator-state-cursor '("red" hollow))
-     #+END_SRC
-
-     And define some /internals/.
-
-     #+BEGIN_SRC emacs-lisp
-       (setq evil-search-module 'evil-search)
-     #+END_SRC
-
-***** evil-leader
-
-      The [[https://github.com/cofi/evil-leader][evil-leader]] extension provides the <leader> feature from Vim
-      that provides an easy way to bind keys under a variable prefix
-      key.
-
-      #+BEGIN_SRC emacs-lisp
-        (use-package evil-leader
-          :ensure t
-          :requires evil
-          :init
-          (global-evil-leader-mode t))
-
-        (evil-leader/set-leader ",")
-        (evil-leader/set-key
-          "e" 'find-file
-          "b" 'switch-to-buffer
-          "k" 'kill-buffer)
-      #+END_SRC
-
-***** evil-args
-
-      The [[https://github.com/wcsmith/evil-args][evil-args]] extension provides motions and text objects for
-      delimited arguments in Evil.
-
-
-      #+BEGIN_SRC emacs-lisp
-        (use-package evil-args
-          :ensure t
-          :requires evil
-          :config
-          (progn
-            ;; bind evil-args text objects
-            (define-key evil-inner-text-objects-map "a" 'evil-inner-arg)
-            (define-key evil-outer-text-objects-map "a" 'evil-outer-arg)
-            ;; bind evil-forward/backward-args
-            (define-key evil-normal-state-map "L" 'evil-forward-arg)
-            (define-key evil-normal-state-map "H" 'evil-backward-arg)
-            (define-key evil-motion-state-map "L" 'evil-forward-arg)
-            (define-key evil-motion-state-map "H" 'evil-backward-arg)
-            ;; bind evil-jump-out-args
-            (define-key evil-normal-state-map "K" 'evil-jump-out-args)
-            ))
-      #+END_SRC
-
-
-**** Async
-
-     =async.el= is a module for doing asynchronous processing in
-     Emacs. Let's load it as it's gonna be useful.
-
-
-     #+BEGIN_SRC emacs-lisp
-       (use-package async
-         :ensure t)
-     #+END_SRC
-
-*** Server mode
-
-    Start a server in not already running. I usually start emacs as a
-    daemon when at the start of the computer, but you never know =;-)=.
-
-    I have an error about /unsafe directory/ for =/tmp/emacs100=, that's
-    why the advice is there, to ignore the error (from [[http://stackoverflow.com/a/17069276/89249][stackoverflow]]).
+    Pretty mode turn some stuff prettier, for example in Haskell =/== becomes =≠=, or
+    =->= becomes =→=.
 
     #+BEGIN_SRC emacs-lisp
-  (defadvice server-ensure-safe-dir (around
-                                     my-around-server-ensure-safe-dir
-                                     activate)
-    "Ignores any errors raised from server-ensure-safe-dir"
-    (ignore-errors ad-do-it))
-  (unless (string= (user-login-name) "root")
-    (require 'server)
-    (when (or (not server-process)
-             (not (eq (process-status server-process)
-                    'listen)))
-      (unless (server-running-p server-name)
-        (server-start))))
+      (use-package pretty-mode
+                   :ensure t
+                   :init
+                   (add-hook 'prog-mode-hook
+                             'turn-on-pretty-mode))
     #+END_SRC
 
+*** raindow-identifiers
+
+    I read an intersting article about [[https://medium.com/p/3a6db2743a1e/][how to make syntax highlighting more useful]]
+    and I really like the concept. And guess what, there's a mode for that.
+
+
+    #+BEGIN_SRC emacs-lisp
+      (use-package rainbow-identifiers
+                   :ensure t
+                   :init
+                   (add-hook 'prog-mode-hook
+                             (lambda () (rainbow-identifiers-mode))))
+    #+END_SRC
+*** Dired
+
+    Dired is really a cool mode, let's enhance it.
+
+    First load =dired-x= and set a list of default guess when issuing
+    =!= (=dired-do-shell-command=) or =&= (=dired-do-async-shell-command=).
+
+    #+BEGIN_SRC emacs-lisp
+      (use-package dired-x)
+      (setq dired-guess-shell-alist-user
+               '(("\\.pdf\\'" "evince" "okular")
+                 ("\\.\\(?:djvu\\|eps\\)\\'" "evince")
+                 ("\\.\\(?:jpg\\|jpeg\\|png\\|gif\\|xpm\\)\\'" "geeqie")
+                 ("\\.\\(?:xcf\\)\\'" "gimp")
+                 ("\\.csv\\'" "libreoffice")
+                 ("\\.tex\\'" "pdflatex" "latex")
+                 ("\\.\\(?:mp4\\|mkv\\|avi\\|flv\\|ogv\\)\\(?:\\.part\\)?\\'"
+                  "mpv")
+                 ("\\.\\(?:mp3\\|flac\\)\\'" "mpv")
+                 ("\\.html?\\'" "firefox")
+                 ("\\.cue?\\'" "audacious")))
+      (put 'dired-find-alternate-file 'disabled nil)
+    #+END_SRC
+
+    Install dired+.
+
+    #+BEGIN_SRC emacs-lisp
+      (setq diredp-hide-details-initially-flag nil)
+      (use-package dired+
+                   :ensure t
+                   :init)
+    #+END_SRC
+
+    Then, use nohup to not attach a process to emacs.
+
+    #+BEGIN_SRC emacs-lisp
+      (use-package dired-aux)
+
+      (defvar dired-filelist-cmd
+        '(("vlc" "-L")))
+
+      (defun dired-start-process (cmd &optional file-list)
+        (interactive
+         (let ((files (dired-get-marked-files
+                       t current-prefix-arg)))
+           (list
+            (dired-read-shell-command "& on %s: "
+                                      current-prefix-arg files)
+            files)))
+        (let (list-switch)
+          (start-process
+           cmd nil shell-file-name
+           shell-command-switch
+           (format
+            "nohup 1>/dev/null 2>/dev/null %s \"%s\""
+            (if (and (> (length file-list) 1)
+                   (setq list-switch
+                         (cadr (assoc cmd dired-filelist-cmd))))
+                (format "%s %s" cmd list-switch)
+              cmd)
+            (mapconcat #'expand-file-name file-list "\" \"")))))
+
+      (define-key dired-mode-map "c" 'dired-start-process)
+    #+END_SRC
+
+    Let's also add a command to display the size of marked files.
+
+    #+BEGIN_SRC emacs-lisp
+      (defun dired-get-size ()
+        (interactive)
+        (let ((files (dired-get-marked-files)))
+          (with-temp-buffer
+            (apply 'call-process "/usr/bin/du" nil t nil "-schL" files) ;; -L to dereference (git-annex folder)
+            (message
+             "Size of all marked files: %s"
+             (progn
+               (re-search-backward "\\(^[ 0-9.,]+[A-Za-z]+\\).*total$")
+               (match-string 1))))))
+      (define-key dired-mode-map (kbd "z") 'dired-get-size)
+    #+END_SRC
+
+    Add a binding for =find-name-dired=. It will transform a =find=
+    /search/ into a dired buffer, which is.. well.. pretty cool =:D=.
+
+    #+BEGIN_SRC emacs-lisp
+      (define-key dired-mode-map "F" 'find-name-dired)
+    #+END_SRC
+
+    Also add a binding to switch to =wdired= which is the awsomeness
+    of awesome, because it let's you edit the dired buffer as a text
+    file (changing name, etc.) and will apply it when leaving (=C-c
+    C-c=)
+
+    #+BEGIN_SRC emacs-lisp
+      (define-key dired-mode-map "e" 'wdired-change-to-wdired-mode)
+    #+END_SRC
+
+
+    Open or re-use the =ansi-term= from the current directory in dired.
+
+    #+BEGIN_SRC emacs-lisp
+      (define-key dired-mode-map (kbd "`") 'dired-open-term)
+      ;; FIXME it seems not to work propertly..
+      (defun dired-open-term ()
+        "Open an `ansi-term' that corresponds to current directory."
+        (interactive)
+        (let ((current-dir (dired-current-directory)))
+          (term-send-string
+           (terminal)
+           (if (file-remote-p current-dir)
+               (let ((v (tramp-dissect-file-name current-dir t)))
+                 (format "ssh %s@%s\n"
+                         (aref v 1) (aref v 2)))
+             (format "cd '%s'\n" current-dir)))))
+    #+END_SRC
+
+    Customize a bit the dired buffer
+
+    #+BEGIN_SRC emacs-lisp
+      (setq dired-listing-switches "-laGh1v --group-directories-first")
+    #+END_SRC
+
+
+*** Search
+
+    Make isearch-forward put the cursor at the start of the search, not the end, so that isearch can be used for navigation. See also http://www.emacswiki.org/emacs/IsearchOtherEnd.
+
+
+    #+BEGIN_SRC emacs-lisp
+ (defun my-isearch-goto-match-beginning ()
+   (when (and isearch-forward (not isearch-mode-end-hook-quit)) (goto-char isearch-other-end)))
+ (add-hook 'isearch-mode-end-hook 'my-isearch-goto-match-beginning)
+    #+END_SRC
+
+
+*** selection
+
+    One feature of IntelliJ that really rocks is the =C-w= shortcuts
+    that select "intelligently". =exand-region= is doing this for
+    emacs, see [[http://emacsrocks.com/e09.html][Emacs Rocks Episode 09]].
+
+    #+BEGIN_SRC emacs-lisp
+      (use-package expand-region
+        :ensure t
+        :bind ("C-=" . er/expand-region))
+    #+END_SRC
+
+
+*** Notifications
+    Emacs now has notifications (freedesktop.org specifications)
+    built-in. Let's load it for potential needs.
+
+    #+BEGIN_SRC emacs-lisp
+      (use-package notifications)
+    #+END_SRC
+
+    You can use it like this =\o/=.
+
+    #+BEGIN_SRC emacs-lisp :tangle no
+      (notifications-notify
+          :title "You've got mail!"
+          :body "There's 34 mails unread"
+          :app-icon "~/.emacs.d/icons/mail.png"
+          :urgency 'low)
+    #+END_SRC
+
+
+*** Zoom(ing)
+
+    Being able to zoom in and out can be cool, especially when
+    presenting something with emacs ; so that everybody can see
+    what's written.
+
+    #+BEGIN_SRC emacs-lisp
+      (global-set-key (kbd "C-+") 'text-scale-increase)
+      (global-set-key (kbd "C--") 'text-scale-decrease)
+    #+END_SRC
+
+*** Key maps & binding
+
+    [[http://endlessparentheses.com/][Endless Parentheses]] is a great sourse of tips & trick on
+    GNU/Emacs. Following [[http://endlessparentheses.com/the-toggle-map-and-wizardry.html][this]] and [[http://endlessparentheses.com/launcher-keymap-for-standalone-features.html][this]] articles, Let's define some
+    keymaps for some quick toggling and launching.
+
+    First, let's define a ~toogle-map~, that will allow to toggle some
+    stuff like line numbers, minor modes and stuffs.
+
+    #+BEGIN_SRC emacs-lisp
+      (define-prefix-command 'vde/toggle-map)
+      ;; The manual recommends C-c for user keys, but C-x t is
+      ;; always free, whereas C-c t is used by some modes.
+      (define-key ctl-x-map "t" 'vde/toggle-map)
+      (define-key vde/toggle-map "c" #'column-number-mode)
+      (define-key vde/toggle-map "d" #'toggle-debug-on-error)
+      (define-key vde/toggle-map "e" #'toggle-debug-on-error)
+      (define-key vde/toggle-map "f" #'auto-fill-mode)
+      (define-key vde/toggle-map "l" #'toggle-truncate-lines)
+      (define-key vde/toggle-map "q" #'toggle-debug-on-quit)
+      (define-key vde/toggle-map "r" #'dired-toggle-read-only)
+      (define-key vde/toggle-map' "w" #'whitespace-mode)
+    #+END_SRC
+
+    And now let's define a ~launcher-map~ to launch major modes and
+    useful commands.
+
+    #+BEGIN_SRC emacs-lisp
+      (define-prefix-command 'vde/launcher-map)
+      (define-key ctl-x-map "l" 'vde/launcher-map)
+      (global-set-key (kbd "s-l") 'vde/launcher-map)
+      (define-key vde/launcher-map "c" #'calc)
+      (define-key vde/launcher-map "d" #'ediff-buffers)
+      (define-key vde/launcher-map "f" #'find-dired)
+      (define-key vde/launcher-map "g" #'lgrep)
+      (define-key vde/launcher-map "G" #'rgrep)
+      (define-key vde/launcher-map "h" #'man)    ; Help
+      (define-key vde/launcher-map "s" #'shell)
+      (define-key vde/launcher-map "r" #'multi-term)
+      (define-key vde/launcher-map "t" #'proced) ; top
+      (define-key vde/launcher-map "m" #'mu4e)   ; mails
+      (define-key vde/launcher-map "u" #'mu4e-update-mail-and-index)
+    #+END_SRC
+
+*** Window moving & resizing
+
+    Use ace-window to switch easily windows.
+
+    #+BEGIN_SRC emacs-lisp
+      (use-package ace-window
+          :ensure t
+          :bind (("C-x C-o" . ace-window)
+                 ("C-x M-s" . avi-goto-word-1))
+          :init
+          (setq aw-keys '(?a ?t ?u ?s ?i ?r ?e ?n))
+          (setq aw-background nil))
+    #+END_SRC
+
+    Use =shift + control + arrows= to change the size of windows.
+
+    #+BEGIN_SRC emacs-lisp
+      (global-set-key (kbd "S-C-<right>") 'shrink-window-horizontally)
+      (global-set-key (kbd "S-C-<left>") 'enlarge-window-horizontally)
+      (global-set-key (kbd "S-C-<down>") 'enlarge-window)
+      (global-set-key (kbd "S-C-<up>") 'shrink-window)
+    #+END_SRC
+
+
+
+    #+BEGIN_SRC emacs-lisp
+      ;; install fullframe for list-packages
+      (use-package fullframe
+        :init
+        (progn
+          (fullframe list-packages quit-window))
+        :ensure t)
+    #+END_SRC
+
+
+*** Ace jump
+
+    #+BEGIN_SRC emacs-lisp
+      (use-package ace-jump-mode
+        :ensure t
+        :commands ace-jump-mode
+        :bind ("<f7>" . ace-jump-mode))
+    #+END_SRC
+
+*** TODO Evil
+
+    I come from a [[http://vim.org][vim]] background and the modal editor comes with some
+    really good stuff. [[http://www.emacswiki.org/Evil][Evil]] is an extensible vi layer for Emacs,
+    exacty what we need. It also few /extensions/.
+
+    #+BEGIN_SRC emacs-lisp
+      (use-package evil
+        :ensure t)
+    #+END_SRC
+
+    Let's change the default cursor colours to easily identify wich
+    mode we are in.
+
+    #+BEGIN_SRC emacs-lisp
+      (setq evil-emacs-state-cursor '("red" box))
+      (setq evil-normal-state-cursor '("green" box))
+      (setq evil-visual-state-cursor '("orange" box))
+      (setq evil-insert-state-cursor '("red" bar))
+      (setq evil-replace-state-cursor '("red" bar))
+      (setq evil-operator-state-cursor '("red" hollow))
+    #+END_SRC
+
+    And define some /internals/.
+
+    #+BEGIN_SRC emacs-lisp
+      (setq evil-search-module 'evil-search)
+    #+END_SRC
+
+**** evil-leader
+
+     The [[https://github.com/cofi/evil-leader][evil-leader]] extension provides the <leader> feature from Vim
+     that provides an easy way to bind keys under a variable prefix
+     key.
+
+     #+BEGIN_SRC emacs-lisp
+       (use-package evil-leader
+         :ensure t
+         :requires evil
+         :init
+         (global-evil-leader-mode t))
+
+       (evil-leader/set-leader ",")
+       (evil-leader/set-key
+         "e" 'find-file
+         "b" 'switch-to-buffer
+         "k" 'kill-buffer)
+     #+END_SRC
+
+**** evil-args
+
+     The [[https://github.com/wcsmith/evil-args][evil-args]] extension provides motions and text objects for
+     delimited arguments in Evil.
+
+
+     #+BEGIN_SRC emacs-lisp
+       (use-package evil-args
+         :ensure t
+         :requires evil
+         :config
+         (progn
+           ;; bind evil-args text objects
+           (define-key evil-inner-text-objects-map "a" 'evil-inner-arg)
+           (define-key evil-outer-text-objects-map "a" 'evil-outer-arg)
+           ;; bind evil-forward/backward-args
+           (define-key evil-normal-state-map "L" 'evil-forward-arg)
+           (define-key evil-normal-state-map "H" 'evil-backward-arg)
+           (define-key evil-motion-state-map "L" 'evil-forward-arg)
+           (define-key evil-motion-state-map "H" 'evil-backward-arg)
+           ;; bind evil-jump-out-args
+           (define-key evil-normal-state-map "K" 'evil-jump-out-args)
+           ))
+     #+END_SRC
+
+
+*** Async
+
+    =async.el= is a module for doing asynchronous processing in
+    Emacs. Let's load it as it's gonna be useful.
+
+
+    #+BEGIN_SRC emacs-lisp
+      (use-package async
+        :ensure t)
+    #+END_SRC
+
+** Server mode
+
+   Start a server in not already running. I usually start emacs as a
+   daemon when at the start of the computer, but you never know =;-)=.
+
+   I have an error about /unsafe directory/ for =/tmp/emacs100=, that's
+   why the advice is there, to ignore the error (from [[http://stackoverflow.com/a/17069276/89249][stackoverflow]]).
+
+   #+BEGIN_SRC emacs-lisp
+ (defadvice server-ensure-safe-dir (around
+                                    my-around-server-ensure-safe-dir
+                                    activate)
+   "Ignores any errors raised from server-ensure-safe-dir"
+   (ignore-errors ad-do-it))
+ (unless (string= (user-login-name) "root")
+   (require 'server)
+   (when (or (not server-process)
+            (not (eq (process-status server-process)
+                   'listen)))
+     (unless (server-running-p server-name)
+       (server-start))))
+   #+END_SRC
+
+* Other Modes
 ** Discover my major
 
    #+BEGIN_QUOTE
@@ -2650,58 +2650,58 @@ Let's also rewrite some built-in to better /default/. Let's start with
    #+END_SRC
 
 
-** Mails
+* Mails
 
-   Don't load if not on a computer where there is mails.
+  Don't load if not on a computer where there is mails.
 
-   #+BEGIN_SRC emacs-lisp
-     (defvar load-mail-setup (file-exists-p "~/desktop/mails/main"))
-     (when load-mail-setup
-   #+END_SRC
-
-
-   Add mu4e to the load-path and load it.
-
-   #+BEGIN_SRC emacs-lisp
-     (add-to-list 'load-path "/usr/local/share/emacs/site-lisp/mu4e")
-     (require-maybe 'mu4e)
-     (require-maybe 'helm-mu)
-   #+END_SRC
-
-   Let's /detect/ if mu is installed as mu-git or mu. It's a
-   workaround I need to use because of the name conflict between mu
-   and the mails-utils mu command.
-
-   #+BEGIN_SRC emacs-lisp
-     ;; (setq mu4e-mu-binary "/usr/local/bin/mu")
-   #+END_SRC
-
-   Set the maildir, folders and stuff.
-
-   #+BEGIN_SRC emacs-lisp
-     (setq mu4e-maildir (expand-file-name "~/desktop/mails"))
-     (setq mu4e-drafts-folder "/main/Drafts")
-     (setq mu4e-sent-folder   "/main/Sent")
-     (setq mu4e-trash-folder  "/main/Trash")
-
-     (setq mu4e-get-mail-command "offlineimap")
-     (setq mu4e-html2text-command "html2text")
-   #+END_SRC
+  #+BEGIN_SRC emacs-lisp
+    (defvar load-mail-setup (file-exists-p "~/desktop/mails/main"))
+    (when load-mail-setup
+  #+END_SRC
 
 
-   #+BEGIN_SRC emacs-lisp
-     (setq message-send-mail-function 'message-send-mail-with-sendmail
-           sendmail-program "/usr/bin/msmtp"
-           user-full-name "Vincent Demeester")
-   #+END_SRC
+  Add mu4e to the load-path and load it.
+
+  #+BEGIN_SRC emacs-lisp
+    (add-to-list 'load-path "/usr/local/share/emacs/site-lisp/mu4e")
+    (require-maybe 'mu4e)
+    (require-maybe 'helm-mu)
+  #+END_SRC
+
+  Let's /detect/ if mu is installed as mu-git or mu. It's a
+  workaround I need to use because of the name conflict between mu
+  and the mails-utils mu command.
+
+  #+BEGIN_SRC emacs-lisp
+    ;; (setq mu4e-mu-binary "/usr/local/bin/mu")
+  #+END_SRC
+
+  Set the maildir, folders and stuff.
+
+  #+BEGIN_SRC emacs-lisp
+    (setq mu4e-maildir (expand-file-name "~/desktop/mails"))
+    (setq mu4e-drafts-folder "/main/Drafts")
+    (setq mu4e-sent-folder   "/main/Sent")
+    (setq mu4e-trash-folder  "/main/Trash")
+
+    (setq mu4e-get-mail-command "offlineimap")
+    (setq mu4e-html2text-command "html2text")
+  #+END_SRC
 
 
-   #+BEGIN_SRC emacs-lisp
-     (add-to-list 'mu4e-view-actions '("retag" . mu4e-action-retag-message))
-     (add-to-list 'mu4e-headers-actions '("retag" . mu4e-action-retag-message))
-   #+END_SRC
+  #+BEGIN_SRC emacs-lisp
+    (setq message-send-mail-function 'message-send-mail-with-sendmail
+          sendmail-program "/usr/bin/msmtp"
+          user-full-name "Vincent Demeester")
+  #+END_SRC
 
 
-   #+BEGIN_SRC emacs-lisp
-     )
-   #+END_SRC
+  #+BEGIN_SRC emacs-lisp
+    (add-to-list 'mu4e-view-actions '("retag" . mu4e-action-retag-message))
+    (add-to-list 'mu4e-headers-actions '("retag" . mu4e-action-retag-message))
+  #+END_SRC
+
+
+  #+BEGIN_SRC emacs-lisp
+    )
+  #+END_SRC
