@@ -459,9 +459,43 @@ It looks kinda like that (click to open the real one) :
       (global-set-key (kbd "C-x k") 'kill-default-buffer)
     #+END_SRC
 
-*** TODO Comment/Uncomment region
+*** Comment/Uncomment region
 
-    If not present, comment/uncomment line
+    There is a cool function in emacs wich is =commend-dwim= (bounded
+    to =M-;=. This adds a comment at the right place (at the end of
+    the line, up the method, etc..
+
+    Something I'm really use to, with IntelliJ or Eclipse, is being
+    able to quickly comment a line or a region with simple
+    keystroke. If nothing is selected, it comments the current line,
+    if there is a selection, it comments the line selected (even if
+    the selection doesn't start at the beginning of line. Let's bind
+    it to =C-/=.
+
+
+    #+BEGIN_SRC emacs-lisp
+      (defun my/toggle-comments ()
+          "A modified way to toggle comments, 'à-la' ide (intelliJ, Eclipse).
+      If no region is selected, comment/uncomment the line. If a region is selected, comment/uncomment this region *but* starting from the begining of the first line of the region to the end of the last line of the region"
+        (interactive)
+        (save-excursion
+          (if (region-active-p)
+              (progn
+                (setq start (save-excursion
+                              (goto-char (region-beginning))
+                              (beginning-of-line)
+                              (point))
+                      end (save-excursion
+                            (goto-char (region-end))
+                            (end-of-line)
+                            (point)))
+                (comment-or-uncomment-region start end))
+            (progn
+              (comment-or-uncomment-region (line-beginning-position) (line-end-position)))
+            )))
+      (global-set-key (kbd "C-M-/") 'my/toggle-comments)
+    #+END_SRC
+
 
 *** Kill advice
 
@@ -641,7 +675,6 @@ Let's also rewrite some built-in to better /default/. Let's start with
 
     I read an intersting article about [[https://medium.com/p/3a6db2743a1e/][how to make syntax highlighting more useful]]
     and I really like the concept. And guess what, there's a mode for that.
-
 
     #+BEGIN_SRC emacs-lisp
       (use-package rainbow-identifiers
@@ -924,6 +957,10 @@ Let's also rewrite some built-in to better /default/. Let's start with
     exacty what we need. It also few /extensions/.
 
     #+BEGIN_SRC emacs-lisp
+      ;;; Load undo-tree before evil for the :bind
+      (use-package undo-tree
+       :ensure t
+       :bind (("C-*" . undo-tree-undo)))
       (use-package evil
         :ensure t)
     #+END_SRC
@@ -2553,7 +2590,6 @@ Let's also rewrite some built-in to better /default/. Let's start with
          (cider-interaction          . " ηζ")
          (highlight-parentheses-mode . "")
          (highlight-symbol-mode      . "")
-         (undo-tree-mode             . "")
          (projectile-mode            . "")
          (helm-mode                  . "")
          (ace-window-mode            . "")
