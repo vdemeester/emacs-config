@@ -849,6 +849,7 @@ Let's also rewrite some built-in to better /default/. Let's start with
       (define-key vde/toggle-map "l" #'toggle-truncate-lines)
       (define-key vde/toggle-map "q" #'toggle-debug-on-quit)
       (define-key vde/toggle-map "r" #'dired-toggle-read-only)
+      (define-key vde/toggle-map "v" #'evil-mode)
       (define-key vde/toggle-map' "w" #'whitespace-mode)
     #+END_SRC
 
