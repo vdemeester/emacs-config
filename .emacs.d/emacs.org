@@ -875,7 +875,6 @@ Let's also rewrite some built-in to better /default/. Let's start with
       ;; The manual recommends C-c for user keys, but C-x t is
       ;; always free, whereas C-c t is used by some modes.
       (define-key ctl-x-map "t" 'vde/toggle-map)
-      (define-key vde/toggle-map "c" #'column-number-mode)
       (define-key vde/toggle-map "d" #'toggle-debug-on-error)
       (define-key vde/toggle-map "e" #'toggle-debug-on-error)
       (define-key vde/toggle-map "f" #'auto-fill-mode)
@@ -950,7 +949,26 @@ Let's also rewrite some built-in to better /default/. Let's start with
         :bind ("<f7>" . ace-jump-mode))
     #+END_SRC
 
-*** TODO Evil
+*** Highligh indentation
+
+
+    #+BEGIN_SRC emacs-lisp
+      (use-package highlight-indentation
+        :ensure t
+        :commands (highlight-indentation-mode highlight-indentation-current-column-mode)
+        :init
+        (progn
+          ;; Add a key to toggle-map
+          (define-key vde/toggle-map "C" #'highlight-indentation-mode)
+          (define-key vde/toggle-map "c" #'highlight-indentation-current-column-mode))
+        :config
+        (progn
+          (set-face-background 'highlight-indentation-face "#e3e3d3")
+          (set-face-background 'highlight-indentation-current-column-face "#c3b3b3")))
+    #+END_SRC
+
+
+*** Evil
 
     I come from a [[http://vim.org][vim]] background and the modal editor comes with some
     really good stuff. [[http://www.emacswiki.org/Evil][Evil]] is an extensible vi layer for Emacs,
