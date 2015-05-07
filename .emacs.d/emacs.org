@@ -881,7 +881,6 @@ Let's also rewrite some built-in to better /default/. Let's start with
       (define-key vde/toggle-map "l" #'toggle-truncate-lines)
       (define-key vde/toggle-map "q" #'toggle-debug-on-quit)
       (define-key vde/toggle-map "r" #'dired-toggle-read-only)
-      (define-key vde/toggle-map "v" #'evil-mode)
       (define-key vde/toggle-map' "w" #'whitespace-mode)
     #+END_SRC
 
@@ -977,10 +976,13 @@ Let's also rewrite some built-in to better /default/. Let's start with
     #+BEGIN_SRC emacs-lisp
       ;;; Load undo-tree before evil for the :bind
       (use-package undo-tree
-       :ensure t
-       :bind (("C-*" . undo-tree-undo)))
+        :ensure t
+        :bind (("C-*" . undo-tree-undo)))
       (use-package evil
-        :ensure t)
+        :ensure t
+        :init
+        (progn
+          (define-key vde/toggle-map "v" #'evil-mode)))
     #+END_SRC
 
     Let's change the default cursor colours to easily identify wich
