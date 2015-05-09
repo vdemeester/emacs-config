@@ -180,6 +180,7 @@ It looks kinda like that (click to open the real one) :
      org-stackoverflow-file "stack.org"
      org-web-article-file "ent.org"
      org-publish-folder (substitute-env-in-file-name "$HOME/var/public_html")
+     sites-folder (substitute-env-in-file-name "$HOME/src/sites/")
      ;; Github related
      github-general-folder (substitute-env-in-file-name "$HOME/src/github")
      github-username "vdemeester")
@@ -2090,106 +2091,107 @@ Let's also rewrite some built-in to better /default/. Let's start with
     And the projects.
 
     #+BEGIN_SRC emacs-lisp
-            (use-package ox-publish)
-            (use-package ox-rss)
+      (use-package ox-publish)
+      ;; (use-package ox-rss)
 
-            ;; Define some variables to write less :D
-            (setq sbr-base-directory (expand-file-name "sbr" org-notes-directory)
-                  sbr-publishing-directory (expand-file-name "sbr" org-publish-folder)
-                  znk-base-directory (expand-file-name "zenika" org-notes-directory)
-                  znk-publishing-directory (expand-file-name "zenika" org-publish-folder)
-                  vdf-base-directory (expand-file-name "vdf" org-notes-directory)
-                  vdf-site-directory (expand-file-name "vdemeester.github.com" github-personal-folder)
-                  vdf-publishing-directory (expand-file-name "_posts" vdf-site-directory)
-                  vdf-css-publishing-directory (expand-file-name "css" vdf-site-directory)
-                  vdf-assets-publishing-directory (expand-file-name "assets" vdf-site-directory))
+      ;; Define some variables to write less :D
+      (setq sbr-base-directory (expand-file-name "sbr" org-notes-directory)
+            sbr-publishing-directory (expand-file-name "sbr" org-publish-folder)
+            znk-base-directory (expand-file-name "zenika" org-notes-directory)
+            znk-publishing-directory (expand-file-name "zenika" org-publish-folder)
+            vdf-base-directory (expand-file-name "vdf" org-notes-directory)
+            vdf-site-directory (expand-file-name "blog" sites-folder)
+            vdf-publishing-directory (expand-file-name "posts" (expand-file-name "content" vdf-site-directory))
+            vdf-static-directory (expand-file-name "static" vdf-site-directory)
+            vdf-css-publishing-directory (expand-file-name "css" vdf-static-directory)
+            vdf-assets-publishing-directory vdf-static-directory)
 
-            ;; Project
-            (setq org-publish-project-alist
-                  `(("sbr-notes"
-                     :base-directory ,sbr-base-directory
-                     :base-extension "org"
-                     :publishing-directory ,sbr-publishing-directory
-                     :makeindex t
-                     :exclude "FIXME"
-                     :recursive t
-                     :htmlized-source t
-                     :publishing-function org-html-publish-to-html
-                     :headline-levels 4
-                     :auto-preamble t
-                     :html-head "<link rel=\"stylesheet\" type=\"text/css\" href=\"style/style.css\" />"
-                     :html-preamble "<div id=\"nav\">
-            <ul>
-            <li><a href=\"/\" class=\"home\">Home</a></li>
-            </ul>
-            </div>"
-                     :html-postamble "<div id=\"footer\">
-            %a %C %c
-            </div>")
-                    ("sbr-static"
-                     :base-directory ,sbr-base-directory
-                     :base-extension "css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg"
-                     :publishing-directory ,sbr-publishing-directory
-                     :recursive t
-                     :publishing-function org-publish-attachment
-                     )
-                    ("sbr" :components ("sbr-notes" "sbr-static"))
-                    ("vdf-notes"
-                     :base-directory ,vdf-base-directory
-                     :base-extension "org"
-                     :publishing-directory ,vdf-publishing-directory
-                     :exclude "FIXME"
-                     :section-numbers nil
-                     :with-toc nil
-                     :with-drawers t
-                     :htmlized-source t
-                     :publishing-function org-html-publish-to-html
-                     :headline-levels 4
-                     :body-only t)
-                    ("vdf-static-css"
-                     :base-directory ,vdf-base-directory
-                     :base-extension "css"
-                     :publishing-directory ,vdf-css-publishing-directory
-                     :recursive t
-                     :publishing-function org-publish-attachment
-                     )
-                    ("vdf-static-assets"
-                     :base-directory ,vdf-base-directory
-                     :base-extension "png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg"
-                     :publishing-directory ,vdf-assets-publishing-directory
-                     :recursive t
-                     :publishing-function org-publish-attachment
-                     )
-                    ("vdf" :components ("vdf-notes" "vdf-static-css" "vdf-static-assets"))
-                    ("znk-notes"
-                     :base-directory ,znk-base-directory
-                     :base-extension "org"
-                     :publishing-directory ,znk-publishing-directory
-                     :makeindex t
-                     :exclude "FIXME"
-                     :recursive t
-                     :htmlized-source t
-                     :publishing-function org-html-publish-to-html
-                     :headline-levels 4
-                     :auto-preamble t
-                     :html-head "<link rel=\"stylesheet\" type=\"text/css\" href=\"style/style.css\" />"
-                     :html-preamble "<div id=\"nav\">
-            <ul>
-            <li><a href=\"/\" class=\"home\">Home</a></li>
-            </ul>
-            </div>"
-                     :html-postamble "<div id=\"footer\">
-            %a %C %c
-            </div>")
-                    ("znk-static"
-                     :base-directory ,znk-base-directory
-                     :base-extension "css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg"
-                     :publishing-directory ,znk-publishing-directory
-                     :recursive t
-                     :publishing-function org-publish-attachment
-                     )
-                    ("znk" :components ("znk-notes" "znk-static"))
-                    ))
+      ;; Project
+      (setq org-publish-project-alist
+            `(("sbr-notes"
+               :base-directory ,sbr-base-directory
+               :base-extension "org"
+               :publishing-directory ,sbr-publishing-directory
+               :makeindex t
+               :exclude "FIXME"
+               :recursive t
+               :htmlized-source t
+               :publishing-function org-html-publish-to-html
+               :headline-levels 4
+               :auto-preamble t
+               :html-head "<link rel=\"stylesheet\" type=\"text/css\" href=\"style/style.css\" />"
+               :html-preamble "<div id=\"nav\">
+      <ul>
+      <li><a href=\"/\" class=\"home\">Home</a></li>
+      </ul>
+      </div>"
+               :html-postamble "<div id=\"footer\">
+      %a %C %c
+      </div>")
+              ("sbr-static"
+               :base-directory ,sbr-base-directory
+               :base-extension "css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg"
+               :publishing-directory ,sbr-publishing-directory
+               :recursive t
+               :publishing-function org-publish-attachment
+               )
+              ("sbr" :components ("sbr-notes" "sbr-static"))
+              ("vdf-notes"
+               :base-directory ,vdf-base-directory
+               :base-extension "org"
+               :publishing-directory ,vdf-publishing-directory
+               :exclude "FIXME"
+               :section-numbers nil
+               :with-toc nil
+               :with-drawers t
+               :htmlized-source t
+               :publishing-function org-html-publish-to-html
+               :headline-levels 4
+               :body-only t)
+              ("vdf-static-css"
+               :base-directory ,vdf-base-directory
+               :base-extension "css"
+               :publishing-directory ,vdf-css-publishing-directory
+               :recursive t
+               :publishing-function org-publish-attachment
+               )
+              ("vdf-static-assets"
+               :base-directory ,vdf-base-directory
+               :base-extension "png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg"
+               :publishing-directory ,vdf-assets-publishing-directory
+               :recursive t
+               :publishing-function org-publish-attachment
+               )
+              ("vdf" :components ("vdf-notes" "vdf-static-css" "vdf-static-assets"))
+              ("znk-notes"
+               :base-directory ,znk-base-directory
+               :base-extension "org"
+               :publishing-directory ,znk-publishing-directory
+               :makeindex t
+               :exclude "FIXME"
+               :recursive t
+               :htmlized-source t
+               :publishing-function org-html-publish-to-html
+               :headline-levels 4
+               :auto-preamble t
+               :html-head "<link rel=\"stylesheet\" type=\"text/css\" href=\"style/style.css\" />"
+               :html-preamble "<div id=\"nav\">
+      <ul>
+      <li><a href=\"/\" class=\"home\">Home</a></li>
+      </ul>
+      </div>"
+               :html-postamble "<div id=\"footer\">
+      %a %C %c
+      </div>")
+              ("znk-static"
+               :base-directory ,znk-base-directory
+               :base-extension "css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg"
+               :publishing-directory ,znk-publishing-directory
+               :recursive t
+               :publishing-function org-publish-attachment
+               )
+              ("znk" :components ("znk-notes" "znk-static"))
+              ))
     #+END_SRC
 *** Protocol
 
