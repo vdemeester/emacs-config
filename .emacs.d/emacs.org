@@ -2584,6 +2584,9 @@ Let's also rewrite some built-in to better /default/. Let's start with
        (progn
          (setq yas-verbosity 1
                yas-snippet-dir (expand-file-name "snippets" user-emacs-directory))
+         (define-key yas-minor-mode-map (kbd "<tab>") nil)
+         (define-key yas-minor-mode-map (kbd "TAB") nil)
+         (define-key yas-minor-mode-map (kbd "<C-tab>") 'yas-expand)
          (yas-global-mode 1)))
    #+END_SRC
 
