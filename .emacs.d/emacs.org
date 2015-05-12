@@ -1577,6 +1577,7 @@ Let's also rewrite some built-in to better /default/. Let's start with
        :config
        (progn
          (define-key vde/toggle-map "i" #'ispell-change-dictionary)
+         (define-key vde/launcher-map "i" #'flyspell-buffer)
          (setq ispell-program-name "aspell")
          (setq ispell-local-dictionary "en_US")
          (setq ispell-local-dictionary-alist
