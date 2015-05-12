@@ -1556,6 +1556,37 @@ Let's also rewrite some built-in to better /default/. Let's start with
    #+END_SRC
 
 
+** Flyspell
+
+   #+BEGIN_QUOTE
+   Flyspell enables on-the-fly spell checking in Emacs by the means of
+   a minor mode. It is called Flyspell. This facility is hardly
+   intrusive. It requires no help. Flyspell highlights incorrect words
+   as soon as they are completed or as soon as the TextCursor hits a
+   new word.
+   #+END_QUOTE
+
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package flyspell
+       :ensure t
+       :init
+       (progn
+         (use-package flyspell-lazy
+           :ensure t))
+       :config
+       (progn
+         (define-key vde/toggle-map "i" #'ispell-change-dictionary)
+         (setq ispell-program-name "aspell")
+         (setq ispell-local-dictionary "en_US")
+         (setq ispell-local-dictionary-alist
+               '(("en_US" "[[:alpha:]]" "[^[:alpha:]]" "[']" nil nil nil utf-8)
+                 ("fr_FR" "[[:alpha:]]" "[^[:alpha:]]" "[']" nil nil nil utf-8)))
+         (add-hook 'text-mode-hook 'flyspell-mode)
+         (add-hook 'prog-mode-hook 'flyspell-prog-mode)))
+   #+END_SRC
+
+
 ** Flycheck
 
    #+BEGIN_QUOTE
