@@ -172,6 +172,7 @@ It looks kinda like that (click to open the real one) :
      org-root-directory (substitute-env-in-file-name "$HOME/desktop/org")
      org-todos-directory-name "todos"
      org-notes-directory-name "notes"
+     org-sites-directory-name "sites"
      org-archive-directory-name "archive"
      org-archive-file-pattern "%s_archive::"
      org-inbox-file "inbox.org"
@@ -216,6 +217,7 @@ It looks kinda like that (click to open the real one) :
      ;; Orgmode related
      org-todos-directory (expand-file-name org-todos-directory-name org-root-directory)
      org-notes-directory (expand-file-name org-notes-directory-name org-root-directory)
+     org-sites-directory (expand-file-name org-sites-directory-name org-root-directory)
      org-archive-directory (expand-file-name org-archive-directory-name org-root-directory)
      ;; Github related
      github-personal-folder (expand-file-name github-username github-general-folder))
@@ -2127,11 +2129,11 @@ Let's also rewrite some built-in to better /default/. Let's start with
       ;; (use-package ox-rss)
 
       ;; Define some variables to write less :D
-      (setq sbr-base-directory (expand-file-name "sbr" org-notes-directory)
+      (setq sbr-base-directory (expand-file-name "sbr" org-sites-directory)
             sbr-publishing-directory (expand-file-name "sbr" org-publish-folder)
-            znk-base-directory (expand-file-name "zenika" org-notes-directory)
+            znk-base-directory (expand-file-name "zenika" org-sites-directory)
             znk-publishing-directory (expand-file-name "zenika" org-publish-folder)
-            vdf-base-directory (expand-file-name "vdf" org-notes-directory)
+            vdf-base-directory (expand-file-name "vdf" org-sites-directory)
             vdf-site-directory (expand-file-name "blog" sites-folder)
             vdf-publishing-directory (expand-file-name "posts" (expand-file-name "content" vdf-site-directory))
             vdf-static-directory (expand-file-name "static" vdf-site-directory)
