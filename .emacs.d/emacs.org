@@ -912,13 +912,53 @@ Let's also rewrite some built-in to better /default/. Let's start with
     Use ace-window to switch easily windows.
 
     #+BEGIN_SRC emacs-lisp
+      (defun joe-scroll-other-window()
+        (interactive)
+        (scroll-other-window 1))
+      (defun joe-scroll-other-window-down ()
+        (interactive)
+        (scroll-other-window-down 1))
+      ;; From https://github.com/abo-abo/ace-window/wiki but adapted to bepo
       (use-package ace-window
-          :ensure t
-          :bind (("C-x C-o" . ace-window)
-                 ("C-x M-s" . avi-goto-word-1))
-          :init
-          (setq aw-keys '(?a ?t ?u ?s ?i ?r ?e ?n))
-          (setq aw-background nil))
+        :ensure t
+        :bind (("C-x C-o" . ace-window)
+               ("C-x M-s" . avi-goto-word-1))
+        :config
+        (set-face-attribute 'aw-leading-char-face nil :foreground "deep sky blue" :weight 'bold :height 3.0)
+        (set-face-attribute 'aw-mode-line-face nil :inherit 'mode-line-buffer-id :foreground "lawn green")
+        (setq aw-keys   '(?a ?u ?i ?e ?t ?s ?r)
+              aw-dispatch-always t
+              aw-dispatch-alist
+              '((?y aw-delete-window     "Ace - Delete Window")
+                (?x aw-swap-window       "Ace - Swap Window")
+                (?\' aw-flip-window)
+                (?\. aw-split-window-vert "Ace - Split Vert Window")
+                (?c aw-split-window-horz "Ace - Split Horz Window")
+                (?n delete-other-windows "Ace - Maximize Window")
+                (?n delete-other-windows)
+                (?k balance-windows)
+                (?v winner-undo)
+                (?o winner-redo)))
+
+        (when (package-installed-p 'hydra)
+          (defhydra hydra-window-size (:color red)
+            "Windows size"
+            ("c" shrink-window-horizontally "shrink horizontal")
+            ("t" shrink-window "shrink vertical")
+            ("s" enlarge-window "enlarge vertical")
+            ("r" enlarge-window-horizontally "enlarge horizontal"))
+          (defhydra hydra-window-frame (:color red)
+            "Frame"
+            ("e" make-frame "new frame")
+            ("y" delete-frame "delete frame"))
+          (defhydra hydra-window-scroll (:color red)
+            "Scroll other window"
+            ("'" joe-scroll-other-window "scroll")
+            ("j" joe-scroll-other-window-down "scroll down"))
+          (add-to-list 'aw-dispatch-alist '(?z hydra-window-size/body) t)
+          (add-to-list 'aw-dispatch-alist '(?l hydra-window-scroll/body) t)
+          (add-to-list 'aw-dispatch-alist '(?g hydra-window-frame/body) t))
+        (ace-window-display-mode t))
     #+END_SRC
 
     Use =shift + control + arrows= to change the size of windows.
