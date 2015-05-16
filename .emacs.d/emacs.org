@@ -935,7 +935,7 @@ Let's also rewrite some built-in to better /default/. Let's start with
                 (?\. aw-split-window-vert "Ace - Split Vert Window")
                 (?c aw-split-window-horz "Ace - Split Horz Window")
                 (?n delete-other-windows "Ace - Maximize Window")
-                (?n delete-other-windows)
+                (?\, delete-other-windows)
                 (?k balance-windows)
                 (?v winner-undo)
                 (?o winner-redo)))
@@ -958,7 +958,8 @@ Let's also rewrite some built-in to better /default/. Let's start with
           (add-to-list 'aw-dispatch-alist '(?z hydra-window-size/body) t)
           (add-to-list 'aw-dispatch-alist '(?l hydra-window-scroll/body) t)
           (add-to-list 'aw-dispatch-alist '(?g hydra-window-frame/body) t))
-        (ace-window-display-mode t))
+        (ace-window-display-mode t)
+        (winner-mode 1))
     #+END_SRC
 
     Use =shift + control + arrows= to change the size of windows.
