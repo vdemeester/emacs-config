@@ -473,7 +473,7 @@ It looks kinda like that (click to open the real one) :
     keystroke. If nothing is selected, it comments the current line,
     if there is a selection, it comments the line selected (even if
     the selection doesn't start at the beginning of line. Let's bind
-    it to =C-/=.
+    it to =C-M-/= (=Ctrl+Alt+/=).
 
 
     #+BEGIN_SRC emacs-lisp
