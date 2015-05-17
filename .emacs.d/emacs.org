@@ -879,8 +879,8 @@ Let's also rewrite some built-in to better /default/. Let's start with
       ;; always free, whereas C-c t is used by some modes.
       (define-key ctl-x-map "t" 'vde/toggle-map)
       (define-key vde/toggle-map "d" #'toggle-debug-on-error)
-      (define-key vde/toggle-map "e" #'toggle-debug-on-error)
       (define-key vde/toggle-map "f" #'auto-fill-mode)
+      (define-key vde/toggle-map "v" #'visual-line-mode)
       (define-key vde/toggle-map "l" #'toggle-truncate-lines)
       (define-key vde/toggle-map "q" #'toggle-debug-on-quit)
       (define-key vde/toggle-map "r" #'dired-toggle-read-only)
@@ -1054,7 +1054,7 @@ Let's also rewrite some built-in to better /default/. Let's start with
         :ensure t
         :init
         (progn
-          (define-key vde/toggle-map "v" #'evil-mode)))
+          (define-key vde/toggle-map "e" #'evil-mode)))
     #+END_SRC
 
     Let's change the default cursor colours to easily identify wich
@@ -1509,10 +1509,9 @@ Let's also rewrite some built-in to better /default/. Let's start with
 **** git fringe decoration
 
      #+begin_src emacs-lisp
-       (when (window-system)
-         (use-package git-gutter-fringe
+       (use-package git-gutter-fringe
            :ensure t
-           :config (global-git-gutter-mode +1)))
+           :config (global-git-gutter-mode +1))
      #+end_src emacs-lisp
 
 **** git-annex
@@ -2680,7 +2679,6 @@ Let's also rewrite some built-in to better /default/. Let's start with
 ** Yasnippet
 
    Use YASnippet for snippets.
-
 
    #+BEGIN_SRC emacs-lisp
      (use-package yasnippet
