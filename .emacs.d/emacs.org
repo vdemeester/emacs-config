@@ -907,6 +907,14 @@ Let's also rewrite some built-in to better /default/. Let's start with
       (define-key vde/launcher-map "u" #'mu4e-update-mail-and-index)
     #+END_SRC
 
+*** Scrolling
+
+    Taking from [[http://irreal.org/blog/?p%3D3963][here]], ensure that =M-v= always undoes =C-v=, so you can go back exactly.
+
+    #+BEGIN_SRC emacs-lisp
+      (setq scroll-preserve-screen-position 'always)
+    #+END_SRC
+
 *** Window moving & resizing
 
     Use ace-window to switch easily windows.
