@@ -991,6 +991,26 @@ Let's also rewrite some built-in to better /default/. Let's start with
     #+END_SRC
 
 
+*** Popwin
+
+    #+BEGIN_QUOTE
+    popwin is a popup window manager for Emacs which makes you free
+    from the hell of annoying buffers such like *Help*, *Completions*,
+    *compilation*, and etc.
+    #+END_QUOTE
+
+    That says it all, it's kind of a must.
+
+
+    #+BEGIN_SRC emacs-lisp
+      (use-package popwin
+        :ensure t
+        :config
+        (progn
+          (global-set-key (kbd "C-z") popwin:keymap)))
+    #+END_SRC
+
+
 *** Ace jump
 
     #+BEGIN_SRC emacs-lisp
