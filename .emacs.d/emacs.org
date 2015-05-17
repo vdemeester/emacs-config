@@ -1001,12 +1001,21 @@ Let's also rewrite some built-in to better /default/. Let's start with
 
     That says it all, it's kind of a must.
 
-
     #+BEGIN_SRC emacs-lisp
       (use-package popwin
         :ensure t
         :config
         (progn
+          (add-to-list 'popwin:special-display-config `("*Swoop*" :height 0.5 :position bottom))
+          (add-to-list 'popwin:special-display-config `("*Warnings*" :height 0.5 :noselect t))
+          (add-to-list 'popwin:special-display-config `("*Procces List*" :height 0.5))
+          (add-to-list 'popwin:special-display-config `("*Messages*" :height 0.5 :noselect t))
+          (add-to-list 'popwin:special-display-config `("*Backtrace*" :height 0.5))
+          (add-to-list 'popwin:special-display-config `("*Compile-Log*" :height 0.5 :noselect t))
+          (add-to-list 'popwin:special-display-config `("*Remember*" :height 0.5))
+          (add-to-list 'popwin:special-display-config `("*All*" :height 0.5))
+          (add-to-list 'popwin:special-display-config `(flycheck-error-list-mode :height 0.5 :regexp t :position bottom))
+          (popwin-mode 1)
           (global-set-key (kbd "C-z") popwin:keymap)))
     #+END_SRC
 
@@ -2720,19 +2729,21 @@ Let's also rewrite some built-in to better /default/. Let's start with
          (helm-mode                  . "")
          (ace-window-mode            . "")
          (magit-auto-revert-mode     . "")
+         (org-mode                   . "ꙮ")
          ;; Major modes
-         (clojure-mode               . "λ")
+         (clojure-mode               . " Ɩ")
          (hi-lock-mode               . "")
-         (visual-line-mode           . "ω")
-         (auto-fill-mode             . "ψ")
-         (python-mode                . "Py")
-         (emacs-lisp-mode            . "EL")
-         (markdown-mode              . "md")
-         (magit                      . "ma")
-         (haskell-mode               . "ha")
-         (tuareg-mode                . "ml")
-         (flymake-mode               . "fm")
-         (flycheck-mode              . "fc"))
+         (visual-line-mode           . " ω")
+         (auto-fill-function         . " ψ")
+         (python-mode                . " Py")
+         (emacs-lisp-mode            . " EL")
+         (markdown-mode              . " md")
+         (magit                      . " ma")
+         (haskell-mode               . " λ")
+         (tuareg-mode                . " ml")
+         (flyspell-mode              . " fs")
+         (flymake-mode               . " fm")
+         (flycheck-mode              . " fc"))
        "Alist for `clean-mode-line'.
 
      When you add a new element to the alist, keep in mind that you
