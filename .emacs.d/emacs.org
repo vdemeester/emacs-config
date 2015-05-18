@@ -34,7 +34,7 @@ It looks kinda like that (click to open the real one) :
 
 [[./.emacs.d/images/emacs-config.png][./.emacs.d/images/emacs-config-small.png]]
 
-* How to use my configuration
+* How to use my configuration 🐣
 
   You can obtain the source by cloning this repository somewhere, but the repository
   is made to work with [[https://github.com/RichiH/vcsh][vcsh]].
@@ -149,7 +149,7 @@ It looks kinda like that (click to open the real one) :
        (message "Loaded settings...done in %.3fs" elapsed))
    #+END_SRC
 
-* Personal information
+* Personal information 👨
 
   #+begin_src emacs-lisp
     (setq user-full-name "Vincent Demeester"
@@ -978,7 +978,6 @@ Let's also rewrite some built-in to better /default/. Let's start with
       (global-set-key (kbd "S-C-<down>") 'enlarge-window)
       (global-set-key (kbd "S-C-<up>") 'shrink-window)
     #+END_SRC
-
 
 
     #+BEGIN_SRC emacs-lisp
