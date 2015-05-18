@@ -34,7 +34,7 @@ It looks kinda like that (click to open the real one) :
 
 [[./.emacs.d/images/emacs-config.png][./.emacs.d/images/emacs-config-small.png]]
 
-* How to use my configuration 🐣
+* How to use my configuration 🚀
 
   You can obtain the source by cloning this repository somewhere, but the repository
   is made to work with [[https://github.com/RichiH/vcsh][vcsh]].
@@ -157,7 +157,7 @@ It looks kinda like that (click to open the real one) :
   #+end_src
 
   Let's define default value that could be owerwritten by the host
-  and user file.
+  and user file 🐣.
 
   #+BEGIN_SRC emacs-lisp
     (setq
