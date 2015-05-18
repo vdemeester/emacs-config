@@ -2734,6 +2734,7 @@ Let's also rewrite some built-in to better /default/. Let's start with
          (magit-auto-revert-mode     . "")
          (org-mode                   . "ꙮ")
          ;; Major modes
+         (term-mode                  . "⌨")
          (clojure-mode               . " Ɩ")
          (hi-lock-mode               . "")
          (visual-line-mode           . " ω")
