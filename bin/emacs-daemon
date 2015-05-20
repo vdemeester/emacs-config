@@ -1,0 +1,8 @@
+#!/bin/sh
+# Run emacs as daemon (and open a client afterwards)
+# Adaptation of http://pragmaticemacs.com/emacs/using-server-and-clients-for-instantaneous-startup/
+
+# Start the daemon
+/usr/bin/emacs --daemon
+
+emacsclient -c $*

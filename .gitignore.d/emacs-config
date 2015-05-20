@@ -26,6 +26,9 @@
 .emacs.d/var
 .emacs.d/eshell
 .emacs.d/.org-id-locations
+!bin
+!bin/emacs
+!bin/emacs-daemon
 !.gnus
 !.gitignore.d
 !.gitignore.d/emacs-config

@@ -1,0 +1,4 @@
+#!/bin/sh
+# Run emacs using emacsclient with alternate-editor pointing on emacs-daemon
+
+emacsclient --alternate-editor emacs-daemon -c $@
