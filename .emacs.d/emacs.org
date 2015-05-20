@@ -224,7 +224,7 @@ It looks kinda like that (click to open the real one) :
   #+END_SRC
 
 
-* General configuration
+* General configuration 🐸
 ** Appearance
 
    Unclutter the screen by removing menubar, toolbar and stuff, and by disabling
@@ -1167,7 +1167,7 @@ Let's also rewrite some built-in to better /default/. Let's start with
        (server-start))))
    #+END_SRC
 
-* Other Modes
+* Other Modes 🐥
 ** Discover my major
 
    #+BEGIN_QUOTE
