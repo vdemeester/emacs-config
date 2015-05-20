@@ -2736,6 +2736,7 @@ Let's also rewrite some built-in to better /default/. Let's start with
          (ace-window-mode            . "")
          (magit-auto-revert-mode     . "")
          (org-mode                   . "ꙮ")
+         (go-mode                    . "🐹")
          ;; Major modes
          (term-mode                  . "⌨")
          (clojure-mode               . " Ɩ")
