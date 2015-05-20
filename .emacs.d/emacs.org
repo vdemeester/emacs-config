@@ -308,6 +308,10 @@ It looks kinda like that (click to open the real one) :
                           (cons (decode-char 'ucs #x2702)
                                 (decode-char 'ucs #x27b0))
                           "Symbola")
+        (set-fontset-font "fontset-default"
+                          (cons (decode-char 'ucs #x1F300)
+                                (decode-char 'ucs #x1F5FF))
+                          "Symbola")
       ;;  )
     #+END_SRC
 
@@ -2615,7 +2619,7 @@ Let's also rewrite some built-in to better /default/. Let's start with
        :ensure t)
    #+END_SRC
 
-** Docker
+** Docker 🐳
 
    I'm playing a lot with [[http://docker.com][docker]] and most of the time editing
    Dockerfile and stuff inside Emacs.
