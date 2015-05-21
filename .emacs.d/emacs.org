@@ -2832,7 +2832,7 @@ Let's also rewrite some built-in to better /default/. Let's start with
    #+END_SRC
 
 
-* Mails
+* Mails ✉
 
   Don't load if not on a computer where there is mails.
 
