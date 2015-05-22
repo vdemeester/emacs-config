@@ -2748,7 +2748,6 @@ Let's also rewrite some built-in to better /default/. Let's start with
          (markdown-mode              . " md")
          (magit                      . " ma")
          (haskell-mode               . " λ")
-         (tuareg-mode                . " ml")
          (flyspell-mode              . " fs")
          (flymake-mode               . " fm")
          (flycheck-mode              . " fc"))
