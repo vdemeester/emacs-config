@@ -2735,6 +2735,7 @@ Let's also rewrite some built-in to better /default/. Let's start with
          (helm-mode                  . "")
          (ace-window-mode            . "")
          (magit-auto-revert-mode     . "")
+         (sh-mode                    . "sh")
          (org-mode                   . "ꙮ")
          (go-mode                    . "🐹")
          ;; Major modes
