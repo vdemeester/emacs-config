@@ -288,30 +288,7 @@ It looks kinda like that (click to open the real one) :
 
     #+BEGIN_SRC emacs-lisp
       ;;(when (member "Symbola" (font-family-list))
-        (set-fontset-font "fontset-default"
-                          (cons (decode-char 'ucs #x1f600)
-                                (decode-char 'ucs #x1f640))
-                          "Symbola")
-        (set-fontset-font "fontset-default"
-                          (cons (decode-char 'ucs #x1f300)
-                                (decode-char 'ucs #x1f5ff))
-                          "Symbola")
-        (set-fontset-font "fontset-default"
-                          (cons (decode-char 'ucs #x1f680)
-                                (decode-char 'ucs #x1f6ff))
-                          "Symbola")
-        (set-fontset-font "fontset-default"
-                          (cons (decode-char 'ucs #x2600)
-                                (decode-char 'ucs #x26ff))
-                          "Symbola")
-        (set-fontset-font "fontset-default"
-                          (cons (decode-char 'ucs #x2702)
-                                (decode-char 'ucs #x27b0))
-                          "Symbola")
-        (set-fontset-font "fontset-default"
-                          (cons (decode-char 'ucs #x1F300)
-                                (decode-char 'ucs #x1F5FF))
-                          "Symbola")
+      (set-fontset-font t 'unicode "Symbola" nil 'prepend)
       ;;  )
     #+END_SRC
 
