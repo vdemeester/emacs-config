@@ -2809,6 +2809,22 @@ Let's also rewrite some built-in to better /default/. Let's start with
    #+END_SRC
 
 
+* Irc
+
+  Why not putting all the thing in Emacs =:). IRC is one of them and
+  let's try something different than the good old ERC : let's try
+  circe.
+
+
+  #+BEGIN_SRC emacs-lisp
+    (use-package circe
+      :ensure t
+      :config
+      (progn
+        (use-package helm-circe
+          :ensure t)))
+  #+END_SRC
+
 * Mails ✉
 
   Don't load if not on a computer where there is mails.
