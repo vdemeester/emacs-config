@@ -1,4 +1,10 @@
 #!/bin/sh
 # Run emacs using emacsclient with alternate-editor pointing on emacs-daemon
 
-emacsclient --alternate-editor emacs-daemon -c $@
+ADDITIONAL_ARGS=""
+if test "$#" -eq 0; then
+    # Add a -c option if n
+    ADDITIONAL_ARGS="-c ."
+fi
+
+exec emacsclient --alternate-editor /usr/bin/emacs $ADDITIONAL_ARGS $@
