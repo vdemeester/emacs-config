@@ -4,7 +4,7 @@
 ADDITIONAL_ARGS=""
 if test "$#" -eq 0; then
     # Add a -c option if n
-    ADDITIONAL_ARGS="-c ."
+    ADDITIONAL_ARGS="."
 fi
 
 exec emacsclient --alternate-editor /usr/bin/emacs $ADDITIONAL_ARGS $@

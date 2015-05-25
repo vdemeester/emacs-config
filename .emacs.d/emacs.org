@@ -678,7 +678,6 @@ Let's also rewrite some built-in to better /default/. Let's start with
       (use-package async
         :ensure t)
       (use-package dired-async
-        :ensure t
         :init
         (dired-async-mode 1))
     #+END_SRC
