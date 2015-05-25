@@ -667,6 +667,16 @@ Let's also rewrite some built-in to better /default/. Let's start with
                    (add-hook 'prog-mode-hook
                              (lambda () (rainbow-identifiers-mode))))
     #+END_SRC
+*** Async
+
+    =async.el= is a module for doing asynchronous processing in
+    Emacs. Let's load it as it's gonna be useful.
+
+    #+BEGIN_SRC emacs-lisp
+      (use-package async
+        :ensure t)
+    #+END_SRC
+
 *** Dired
 
     Dired is really a cool mode, let's enhance it.
@@ -703,7 +713,9 @@ Let's also rewrite some built-in to better /default/. Let's start with
     Then, use nohup to not attach a process to emacs.
 
     #+BEGIN_SRC emacs-lisp
-      (use-package dired-aux)
+      (use-package dired-aux
+        :config
+        (use-package dired-async))
 
       (defvar dired-filelist-cmd
         '(("vlc" "-L")))
@@ -1109,17 +1121,6 @@ Let's also rewrite some built-in to better /default/. Let's start with
            ))
      #+END_SRC
 
-
-*** Async
-
-    =async.el= is a module for doing asynchronous processing in
-    Emacs. Let's load it as it's gonna be useful.
-
-
-    #+BEGIN_SRC emacs-lisp
-      (use-package async
-        :ensure t)
-    #+END_SRC
 
 ** Server mode
 
@@ -2294,8 +2295,6 @@ Let's also rewrite some built-in to better /default/. Let's start with
     #+BEGIN_SRC emacs-lisp
       (use-package org-capture)
       (use-package org-protocol)
-      (use-package async
-        :ensure t)
       (setq org-protocol-default-template-key "l")
       (push '("l" "Link" entry (function org-handle-link)
               "* TODO %(org-wash-link)\nAdded: %U\n%(org-link-hooks)\n%?")
