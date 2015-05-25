@@ -670,11 +670,17 @@ Let's also rewrite some built-in to better /default/. Let's start with
 *** Async
 
     =async.el= is a module for doing asynchronous processing in
-    Emacs. Let's load it as it's gonna be useful.
+    Emacs. Let's load it as it's gonna be useful. Let's also load
+    =dired-async= for the copy & co to be run asynchroniously (very
+    useful with TRAMP).
 
     #+BEGIN_SRC emacs-lisp
       (use-package async
         :ensure t)
+      (use-package dired-async
+        :ensure t
+        :init
+        (dired-async-mode 1))
     #+END_SRC
 
 *** Dired
@@ -713,9 +719,7 @@ Let's also rewrite some built-in to better /default/. Let's start with
     Then, use nohup to not attach a process to emacs.
 
     #+BEGIN_SRC emacs-lisp
-      (use-package dired-aux
-        :config
-        (use-package dired-async))
+      (use-package dired-aux)
 
       (defvar dired-filelist-cmd
         '(("vlc" "-L")))
