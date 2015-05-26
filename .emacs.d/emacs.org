@@ -2555,18 +2555,18 @@ Let's also rewrite some built-in to better /default/. Let's start with
      #+END_SRC
 ** SQL
 
-   Emacs is really more than an editor. The SQL mode is quick cool to
+   Emacs is really more than an editor. The SQL mode is quick and cool to
    used (and do not eat my memory like mysql-workbench for
    example).
 
    By default, Emacs does not automatically truncate long lines in
    SQL(i) mode, let's change that.
 
-   #+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp
      (add-hook 'sql-interactive-mode-hook
                (lambda ()
                  (toggle-truncate-lines t)))
-   #+END_SRC
+#+END_SRC
 
 ** Linux related modes
 *** Archlinux
