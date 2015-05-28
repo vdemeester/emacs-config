@@ -1575,6 +1575,16 @@ Let's also rewrite some built-in to better /default/. Let's start with
                                  (whitespace-mode 1)))
    #+END_SRC
 
+   Setup ediff so that it does not open a new frame (it is a pain in a
+   tiling window manager).
+
+   #+BEGIN_SRC emacs-lisp
+     (setq ediff-window-setup-function 'ediff-setup-windows-plain)
+     (csetq ediff-split-window-function 'split-window-horizontally)
+     (add-hook 'ediff-after-quit-hook-internal 'winner-undo)
+   #+END_SRC
+
+
 ** Terminal
 
    Let's install and use [[http://www.emacswiki.org/emacs/MultiTerm][multi-term]], which is a cool addition to =term.el=.
