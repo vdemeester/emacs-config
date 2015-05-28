@@ -2193,7 +2193,8 @@ Let's also rewrite some built-in to better /default/. Let's start with
       (setq sbr-base-directory (expand-file-name "sbr" org-sites-directory)
             sbr-publishing-directory (expand-file-name "sbr" org-publish-folder)
             znk-base-directory (expand-file-name "zenika" org-sites-directory)
-            znk-publishing-directory (expand-file-name "zenika" org-publish-folder)
+            znk-preview-publishing-directory (expand-file-name "zenika" org-publish-folder)
+            znk-publishing-directory (expand-file-name "zenika-export" org-publish-folder)
             vdf-base-directory (expand-file-name "vdf" org-sites-directory)
             vdf-site-directory (expand-file-name "blog" sites-folder)
             vdf-publishing-directory (expand-file-name "posts" (expand-file-name "content" vdf-site-directory))
@@ -2262,6 +2263,19 @@ Let's also rewrite some built-in to better /default/. Let's start with
                :base-directory ,znk-base-directory
                :base-extension "org"
                :publishing-directory ,znk-publishing-directory
+               :exclude "FIXME"
+               :section-numbers nil
+               :with-toc nil
+               :with-drawers t
+               :recursive t
+               :htmlized-source t
+               :publishing-function org-html-publish-to-html
+               :headline-levels 4
+               :body-only t)
+              ("znk-notes-previews"
+               :base-directory ,znk-base-directory
+               :base-extension "org"
+               :publishing-directory ,znk-preview-publishing-directory
                :makeindex t
                :exclude "FIXME"
                :recursive t
@@ -2285,7 +2299,7 @@ Let's also rewrite some built-in to better /default/. Let's start with
                :recursive t
                :publishing-function org-publish-attachment
                )
-              ("znk" :components ("znk-notes" "znk-static"))
+              ("znk" :components ("znk-notes" "znk-notes-previews" "znk-static"))
               ))
     #+END_SRC
 *** Protocol
