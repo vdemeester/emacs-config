@@ -1589,7 +1589,7 @@ Let's also rewrite some built-in to better /default/. Let's start with
 
    #+BEGIN_SRC emacs-lisp
      (setq ediff-window-setup-function 'ediff-setup-windows-plain)
-     (csetq ediff-split-window-function 'split-window-horizontally)
+     (setq ediff-split-window-function 'split-window-horizontally)
      (add-hook 'ediff-after-quit-hook-internal 'winner-undo)
    #+END_SRC
 
