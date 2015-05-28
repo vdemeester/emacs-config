@@ -1398,47 +1398,22 @@ Let's also rewrite some built-in to better /default/. Let's start with
    #+END_SRC
 
 
-** Auto-complete
+** Company-mode
 
    #+BEGIN_QUOTE
-   Auto-Complete is an intelligent auto-completion extension for
-   Emacs. It extends the standard Emacs completion interface and
-   provides an environment that allows users to concentrate more on
-   their own work.
+   Company is a text completion framework for Emacs. The name stands
+   for "complete anything". It uses pluggable back-ends and front-ends
+   to retrieve and display completion candidates.
    #+END_QUOTE
 
-   Install and use a basic configuration for auto-complete and setup defaults.
 
    #+BEGIN_SRC emacs-lisp
-     (use-package auto-complete
+     (use-package company
        :ensure t
        :config
        (progn
-         (require 'auto-complete-config)
-         (setq ac-use-fuzzy t
-               ac-auto-start t
-               ac-use-quick-help nil
-               ac-ignore-case t)
-         (set-default 'ac-sources
-                      '(ac-source-imenu
-                        ac-source-dictionary
-                        ac-source-words-in-buffer
-                        ac-source-words-in-same-mode-buffers
-                        ac-source-words-in-all-buffer))
-         (dolist (mode '(magit-log-edit-mode
-                         log-edit-mode org-mode text-mode haml-mode
-                         git-commit-mode
-                         sass-mode yaml-mode csv-mode espresso-mode haskell-mode
-                         html-mode nxml-mode sh-mode smarty-mode clojure-mode
-                         lisp-mode textile-mode markdown-mode tuareg-mode
-                         js3-mode css-mode less-css-mode sql-mode
-                         sql-interactive-mode
-                         inferior-emacs-lisp-mode))
-           (add-to-list 'ac-modes mode))
-         (global-auto-complete-mode t))
-       )
+         (add-hook 'after-ini-hook 'global-company-mode)))
    #+END_SRC
-
 
 ** deft
 
