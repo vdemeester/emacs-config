@@ -821,7 +821,8 @@ Let's also rewrite some built-in to better /default/. Let's start with
 
     One feature of IntelliJ that really rocks is the =C-w= shortcuts
     that select "intelligently". =exand-region= is doing this for
-    emacs, see [[http://emacsrocks.com/e09.html][Emacs Rocks Episode 09]].
+    emacs, see [[http://emacsrocks.com/e09.html][Emacs Rocks Episode 09]]. Let's bind this to =C-== in
+    Emacs.
 
     #+BEGIN_SRC emacs-lisp
       (use-package expand-region
