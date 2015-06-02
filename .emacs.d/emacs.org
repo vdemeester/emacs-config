@@ -1196,7 +1196,7 @@ Let's also rewrite some built-in to better /default/. Let's start with
         :ensure t
         :config
         (progn
-          (require 'helm-config)
+          (use-package helm-config)
           (setq helm-idle-delay 0.1
                 helm-input-idle-delay 0.1
                 helm-buffer-max-length 40
@@ -1240,6 +1240,17 @@ Let's also rewrite some built-in to better /default/. Let's start with
         :ensure t)
       ;; (helm-gtags-mode 1)
     #+END_SRC
+
+
+    #+BEGIN_SRC emacs-lisp
+      (use-package helm-grep
+        :config
+        (progn
+          (define-key helm-grep-mode-map (kbd "<return>")  'helm-grep-mode-jump-other-window)
+          (define-key helm-grep-mode-map (kbd "n")  'helm-grep-mode-jump-other-window-forward)
+          (define-key helm-grep-mode-map (kbd "p")  'helm-grep-mode-jump-other-window-backward)))
+    #+END_SRC
+
 
 *** helmp-make
 
