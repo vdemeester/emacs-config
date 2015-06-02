@@ -967,15 +967,12 @@ Let's also rewrite some built-in to better /default/. Let's start with
         (winner-mode 1))
     #+END_SRC
 
-    Use =shift + control + arrows= to change the size of windows.
+    Ace windows uses [[https://github.com/abo-abo/avy][avy]] so use =avy-goto-line= in place of the
+    default =goto-line=, as it's better.
 
     #+BEGIN_SRC emacs-lisp
-      (global-set-key (kbd "S-C-<right>") 'shrink-window-horizontally)
-      (global-set-key (kbd "S-C-<left>") 'enlarge-window-horizontally)
-      (global-set-key (kbd "S-C-<down>") 'enlarge-window)
-      (global-set-key (kbd "S-C-<up>") 'shrink-window)
+      (global-set-key (kbd "M-g g") 'avy-goto-line)
     #+END_SRC
-
 
     #+BEGIN_SRC emacs-lisp
       ;; install fullframe for list-packages
