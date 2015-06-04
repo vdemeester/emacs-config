@@ -1779,11 +1779,12 @@ Let's also rewrite some built-in to better /default/. Let's start with
 
 #+BEGIN_SRC emacs-lisp
   (defun turn-on-auto-visual-line (expression)
-    (cond ((string-match expression buffer-file-name)
-           (progn
-             (auto-fill-mode -1)
-             (visual-line-mode 1))
-           )))
+    (if buffer-file-name
+        (cond ((string-match expression buffer-file-name)
+               (progn
+                 (auto-fill-mode -1)
+                 (visual-line-mode 1))
+               ))))
 #+END_SRC
 
 
