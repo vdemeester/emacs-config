@@ -20,7 +20,6 @@
 ;; initialize all ELPA packages
 (require 'setup-package)
 
-;; (setq package-enable-at-startup nil)
 (let ((elapsed (float-time (time-subtract (current-time)
 					   emacs-start-time))))
   (message "Loaded packages in %.3fs" elapsed))
