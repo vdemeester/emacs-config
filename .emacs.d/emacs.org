@@ -261,7 +261,6 @@ It looks kinda like that (click to open the real one) :
 
     Here I set up git diffs and buffer position in the fringe.
 
-    #+NAME: look-and-feel
     #+BEGIN_SRC emacs-lisp
       (setq-default indicate-buffer-boundaries 'left)
       (setq-default indicate-empty-lines +1)
@@ -275,11 +274,12 @@ It looks kinda like that (click to open the real one) :
     are available.
 
     #+begin_src emacs-lisp
+      ;; Use the following to load it only if present
       ;;(when (member "Ubuntu Mono" (font-family-list))
-        (set-default-font "Ubuntu Mono-12")
-        (set-frame-font "Ubuntu Mono-12")
-        (set-face-attribute 'default nil :family "Ubuntu Mono" :height 110)
       ;;  )
+      (set-default-font "Ubuntu Mono-12")
+      (set-frame-font "Ubuntu Mono-12")
+      (set-face-attribute 'default nil :family "Ubuntu Mono" :height 110)
     #+end_src
 
     This will set Symbola as fallback-font for Emojis when it is
@@ -287,9 +287,7 @@ It looks kinda like that (click to open the real one) :
     cool : 🙆 😆 😁 ♨ ⛅ 🚲.
 
     #+BEGIN_SRC emacs-lisp
-      ;;(when (member "Symbola" (font-family-list))
       (set-fontset-font t 'unicode "Symbola" nil 'prepend)
-      ;;  )
     #+END_SRC
 
 *** Themes
@@ -319,6 +317,7 @@ It looks kinda like that (click to open the real one) :
                    :init
                    (powerline-default-theme))
     #+end_src
+
 ** Behaviour
 
    First thing first, let's define a shortcuts for editing this configuration.
