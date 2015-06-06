@@ -2857,9 +2857,10 @@ Let's also rewrite some built-in to better /default/. Let's start with
   Add mu4e to the load-path and load it.
 
   #+BEGIN_SRC emacs-lisp
-    (add-to-list 'load-path "/usr/local/share/emacs/site-lisp/mu4e")
-    (require-maybe 'mu4e)
-    (require-maybe 'helm-mu)
+    (use-package mu4e
+      :load-path "/usr/local/share/emacs/site-lisp/mu4e")
+    (use-package helm-mu
+      :ensure t)
   #+END_SRC
 
   Let's /detect/ if mu is installed as mu-git or mu. It's a
