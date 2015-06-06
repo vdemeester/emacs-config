@@ -295,12 +295,6 @@ It looks kinda like that (click to open the real one) :
     First let's install the theme(s) and load the new theme
 
     #+begin_src emacs-lisp
-      (use-package sublime-themes
-                   :ensure t
-                   :defer t)
-      (use-package dakrone-theme
-                   :ensure t
-                   :defer t)
       (use-package leuven-theme
                    :ensure t
                    :init
