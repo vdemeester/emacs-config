@@ -2625,6 +2625,18 @@ Let's also rewrite some built-in to better /default/. Let's start with
        :ensure t)
    #+END_SRC
 
+** Restclient
+
+   So… I needed to hack a bit around the [[https://docker.com][Docker]] client API and wanted
+   to do this in Emacs (why not =:-)=). And well [[https://github.com/pashky/restclient.el][restclient.el]] is
+   pretty awesome.
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package restclient
+       :ensure t)
+   #+END_SRC
+
+
 ** Ansible
 
    [[http://docs.ansible.com/index.html][Ansible]] is a great automation tool I use to manage my servers and
@@ -2832,7 +2844,6 @@ Let's also rewrite some built-in to better /default/. Let's start with
   Why not putting all the thing in Emacs =:). IRC is one of them and
   let's try something different than the good old ERC : let's try
   circe.
-
 
   #+BEGIN_SRC emacs-lisp
     (use-package circe
