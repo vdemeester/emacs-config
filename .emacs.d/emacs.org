@@ -1474,6 +1474,7 @@ Let's also rewrite some built-in to better /default/. Let's start with
      #+begin_src emacs-lisp
        (use-package magit
          :ensure t
+         :commands magit-status
          :bind ("C-c g" . magit-status))
        (setq magit-last-seen-setup-instructions "1.4.0")
      #+end_src
