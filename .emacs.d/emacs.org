@@ -1596,6 +1596,25 @@ Let's also rewrite some built-in to better /default/. Let's start with
    #+END_SRC
 
 
+** Eshell
+
+   Starting to use a bit =eshell=, first let's kill the buffer on exit.
+
+   #+BEGIN_SRC emacs-lisp
+     (add-hook 'shell-mode-hook 'wcy-shell-mode-hook-func)
+     (defun wcy-shell-mode-hook-func  ()
+       (set-process-sentinel (get-buffer-process (current-buffer))
+                             #'shell-mode-kill-buffer-on-exit)
+       )
+     (defun shell-mode-kill-buffer-on-exit (process state)
+       (message "%s" state)
+       (if (or
+            (string-match "exited abnormally with code.*" state)
+            (string-match "finished" state))
+           (kill-buffer (current-buffer))))
+   #+END_SRC
+
+
 ** Terminal
 
    Let's install and use [[http://www.emacswiki.org/emacs/MultiTerm][multi-term]], which is a cool addition to =term.el=.
