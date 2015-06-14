@@ -1711,7 +1711,7 @@ Let's also rewrite some built-in to better /default/. Let's start with
        (require 'find-lisp)
        (setq org-directory org-root-directory)
        (setq org-agenda-files (find-lisp-find-files org-todos-directory "\.org$"))
-       (setq org-enforce-todo-dependencies t)
+       ;; (setq org-enforce-todo-dependencies t)
        (setq org-enforce-todo-checkbox-dependencies t)
      #+end_src
 
