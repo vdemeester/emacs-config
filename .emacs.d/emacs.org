@@ -1935,6 +1935,17 @@ Let's also rewrite some built-in to better /default/. Let's start with
 
      #+begin_src emacs-lisp
        (setq org-src-fontify-natively t)
+       (org-babel-do-load-languages
+        'org-babel-load-languages
+        '( (perl . t)
+           (ruby . t)
+           (sh . t)
+           (python . t)
+           (emacs-lisp . t)
+           ;; (golang . t)
+           (haskell . t)
+           (ditaa . t)
+           ))
      #+end_src
 
      Add a function to easily add a code block and bind it.
