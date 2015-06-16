@@ -2492,6 +2492,12 @@ Let's also rewrite some built-in to better /default/. Let's start with
 
     #+BEGIN_SRC emacs-lisp
       (setq compilation-scroll-output t)
+      ;; I'm not scared of saving everything.
+      (setq compilation-ask-about-save nil)
+      ;; Stop on the first error.
+      (setq compilation-scroll-output 'next-error)
+      ;; Don't stop on info or warnings.
+      (setq compilation-skip-threshold 2)
     #+END_SRC
 
 ** Provided configuration
