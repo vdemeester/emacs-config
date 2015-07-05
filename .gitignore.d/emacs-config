@@ -20,6 +20,7 @@
 .emacs.d/projectile.cache
 .emacs.d/persp-confs/
 .emacs.d/tramp
+.emacs.d/lisp/docker
 *.elc
 .emacs.d/el-get
 .emacs.d/auto-save-list

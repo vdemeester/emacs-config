@@ -2658,11 +2658,25 @@ Let's also rewrite some built-in to better /default/. Let's start with
    I'm playing a lot with [[http://docker.com][docker]] and most of the time editing
    Dockerfile and stuff inside Emacs.
 
-
    #+BEGIN_SRC emacs-lisp
      (use-package dockerfile-mode
        :ensure t)
    #+END_SRC
+
+   Now let's have more fun, we're going to use [[https://github.com/Silex/docker.el][docker.el]] project. As
+   it's early development and I'm interested in, we'll use my fork
+   that is checked-out in =$HOME/.emacs.d/lisp/docker= folder (using
+   =$HOME/.config/mr/groups.d/emacs-config=).
+
+
+   #+BEGIN_SRC emacs-lisp
+     ;; Install dependencies
+     (use-package magit-popup
+       :ensure t)
+     (use-package docker
+       :load-path "~/.emacs.d/lisp/docker/")
+   #+END_SRC
+
 
 ** Restclient
 

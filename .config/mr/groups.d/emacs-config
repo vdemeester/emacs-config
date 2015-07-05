@@ -1,2 +1,5 @@
 [$HOME/.emacs.d/snippets/andreaCrotti-snippets]
 checkout = git clone git@github.com:vdemeester/yasnippet-snippets.git andreaCrotti-snippets
+
+[$HOME/.emacs.d/lisp/docker]
+checkout = git clone git@github.com:vdemeester/docker.el docker
