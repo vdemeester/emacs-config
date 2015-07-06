@@ -1456,9 +1456,7 @@ Let's also rewrite some built-in to better /default/. Let's start with
 *** Git
 
     #+begin_src emacs-lisp
-      (use-package git-commit-mode
-        :ensure t)
-      (use-package git-rebase-mode
+      (use-package git-commit
         :ensure t)
       (use-package gitignore-mode
         :ensure t)
