@@ -2890,6 +2890,16 @@ Let's also rewrite some built-in to better /default/. Let's start with
    #+END_SRC
 
 
+** Scratch
+
+   Simple engouh : load a new \*scratch\* buffer with the current
+   mode.
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package scratch
+       :ensure t)
+   #+END_SRC
+
 * Irc
 
   Why not putting all the thing in Emacs =:). IRC is one of them and
