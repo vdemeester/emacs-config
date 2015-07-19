@@ -1243,6 +1243,19 @@ Let's also rewrite some built-in to better /default/. Let's start with
           (define-key helm-grep-mode-map (kbd "p")  'helm-grep-mode-jump-other-window-backward)))
     #+END_SRC
 
+    I'm trying [[https://github.com/monochromegane/the_platinum_searcher][the platinium searcher]] as it's kinda quick, so I'm
+    trying helm-ag with specifiec configuration.
+
+    #+BEGIN_SRC emacs-lisp
+      (use-package helm-ag
+        :ensure
+        :config
+        (setq helm-ag-base-command "pt -e --nocolor --nogroup"
+              helm-ag-command-option "--all-text"
+              helm-ag-insert-at-point 'symbol)
+        (define-key helm-ag-mode-map (kbd "<return>")  'helm-ag-mode-jump-other-window))
+    #+END_SRC
+
 
 *** helmp-make
 
