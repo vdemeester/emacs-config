@@ -668,10 +668,7 @@ Let's also rewrite some built-in to better /default/. Let's start with
 
     #+BEGIN_SRC emacs-lisp
       (use-package rainbow-identifiers
-                   :ensure t
-                   :init
-                   (add-hook 'prog-mode-hook
-                             (lambda () (rainbow-identifiers-mode))))
+                   :ensure t)
     #+END_SRC
 *** Async
 
