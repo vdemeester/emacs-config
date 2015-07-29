@@ -1044,6 +1044,55 @@ Let's also rewrite some built-in to better /default/. Let's start with
     #+END_SRC
 
 
+*** Key-chord
+
+    I'm going to experiment wiht =key-chord= as I don't really use
+    evil (except from undo-tree but can get this without
+    =evil=). =key-chord= lets you define keyboard shortcuts that use
+    ordinary keys.
+
+
+    #+BEGIN_SRC emacs-lisp
+      ;; Move this elsewhere, it's not related to key-chord
+      (defun my/switch-to-previous-buffer ()
+        "Switch to previously open buffer.
+      Repeated invocations toggle between the two most recently open buffers."
+        (interactive)
+        (switch-to-buffer (other-buffer (current-buffer) 1)))
+
+      (defun my/org-check-agenda ()
+        "Peek at agenda."
+        (interactive)
+        (cond
+         ((derived-mode-p 'org-agenda-mode)
+          (if (window-parent) (delete-window) (bury-buffer)))
+         ((get-buffer "*Org Agenda*")
+          (switch-to-buffer-other-window "*Org Agenda*"))
+         (t (org-agenda nil "a"))))
+
+      (use-package key-chord
+        :ensure t
+        :init
+        (progn
+          (setq key-chord-one-key-delay 0.16)
+          (key-chord-mode 1)
+          ;; k can be bound too
+          (key-chord-define-global "uu"     'undo)
+          (key-chord-define-global "jj"     'ace-jump-word-mode)
+          (key-chord-define-global "jw"     'ace-window)
+          (key-chord-define-global "jl"     'ace-jump-line-mode)
+          (key-chord-define-global "j."
+                                   (defhydra join-lines ()
+                                     ("<up>" join-line)
+                                     ("<down>" (join-line 1))
+                                     ("t" join-line)
+                                     ("n" (join-line 1)))))
+        (key-chord-define-global "FF"     'find-file)
+        (key-chord-define-global "xx"     'er/expand-region)
+        (key-chord-define-global "JJ"     'my/switch-to-previous-buffer))
+    #+END_SRC
+
+
 *** Evil
 
     I come from a [[http://vim.org][vim]] background and the modal editor comes with some
