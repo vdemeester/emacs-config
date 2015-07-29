@@ -2581,7 +2581,12 @@ Let's also rewrite some built-in to better /default/. Let's start with
       (use-package rainbow-mode
         :ensure t)
       (use-package rainbow-delimiters
-        :ensure t)
+        :ensure t
+        :init (progn
+                ;; http://timothypratley.blogspot.fr/2015/07/seven-specialty-emacs-settings-with-big.html
+                (set-face-attribute 'rainbow-delimiters-unmatched-face nil
+                                    :foreground 'unspecified
+                                    :inherit 'error)))
       (use-package highlight-parentheses
         :ensure t)
     #+END_SRC
