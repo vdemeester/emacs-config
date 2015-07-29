@@ -412,6 +412,20 @@ It looks kinda like that (click to open the real one) :
             kept-old-versions 2
             version-control t)
     #+end_src
+*** Saving on focus out
+
+    IntelliJ does that and I find it cool, so let's do that in Emacs
+    too. In a word, this settings will save buffers when switching
+    from Emacs to another window.
+
+    #+BEGIN_SRC emacs-lisp
+      ;; http://timothypratley.blogspot.fr/2015/07/seven-specialty-emacs-settings-with-big.html
+      (defun save-all ()
+        (interactive)
+        (save-some-buffers t))
+      (add-hook 'focus-out-hook 'save-all)
+    #+END_SRC
+
 *** Buffers
 
     Setup uniquify so that non-unique buffer names get the parent path included to make them unique.
