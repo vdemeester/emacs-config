@@ -1088,6 +1088,10 @@ Let's also rewrite some built-in to better /default/. Let's start with
                                      ("<down>" (join-line 1))
                                      ("t" join-line)
                                      ("n" (join-line 1)))))
+        ;; buffer actions
+        (key-chord-define-global "vg"     'eval-region)
+        (key-chord-define-global "vb"     'eval-buffer)
+        ;; commands
         (key-chord-define-global "FF"     'find-file)
         (key-chord-define-global "xx"     'er/expand-region)
         (key-chord-define-global "JJ"     'my/switch-to-previous-buffer))
