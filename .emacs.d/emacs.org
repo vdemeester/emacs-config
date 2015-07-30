@@ -2052,6 +2052,32 @@ Let's also rewrite some built-in to better /default/. Let's start with
         )
     #+END_SRC
 
+    Let's define some for youtube and other media websites.
+
+    #+BEGIN_SRC emacs-lisp
+      (defvar yt-iframe-format
+        ;; You may want to change your width and height.
+        (concat "<iframe width=\"440\""
+                " height=\"335\""
+                " src=\"https://www.youtube.com/embed/%s\""
+                " frameborder=\"0\""
+                " allowfullscreen>%s</iframe>"))
+
+      (org-add-link-type
+       "youtube"
+       (lambda (handle)
+         (browse-url
+          (concat "https://www.youtube.com/embed/"
+                  handle)))
+       (lambda (path desc backend)
+         (cl-case backend
+           (html (format yt-iframe-format
+                         path (or desc "")))
+           (latex (format "\href{%s}{%s}"
+                          path (or desc "video"))))))
+    #+END_SRC
+
+
 *** Code blocks
 
      We are using a lot of code block in org-mode, in this file for example ; let's
