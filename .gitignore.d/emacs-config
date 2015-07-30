@@ -21,6 +21,7 @@
 .emacs.d/persp-confs/
 .emacs.d/tramp
 .emacs.d/lisp/docker
+.emacs.d/lisp/pt
 *.elc
 .emacs.d/el-get
 .emacs.d/auto-save-list

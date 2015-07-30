@@ -2004,6 +2004,54 @@ Let's also rewrite some built-in to better /default/. Let's start with
               ))
     #+END_SRC
 
+*** Links
+
+    #+BEGIN_QUOTE
+    One little-know feature of org-mode is that you can define new
+    types of links with the aptly named org-add-link-type. The
+    applications of this virtue are many.
+    #+END_QUOTE
+
+    Let's define one for =grep= and =pt=.
+
+    #+BEGIN_SRC emacs-lisp
+      (org-add-link-type
+       "grep" 'my/follow-grep-link
+       )
+      (defun my/follow-grep-link (regexp)
+        "Run `rgrep' with REGEXP and FOLDER as argument,
+      like this : [[grep:REGEXP:FOLDER]]."
+        (setq expressions (split-string regexp ":"))
+        (setq exp (nth 0 expressions))
+        (grep-compute-defaults)
+        (if (= (length expressions) 1)
+            (progn
+              (rgrep exp "*" (expand-file-name "./")))
+          (progn
+            (setq folder (nth 1 expressions))
+            (rgrep exp "*" (expand-file-name folder))))
+        )
+
+      (use-package pt
+        :load-path "~/.emacs.d/lisp/pt/")
+
+      ;; pt-regexp (regexp directory &optional args)
+      (org-add-link-type
+       "pt" 'my/follow-pt-link)
+      (defun my/follow-pt-link (regexp)
+        "Run `pt-regexp` with REXEP and FOLDER as argument,
+      like this : [[pt:REGEXP:FOLDER]]"
+        (setq expressions (split-string regexp ":"))
+        (setq exp (nth 0 expressions))
+        (if (= (length expressions) 1)
+            (progn
+              (pt-regexp exp (expand-file-name "./")))
+          (progn
+            (setq folder (nth 1 expressions))
+            (pt-regexp exp (expand-file-name folder))))
+        )
+    #+END_SRC
+
 *** Code blocks
 
      We are using a lot of code block in org-mode, in this file for example ; let's
@@ -2027,28 +2075,28 @@ Let's also rewrite some built-in to better /default/. Let's start with
      Add a function to easily add a code block and bind it.
 
      #+begin_src emacs-lisp
-              (defun my/org-insert-src-block (src-code-type)
-                "Insert a `SRC-CODE-TYPE' type source code block in org-mode."
-                (interactive
-                 (let ((src-code-types
-                        '("emacs-lisp" "python" "C" "sh" "java" "js" "clojure" "C++" "css"
-                          "calc" "dot" "gnuplot" "ledger" "R" "sass" "screen" "sql" "awk" 
-                          "ditaa" "haskell" "latex" "lisp" "matlab" "org" "perl" "ruby"
-                          "sqlite" "rust" "scala" "golang")))
-                   (list (ido-completing-read "Source code type: " src-code-types))))
-                (progn
-                  (newline-and-indent)
-                  (insert (format "#+BEGIN_SRC %s\n" src-code-type))
-                  (newline-and-indent)
-                  (insert "#+END_SRC\n")
-                  (previous-line 2)
-                  (org-edit-src-code)))
+       (defun my/org-insert-src-block (src-code-type)
+         "Insert a `SRC-CODE-TYPE' type source code block in org-mode."
+         (interactive
+          (let ((src-code-types
+                 '("emacs-lisp" "python" "C" "sh" "java" "js" "clojure" "C++" "css"
+                   "calc" "dot" "gnuplot" "ledger" "R" "sass" "screen" "sql" "awk" 
+                   "ditaa" "haskell" "latex" "lisp" "matlab" "org" "perl" "ruby"
+                   "sqlite" "rust" "scala" "golang")))
+            (list (ido-completing-read "Source code type: " src-code-types))))
+         (progn
+           (newline-and-indent)
+           (insert (format "#+BEGIN_SRC %s\n" src-code-type))
+           (newline-and-indent)
+           (insert "#+END_SRC\n")
+           (previous-line 2)
+           (org-edit-src-code)))
 
-              (add-hook 'org-mode-hook
-                        '(lambda ()
-                           (local-set-key (kbd "C-c s e") 'org-edit-src-code)
-                           (local-set-key (kbd "C-c s i") 'my/org-insert-src-block))
-                        'append)
+       (add-hook 'org-mode-hook
+                 '(lambda ()
+                    (local-set-key (kbd "C-c s e") 'org-edit-src-code)
+                    (local-set-key (kbd "C-c s i") 'my/org-insert-src-block))
+                 'append)
      #+end_src
 
 *** Mobile
