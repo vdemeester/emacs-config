@@ -2291,6 +2291,9 @@ Let's also rewrite some built-in to better /default/. Let's start with
                ((org-agenda-sorting-strategy '(priority-down))
                 (org-tags-exclude-from-inheritance '("next"))
                 (org-agenda-prefix-format "  Mixed: ")))
+              ("i" "Triage tasks — to look" tags-todo "triage"
+               ((org-agenda-sorting-strategy '(priority-down))
+                (org-agenda-prefix-format "  Mixed: ")))
               ;; Timelines
               ("d" "Timeline for today" ((agenda "" ))
                ((org-agenda-ndays 1)
