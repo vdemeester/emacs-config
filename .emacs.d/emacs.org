@@ -1072,7 +1072,7 @@ Let's also rewrite some built-in to better /default/. Let's start with
 
       (use-package key-chord
         :ensure t
-        :init
+        :config
         (progn
           (setq key-chord-one-key-delay 0.16)
           (key-chord-mode 1)
