@@ -1318,7 +1318,9 @@ Let's also rewrite some built-in to better /default/. Let's start with
         (setq helm-ag-base-command "pt -e --nocolor --nogroup"
               helm-ag-command-option "--all-text"
               helm-ag-insert-at-point 'symbol)
-        (define-key helm-ag-mode-map (kbd "<return>")  'helm-ag-mode-jump-other-window))
+        (define-key helm-ag-mode-map (kbd "<return>")  'helm-ag-mode-jump-other-window)
+        (define-key helm-ag-mode-map (kbd "n")  'helm-grep-mode-jump-other-window-forward)
+        (define-key helm-ag-mode-map (kbd "p")  'helm-grep-mode-jump-other-window-backward))
     #+END_SRC
 
 
