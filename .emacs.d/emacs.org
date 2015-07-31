@@ -1098,87 +1098,17 @@ Let's also rewrite some built-in to better /default/. Let's start with
     #+END_SRC
 
 
-*** Evil
+*** Undo-tree
 
-    I come from a [[http://vim.org][vim]] background and the modal editor comes with some
-    really good stuff. [[http://www.emacswiki.org/Evil][Evil]] is an extensible vi layer for Emacs,
-    exacty what we need. It also few /extensions/.
+    The only thing I used and really like with evil is =undo-tree= so
+    let's keep and use it.
 
     #+BEGIN_SRC emacs-lisp
       ;;; Load undo-tree before evil for the :bind
       (use-package undo-tree
         :ensure t
         :bind (("C-*" . undo-tree-undo)))
-      (use-package evil
-        :ensure t
-        :init
-        (progn
-          (define-key vde/toggle-map "e" #'evil-mode)))
     #+END_SRC
-
-    Let's change the default cursor colours to easily identify wich
-    mode we are in.
-
-    #+BEGIN_SRC emacs-lisp
-      (setq evil-emacs-state-cursor '("red" box))
-      (setq evil-normal-state-cursor '("green" box))
-      (setq evil-visual-state-cursor '("orange" box))
-      (setq evil-insert-state-cursor '("red" bar))
-      (setq evil-replace-state-cursor '("red" bar))
-      (setq evil-operator-state-cursor '("red" hollow))
-    #+END_SRC
-
-    And define some /internals/.
-
-    #+BEGIN_SRC emacs-lisp
-      (setq evil-search-module 'evil-search)
-    #+END_SRC
-
-**** evil-leader
-
-     The [[https://github.com/cofi/evil-leader][evil-leader]] extension provides the <leader> feature from Vim
-     that provides an easy way to bind keys under a variable prefix
-     key.
-
-     #+BEGIN_SRC emacs-lisp
-       (use-package evil-leader
-         :ensure t
-         :requires evil
-         :init
-         (global-evil-leader-mode t))
-
-       (evil-leader/set-leader ",")
-       (evil-leader/set-key
-         "e" 'find-file
-         "b" 'switch-to-buffer
-         "k" 'kill-buffer)
-     #+END_SRC
-
-**** evil-args
-
-     The [[https://github.com/wcsmith/evil-args][evil-args]] extension provides motions and text objects for
-     delimited arguments in Evil.
-
-
-     #+BEGIN_SRC emacs-lisp
-       (use-package evil-args
-         :ensure t
-         :requires evil
-         :config
-         (progn
-           ;; bind evil-args text objects
-           (define-key evil-inner-text-objects-map "a" 'evil-inner-arg)
-           (define-key evil-outer-text-objects-map "a" 'evil-outer-arg)
-           ;; bind evil-forward/backward-args
-           (define-key evil-normal-state-map "L" 'evil-forward-arg)
-           (define-key evil-normal-state-map "H" 'evil-backward-arg)
-           (define-key evil-motion-state-map "L" 'evil-forward-arg)
-           (define-key evil-motion-state-map "H" 'evil-backward-arg)
-           ;; bind evil-jump-out-args
-           (define-key evil-normal-state-map "K" 'evil-jump-out-args)
-           ))
-     #+END_SRC
-
 
 ** Server mode
 
