@@ -1025,6 +1025,7 @@ Let's also rewrite some built-in to better /default/. Let's start with
       (define-key vde/launcher-map "s" #'shell)
       (define-key vde/launcher-map "r" #'multi-term)
       (define-key vde/launcher-map "t" #'proced) ; top
+      (define-key vde/launcher-map "C" #'circe)
       (define-key vde/launcher-map "m" #'mu4e)   ; mails
       (define-key vde/launcher-map "u" #'mu4e-update-mail-and-index)
     #+END_SRC
