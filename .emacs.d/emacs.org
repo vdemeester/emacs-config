@@ -2953,18 +2953,7 @@ Let's also rewrite some built-in to better /default/. Let's start with
    #+BEGIN_SRC emacs-lisp
      (use-package vagrant
        :ensure t
-       :defer t
-       :init
-       (progn
-         (evil-leader/set-key
-           "VD" 'vagrant-destroy
-           "Ve" 'vagrant-edit
-           "VH" 'vagrant-halt
-           "Vp" 'vagrant-provision
-           "Vr" 'vagrant-resume
-           "Vs" 'vagrant-status
-           "VS" 'vagrant-suspend
-           "VV" 'vagrant-up)))
+       :defer t)
    #+END_SRC
 
    And let's also add a TRAMP add-on for Vagrant. The idea is to be
