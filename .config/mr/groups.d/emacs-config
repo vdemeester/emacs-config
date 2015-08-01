@@ -1,6 +1,9 @@
 [$HOME/.emacs.d/snippets/andreaCrotti-snippets]
 checkout = git clone git@github.com:vdemeester/yasnippet-snippets.git andreaCrotti-snippets
 
+[$HOME/.emacs.d/lisp/circe-notifications]
+checkout = git clone git@github.com:eqyiel/circe-notifications circe-notifications
+
 [$HOME/.emacs.d/lisp/pt]
 checkout = git clone git@github.com:vdemeester/pt.el pt
 

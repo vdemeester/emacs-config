@@ -22,6 +22,8 @@
 .emacs.d/tramp
 .emacs.d/lisp/docker
 .emacs.d/lisp/pt
+.emacs.d/lisp/circe-notifications
+.emacs.d/undo
 *.elc
 .emacs.d/el-get
 .emacs.d/auto-save-list
