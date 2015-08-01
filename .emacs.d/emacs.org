@@ -670,20 +670,140 @@ Let's also rewrite some built-in to better /default/. Let's start with
       (use-package rainbow-identifiers
                    :ensure t)
     #+END_SRC
-*** Async
+*** Hydra
 
-    =async.el= is a module for doing asynchronous processing in
-    Emacs. Let's load it as it's gonna be useful. Let's also load
-    =dired-async= for the copy & co to be run asynchroniously (very
-    useful with TRAMP).
+     #+BEGIN_QUOTE
+     Once you summon the Hydra through the prefixed binding (the body + any one head), all heads can be called in succession with only a short extension.
+
+     The Hydra is vanquished once Hercules, any binding that isn't the Hydra's head, arrives. Note that Hercules, besides vanquishing the Hydra, will still serve his original purpose, calling his proper command. This makes the Hydra very seamless, it's like a minor mode that disables itself auto-magically.
+     #+END_QUOTE
+
+    Hydra is quite impressive, a [[https://www.youtube.com/watch?v%3D_qZliI1BKzI][video]] is gonna be more than a long
+    explanation.
+
 
     #+BEGIN_SRC emacs-lisp
-      (use-package async
-        :ensure t)
-      (use-package dired-async
-        :init
-        (dired-async-mode 1))
+      (use-package hydra
+        :ensure t
+        :config
+        (hydra-add-font-lock)
+        ;; Zooming
+        (defhydra hydra-zoom (global-map "<f2>")
+          "zoom"
+          ("g" text-scale-increase "in")
+          ("l" text-scale-decrease "out"))
+        ;; Toggling modes
+        (global-set-key
+         (kbd "C-c C-v")
+         (defhydra hydra-toggle-simple (:color blue)
+           "toggle"
+           ("a" abbrev-mode "abbrev")
+           ("d" toggle-debug-on-error "debug")
+           ("f" auto-fill-mode "fill")
+           ("t" toggle-truncate-lines "truncate")
+           ("w" whitespace-mode "whitespace")
+           ("q" nil "cancel")))
+        ;; Buffer menu
+        (defhydra hydra-buffer-menu (:color pink
+                                            :hint nil)
+          "
+      ^Mark^ ^Unmark^ ^Actions^ ^Search
+      ^^^^^^^^----------------------------------------------------------------- (__)
+      _m_: mark _u_: unmark _x_: execute _R_: re-isearch (oo)
+      _s_: save _U_: unmark up _b_: bury _I_: isearch /------\\/
+      _d_: delete ^ ^ _g_: refresh _O_: multi-occur / | ||
+      _D_: delete up ^ ^ _T_: files only: % -28`Buffer-menu-files-only^^ * /\\---/\\
+      _~_: modified ^ ^ ^ ^ ^^ ~~ ~~
+      "
+          ("m" Buffer-menu-mark)
+          ("u" Buffer-menu-unmark)
+          ("U" Buffer-menu-backup-unmark)
+          ("d" Buffer-menu-delete)
+          ("D" Buffer-menu-delete-backwards)
+          ("s" Buffer-menu-save)
+          ("~" Buffer-menu-not-modified)
+          ("x" Buffer-menu-execute)
+          ("b" Buffer-menu-bury)
+          ("g" revert-buffer)
+          ("T" Buffer-menu-toggle-files-only)
+          ("O" Buffer-menu-multi-occur :color blue)
+          ("I" Buffer-menu-isearch-buffers :color blue)
+          ("R" Buffer-menu-isearch-buffers-regexp :color blue)
+          ("c" nil "cancel")
+          ("v" Buffer-menu-select "select" :color blue)
+          ("o" Buffer-menu-other-window "other-window" :color blue)
+          ("q" quit-window "quit" :color blue))
+        (define-key Buffer-menu-mode-map "." 'hydra-buffer-menu/body)
+        ;; apropos
+        (defhydra hydra-apropos (:color blue
+                                        :hint nil)
+          "
+      _a_propos _c_ommand
+      _d_ocumentation _l_ibrary
+      _v_ariable _u_ser-option
+      ^ ^ valu_e_"
+          ("a" apropos)
+          ("d" apropos-documentation)
+          ("v" apropos-variable)
+          ("c" apropos-command)
+          ("l" apropos-library)
+          ("u" apropos-user-option)
+          ("e" apropos-value))
+        (global-set-key (kbd "C-c h") 'hydra-apropos/body)
+        ;; Window managing
+        (global-set-key
+         (kbd "C-M-o")
+         (defhydra hydra-window (:color amaranth)
+           "
+      Move Point^^^^   Move Splitter   ^Ace^                       ^Split^
+      --------------------------------------------------------------------------------
+      _w_, _<up>_      Shift + Move    _C-a_: ace-window           _2_: split-window-below
+      _a_, _<left>_                    _C-s_: ace-window-swap      _3_: split-window-right
+      _s_, _<down>_                    _C-d_: ace-window-delete    ^ ^
+      _d_, _<right>_                   ^   ^                       ^ ^
+      You can use arrow-keys or WASD.
+      "
+           ("2" split-window-below nil)
+           ("3" split-window-right nil)
+           ("a" windmove-left nil)
+           ("s" windmove-down nil)
+           ("w" windmove-up nil)
+           ("d" windmove-right nil)
+           ("A" hydra-move-splitter-left nil)
+           ("S" hydra-move-splitter-down nil)
+           ("W" hydra-move-splitter-up nil)
+           ("D" hydra-move-splitter-right nil)
+           ("<left>" windmove-left nil)
+           ("<down>" windmove-down nil)
+           ("<up>" windmove-up nil)
+           ("<right>" windmove-right nil)
+           ("<S-left>" hydra-move-splitter-left nil)
+           ("<S-down>" hydra-move-splitter-down nil)
+           ("<S-up>" hydra-move-splitter-up nil)
+           ("<S-right>" hydra-move-splitter-right nil)
+           ("C-a" ace-window nil)
+           ("u" hydra--universal-argument nil)
+           ("C-s" (lambda () (interactive) (ace-window 4)) nil)
+           ("C-d" (lambda () (interactive) (ace-window 16)) nil)
+           ("q" nil "quit")))
+        )
     #+END_SRC
+
+
+*** Async
+
+   =async.el= is a module for doing asynchronous processing in
+   Emacs. Let's load it as it's gonna be useful. Let's also load
+   =dired-async= for the copy & co to be run asynchroniously (very
+   useful with TRAMP).
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package async
+       :ensure t)
+     (use-package dired-async
+       :init
+       (dired-async-mode 1))
+   #+END_SRC
 
 *** Dired
 
@@ -1297,126 +1417,6 @@ Let's also rewrite some built-in to better /default/. Let's start with
       (use-package helm-firefox
         :ensure t)
     #+END_SRC
-
-** Hydra
-
-    #+BEGIN_QUOTE
-    Once you summon the Hydra through the prefixed binding (the body + any one head), all heads can be called in succession with only a short extension.
-
-    The Hydra is vanquished once Hercules, any binding that isn't the Hydra's head, arrives. Note that Hercules, besides vanquishing the Hydra, will still serve his original purpose, calling his proper command. This makes the Hydra very seamless, it's like a minor mode that disables itself auto-magically.
-    #+END_QUOTE
-
-   Hydra is quite impressive, a [[https://www.youtube.com/watch?v%3D_qZliI1BKzI][video]] is gonna be more than a long
-   explanation.
-
-
-   #+BEGIN_SRC emacs-lisp
-     (use-package hydra
-       :ensure t
-       :config
-       (hydra-add-font-lock)
-       ;; Zooming
-       (defhydra hydra-zoom (global-map "<f2>")
-         "zoom"
-         ("g" text-scale-increase "in")
-         ("l" text-scale-decrease "out"))
-       ;; Toggling modes
-       (global-set-key
-        (kbd "C-c C-v")
-        (defhydra hydra-toggle-simple (:color blue)
-          "toggle"
-          ("a" abbrev-mode "abbrev")
-          ("d" toggle-debug-on-error "debug")
-          ("f" auto-fill-mode "fill")
-          ("t" toggle-truncate-lines "truncate")
-          ("w" whitespace-mode "whitespace")
-          ("q" nil "cancel")))
-       ;; Buffer menu
-       (defhydra hydra-buffer-menu (:color pink
-                                           :hint nil)
-         "
-     ^Mark^ ^Unmark^ ^Actions^ ^Search
-     ^^^^^^^^----------------------------------------------------------------- (__)
-     _m_: mark _u_: unmark _x_: execute _R_: re-isearch (oo)
-     _s_: save _U_: unmark up _b_: bury _I_: isearch /------\\/
-     _d_: delete ^ ^ _g_: refresh _O_: multi-occur / | ||
-     _D_: delete up ^ ^ _T_: files only: % -28`Buffer-menu-files-only^^ * /\\---/\\
-     _~_: modified ^ ^ ^ ^ ^^ ~~ ~~
-     "
-         ("m" Buffer-menu-mark)
-         ("u" Buffer-menu-unmark)
-         ("U" Buffer-menu-backup-unmark)
-         ("d" Buffer-menu-delete)
-         ("D" Buffer-menu-delete-backwards)
-         ("s" Buffer-menu-save)
-         ("~" Buffer-menu-not-modified)
-         ("x" Buffer-menu-execute)
-         ("b" Buffer-menu-bury)
-         ("g" revert-buffer)
-         ("T" Buffer-menu-toggle-files-only)
-         ("O" Buffer-menu-multi-occur :color blue)
-         ("I" Buffer-menu-isearch-buffers :color blue)
-         ("R" Buffer-menu-isearch-buffers-regexp :color blue)
-         ("c" nil "cancel")
-         ("v" Buffer-menu-select "select" :color blue)
-         ("o" Buffer-menu-other-window "other-window" :color blue)
-         ("q" quit-window "quit" :color blue))
-       (define-key Buffer-menu-mode-map "." 'hydra-buffer-menu/body)
-       ;; apropos
-       (defhydra hydra-apropos (:color blue
-                                       :hint nil)
-         "
-     _a_propos _c_ommand
-     _d_ocumentation _l_ibrary
-     _v_ariable _u_ser-option
-     ^ ^ valu_e_"
-         ("a" apropos)
-         ("d" apropos-documentation)
-         ("v" apropos-variable)
-         ("c" apropos-command)
-         ("l" apropos-library)
-         ("u" apropos-user-option)
-         ("e" apropos-value))
-       (global-set-key (kbd "C-c h") 'hydra-apropos/body)
-       ;; Window managing
-       (global-set-key
-        (kbd "C-M-o")
-        (defhydra hydra-window (:color amaranth)
-          "
-     Move Point^^^^   Move Splitter   ^Ace^                       ^Split^
-     --------------------------------------------------------------------------------
-     _w_, _<up>_      Shift + Move    _C-a_: ace-window           _2_: split-window-below
-     _a_, _<left>_                    _C-s_: ace-window-swap      _3_: split-window-right
-     _s_, _<down>_                    _C-d_: ace-window-delete    ^ ^
-     _d_, _<right>_                   ^   ^                       ^ ^
-     You can use arrow-keys or WASD.
-     "
-          ("2" split-window-below nil)
-          ("3" split-window-right nil)
-          ("a" windmove-left nil)
-          ("s" windmove-down nil)
-          ("w" windmove-up nil)
-          ("d" windmove-right nil)
-          ("A" hydra-move-splitter-left nil)
-          ("S" hydra-move-splitter-down nil)
-          ("W" hydra-move-splitter-up nil)
-          ("D" hydra-move-splitter-right nil)
-          ("<left>" windmove-left nil)
-          ("<down>" windmove-down nil)
-          ("<up>" windmove-up nil)
-          ("<right>" windmove-right nil)
-          ("<S-left>" hydra-move-splitter-left nil)
-          ("<S-down>" hydra-move-splitter-down nil)
-          ("<S-up>" hydra-move-splitter-up nil)
-          ("<S-right>" hydra-move-splitter-right nil)
-          ("C-a" ace-window nil)
-          ("u" hydra--universal-argument nil)
-          ("C-s" (lambda () (interactive) (ace-window 4)) nil)
-          ("C-d" (lambda () (interactive) (ace-window 16)) nil)
-          ("q" nil "quit")))
-       )
-   #+END_SRC
-
 
 ** Company-mode
 
