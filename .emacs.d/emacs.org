@@ -3017,14 +3017,21 @@ Let's also rewrite some built-in to better /default/. Let's start with
         (defun my-circe-prompt ()
           (lui-set-prompt
            (concat (propertize (concat (buffer-name) ">")
-                               'face 'circe-server-face)
+                               'face 'circe-my-message-face)
                    " ")))
+
+        (setq
+         lui-time-stamp-position 'right-margin
+         lui-time-stamp-format "%H:%M")
         (defun my-circe-set-margin ()
-          (setq
-           fringes-outside-margins t
-           right-margin-width 5
-           word-wrap t
-           wrap-prefix "    "))
+          (setq right-margin-width 5))
+
+        ;; Fix the completion to not use emacs or helm
+        (setq circe-use-cycle-completion t)
+        (setq helm-mode-no-completion-in-region-in-modes
+              '(circe-channel-mode
+                circe-query-mode
+                circe-server-mode))
 
         (add-hook 'lui-mode-hook 'my-circe-set-margin)
         (add-hook 'circe-chat-mode-hook 'my-circe-prompt)
@@ -3035,39 +3042,8 @@ Let's also rewrite some built-in to better /default/. Let's start with
           :load-path "~/.emacs.d/lisp/circe-notifications"
           :config
           (progn
-            ;; ZNC's MOTD is 25 lines.
-            ;; I have two networks defined in `circe-network-options'.
-            ;; So wait to see 50 notices from ZNC before enabling notifications.
-
-            (defvar eqyiel-circe-znc-notices 0
-              "How many notices have we received from ZNC?")
-
-            (defvar eqyiel-circe-znc-motd-length 25
-              "How many lines are in ZNC's MOTD?")
-
-            (defun eqyiel-circe-znc-count-networks ()
-              "Return the number of networks in `circe-network-options' multiplied by
-    `eqyiel-circe-znc-motd-length', so we can know how many notices to expect before
-    enabling notifications."
-              (* eqyiel-circe-znc-motd-length (list-length circe-network-options)))
-
-            (defun eqyiel-circe-wait-for-znc (nick user host command args)
-              (if (> (eqyiel-circe-znc-count-networks) eqyiel-circe-znc-notices)
-                  (when (and (string-equal host "znc.in")
-                           (string-equal command "NOTICE"))
-                    (setq eqyiel-circe-znc-notices (+ 1 eqyiel-circe-znc-notices))
-                    (message "That's %d ..." eqyiel-circe-znc-notices))
-                (progn
-                  (message "OK.")
-                  (remove-hook 'circe-receive-message-functions 'eqyiel-circe-wait-for-znc)
-                  (enable-circe-notifications))))
-
-            (defadvice circe-reconnect (before eqyiel-remove-circe-notifications)
-              (setq eqyiel-circe-znc-notices 0)
-              (remove-hook 'circe-receive-message-functions 'circe-notifications)
-              (add-hook 'circe-receive-message-functions 'eqyiel-circe-wait-for-znc))
-
-            (add-hook 'circe-receive-message-functions 'eqyiel-circe-wait-for-znc)))))
+            (enable-circe-notifications)
+            ))))
   #+END_SRC
 
 
