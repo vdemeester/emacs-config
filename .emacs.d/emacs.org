@@ -1259,9 +1259,14 @@ Let's also rewrite some built-in to better /default/. Let's start with
       (use-package undo-tree
         :ensure t
         :bind (("C-*" . undo-tree-undo))
+        :init
+        (progn
+          (defalias 'redo 'undo-tree-redo)
+          (defalias 'undo 'undo-tree-undo)
+          (global-undo-tree-mode)
+          )
         :config
         (progn
-          (global-undo-tree-mode)
           (setq undo-tree-auto-save-history t)
           (let ((undo-dir (expand-file-name "undo" user-emacs-directory)))
             (setq undo-tree-history-directory-alist (list (cons "." undo-dir))))))
