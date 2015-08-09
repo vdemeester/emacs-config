@@ -150,13 +150,10 @@ It looks kinda like that (click to open the real one) :
 
 * Personal information 👨
 
-  #+begin_src emacs-lisp
-    (setq user-full-name "Vincent Demeester"
-          user-mail-address "vincent@demeester.fr")
-  #+end_src
-
   Let's define default value that could be owerwritten by the host
-  and user file 🐣.
+  and user file 🐣. The variables =user-full-name= and
+  =user-mail-address= are defined in =~/.emacs.d/user.el= (which is
+  private).
 
   #+BEGIN_SRC emacs-lisp
     (setq
