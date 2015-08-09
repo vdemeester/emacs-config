@@ -150,13 +150,10 @@ It looks kinda like that (click to open the real one) :
 
 * Personal information 👨
 
-  #+begin_src emacs-lisp
-    (setq user-full-name "Vincent Demeester"
-          user-mail-address "vincent@demeester.fr")
-  #+end_src
-
   Let's define default value that could be owerwritten by the host
-  and user file 🐣.
+  and user file 🐣. The variables =user-full-name= and
+  =user-mail-address= are defined in =~/.emacs.d/user.el= (which is
+  private).
 
   #+BEGIN_SRC emacs-lisp
     (setq
@@ -1783,56 +1780,64 @@ Let's also rewrite some built-in to better /default/. Let's start with
 - =ARCHIVED= : same as done but keep it here (and not moving into archive)
 
   #+begin_src emacs-lisp
-       (defface org-progress ; font-lock-warning-face
-         (org-compatible-face nil
-           '((((class color) (min-colors 16) (background light)) (:foreground "#A197BF" :bold t :background "#E8E6EF" :box (:line-width 1 :color "#A197BF")))
-             (((class color) (min-colors 8)  (background light)) (:foreground "blue"  :bold t))
-             (t (:inverse-video t :bold t))))
-         "Face for PROGRESS keywords."
-         :group 'org-faces)
-       (defface org-cancelled ; font-lock-warning-face
-         (org-compatible-face nil
-           '((((class color) (min-colors 16) (background light)) (:foreground "#3D3D3D" :bold t :background "#7A7A7A" :box (:line-width 1 :color "#3D3D3D")))
-             (((class color) (min-colors 8)  (background light)) (:foreground "black"  :bold t))
-             (t (:inverse-video t :bold t))))
-         "Face for PROGRESS keywords."
-         :group 'org-faces)
-       (defface org-review ; font-lock-warning-face
-         (org-compatible-face nil
-           '((((class color) (min-colors 16) (background light)) (:foreground "#FC9B17" :bold t :background "#FEF2C2" :box (:line-width 1 :color "#FC9B17")))
-             (((class color) (min-colors 8)  (background light)) (:foreground "yellow"  :bold t))
-             (t (:inverse-video t :bold t))))
-         "Face for PROGRESS keywords."
-         :group 'org-faces)
-       (defface org-blocked ; font-lock-warning-face
-         (org-compatible-face nil
-           '((((class color) (min-colors 16) (background light)) (:foreground "#FF8A80" :bold t :background "#ffdad6" :box (:line-width 1 :color "#FF8A80")))
-             (((class color) (min-colors 8)  (background light)) (:foreground "red"  :bold t))
-             (t (:inverse-video t :bold t))))
-         "Face for PROGRESS keywords."
-         :group 'org-faces)
+    (defface org-progress ; font-lock-warning-face
+      (org-compatible-face nil
+        '((((class color) (min-colors 16) (background light)) (:foreground "#A197BF" :bold t :background "#E8E6EF" :box (:line-width 1 :color "#A197BF")))
+          (((class color) (min-colors 8)  (background light)) (:foreground "blue"  :bold t))
+          (t (:inverse-video t :bold t))))
+      "Face for PROGRESS keywords."
+      :group 'org-faces)
+    (defface org-paused ; font-lock-warning-face
+      (org-compatible-face nil
+        '((((class color) (min-colors 16) (background light)) (:foreground "#D6CCF4" :bold t :background "#ECE9F5" :box (:line-width 1 :color "#D6CCF4")))
+          (((class color) (min-colors 8)  (background light)) (:foreground "cyan"  :bold t))
+          (t (:inverse-video t :bold t))))
+      "Face for PAUSED keywords."
+      :group 'org-faces)
+    (defface org-cancelled ; font-lock-warning-face
+      (org-compatible-face nil
+        '((((class color) (min-colors 16) (background light)) (:foreground "#3D3D3D" :bold t :background "#7A7A7A" :box (:line-width 1 :color "#3D3D3D")))
+          (((class color) (min-colors 8)  (background light)) (:foreground "black"  :bold t))
+          (t (:inverse-video t :bold t))))
+      "Face for PROGRESS keywords."
+      :group 'org-faces)
+    (defface org-review ; font-lock-warning-face
+      (org-compatible-face nil
+        '((((class color) (min-colors 16) (background light)) (:foreground "#FC9B17" :bold t :background "#FEF2C2" :box (:line-width 1 :color "#FC9B17")))
+          (((class color) (min-colors 8)  (background light)) (:foreground "yellow"  :bold t))
+          (t (:inverse-video t :bold t))))
+      "Face for PROGRESS keywords."
+      :group 'org-faces)
+    (defface org-blocked ; font-lock-warning-face
+      (org-compatible-face nil
+        '((((class color) (min-colors 16) (background light)) (:foreground "#FF8A80" :bold t :background "#ffdad6" :box (:line-width 1 :color "#FF8A80")))
+          (((class color) (min-colors 8)  (background light)) (:foreground "red"  :bold t))
+          (t (:inverse-video t :bold t))))
+      "Face for PROGRESS keywords."
+      :group 'org-faces)
 
-       (setq org-todo-keywords
-             (quote ((sequence "TODO(t!)" "PROGRESS(p!)" "BLOCKED" "REVIEW" "|" "DONE(d!)" "ARCHIVED")
-                     (sequence "REPORT(r!)" "BUG" "KNOWNCAUSE" "|" "FIXED(f!)")
-                     (sequence "|" "CANCELLED(c@)"))))
+    (setq org-todo-keywords
+          (quote ((sequence "TODO(t!)" "PROGRESS(p!)" "PAUSED" "BLOCKED" "REVIEW" "|" "DONE(d!)" "ARCHIVED")
+                  (sequence "REPORT(r!)" "BUG" "KNOWNCAUSE" "|" "FIXED(f!)")
+                  (sequence "|" "CANCELLED(c@)"))))
 
 
-       (setq org-todo-keyword-faces
-             (quote (("TODO" . org-todo)
-                     ("PROGRESS" . org-progress)
-                     ("BLOCKED" . org-blocked)
-                     ("REVIEW" . org-review)
-                     ("DONE" . org-done)
-                     ("ARCHIVED" . org-done)
-                     ("CANCELLED" . org-cancelled)
-                     ("REPORT" . org-todo)
-                     ("BUG" . org-blocked)
-                     ("KNOWNCAUSE" . org-review)
-                     ("FIXED" . org-done))))
+    (setq org-todo-keyword-faces
+          (quote (("TODO" . org-todo)
+                  ("PROGRESS" . org-progress)
+                  ("PAUSED" . org-paused)
+                  ("BLOCKED" . org-blocked)
+                  ("REVIEW" . org-review)
+                  ("DONE" . org-done)
+                  ("ARCHIVED" . org-done)
+                  ("CANCELLED" . org-cancelled)
+                  ("REPORT" . org-todo)
+                  ("BUG" . org-blocked)
+                  ("KNOWNCAUSE" . org-review)
+                  ("FIXED" . org-done))))
 
-       (setq org-todo-state-tags-triggers
-             (quote (("CANCELLED" ("CANCELLED" . t)))))
+    (setq org-todo-state-tags-triggers
+          (quote (("CANCELLED" ("CANCELLED" . t)))))
   #+end_src
 
 
@@ -1848,7 +1853,6 @@ Let's also rewrite some built-in to better /default/. Let's start with
                  (visual-line-mode 1))
                ))))
 #+END_SRC
-
 
   Undefine some binding (=C-c [=, =C-c ]= since this breaks org-agenda files that
   have been defined in this file (a directory).
@@ -1882,7 +1886,6 @@ Let's also rewrite some built-in to better /default/. Let's start with
 
   Let's also define a =org= related keymap map.
 
-
   #+BEGIN_SRC emacs-lisp
     (define-prefix-command 'vde/org-map)
     (global-set-key (kbd "C-c o") 'vde/org-map)
@@ -1890,6 +1893,16 @@ Let's also rewrite some built-in to better /default/. Let's start with
     (define-key vde/org-map "n" (lambda () (interactive) (find-file org-notes-directory)))
   #+END_SRC
 
+  If a parent has all it's children =DONE=, make it =DONE= too.
+
+  #+BEGIN_SRC emacs-lisp
+    (defun org-summary-todo (n-done n-not-done)
+      "Switch entry to DONE when all subentries are done, to PROGRESS otherwise."
+      (let (org-log-done org-log-states)   ; turn off logging
+        (org-todo (if (= n-not-done 0) "DONE" "PROGRESS"))))
+
+    (add-hook 'org-after-todo-statistics-hook 'org-summary-todo)
+  #+END_SRC
 
 *** Speed commands
 
@@ -2196,23 +2209,50 @@ Let's also rewrite some built-in to better /default/. Let's start with
     buffers.
 
     #+BEGIN_SRC emacs-lisp
+      ;; Wish I could use taggroup but it doesn't seem to work..
       (setq org-tag-alist '(
-                           ("important" . ?i)
-                           ("urgent" . ?u)
-                           ("ongoing" . ?o)   ;; ongoing "project", use to filter big project that are on the go
-                           ("next" . ?n)      ;; next "project"/"task", use to filter next things to do
-                           ("@home" . ?h)     ;; needs to be done at home
-                           ("@work" . ?w)     ;; needs to be done at work
-                           ("@client" . ?c)   ;; needs to be done at a client place (consulting..)
-                           ("dev" . ?e)       ;; this is a development task
-                           ("infra" . ?a)     ;; this is a sysadmin/infra task
-                           ("document" . ?d)  ;; needs to produce a document (article, post, ..)
-                           ("download" . ?D)  ;; needs to download something
-                           ("media" . ?m)     ;; this is a media (something to watch, listen, record, ..)
-                           ("mail" . ?M)      ;; mail-related (to write & send or to read)
-                           ("triage" . ?t)    ;; need "triage", tag it to easily find them
-                           ("task" . ?a)      ;; a simple task (no project), the name is kinda misleading
-                           ))
+                            ("important" . ?i)
+                            ("urgent" . ?u)
+                            ("ongoing" . ?o)         ;; ongoing "project", use to filter big project that are on the go
+                            ("next" . ?n)            ;; next "project"/"task", use to filter next things to do
+                            ("@home" . ?h)           ;; needs to be done at home
+                            ("@work" . ?w)           ;; needs to be done at work
+                            ("@client" . ?c)         ;; needs to be done at a client place (consulting..)
+                            ("dev" . ?e)             ;; this is a development task
+                            ("infra" . ?a)           ;; this is a sysadmin/infra task
+                            ("document" . ?d)        ;; needs to produce a document (article, post, ..)
+                            ("download" . ?D)        ;; needs to download something
+                            ("media" . ?m)           ;; this is a media (something to watch, listen, record, ..)
+                            ("mail" . ?M)            ;; mail-related (to write & send or to read)
+                            ("triage" . ?t)          ;; need "triage", tag it to easily find them
+                            ("task" . ?a)            ;; a simple task (no project), the name is kinda misleading
+                            ;; docker tags
+                            ("docker")
+                            ("compose")
+                            ("libcompose")
+                            ("distribution")
+                            ("docs")
+                            ("rancher")
+                            ;; sites tags
+                            ("sites")
+                            ("vdf")
+                            ("znk")
+                            ;; configs tags
+                            ("configs")
+                            ("emacs")
+                            ("i3")
+                            ("shell")
+                            ;; services
+                            ("services")
+                            ;; zenika
+                            ("znk")
+                            ("formation")
+                            ("event")
+                            ("tribu")
+                            ("devops")
+                            ("craftmanship")
+                            ("client")
+                            ))
     #+END_SRC
 
     Note that =important= and =urgent= helps me prioritize my
@@ -2248,6 +2288,9 @@ Let's also rewrite some built-in to better /default/. Let's start with
                ((org-agenda-sorting-strategy '(priority-down))
                 (org-agenda-prefix-format "  Mixed: ")))
               ("r" todo "REVIEW"
+               ((org-agenda-sorting-strategy '(priority-down))
+                (org-agenda-prefix-format "  Mixed: ")))
+              ("a" todo "PAUSED"
                ((org-agenda-sorting-strategy '(priority-down))
                 (org-agenda-prefix-format "  Mixed: ")))
               ("b" todo "BLOCKED"
