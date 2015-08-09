@@ -2165,23 +2165,51 @@ Let's also rewrite some built-in to better /default/. Let's start with
     buffers.
 
     #+BEGIN_SRC emacs-lisp
+      ;; Wish I could use taggroup but it doesn't seem to work..
       (setq org-tag-alist '(
-                           ("important" . ?i)
-                           ("urgent" . ?u)
-                           ("ongoing" . ?o)   ;; ongoing "project", use to filter big project that are on the go
-                           ("next" . ?n)      ;; next "project"/"task", use to filter next things to do
-                           ("@home" . ?h)     ;; needs to be done at home
-                           ("@work" . ?w)     ;; needs to be done at work
-                           ("@client" . ?c)   ;; needs to be done at a client place (consulting..)
-                           ("dev" . ?e)       ;; this is a development task
-                           ("infra" . ?a)     ;; this is a sysadmin/infra task
-                           ("document" . ?d)  ;; needs to produce a document (article, post, ..)
-                           ("download" . ?D)  ;; needs to download something
-                           ("media" . ?m)     ;; this is a media (something to watch, listen, record, ..)
-                           ("mail" . ?M)      ;; mail-related (to write & send or to read)
-                           ("triage" . ?t)    ;; need "triage", tag it to easily find them
-                           ("task" . ?a)      ;; a simple task (no project), the name is kinda misleading
-                           ))
+                            ("important" . ?i)
+                            ("urgent" . ?u)
+                            ("ongoing" . ?o)         ;; ongoing "project", use to filter big project that are on the go
+                            ("next" . ?n)            ;; next "project"/"task", use to filter next things to do
+                            ("@home" . ?h)           ;; needs to be done at home
+                            ("@work" . ?w)           ;; needs to be done at work
+                            ("@client" . ?c)         ;; needs to be done at a client place (consulting..)
+                            ("dev" . ?e)             ;; this is a development task
+                            ("infra" . ?a)           ;; this is a sysadmin/infra task
+                            ("document" . ?d)        ;; needs to produce a document (article, post, ..)
+                            ("download" . ?D)        ;; needs to download something
+                            ("media" . ?m)           ;; this is a media (something to watch, listen, record, ..)
+                            ("mail" . ?M)            ;; mail-related (to write & send or to read)
+                            ("triage" . ?t)          ;; need "triage", tag it to easily find them
+                            ("task" . ?a)            ;; a simple task (no project), the name is kinda misleading
+                            ;; docker tags
+                            ("docker")
+                            ("docker/docker")
+                            ("docker/compose")
+                            ("docker/libcompose")
+                            ("docker/distribution")
+                            ("docker/docs")
+                            ;; sites tags
+                            ("sites")
+                            ("sites/vdf")
+                            ("sites/znk")
+                            ;; configs tags
+                            ("configs")
+                            ("configs/emacs")
+                            ("configs/i3")
+                            ("configs/shell")
+                            ;; services
+                            ("services")
+                            ("services/home")
+                            ("services/remote")
+                            ;; zenika
+                            ("znk")
+                            ("znk/formation")
+                            ("znk/event")
+                            ("znk/tribu/devops")
+                            ("znk/tribu/craftmanship")
+                            ("znk/client")
+                            ))
     #+END_SRC
 
     Note that =important= and =urgent= helps me prioritize my
