@@ -929,6 +929,37 @@ Let's also rewrite some built-in to better /default/. Let's start with
       (setq dired-listing-switches "-laGh1v --group-directories-first")
     #+END_SRC
 
+    I tend to use emacs to look at images too — because it does work,
+    and I don't have to open or switch to another viewer (Yeah, I'm
+    lazy >_<). The only thing I don't like is that image are in 100%
+    and there is no easy way to zoom-in/zoom-out.
+
+    #+BEGIN_SRC emacs-lisp
+      (use-package image+
+        :ensure t
+        :config
+        (progn
+          (defhydra imagex-sticky-binding (global-map "M-s-l")
+            "Manipulating Image"
+            ("+" imagex-sticky-zoom-in "zoom in")
+            ("-" imagex-sticky-zoom-out "zoom out")
+            ("M" imagex-sticky-maximize "maximize")
+            ("O" imagex-sticky-restore-original "restore original")
+            ("S" imagex-sticky-save-image "save file")
+            ("r" imagex-sticky-rotate-right "rotate right")
+            ("l" imagex-sticky-rotate-left "rotate left"))))
+
+      (defun my-dired-image-hook ()
+        (image-diredx-async-mode 1)
+        (image-diredx-adjust-mode 1))
+
+      (use-package image-dired+
+        :ensure t
+        :config
+        (progn
+          (add-hook 'dired-mode-hook 'my-dired-image-hook))
+        )
+    #+END_SRC
 
 *** Search
 
