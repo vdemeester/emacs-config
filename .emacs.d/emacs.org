@@ -2184,31 +2184,30 @@ Let's also rewrite some built-in to better /default/. Let's start with
                             ("task" . ?a)            ;; a simple task (no project), the name is kinda misleading
                             ;; docker tags
                             ("docker")
-                            ("docker/docker")
-                            ("docker/compose")
-                            ("docker/libcompose")
-                            ("docker/distribution")
-                            ("docker/docs")
+                            ("compose")
+                            ("libcompose")
+                            ("distribution")
+                            ("docs")
+                            ("rancher")
                             ;; sites tags
                             ("sites")
-                            ("sites/vdf")
-                            ("sites/znk")
+                            ("vdf")
+                            ("znk")
                             ;; configs tags
                             ("configs")
-                            ("configs/emacs")
-                            ("configs/i3")
-                            ("configs/shell")
+                            ("emacs")
+                            ("i3")
+                            ("shell")
                             ;; services
                             ("services")
-                            ("services/home")
-                            ("services/remote")
                             ;; zenika
                             ("znk")
-                            ("znk/formation")
-                            ("znk/event")
-                            ("znk/tribu/devops")
-                            ("znk/tribu/craftmanship")
-                            ("znk/client")
+                            ("formation")
+                            ("event")
+                            ("tribu")
+                            ("devops")
+                            ("craftmanship")
+                            ("client")
                             ))
     #+END_SRC
 
