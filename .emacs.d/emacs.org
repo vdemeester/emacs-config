@@ -1823,7 +1823,6 @@ Let's also rewrite some built-in to better /default/. Let's start with
                ))))
 #+END_SRC
 
-
   Undefine some binding (=C-c [=, =C-c ]= since this breaks org-agenda files that
   have been defined in this file (a directory).
 
@@ -1856,7 +1855,6 @@ Let's also rewrite some built-in to better /default/. Let's start with
 
   Let's also define a =org= related keymap map.
 
-
   #+BEGIN_SRC emacs-lisp
     (define-prefix-command 'vde/org-map)
     (global-set-key (kbd "C-c o") 'vde/org-map)
@@ -1864,6 +1862,16 @@ Let's also rewrite some built-in to better /default/. Let's start with
     (define-key vde/org-map "n" (lambda () (interactive) (find-file org-notes-directory)))
   #+END_SRC
 
+  If a parent has all it's children =DONE=, make it =DONE= too.
+
+  #+BEGIN_SRC emacs-lisp
+    (defun org-summary-todo (n-done n-not-done)
+      "Switch entry to DONE when all subentries are done, to PROGRESS otherwise."
+      (let (org-log-done org-log-states)   ; turn off logging
+        (org-todo (if (= n-not-done 0) "DONE" "PROGRESS"))))
+
+    (add-hook 'org-after-todo-statistics-hook 'org-summary-todo)
+  #+END_SRC
 
 *** Speed commands
 
