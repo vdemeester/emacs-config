@@ -3116,7 +3116,8 @@ Let's also rewrite some built-in to better /default/. Let's start with
         (add-hook 'circe-chat-mode-hook 'my-circe-prompt)
 
         (use-package helm-circe
-          :ensure t)
+          :ensure t
+          :bind ("<f8>" . helm-circe-channels))
         (use-package circe-notifications
           :load-path "~/.emacs.d/lisp/circe-notifications"
           :config
