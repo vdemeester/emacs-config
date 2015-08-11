@@ -3122,7 +3122,7 @@ Let's also rewrite some built-in to better /default/. Let's start with
 
         (use-package helm-circe
           :ensure t
-          :bind ("<f8>" . helm-circe-channels))
+          :bind ("<f8>" . helm-circe))
         (use-package circe-notifications
           :load-path "~/.emacs.d/lisp/circe-notifications"
           :config
