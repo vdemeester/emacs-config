@@ -2614,6 +2614,7 @@ Let's also rewrite some built-in to better /default/. Let's start with
        (progn
          (setq projectile-completion-system 'default)
          (setq projectile-enable-caching t)
+         (setq projectile-indexing-method 'alien)
          (projectile-global-mode)))
    #+END_SRC
 
@@ -2622,7 +2623,11 @@ Let's also rewrite some built-in to better /default/. Let's start with
    #+BEGIN_SRC emacs-lisp
      (use-package helm-projectile
        :ensure t
-       :config (helm-projectile-on))
+       :config
+       (progn
+         (setq projectile-switch-project-action 'helm-projectile)
+         (helm-projectile-on))
+       )
    #+END_SRC
 
 *** Perspective
@@ -2636,9 +2641,9 @@ Let's also rewrite some built-in to better /default/. Let's start with
       (use-package persp-projectile
         :ensure t
         :requires perspective
-        :config
+        :init
         (progn
-          (define-key projectile-mode-map (kbd "s-s") 'projectile-persp-switch-project)
+          (define-key projectile-command-map (kbd "p") 'projectile-persp-switch-project)
           (persp-mode)))
     #+END_SRC
 ** Compilation mode
