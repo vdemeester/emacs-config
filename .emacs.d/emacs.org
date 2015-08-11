@@ -3122,7 +3122,29 @@ Let's also rewrite some built-in to better /default/. Let's start with
 
         (use-package helm-circe
           :ensure t
-          :bind ("<f8>" . helm-circe))
+          ;; :bind ("<f8>" . helm-circe)
+          :config
+          (progn
+            ;;;###autoload
+            (defun helm-circe-all ()
+              "Custom helm buffer for circe channel and server buffers only."
+              (interactive)
+              (let ((sources
+                     '(helm-circe/circe-new-activity-source
+                       helm-circe/circe-channel-buffer-source
+                       helm-circe/circe-query-buffer-source
+                       helm-circe/circe-server-buffer-source)))
+                (helm :sources sources
+                      :buffer "*helm-circe*")))
+
+
+            (defun yenda/circe-connect-or-helm ()
+              (interactive)
+              (if (car (circe-server-buffers))
+                  (helm-circe-all)
+                (circe "znc-freenode")))
+
+            (global-set-key (kbd "<f8>") (lambda() (interactive) (yenda/circe-connect-or-helm)))))
         (use-package circe-notifications
           :load-path "~/.emacs.d/lisp/circe-notifications"
           :config
