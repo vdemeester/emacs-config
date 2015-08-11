@@ -7,4 +7,5 @@ if test "$#" -eq 0; then
     ADDITIONAL_ARGS="."
 fi
 
+# Launch it with dbus-launch to make sure notifications will work.. :D
 exec dbus-launch emacsclient --alternate-editor /usr/bin/emacs $ADDITIONAL_ARGS $@
