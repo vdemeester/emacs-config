@@ -1286,6 +1286,7 @@ Let's also rewrite some built-in to better /default/. Let's start with
         :config
         (progn
           (setq guide-key/guide-key-sequence t)
+          (setq guide-key/text-scale-amount 1)
           (setq guide-key/popup-window-position 'bottom)
           (guide-key-mode 1)
           (defun guide-key/my-hook-function-for-org-mode ()
