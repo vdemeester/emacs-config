@@ -983,6 +983,19 @@ Let's also rewrite some built-in to better /default/. Let's start with
         :bind ("C-=" . er/expand-region))
     #+END_SRC
 
+*** Hungry delete
+
+    Hungry-delete is plain and simple, it makes backspace and C-d
+    erase all consecutive white space in a given direction (instead of
+    just one).
+
+    #+BEGIN_SRC emacs-lisp
+      (use-package hungry-delete
+        :ensure t
+        :config
+        (global-hungry-delete-mode))
+    #+END_SRC
+
 
 *** Notifications
     Emacs now has notifications (freedesktop.org specifications)
