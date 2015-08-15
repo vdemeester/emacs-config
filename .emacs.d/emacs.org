@@ -1167,15 +1167,6 @@ Let's also rewrite some built-in to better /default/. Let's start with
     #+END_SRC
 
 
-*** Ace jump
-
-    #+BEGIN_SRC emacs-lisp
-      (use-package ace-jump-mode
-        :ensure t
-        :commands ace-jump-mode
-        :bind ("<f7>" . ace-jump-mode))
-    #+END_SRC
-
 *** Highligh indentation
 
 
