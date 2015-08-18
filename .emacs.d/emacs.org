@@ -2064,7 +2064,7 @@ Let's also rewrite some built-in to better /default/. Let's start with
               (pt-regexp exp (expand-file-name "./")))
           (progn
             (setq folder (nth 1 expressions))
-            (pt-regexp exp (expand-file-name folder))))
+            (pt-regexp exp (file-name-as-directory (expand-file-name folder)))))
         )
     #+END_SRC
 
