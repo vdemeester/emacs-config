@@ -170,7 +170,7 @@ It looks kinda like that (click to open the real one) :
      org-notes-directory-name "notes"
      org-sites-directory-name "sites"
      org-archive-directory-name "archive"
-     org-archive-file-pattern "%s_archive::"
+     org-archive-file-pattern "/%s_archive::"
      org-inbox-file "inbox.org"
      org-main-file "personal.org"
      org-journal-file "journal.org"
@@ -2225,7 +2225,7 @@ Let's also rewrite some built-in to better /default/. Let's start with
 
     #+BEGIN_SRC emacs-lisp
       (require 'org-archive)
-      (setq org-archive-location (concat org-archive-directory "%s_archive::"))
+      (setq org-archive-location (concat org-archive-directory org-archive-file-pattern))
     #+END_SRC
 
 *** Tags
@@ -2884,7 +2884,6 @@ Let's also rewrite some built-in to better /default/. Let's start with
    it's early development and I'm interested in, we'll use my fork
    that is checked-out in =$HOME/.emacs.d/lisp/docker= folder (using
    =$HOME/.config/mr/groups.d/emacs-config=).
-
 
    #+BEGIN_SRC emacs-lisp
      ;; Install dependencies
