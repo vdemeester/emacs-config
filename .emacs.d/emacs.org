@@ -449,7 +449,7 @@ It looks kinda like that (click to open the real one) :
 *** Comment/Uncomment region
 
     There is a cool function in emacs wich is =commend-dwim= (bounded
-    to =M-;=. This adds a comment at the right place (at the end of
+    to =M-;=). This adds a comment at the right place (at the end of
     the line, up the method, etc..
 
     Something I'm really use to, with IntelliJ or Eclipse, is being
