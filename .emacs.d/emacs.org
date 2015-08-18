@@ -2147,10 +2147,35 @@ Let's also rewrite some built-in to better /default/. Let's start with
            (previous-line 2)
            (org-edit-src-code)))
 
+       (defun my/org-insert-html-block ()
+         "Insert a `HTML-BLOCK` type in org-mode."
+         (interactive
+          (progn
+            (newline-and-indent)
+            (insert "#+BEGIN_HTML\n")
+            (newline-and-indent)
+            (insert "#+END_HTML\n")
+            (previous-line 2))))
+
+
+       (defun my/org-insert-blockquote-block ()
+         "Insert a `BLOCKQUOTE-BLOCK` type in org-mode."
+         (interactive
+          (progn
+            (newline-and-indent)
+            (insert "#+BEGIN_BLOCKQUOTE\n")
+            (newline-and-indent)
+            (insert "#+END_BLOCKQUOTE\n")
+            (previous-line 2))))
+
+
+
        (add-hook 'org-mode-hook
                  '(lambda ()
                     (local-set-key (kbd "C-c s e") 'org-edit-src-code)
-                    (local-set-key (kbd "C-c s i") 'my/org-insert-src-block))
+                    (local-set-key (kbd "C-c s i") 'my/org-insert-src-block)
+                    (local-set-key (kbd "C-c s h") 'my/org-insert-html-block)
+                    (local-set-key (kbd "C-c s b") 'my/org-insert-blockquote-block))
                  'append)
      #+end_src
 
