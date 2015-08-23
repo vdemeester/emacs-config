@@ -1047,7 +1047,9 @@ Let's also rewrite some built-in to better /default/. Let's start with
       (define-key vde/toggle-map "l" #'toggle-truncate-lines)
       (define-key vde/toggle-map "q" #'toggle-debug-on-quit)
       (define-key vde/toggle-map "r" #'dired-toggle-read-only)
-      (define-key vde/toggle-map' "w" #'whitespace-mode)
+      (define-key vde/toggle-map "w" #'whitespace-mode)
+      (define-key vde/toggle-map "u" #'subword-mode)
+      (define-key vde/toggle-map "p" #'superword-mode)
     #+END_SRC
 
     And now let's define a ~launcher-map~ to launch major modes and
