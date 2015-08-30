@@ -2920,6 +2920,31 @@ Let's also rewrite some built-in to better /default/. Let's start with
        :load-path "~/.emacs.d/lisp/docker/")
    #+END_SRC
 
+*** docker-dev minor mode
+
+    I use heavily emacs when developping on docker with go-config (I
+    might make more general minor mode that are golang centric but
+    this is my first attempt).
+
+     #+BEGIN_SRC emacs-lisp
+       ;; Define some function
+       (defun test-integration-cli ()
+         "Run test-integration-cli for docker. If the symbol-at-point is a test,
+       a func starting with Test, it will only run this one, otherwise it will
+       prompt for the expression to run. It will run all if the expression is empty."
+         )
+
+       ;; Define the minor mode
+       (define-minor-mode docker-dev-mode
+         "Provide function to ease the dev on Docker projects :3"
+         :lighter "🐳"
+         :keymap (let ((map (make-sparse-keymap)))
+                   (define-key map (kbd "C-c f") 'insert-foo)
+                   map)
+         )
+    #+END_SRC
+
+
 
 ** Restclient
 
