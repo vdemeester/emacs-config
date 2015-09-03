@@ -1335,20 +1335,6 @@ Let's also rewrite some built-in to better /default/. Let's start with
        :ensure t
        :bind ("C-h C-m" . discover-my-major))
    #+END_SRC
-
-** Manage my minor
-
-   Let's also use =manage-my-minor= to be able to enable/disable
-   minor-modes.
-
-
-   #+BEGIN_SRC emacs-lisp
-     (use-package manage-minor-mode
-       :ensure t
-       :bind ("C-c x n" . manage-minor-mode))
-   #+END_SRC
-
-
 ** Helm
 
     #+BEGIN_QUOTE
@@ -2781,14 +2767,6 @@ Let's also rewrite some built-in to better /default/. Let's start with
      ;; Load it
      (load-provided-configuration user-emacs-provided-directory)
    #+END_SRC
-
-** Lua
-
-   #+BEGIN_SRC emacs-lisp
-     (use-package lua-mode
-       :ensure t)
-   #+END_SRC
-
 ** Lisp(s)
 *** General
 
@@ -2890,7 +2868,6 @@ Let's also rewrite some built-in to better /default/. Let's start with
      (use-package yaml-mode
        :ensure t)
    #+END_SRC
-
 
    #+BEGIN_SRC emacs-lisp
      (use-package toml-mode
@@ -3080,41 +3057,9 @@ Let's also rewrite some built-in to better /default/. Let's start with
      ;;; Greek letters - C-u C-\ greek ;; C-\ to revert to default
      ;;; ς ε ρ τ υ θ ι ο π α σ δ φ γ η ξ κ λ ζ χ ψ ω β ν μ
    #+END_SRC
-
-** Floobits
-
-   I'm trying out [[https://floobits.com/][Floobits]] @work for remote pairing, mostly with
-   intellij idea but let's try it out in Emacs =\o/=.
-
-   #+BEGIN_SRC emacs-lisp
-     (use-package floobits
-       :ensure t)
-   #+END_SRC
-
-** Vagrant
-
-   Let's add support for vagrant.
-
-   #+BEGIN_SRC emacs-lisp
-     (use-package vagrant
-       :ensure t
-       :defer t)
-   #+END_SRC
-
-   And let's also add a TRAMP add-on for Vagrant. The idea is to be
-   able to do something like =/vagrant:mybox/etc/hostname=
-
-   #+BEGIN_SRC emacs-lisp
-     (use-package vagrant-tramp
-       :ensure t
-       :defer t)
-   #+END_SRC
-
-
 ** Gist
 
    Interact with Github gist(s) from Emacs :)
-
 
    #+BEGIN_SRC emacs-lisp
      (use-package gist
@@ -3174,7 +3119,6 @@ Let's also rewrite some built-in to better /default/. Let's start with
 
         (use-package helm-circe
           :ensure t
-          ;; :bind ("<f8>" . helm-circe)
           :config
           (progn
             ;;;###autoload
