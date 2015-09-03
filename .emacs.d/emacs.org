@@ -3076,7 +3076,10 @@ Let's also rewrite some built-in to better /default/. Let's start with
 
    #+BEGIN_SRC emacs-lisp
      (use-package scratch
-       :ensure t)
+       :ensure t
+       :config
+       (progn
+         (define-key vde/launcher-map "b" #'scratch)))
    #+END_SRC
 
 * Irc
