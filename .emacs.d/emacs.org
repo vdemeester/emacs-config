@@ -732,60 +732,7 @@ Let's also rewrite some built-in to better /default/. Let's start with
           ("v" Buffer-menu-select "select" :color blue)
           ("o" Buffer-menu-other-window "other-window" :color blue)
           ("q" quit-window "quit" :color blue))
-        (define-key Buffer-menu-mode-map "." 'hydra-buffer-menu/body)
-        ;; apropos
-        (defhydra hydra-apropos (:color blue
-                                        :hint nil)
-          "
-      _a_propos _c_ommand
-      _d_ocumentation _l_ibrary
-      _v_ariable _u_ser-option
-      ^ ^ valu_e_"
-          ("a" apropos)
-          ("d" apropos-documentation)
-          ("v" apropos-variable)
-          ("c" apropos-command)
-          ("l" apropos-library)
-          ("u" apropos-user-option)
-          ("e" apropos-value))
-        (global-set-key (kbd "C-c h") 'hydra-apropos/body)
-        ;; Window managing
-        (global-set-key
-         (kbd "C-M-o")
-         (defhydra hydra-window (:color amaranth)
-           "
-      Move Point^^^^   Move Splitter   ^Ace^                       ^Split^
-      --------------------------------------------------------------------------------
-      _w_, _<up>_      Shift + Move    _C-a_: ace-window           _2_: split-window-below
-      _a_, _<left>_                    _C-s_: ace-window-swap      _3_: split-window-right
-      _s_, _<down>_                    _C-d_: ace-window-delete    ^ ^
-      _d_, _<right>_                   ^   ^                       ^ ^
-      You can use arrow-keys or WASD.
-      "
-           ("2" split-window-below nil)
-           ("3" split-window-right nil)
-           ("a" windmove-left nil)
-           ("s" windmove-down nil)
-           ("w" windmove-up nil)
-           ("d" windmove-right nil)
-           ("A" hydra-move-splitter-left nil)
-           ("S" hydra-move-splitter-down nil)
-           ("W" hydra-move-splitter-up nil)
-           ("D" hydra-move-splitter-right nil)
-           ("<left>" windmove-left nil)
-           ("<down>" windmove-down nil)
-           ("<up>" windmove-up nil)
-           ("<right>" windmove-right nil)
-           ("<S-left>" hydra-move-splitter-left nil)
-           ("<S-down>" hydra-move-splitter-down nil)
-           ("<S-up>" hydra-move-splitter-up nil)
-           ("<S-right>" hydra-move-splitter-right nil)
-           ("C-a" ace-window nil)
-           ("u" hydra--universal-argument nil)
-           ("C-s" (lambda () (interactive) (ace-window 4)) nil)
-           ("C-d" (lambda () (interactive) (ace-window 16)) nil)
-           ("q" nil "quit")))
-        )
+        (define-key Buffer-menu-mode-map "." 'hydra-buffer-menu/body))
     #+END_SRC
 
 
@@ -925,6 +872,9 @@ Let's also rewrite some built-in to better /default/. Let's start with
     #+BEGIN_SRC emacs-lisp
       (setq dired-listing-switches "-laGh1v --group-directories-first")
     #+END_SRC
+
+
+*** Images
 
     I tend to use emacs to look at images too — because it does work,
     and I don't have to open or switch to another viewer (Yeah, I'm
@@ -1095,8 +1045,6 @@ Let's also rewrite some built-in to better /default/. Let's start with
       ;; From https://github.com/abo-abo/ace-window/wiki but adapted to bepo
       (use-package ace-window
         :ensure t
-        :bind (("C-x C-o" . ace-window)
-               ("C-x M-s" . avi-goto-word-1))
         :config
         (set-face-attribute 'aw-leading-char-face nil :foreground "deep sky blue" :weight 'bold :height 3.0)
         (set-face-attribute 'aw-mode-line-face nil :inherit 'mode-line-buffer-id :foreground "lawn green")
@@ -1182,7 +1130,7 @@ Let's also rewrite some built-in to better /default/. Let's start with
     #+END_SRC
 
 
-*** Highligh indentation
+*** Highlight indentation
 
 
     #+BEGIN_SRC emacs-lisp
