@@ -332,23 +332,8 @@ It looks kinda like that (click to open the real one) :
    Answering yes and no to each question from Emacs can be tedious, a single y or n will suffice.
 
    #+BEGIN_SRC emacs-lisp
- (fset 'yes-or-no-p 'y-or-n-p)
+     (fset 'yes-or-no-p 'y-or-n-p)
    #+END_SRC
-
-   Add some macros to be able to conditionnally load stuff (taken
-   from [[http://emacs-fu.blogspot.fr/2008/12/using-packages-functions-only-if-they.html][emacs-fu]].
-
-
-   #+BEGIN_SRC emacs-lisp
-     (defmacro require-maybe (feature &optional file)
-       "*Try to require FEATURE, but don't signal an error if `require' fails."
-       `(require ,feature ,file 'noerror))
-
-     (defmacro when-available (func foo)
-       "*Do something if FUNCTION is available."
-       `(when (fboundp ,func) ,foo))
-   #+END_SRC
-
 
 *** Setting the PATH
 
