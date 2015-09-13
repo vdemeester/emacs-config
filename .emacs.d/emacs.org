@@ -2494,6 +2494,17 @@ Let's also rewrite some built-in to better /default/. Let's start with
               ("znk" :components ("znk-notes" "znk-notes-previews" "znk-static"))
               ))
     #+END_SRC
+
+    Now, I also want to use =org-mode= for some of my talks (if not
+    all), and [[https://github.com/coldnew/org-ioslide][=org-ioslide=]] looks pretty good.
+
+
+    #+BEGIN_SRC emacs-lisp
+      (use-package ox-ioslide
+        :ensure t)
+    #+END_SRC
+
+
 *** Protocol
 
     Trying out org-protocol based on
