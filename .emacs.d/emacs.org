@@ -3110,7 +3110,8 @@ Let's also rewrite some built-in to better /default/. Let's start with
               (if (car (circe-server-buffers))
                   (helm-circe-all)
                 (circe "znc-freenode")
-                (circe "slack-zenika")))
+                ;; (circe "slack-zenika")
+                ))
 
             (global-set-key (kbd "<f8>") (lambda() (interactive) (yenda/circe-connect-or-helm)))))
         (use-package circe-notifications
