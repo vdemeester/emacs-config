@@ -721,7 +721,7 @@ Let's also rewrite some built-in to better /default/. Let's start with
     #+END_SRC
 
 
-*** Async
+*** Async & bacground
 
    =async.el= is a module for doing asynchronous processing in
    Emacs. Let's load it as it's gonna be useful. Let's also load
@@ -735,6 +735,19 @@ Let's also rewrite some built-in to better /default/. Let's start with
        :init
        (dired-async-mode 1))
    #+END_SRC
+
+   =bpr= from ilya babanov provides a way to do asynchronuous
+   processing in Emacs but with style and output.
+
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package bpr
+       :ensure t
+       :init (progn
+               (setq bpr-colorize-output t)
+               (setq bpr-close-after-success t)))
+   #+END_SRC
+
 
 *** Dired
 
