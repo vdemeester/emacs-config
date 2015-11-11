@@ -743,9 +743,9 @@ Let's also rewrite some built-in to better /default/. Let's start with
    #+BEGIN_SRC emacs-lisp
      (use-package bpr
        :ensure t
-       :init (progn
-               (setq bpr-colorize-output t)
-               (setq bpr-close-after-success t)))
+       :init
+       (setq bpr-colorize-output t)
+       (setq bpr-close-after-success t))
    #+END_SRC
 
 
