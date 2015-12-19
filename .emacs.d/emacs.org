@@ -1488,18 +1488,7 @@ Let's also rewrite some built-in to better /default/. Let's start with
          (setq magit-last-seen-setup-instructions "2.1.0"))
      #+end_src
 
-***** Magit git-svn integration
 
-      At work, I use ~git-svn~ to be able to use git locally but integrating in the
-      subversion they use. Integrating ~magit~ and ~git-svn~ is a bonus but, as it
-      exists, let's do it :).
-
-      #+begin_src emacs-lisp
-        (use-package magit-svn
-          :ensure t)
-      #+end_src
-
-      The /quick key/ to get the ~magit-svn~ menu is ~N~.
 **** git fringe decoration
 
      #+begin_src emacs-lisp
