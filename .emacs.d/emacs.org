@@ -335,6 +335,13 @@ It looks kinda like that (click to open the real one) :
      (fset 'yes-or-no-p 'y-or-n-p)
    #+END_SRC
 
+   Let Emacs display the unfinished keystroke quickly (by default it's
+   1 second).
+
+   #+BEGIN_SRC emacs-lisp
+     (setq echo-keystrokes 0.1)
+   #+END_SRC
+
 *** Setting the PATH
 
     I'm playing a lot with the =$PATH= variable in my shell, and I
