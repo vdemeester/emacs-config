@@ -2988,6 +2988,9 @@ Let's also rewrite some built-in to better /default/. Let's start with
          (sh-mode                    . "sh")
          (org-mode                   . "ꙮ")
          (go-mode                    . "🐹")
+         (compilation-minor-mode     . "🚨")
+         (company-mode               . "")
+         (guide-key-mode             . "")
          ;; Major modes
          (term-mode                  . "⌨")
          (clojure-mode               . " Ɩ")
@@ -2997,11 +3000,13 @@ Let's also rewrite some built-in to better /default/. Let's start with
          (python-mode                . " Py")
          (emacs-lisp-mode            . " EL")
          (markdown-mode              . " md")
-         (magit                      . " ma")
+         (magit                      . "")
          (haskell-mode               . " λ")
-         (flyspell-mode              . " fs")
-         (flymake-mode               . " fm")
-         (flycheck-mode              . " fc"))
+         (lisp-interaction-mode      . " ζ")
+         (lisp-mode                  . " ζ")
+         (flyspell-mode              . "")
+         (flymake-mode               . "")
+         (flycheck-mode              . ""))
        "Alist for `clean-mode-line'.
 
      When you add a new element to the alist, keep in mind that you
