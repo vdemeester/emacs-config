@@ -291,10 +291,14 @@ It looks kinda like that (click to open the real one) :
     First let's install the theme(s) and load the new theme
 
     #+begin_src emacs-lisp
-      (use-package leuven-theme
-                   :ensure t
-                   :init
-                   (load-theme 'leuven))
+      ;; (use-package leuven-theme
+      ;;   :ensure t
+      ;;   :init
+      ;;   (load-theme 'leuven))
+      (use-package spacemacs-theme
+        :ensure t
+        :init
+        (load-theme 'spacemacs-light))
     #+end_src
 
 *** Powerline
