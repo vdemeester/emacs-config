@@ -2359,7 +2359,6 @@ Let's also rewrite some built-in to better /default/. Let's start with
 
 *** Pomodoro
 
-
     #+BEGIN_SRC emacs-lisp
       (use-package org-pomodoro
         :ensure t)
