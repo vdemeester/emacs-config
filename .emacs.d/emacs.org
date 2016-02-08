@@ -1133,6 +1133,7 @@ Let's also rewrite some built-in to better /default/. Let's start with
           (add-to-list 'popwin:special-display-config `("*Compile-Log*" :height 0.5 :noselect t))
           (add-to-list 'popwin:special-display-config `("*Remember*" :height 0.5))
           (add-to-list 'popwin:special-display-config `("*All*" :height 0.5))
+          (add-to-list 'popwin:special-display-config `("*Go Test*" :height 0.3))
           (add-to-list 'popwin:special-display-config `(flycheck-error-list-mode :height 0.5 :regexp t :position bottom))
           (popwin-mode 1)
           (global-set-key (kbd "C-z") popwin:keymap)))
