@@ -25,4 +25,15 @@
   (and (featurep 'org-wl)(unload-feature 'org-wl t ))
   (and (featurep 'org)(unload-feature 'org t)))
 
+
+(defun vde/unsaved-changes ()
+  (interactive)
+  (diff-buffer-with-file (current-buffer)))
+
+(defun vde/find-file-as-sudo ()
+  (interactive)
+  (let ((file-name (buffer-file-name)))
+    (when file-name
+      (find-alternate-file (concat "/sudo::" file-name)))))
+
 (provide 'vde-functions)
