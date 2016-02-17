@@ -1969,7 +1969,7 @@ Let's also rewrite some built-in to better /default/. Let's start with
             '(;; other entries
               ("t" "Inbox list item" entry
                (file+headline (expand-file-name org-main-file org-todos-directory) "Inbox")
-               "* %?\n %i\n %a")
+               "* TODO [#A] %?\nSCHEDULED: %(org-insert-time-stamp (org-read-date nil t \"+0d\"))\n")
               ("j" "Journal entry" plain
                (file+datetree+prompt (exand-file-name org-journal-file org-root-directory))
                "%K - %a\n%i\n%?\n")
