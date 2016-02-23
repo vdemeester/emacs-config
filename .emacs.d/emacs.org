@@ -2416,7 +2416,10 @@ Let's also rewrite some built-in to better /default/. Let's start with
 
     #+BEGIN_SRC emacs-lisp
       (use-package org-pomodoro
-        :ensure t)
+        :ensure t
+        :init
+        (setq org-pomodoro-play-sounds 1)
+        (setq org-pomodoro-audio-player "paplay"))
     #+END_SRC
 
 *** Publishing
