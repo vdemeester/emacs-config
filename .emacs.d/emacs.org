@@ -175,6 +175,7 @@ It looks kinda like that (click to open the real one) :
      org-main-file "personal.org"
      org-journal-file "journal.org"
      org-stackoverflow-file "stack.org"
+     org-zenika-file "zenika.org"
      org-web-article-file "ent.org"
      org-publish-folder (substitute-env-in-file-name "$HOME/var/public_html")
      sites-folder (substitute-env-in-file-name "$HOME/src/sites/")
@@ -1969,7 +1970,10 @@ Let's also rewrite some built-in to better /default/. Let's start with
             '(;; other entries
               ("t" "Inbox list item" entry
                (file+headline (expand-file-name org-main-file org-todos-directory) "Inbox")
-               "* TODO [#A] %?\nSCHEDULED: %(org-insert-time-stamp (org-read-date nil t \"+0d\"))\n")
+               "* TODO %?\nSCHEDULED: %(org-insert-time-stamp (org-read-date nil t \"+0d\"))\n")
+              ("z" "Zenika Inbox list item" entry
+               (file+headline (expand-file-name org-zenika-file org-todos-directory) "Inbox")
+               "* TODO %?\nSCHEDULED: %(org-insert-time-stamp (org-read-date nil t \"+0d\"))\n")
               ("j" "Journal entry" plain
                (file+datetree+prompt (exand-file-name org-journal-file org-root-directory))
                "%K - %a\n%i\n%?\n")
