@@ -1339,6 +1339,7 @@ Let's also rewrite some built-in to better /default/. Let's start with
                ("C-c b" . helm-mini)
                ("C-x C-b" . helm-buffers-list)
                ("M-y" . helm-show-kill-ring)
+               ("C-c M-i" . helm-imenu)
                ("C-x c o" . helm-occur)))
       ;; (add-to-list 'helm-completing-read-handlers-alist '(org-refile)) ; helm-mode does not do org-refile well
       ;; (add-to-list 'helm-completing-read-handlers-alist '(org-agenda-refile)) ; same goes for org-agenda-refile
