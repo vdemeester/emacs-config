@@ -883,6 +883,18 @@ Let's also rewrite some built-in to better /default/. Let's start with
       (setq dired-listing-switches "-laGh1v --group-directories-first")
     #+END_SRC
 
+    Let's also use =peep-dired= wich allows to quickly preview files
+    from a dired buffer (images, …)
+
+
+    #+BEGIN_SRC emacs-lisp
+      (use-package peep-dired
+        :ensure t
+        :defer t ; don't access `dired-mode-map' until `peep-dired' is loaded
+        )
+    #+END_SRC
+
+
 
 *** Images
 
