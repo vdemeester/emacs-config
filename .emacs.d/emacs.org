@@ -886,12 +886,25 @@ Let's also rewrite some built-in to better /default/. Let's start with
     Let's also use =peep-dired= wich allows to quickly preview files
     from a dired buffer (images, …)
 
-
     #+BEGIN_SRC emacs-lisp
       (use-package peep-dired
         :ensure t
         :defer t ; don't access `dired-mode-map' until `peep-dired' is loaded
+        :bind (:map dired-mode-map
+                    ("P" . peep-dired))
         )
+    #+END_SRC
+
+    Another really cool package is dired-narrow, that allows to
+    dynamically filter a dired folder.
+
+
+    #+BEGIN_SRC emacs-lisp
+      (use-package dired-narrow
+        :ensure t
+        :defer t
+        :bind (:map dired-mode-map
+                    ("/" . dired-narrow)))
     #+END_SRC
 
 
