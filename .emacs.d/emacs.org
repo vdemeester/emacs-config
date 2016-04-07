@@ -1741,7 +1741,7 @@ Let's also rewrite some built-in to better /default/. Let's start with
                 '("emacs-lisp" "python" "C" "sh" "java" "js" "clojure" "C++" "css"
                   "calc" "dot" "gnuplot" "ledger" "R" "sass" "screen" "sql" "awk" 
                   "ditaa" "haskell" "latex" "lisp" "matlab" "org" "perl" "ruby"
-                  "sqlite" "rust" "scala" "golang")))
+                  "sqlite" "rust" "scala" "golang" "restclient")))
            (list (ido-completing-read "Source code type: " src-code-types))))
         (progn
           (newline-and-indent)
@@ -2998,8 +2998,13 @@ Let's also rewrite some built-in to better /default/. Let's start with
    #+BEGIN_SRC emacs-lisp
      (use-package restclient
        :ensure t)
+     (use-package ob-restclient
+       :ensure t
+       :config
+       (org-babel-do-load-languages
+        'org-babel-load-languages
+        '((restclient . t))))
    #+END_SRC
-
 
 ** Ansible
 
