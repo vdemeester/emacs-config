@@ -2484,17 +2484,6 @@ Let's also rewrite some built-in to better /default/. Let's start with
          (setq magit-last-seen-setup-instructions "2.1.0"))
      #+end_src
 
-     Add magit github pull request support.
-
-
-     #+BEGIN_SRC emacs-lisp
-       (use-package magit-gh-pulls
-         :ensure t
-         :config
-         (add-hook 'magit-mode-hook 'turn-on-magit-gh-pulls))
-     #+END_SRC
-
-
 **** git fringe decoration
 
      #+begin_src emacs-lisp
