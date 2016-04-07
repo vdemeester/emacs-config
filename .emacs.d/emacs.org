@@ -1790,6 +1790,25 @@ Let's also rewrite some built-in to better /default/. Let's start with
        (add-to-list 'auto-mode-alist '("\\.\\(org\\|org_archive\\|txt\\)$" . org-mode))
      #+end_src
 
+     Let's /beautify/ org-mode a little bit too, changing some
+     defaults
+
+
+     #+BEGIN_SRC emacs-lisp
+       ;;; Change the ellipsis (default is ...)
+       (setq org-ellipsis " ↴")
+       ;; Change the default bullets
+       (font-lock-add-keywords 'org-mode
+                               '(("^ +\\([-*]\\) "
+                                  (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
+       ;;; Use org-bullets
+       (use-package org-bullets
+         :config
+         (setq org-bullets-face-name (quote org-bullet-face))
+         (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
+     #+END_SRC
+
+
      Let's also define the default /todo-keywords/ and the workflow
      between them.
 
