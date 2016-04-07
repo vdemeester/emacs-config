@@ -1301,7 +1301,966 @@ Let's also rewrite some built-in to better /default/. Let's start with
      (unless (server-running-p server-name)
        (server-start))))
    #+END_SRC
+* Org 😎
 
+  #+BEGIN_QUOTE
+  Org-mode is a powerful system for organizing your complex life with simple plain-text files. It seamlessly integrates all your notes, mindmaps, TODO lists, calendar, day planner, and project schedules into a single system that can be easily searched (e.g. by grep), encrypted (e.g. by GnuPG), backed up and synced (e.g. by Dropbox), imported/exported, and accessed on the go (e.g. on an iPhone or Android smartphone). It can even be used for authoring web pages and documents.
+  #+END_QUOTE
+
+  Depending on how this section grows, org-mode might need its own litterate
+  org configuration file.
+
+** Standard configuration
+
+     First let's define the default directory for the =org= files, the one to be added
+     to the agenda and the archives.
+
+     #+begin_src emacs-lisp
+       (require 'find-lisp)
+       (setq org-directory org-root-directory)
+       (setq org-agenda-files (find-lisp-find-files org-todos-directory "\.org$"))
+       ;; (setq org-enforce-todo-dependencies t)
+       (setq org-enforce-todo-checkbox-dependencies t)
+
+       ;;open agenda in current window
+       (setq org-agenda-window-setup (quote current-window))
+       ;;warn me of any deadlines in next 7 days
+       (setq org-deadline-warning-days 7)
+       ;;show me tasks scheduled or due in next fortnight
+       (setq org-agenda-span (quote fortnight))
+       ;;don't show tasks as scheduled if they are already shown as a deadline
+       (setq org-agenda-skip-scheduled-if-deadline-is-shown t)
+       ;;don't give awarning colour to tasks with impending deadlines
+       ;;if they are scheduled to be done
+       (setq org-agenda-skip-deadline-prewarning-if-scheduled (quote pre-scheduled))
+       ;;don't show tasks that are scheduled or have deadlines in the
+       ;;normal todo list
+       (setq org-agenda-todo-ignore-deadlines (quote all))
+       (setq org-agenda-todo-ignore-scheduled (quote all))
+       ;;sort tasks in order of when they are due and then by priority
+       (setq org-agenda-sorting-strategy
+         (quote
+          ((agenda deadline-up priority-down)
+           (todo priority-down category-keep)
+           (tags priority-down category-keep)
+           (search category-keep))))
+     #+end_src
+
+     We'll also set which files should be opened using org-mode :
+     =*.org=, =*.org_archive=, =*.txt=.
+
+     #+begin_src emacs-lisp
+       (add-to-list 'auto-mode-alist '("\\.\\(org\\|org_archive\\|txt\\)$" . org-mode))
+     #+end_src
+
+     Let's /beautify/ org-mode a little bit too, changing some
+     defaults
+
+
+     #+BEGIN_SRC emacs-lisp
+       ;;; Change the ellipsis (default is ...)
+       (setq org-ellipsis " ↴")
+       ;; Change the default bullets
+       (font-lock-add-keywords 'org-mode
+                               '(("^ +\\([-*]\\) "
+                                  (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
+       ;;; Use org-bullets
+       (use-package org-bullets
+         :config
+         (setq org-bullets-face-name (quote org-bullet-face))
+         (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
+     #+END_SRC
+
+
+     Let's also define the default /todo-keywords/ and the workflow
+     between them.
+
+- =TODO= : task not started yet, part of the backlog :)
+- =PROGRESS= : task that are currently in progress, should be a minimum
+- =BLOCKED= : task that I start working on but cannot anymore (for
+  some reason), thus they are blocked
+- =REVIEW= : task that should be done, but I need or wait for a
+  review (by someone else or by me)
+- =DONE= : task that are completed.
+- =ARCHIVED= : same as done but keep it here (and not moving into archive)
+
+  #+begin_src emacs-lisp
+    (defface org-progress ; font-lock-warning-face
+      (org-compatible-face nil
+        '((((class color) (min-colors 16) (background light)) (:foreground "#A197BF" :bold t :background "#E8E6EF" :box (:line-width 1 :color "#A197BF")))
+          (((class color) (min-colors 8)  (background light)) (:foreground "blue"  :bold t))
+          (t (:inverse-video t :bold t))))
+      "Face for PROGRESS keywords."
+      :group 'org-faces)
+    (defface org-paused ; font-lock-warning-face
+      (org-compatible-face nil
+        '((((class color) (min-colors 16) (background light)) (:foreground "#D6CCF4" :bold t :background "#ECE9F5" :box (:line-width 1 :color "#D6CCF4")))
+          (((class color) (min-colors 8)  (background light)) (:foreground "cyan"  :bold t))
+          (t (:inverse-video t :bold t))))
+      "Face for PAUSED keywords."
+      :group 'org-faces)
+    (defface org-cancelled ; font-lock-warning-face
+      (org-compatible-face nil
+        '((((class color) (min-colors 16) (background light)) (:foreground "#3D3D3D" :bold t :background "#7A7A7A" :box (:line-width 1 :color "#3D3D3D")))
+          (((class color) (min-colors 8)  (background light)) (:foreground "black"  :bold t))
+          (t (:inverse-video t :bold t))))
+      "Face for PROGRESS keywords."
+      :group 'org-faces)
+    (defface org-review ; font-lock-warning-face
+      (org-compatible-face nil
+        '((((class color) (min-colors 16) (background light)) (:foreground "#FC9B17" :bold t :background "#FEF2C2" :box (:line-width 1 :color "#FC9B17")))
+          (((class color) (min-colors 8)  (background light)) (:foreground "yellow"  :bold t))
+          (t (:inverse-video t :bold t))))
+      "Face for PROGRESS keywords."
+      :group 'org-faces)
+    (defface org-blocked ; font-lock-warning-face
+      (org-compatible-face nil
+        '((((class color) (min-colors 16) (background light)) (:foreground "#FF8A80" :bold t :background "#ffdad6" :box (:line-width 1 :color "#FF8A80")))
+          (((class color) (min-colors 8)  (background light)) (:foreground "red"  :bold t))
+          (t (:inverse-video t :bold t))))
+      "Face for PROGRESS keywords."
+      :group 'org-faces)
+
+    (setq org-todo-keywords
+          (quote ((sequence "TODO(t!)" "PROGRESS(p!)" "PAUSED" "BLOCKED" "REVIEW" "|" "DONE(d!)" "ARCHIVED")
+                  (sequence "REPORT(r!)" "BUG" "KNOWNCAUSE" "|" "FIXED(f!)")
+                  (sequence "|" "CANCELLED(c@)"))))
+
+
+    (setq org-todo-keyword-faces
+          (quote (("TODO" . org-todo)
+                  ("PROGRESS" . org-progress)
+                  ("PAUSED" . org-paused)
+                  ("BLOCKED" . org-blocked)
+                  ("REVIEW" . org-review)
+                  ("DONE" . org-done)
+                  ("ARCHIVED" . org-done)
+                  ("CANCELLED" . org-cancelled)
+                  ("REPORT" . org-todo)
+                  ("BUG" . org-blocked)
+                  ("KNOWNCAUSE" . org-review)
+                  ("FIXED" . org-done))))
+
+    (setq org-todo-state-tags-triggers
+          (quote (("CANCELLED" ("CANCELLED" . t)))))
+  #+end_src
+
+
+  I have a folder with notes, where I don't want =auto-fill-mode=
+  enabled, but =visual-line-mode=, let's do that.
+
+#+BEGIN_SRC emacs-lisp
+  (defun turn-on-auto-visual-line (expression)
+    (if buffer-file-name
+        (cond ((string-match expression buffer-file-name)
+               (progn
+                 (auto-fill-mode -1)
+                 (visual-line-mode 1))
+               ))))
+#+END_SRC
+
+  Undefine some binding (=C-c [=, =C-c ]= since this breaks org-agenda files that
+  have been defined in this file (a directory).
+
+  #+begin_src emacs-lisp
+    (add-hook 'org-mode-hook
+              '(lambda ()
+                 (org-defkey org-mode-map "\C-c[" 'undefined)
+                 (org-defkey org-mode-map "\C-c]" 'undefined)
+                 (org-defkey org-mode-map "\C-c;" 'undefined)
+                 (turn-on-auto-visual-line (concat org-notes-directory "/*")))
+              'append)
+  #+end_src
+
+  All org-mode buffers will be automatically saved each hours.
+
+  #+BEGIN_SRC emacs-lisp
+       (run-at-time "00:59" 3600 'org-save-all-org-buffers)
+  #+END_SRC
+
+  And add some miscellaneous stuff.
+
+  #+BEGIN_SRC emacs-lisp
+    (setq
+     org-completion-use-ido t         ;; use IDO for completion
+     org-cycle-separator-lines 0      ;; Don't show blank lines
+     org-catch-invisible-edits 'error ;; don't edit invisible text
+     org-refile-targets '((org-agenda-files . (:maxlevel . 6)))
+     )
+  #+END_SRC
+
+  Let's also define a =org= related keymap map.
+
+  #+BEGIN_SRC emacs-lisp
+    (define-prefix-command 'vde/org-map)
+    (global-set-key (kbd "C-c o") 'vde/org-map)
+    (define-key vde/org-map "p" (lambda () (interactive) (find-file (expand-file-name org-main-file org-todos-directory))))
+    (define-key vde/org-map "n" (lambda () (interactive) (find-file org-notes-directory)))
+  #+END_SRC
+
+  If a parent has all it's children =DONE=, make it =DONE= too.
+
+  #+BEGIN_SRC emacs-lisp
+    (defun org-summary-todo (n-done n-not-done)
+      "Switch entry to DONE when all subentries are done, to PROGRESS otherwise."
+      (let (org-log-done org-log-states)   ; turn off logging
+        (org-todo (if (= n-not-done 0) "DONE" "PROGRESS"))))
+
+    (add-hook 'org-after-todo-statistics-hook 'org-summary-todo)
+  #+END_SRC
+
+** Speed commands
+
+   Org-mode speed keys (or spee commands) are really cool, here is a
+   quotation from the manual
+
+   #+BEGIN_QUOTE
+   Single keys can be made to execute commands when the cursor is at the beginning of a headline, i.e., before the first star.
+   #+END_QUOTE
+
+   #+BEGIN_SRC emacs-lisp
+     (setq org-use-speed-commands t)
+   #+END_SRC
+
+   However the default =n= (next) and =p= (previous) speed keys
+   aren't optimal for my use. When I go to the next one using speed
+   commands I want the others closed. Let's redefine it.
+
+   #+BEGIN_SRC emacs-lisp
+     (defun my/org-show-next-heading-tidily ()
+       "Show next entry, keeping other entries closed."
+       (if (save-excursion (end-of-line) (outline-invisible-p))
+           (progn (org-show-entry) (show-children))
+         (outline-next-heading)
+         (unless (and (bolp) (org-on-heading-p))
+           (org-up-heading-safe)
+           (hide-subtree)
+           (error "Boundary reached"))
+         (org-overview)
+         (org-reveal t)
+         (org-show-entry)
+         (show-children)))
+
+     (defun my/org-show-previous-heading-tidily ()
+       "Show previous entry, keeping other entries closed."
+       (let ((pos (point)))
+         (outline-previous-heading)
+         (unless (and (< (point) pos) (bolp) (org-on-heading-p))
+           (goto-char pos)
+           (hide-subtree)
+           (error "Boundary reached"))
+         (org-overview)
+         (org-reveal t)
+         (org-show-entry)
+         (show-children)))
+   #+END_SRC
+
+   And let's bind it.
+
+   #+BEGIN_SRC emacs-lisp
+     (setq org-speed-commands-user '(("n" . my/org-show-next-heading-tidily)
+                                     ("p" . my/org-show-previous-heading-tidily)
+                                     (":" . org-set-tags-command)
+                                     ("c" . org-toggle-checkbox)
+                                     ("d" . org-cut-special)
+                                     ("P" . org-set-property)
+                                     ("C" . org-clock-display)
+                                     ("z" . (lambda () (interactive)
+                                              (org-tree-to-indirect-buffer)
+                                              (other-window 1)
+                                              (delete-other-windows)))))
+   #+END_SRC
+
+** Captures
+
+   First thing first, bind a key sequence to org-capture.
+
+   #+BEGIN_SRC emacs-lisp
+     (define-key vde/org-map "r" 'org-capture)
+   #+END_SRC
+
+   Setup captures templates..
+
+   #+BEGIN_SRC emacs-lisp
+     (setq org-capture-templates
+           '(;; other entries
+             ("t" "Inbox list item" entry
+              (file+headline (expand-file-name org-main-file org-todos-directory) "Inbox")
+              "* TODO %?\nSCHEDULED: %(org-insert-time-stamp (org-read-date nil t \"+0d\"))\n")
+             ("z" "Zenika Inbox list item" entry
+              (file+headline (expand-file-name org-zenika-file org-todos-directory) "Inbox")
+              "* TODO %?\nSCHEDULED: %(org-insert-time-stamp (org-read-date nil t \"+0d\"))\n")
+             ("j" "Journal entry" plain
+              (file+datetree+prompt (exand-file-name org-journal-file org-root-directory))
+              "%K - %a\n%i\n%?\n")
+             ;; other entries
+             ))
+   #+END_SRC
+
+** Links
+
+   #+BEGIN_QUOTE
+   One little-know feature of org-mode is that you can define new
+   types of links with the aptly named org-add-link-type. The
+   applications of this virtue are many.
+   #+END_QUOTE
+
+   Let's define one for =grep= and =pt=.
+
+   #+BEGIN_SRC emacs-lisp
+     (org-add-link-type
+      "grep" 'my/follow-grep-link
+      )
+     (defun my/follow-grep-link (regexp)
+       "Run `rgrep' with REGEXP and FOLDER as argument,
+     like this : [[grep:REGEXP:FOLDER]]."
+       (setq expressions (split-string regexp ":"))
+       (setq exp (nth 0 expressions))
+       (grep-compute-defaults)
+       (if (= (length expressions) 1)
+           (progn
+             (rgrep exp "*" (expand-file-name "./")))
+         (progn
+           (setq folder (nth 1 expressions))
+           (rgrep exp "*" (expand-file-name folder))))
+       )
+
+     (use-package pt
+       :load-path "~/.emacs.d/lisp/pt/")
+
+     ;; pt-regexp (regexp directory &optional args)
+     (org-add-link-type
+      "pt" 'my/follow-pt-link)
+     (defun my/follow-pt-link (regexp)
+       "Run `pt-regexp` with REXEP and FOLDER as argument,
+     like this : [[pt:REGEXP:FOLDER]]"
+       (setq expressions (split-string regexp ":"))
+       (setq exp (nth 0 expressions))
+       (if (= (length expressions) 1)
+           (progn
+             (pt-regexp exp (expand-file-name "./")))
+         (progn
+           (setq folder (nth 1 expressions))
+           (pt-regexp exp (file-name-as-directory (expand-file-name folder)))))
+       )
+   #+END_SRC
+
+   Let's define some for youtube and other media websites.
+
+   #+BEGIN_SRC emacs-lisp
+     (defvar yt-iframe-format
+       ;; You may want to change your width and height.
+       (concat "<iframe width=\"440\""
+               " height=\"335\""
+               " src=\"https://www.youtube.com/embed/%s\""
+               " frameborder=\"0\""
+               " allowfullscreen>%s</iframe>"))
+
+     (org-add-link-type
+      "youtube"
+      (lambda (handle)
+        (browse-url
+         (concat "https://www.youtube.com/embed/"
+                 handle)))
+      (lambda (path desc backend)
+        (cl-case backend
+          (html (format yt-iframe-format
+                        path (or desc "")))
+          (latex (format "\href{%s}{%s}"
+                         path (or desc "video"))))))
+   #+END_SRC
+
+   Let's define some for github.com sites.
+
+
+   #+BEGIN_SRC emacs-lisp
+     (org-add-link-type
+      "gh" 'my/follow-gh-link)
+     (defun my/follow-gh-link (issue)
+       "Browse github issue/pr specified"
+       (setq expressions (split-string issue "#"))
+       (setq project (nth 0 expressions))
+       (setq issue (nth 1 expressions))
+       (browse-url
+        (format "https://github.com/%s/issues/%s" project issue)))
+   #+END_SRC
+
+
+   Add some more abbreviation to links
+
+   #+BEGIN_SRC emacs-lisp
+     (setq org-link-abbrev-alist
+           '(("gmane" . "http://thread.gmane.org/%s")
+             ("google" . "https://www.google.com/search?q=%s")
+             ("github" . "http://github.com/%s")
+             ))
+   #+END_SRC
+
+
+   And some for =org-mode= itself.
+
+   #+BEGIN_SRC emacs-lisp
+     ;; from http://endlessparentheses.com/use-org-mode-links-for-absolutely-anything.html
+     (org-add-link-type
+      "tag" 'endless/follow-tag-link)
+
+     (defun endless/follow-tag-link (tag)
+       "Display a list of TODO headlines with tag TAG.
+     With prefix argument, also display headlines without a TODO keyword."
+       (org-tags-view (null current-prefix-arg) tag))
+   #+END_SRC
+
+
+** Code blocks
+
+    We are using a lot of code block in org-mode, in this file for example ; let's
+    /fontify/ the code blocks first.
+
+    #+begin_src emacs-lisp
+      (setq org-src-fontify-natively t)
+      (org-babel-do-load-languages
+       'org-babel-load-languages
+       '( (perl . t)
+          (ruby . t)
+          (sh . t)
+          (python . t)
+          (emacs-lisp . t)
+          ;; (golang . t)
+          (haskell . t)
+          (ditaa . t)
+          ))
+    #+end_src
+
+    Add a function to easily add a code block and bind it.
+
+    #+begin_src emacs-lisp
+      (defun my/org-insert-src-block (src-code-type)
+        "Insert a `SRC-CODE-TYPE' type source code block in org-mode."
+        (interactive
+         (let ((src-code-types
+                '("emacs-lisp" "python" "C" "sh" "java" "js" "clojure" "C++" "css"
+                  "calc" "dot" "gnuplot" "ledger" "R" "sass" "screen" "sql" "awk" 
+                  "ditaa" "haskell" "latex" "lisp" "matlab" "org" "perl" "ruby"
+                  "sqlite" "rust" "scala" "golang")))
+           (list (ido-completing-read "Source code type: " src-code-types))))
+        (progn
+          (newline-and-indent)
+          (insert (format "#+BEGIN_SRC %s\n" src-code-type))
+          (newline-and-indent)
+          (insert "#+END_SRC\n")
+          (previous-line 2)
+          (org-edit-src-code)))
+
+      (defun my/org-insert-html-block ()
+        "Insert a `HTML-BLOCK` type in org-mode."
+        (interactive
+         (progn
+           (newline-and-indent)
+           (insert "#+BEGIN_HTML\n")
+           (newline-and-indent)
+           (insert "#+END_HTML\n")
+           (previous-line 2))))
+
+
+      (defun my/org-insert-blockquote-block ()
+        "Insert a `BLOCKQUOTE-BLOCK` type in org-mode."
+        (interactive
+         (progn
+           (newline-and-indent)
+           (insert "#+BEGIN_BLOCKQUOTE\n")
+           (newline-and-indent)
+           (insert "#+END_BLOCKQUOTE\n")
+           (previous-line 2))))
+
+
+
+      (add-hook 'org-mode-hook
+                '(lambda ()
+                   (local-set-key (kbd "C-c s e") 'org-edit-src-code)
+                   (local-set-key (kbd "C-c s i") 'my/org-insert-src-block)
+                   (local-set-key (kbd "C-c s h") 'my/org-insert-html-block)
+                   (local-set-key (kbd "C-c s b") 'my/org-insert-blockquote-block))
+                'append)
+    #+end_src
+
+** Mobile
+
+   Define some stuff for the /org-mobile/ synchronization. The
+   =org-mobile-directory= is a on a remote ssh, defined in the
+   =~/.emacs.d/user.el= file (using =(setq personal-org-mobile-directory "")=).
+
+   #+BEGIN_SRC emacs-lisp
+     (require 'org-mobile)
+     (setq org-mobile-directory personal-org-mobile-directory
+           org-mobile-inbox-for-pull (expand-file-name org-inbox-file org-todos-directory)
+           org-mobile-files '(org-todos-directory))
+   #+END_SRC
+
+   Let's also configure auto push, asynchronously like in this
+   [[https://gist.github.com/mrvdb/3111823][gist]]. One thing that I should add though is to auto-commit too
+   (because my todos are on git).
+
+   #+BEGIN_SRC emacs-lisp
+     (defun notify-push (result)
+       (notifications-notify
+        :title "Push complete"
+        :body (format "Org-mobile-push: %s" result)
+        ))
+
+     ;; Fork the work of pushing to mobile
+     (defun fork-org-push-mobile ()
+       (interactive)
+       (async-start
+        ;; What to do in the child process
+        `(lambda ()
+           (require 'org)
+           ,(async-inject-variables "org-\\(mobile-\\|directory\\)")
+           (org-mobile-push))
+                                             ; What to do when it finishes
+        (lambda (result)
+          (notify-push result))))
+
+     ;; Define a timer variable
+     (defvar org-mobile-push-timer nil
+       "Timer that `org-mobile-push-timer' used to reschedule itself, or nil.")
+
+     ;; Push to mobile when the idle timer runs out
+     (defun org-mobile-push-with-delay (secs)
+       (when org-mobile-push-timer
+         (cancel-timer org-mobile-push-timer))
+       (setq org-mobile-push-timer
+             (run-with-idle-timer
+              (* 1 secs) nil 'fork-org-push-mobile)))
+
+     ;; After saving files, start a 30 seconds idle timer after which we
+     ;; are going to push
+     (add-hook 'after-save-hook
+               (lambda ()
+                 (when (eq major-mode 'org-mode)
+                   (dolist (file (org-mobile-files-alist))
+                     (if (string= (expand-file-name (car file)) (buffer-file-name))
+                         (org-mobile-push-with-delay 30)))
+                   )))
+
+     ;; At least run it once a day, but no need for a delay this time
+     (run-at-time "12:05" 86400 '(lambda () (org-mobile-push-with-delay 1)))
+   #+END_SRC
+
+
+** Archives
+
+   We want to be able to archive some /done/ projects. Let's load
+   org-archive and configure it.
+
+   #+BEGIN_SRC emacs-lisp
+     (require 'org-archive)
+     (setq org-archive-location (concat org-archive-directory org-archive-file-pattern))
+   #+END_SRC
+
+** Tags
+
+   Tags should be displayed from the 90 column.
+
+   #+BEGIN_SRC emacs-lisp
+     (setq org-tags-column -90)
+   #+END_SRC
+
+   Define a list of default tags that should apply for all org-mode
+   buffers.
+
+   #+BEGIN_SRC emacs-lisp
+     ;; Wish I could use taggroup but it doesn't seem to work..
+     (setq org-tag-alist '(
+                           ("important" . ?i)
+                           ("urgent" . ?u)
+                           ("ongoing" . ?o)         ;; ongoing "project", use to filter big project that are on the go
+                           ("next" . ?n)            ;; next "project"/"task", use to filter next things to do
+                           ("@home" . ?h)           ;; needs to be done at home
+                           ("@work" . ?w)           ;; needs to be done at work
+                           ("@client" . ?c)         ;; needs to be done at a client place (consulting..)
+                           ("dev" . ?e)             ;; this is a development task
+                           ("infra" . ?a)           ;; this is a sysadmin/infra task
+                           ("document" . ?d)        ;; needs to produce a document (article, post, ..)
+                           ("download" . ?D)        ;; needs to download something
+                           ("media" . ?m)           ;; this is a media (something to watch, listen, record, ..)
+                           ("mail" . ?M)            ;; mail-related (to write & send or to read)
+                           ("triage" . ?t)          ;; need "triage", tag it to easily find them
+                           ("task" . ?a)            ;; a simple task (no project), the name is kinda misleading
+                           ;; docker tags
+                           ("docker")
+                           ("compose")
+                           ("libcompose")
+                           ("distribution")
+                           ("docs")
+                           ("rancher")
+                           ;; sites tags
+                           ("sites")
+                           ("vdf")
+                           ("znk")
+                           ;; configs tags
+                           ("configs")
+                           ("emacs")
+                           ("i3")
+                           ("shell")
+                           ;; services
+                           ("services")
+                           ;; zenika
+                           ("znk")
+                           ("formation")
+                           ("event")
+                           ("tribu")
+                           ("devops")
+                           ("craftmanship")
+                           ("client")
+                           ))
+   #+END_SRC
+
+   Note that =important= and =urgent= helps me prioritize my
+   /todos/, in a /quadrant fashion way/.
+
+   | Important          | *Kaizen*        | *Panic*             |
+   | /tag important/    | improvements    | emergency           |
+   |--------------------+-----------------+---------------------|
+   | Less Important     | *Organics*      | Social *investment* |
+   | /no tag important/ | inspiration     | Social activities   |
+   |--------------------+-----------------+---------------------|
+   |                    | Less Urgent     | Urgent              |
+   |                    | /no tag urgent/ | /tag urgent/        |
+
+
+** Agenda(s)
+
+   First thing first, bind a key sequence to org-agenda.
+
+   #+BEGIN_SRC emacs-lisp
+     (global-set-key (kbd "C-c a") 'org-agenda)
+   #+END_SRC
+
+   Then set custom agendas.. For the syntax, look in worg : [[http://orgmode.org/worg/org-tutorials/advanced-searching.html][Advanced
+   searching]] and [[http://orgmode.org/worg/org-tutorials/org-custom-agenda-commands.html][Custom Agenda Commands]].
+
+   #+BEGIN_SRC emacs-lisp
+     (setq org-agenda-custom-commands
+           '(("t" todo "TODO"
+              ((org-agenda-sorting-strategy '(priority-down))
+               (org-agenda-prefix-format "  Mixed: ")))
+             ("p" todo "PROGRESS"
+              ((org-agenda-sorting-strategy '(priority-down))
+               (org-agenda-prefix-format "  Mixed: ")))
+             ("r" todo "REVIEW"
+              ((org-agenda-sorting-strategy '(priority-down))
+               (org-agenda-prefix-format "  Mixed: ")))
+             ("a" todo "PAUSED"
+              ((org-agenda-sorting-strategy '(priority-down))
+               (org-agenda-prefix-format "  Mixed: ")))
+             ("b" todo "BLOCKED"
+              ((org-agenda-sorting-strategy '(priority-down))
+               (org-agenda-prefix-format "  Mixed: ")))
+             ("o" "Ongoing projects" tags-todo "ongoing"
+              ((org-agenda-sorting-strategy '(priority-down))
+               (org-tags-exclude-from-inheritance '("ongoing"))
+               (org-agenda-prefix-format "  Mixed: ")))
+             ("n" "Next tasks" tags-todo "next"
+              ((org-agenda-sorting-strategy '(priority-down))
+               (org-tags-exclude-from-inheritance '("next"))
+               (org-agenda-prefix-format "  Mixed: ")))
+             ("i" "Triage tasks — to look" tags-todo "triage"
+              ((org-agenda-sorting-strategy '(priority-down))
+               (org-agenda-prefix-format "  Mixed: ")))
+             ;; Timelines
+             ("d" "Timeline for today" ((agenda "" ))
+              ((org-agenda-ndays 1)
+               (org-agenda-show-log t)
+               (org-agenda-log-mode-items '(clock closed))
+               (org-agenda-clockreport-mode t)
+               (org-agenda-entry-types '())))
+             ("w" "Weekly review" agenda ""
+              ((org-agenda-span 7)
+               (org-agenda-log-mode 1)))
+             ("W" "Weekly review sans DAILY" agenda ""
+              ((org-agenda-span 7)
+               (org-agenda-log-mode 1)
+               (org-agenda-tag-filter-preset '("-DAILY"))))
+             ("2" "Bi-weekly review" agenda "" ((org-agenda-span 14) (org-agenda-log-mode 1)))
+             ;; Panic tasks : urgent & important
+             ;; Probably the most important to do, but try not have to much of them..
+             ("P" . "Panic -emergency-")
+             ("Pt" "TODOs" tags-todo "important&urgent/!TODO"
+              ((org-agenda-sorting-strategy '(priority-down))
+               (org-agenda-prefix-format "  Mixed: ")))
+             ("Pb" "BLOCKEDs" tags-todo "important&urgent/!BLOCKED"
+              ((org-agenda-sorting-strategy '(priority-down))
+               (org-agenda-prefix-format "  Mixed: ")))
+             ("Pr" "REVIEWs" tags-todo "important&urgent/!REVIEW"
+              ((org-agenda-sorting-strategy '(priority-down))
+               (org-agenda-prefix-format "  Mixed: ")))
+             ;; Kaizen tasks : important but not urgent
+             ("K" . "Kaizen -improvement-")
+             ("Kt" "TODOs" tags-todo "important&-urgent/!TODO"
+              ((org-agenda-sorting-strategy '(priority-down))
+               (org-agenda-prefix-format "  Mixed: ")))
+             ("Kb" "BLOCKEDs" tags-todo "important&-urgent/!BLOCKED"
+              ((org-agenda-sorting-strategy '(priority-down))
+               (org-agenda-prefix-format "  Mixed: ")))
+             ("Kr" "REVIEWs" tags-todo "important&-urgent/!REVIEW"
+              ((org-agenda-sorting-strategy '(priority-down))
+               (org-agenda-prefix-format "  Mixed: ")))
+             ;; Social investment : urgent
+             ("S" . "Social -investment-")
+             ("St" "TODOs" tags-todo "-important&urgent/!TODO"
+              ((org-agenda-sorting-strategy '(priority-down))
+               (org-agenda-prefix-format "  Mixed: ")))
+             ("Sb" "BLOCKEDs" tags-todo "-important&urgent/!BLOCKED"
+              ((org-agenda-sorting-strategy '(priority-down))
+               (org-agenda-prefix-format "  Mixed: ")))
+             ("Sr" "REVIEWs" tags-todo "-important&urgent/!REVIEW"
+              ((org-agenda-sorting-strategy '(priority-down))
+               (org-agenda-prefix-format "  Mixed: ")))
+             ;; Organics
+             ("O" . "Organics -inspiration-")
+             ("Ot" "TODOs" tags-todo "-important&-urgent/!TODO"
+              ((org-agenda-sorting-strategy '(priority-down))
+               (org-agenda-prefix-format "  Mixed: ")))
+             ("Ob" "BLOCKEDs" tags-todo "-important&-urgent/!BLOCKED"
+              ((org-agenda-sorting-strategy '(priority-down))
+               (org-agenda-prefix-format "  Mixed: ")))
+             ("Or" "REVIEWs" tags-todo "-important&-urgent/!REVIEW"
+              ((org-agenda-sorting-strategy '(priority-down))
+               (org-agenda-prefix-format "  Mixed: ")))
+             ("N" search ""
+              ((org-agenda-files '("~org/notes.org"))
+               (org-agenda-text-search-extra-files nil)))))
+   #+END_SRC
+
+** Pomodoro
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package org-pomodoro
+       :ensure t
+       :init
+       (setq org-pomodoro-play-sounds 1)
+       (setq org-pomodoro-audio-player "paplay"))
+   #+END_SRC
+
+** Publishing
+
+   Let's configure the publishing part of org-mode. The first
+   org-mode files we want to publish are in =~/desktop/org/{project}=,
+   and we want to publish them in =~/var/public_html/{project}= for
+   now.
+
+   Few org-export and org-html configuration.
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package htmlize
+       :ensure t
+       :defer t)
+     ;;      (setq org-html-head "<link rel=\"stylesheet\" type=\"text/css\" hrefl=\"css/stylesheet.css\" />")
+     (setq org-html-include-timestamps nil)
+     ;; (setq org-html-htmlize-output-type 'css)
+     (setq org-html-head-include-default-style nil)
+   #+END_SRC
+
+   And the projects.
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package ox-publish)
+     ;; (use-package ox-rss)
+
+     ;; Define some variables to write less :D
+     (setq sbr-base-directory (expand-file-name "sbr" org-sites-directory)
+           sbr-publishing-directory (expand-file-name "sbr" org-publish-folder)
+           znk-base-directory (expand-file-name "zenika" org-sites-directory)
+           znk-preview-publishing-directory (expand-file-name "zenika" org-publish-folder)
+           znk-publishing-directory (expand-file-name "zenika-export" org-publish-folder)
+           vdf-base-directory (expand-file-name "vdf" org-sites-directory)
+           vdf-site-directory (expand-file-name "blog" sites-folder)
+           vdf-publishing-directory (expand-file-name "posts" (expand-file-name "content" vdf-site-directory))
+           vdf-static-directory (expand-file-name "static" vdf-site-directory)
+           vdf-css-publishing-directory (expand-file-name "css" vdf-static-directory)
+           vdf-assets-publishing-directory vdf-static-directory)
+
+     ;; Project
+     (setq org-publish-project-alist
+           `(("sbr-notes"
+              :base-directory ,sbr-base-directory
+              :base-extension "org"
+              :publishing-directory ,sbr-publishing-directory
+              :makeindex t
+              :exclude "FIXME"
+              :recursive t
+              :htmlized-source t
+              :publishing-function org-html-publish-to-html
+              :headline-levels 4
+              :auto-preamble t
+              :html-head "<link rel=\"stylesheet\" type=\"text/css\" href=\"style/style.css\" />"
+              :html-preamble "<div id=\"nav\">
+     <ul>
+     <li><a href=\"/\" class=\"home\">Home</a></li>
+     </ul>
+     </div>"
+              :html-postamble "<div id=\"footer\">
+     %a %C %c
+     </div>")
+             ("sbr-static"
+              :base-directory ,sbr-base-directory
+              :base-extension "css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg"
+              :publishing-directory ,sbr-publishing-directory
+              :recursive t
+              :publishing-function org-publish-attachment
+              )
+             ("sbr" :components ("sbr-notes" "sbr-static"))
+             ("vdf-notes"
+              :base-directory ,vdf-base-directory
+              :base-extension "org"
+              :publishing-directory ,vdf-publishing-directory
+              :exclude "FIXME"
+              :section-numbers nil
+              :with-toc nil
+              :with-drawers t
+              :htmlized-source t
+              :publishing-function org-html-publish-to-html
+              :headline-levels 4
+              :body-only t)
+             ("vdf-static-css"
+              :base-directory ,vdf-base-directory
+              :base-extension "css"
+              :publishing-directory ,vdf-css-publishing-directory
+              :recursive t
+              :publishing-function org-publish-attachment
+              )
+             ("vdf-static-assets"
+              :base-directory ,vdf-base-directory
+              :base-extension "png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg"
+              :publishing-directory ,vdf-assets-publishing-directory
+              :recursive t
+              :publishing-function org-publish-attachment
+              )
+             ("vdf" :components ("vdf-notes" "vdf-static-css" "vdf-static-assets"))
+             ("znk-notes"
+              :base-directory ,znk-base-directory
+              :base-extension "org"
+              :publishing-directory ,znk-publishing-directory
+              :exclude "FIXME"
+              :section-numbers nil
+              :with-toc nil
+              :with-drawers t
+              :recursive t
+              :htmlized-source t
+              :publishing-function org-html-publish-to-html
+              :headline-levels 4
+              :body-only t)
+             ("znk-notes-previews"
+              :base-directory ,znk-base-directory
+              :base-extension "org"
+              :publishing-directory ,znk-preview-publishing-directory
+              :makeindex t
+              :exclude "FIXME"
+              :recursive t
+              :htmlized-source t
+              :publishing-function org-html-publish-to-html
+              :headline-levels 4
+              :auto-preamble t
+              :html-head "<link rel=\"stylesheet\" type=\"text/css\" href=\"style/style.css\" />"
+              :html-preamble "<div id=\"nav\">
+     <ul>
+     <li><a href=\"/\" class=\"home\">Home</a></li>
+     </ul>
+     </div>"
+              :html-postamble "<div id=\"footer\">
+     %a %C %c
+     </div>")
+             ("znk-static"
+              :base-directory ,znk-base-directory
+              :base-extension "css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg"
+              :publishing-directory ,znk-publishing-directory
+              :recursive t
+              :publishing-function org-publish-attachment
+              )
+             ("znk" :components ("znk-notes" "znk-notes-previews" "znk-static"))
+             ))
+   #+END_SRC
+
+   Now, I also want to use =org-mode= for some of my talks (if not
+   all), and [[https://github.com/coldnew/org-ioslide][=org-ioslide=]] looks pretty good.
+
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package ox-ioslide
+       :ensure t)
+   #+END_SRC
+
+
+** Protocol
+
+   Trying out org-protocol based on
+   http://oremacs.com/2015/01/07/org-protocol-1/ and
+   http://oremacs.com/2015/01/08/org-protocol-2/.
+
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package org-capture)
+     (use-package org-protocol)
+     (setq org-protocol-default-template-key "l")
+     (push '("l" "Link" entry (function org-handle-link)
+             "* TODO %(org-wash-link)\nAdded: %U\n%(org-link-hooks)\n%?")
+           org-capture-templates)
+
+     (defun org-wash-link ()
+       (let ((link (caar org-stored-links))
+             (title (cadar org-stored-links)))
+         (setq title (replace-regexp-in-string
+                      " - Stack Overflow" "" title))
+         (org-make-link-string link title)))
+
+     (defvar org-link-hook nil)
+
+     (defun org-link-hooks ()
+       (prog1
+           (mapconcat #'funcall
+                      org-link-hook
+                      "\n")
+         (setq org-link-hook)))
+
+     (defun org-handle-link ()
+       (let ((link (caar org-stored-links))
+             file)
+         (cond ((string-match "^https://www.youtube.com/" link)
+                (org-handle-link-youtube link))
+               ((string-match (regexp-quote
+                               "http://stackoverflow.com/") link)
+                (find-file ((expand-file-name org-stackoverflow-file org-notes-directory)))
+                (goto-char (point-min))
+                (re-search-forward "^\\*+ +Questions" nil t))
+               (t
+                (find-file ((expand-file-name org-web-article-file org-notes-directory)))
+                (goto-char (point-min))
+                (re-search-forward "^\\*+ +Articles" nil t)))))
+
+     (defun org-handle-link-youtube (link)
+       (lexical-let*
+           ((file-name (org-trim
+                        (shell-command-to-string
+                         (concat
+                          "youtube-dl \""
+                          link
+                          "\""
+                          " -o \"%(title)s.%(ext)s\" --get-filename"))))
+            (dir videos-folder)
+            (full-name
+             (expand-file-name file-name dir)))
+         (add-hook 'org-link-hook
+                   (lambda ()
+                     (concat
+                      (org-make-link-string dir dir)
+                      "\n"
+                      (org-make-link-string full-name file-name))))
+         (async-shell-command
+          (format "youtube-dl \"%s\" -o \"%s\"" link full-name))
+         (find-file (org-expand "ent.org"))
+         (goto-char (point-min))
+         (re-search-forward "^\\*+ +videos" nil t)))
+   #+END_SRC
 * Other Modes 🐥
 ** Discover my major
 
@@ -1738,967 +2697,6 @@ Let's also rewrite some built-in to better /default/. Let's start with
          (add-hook 'after-init-hook #'global-flycheck-mode)))
    #+END_SRC
 
-** Org
-
-   #+BEGIN_QUOTE
-   Org-mode is a powerful system for organizing your complex life with simple plain-text files. It seamlessly integrates all your notes, mindmaps, TODO lists, calendar, day planner, and project schedules into a single system that can be easily searched (e.g. by grep), encrypted (e.g. by GnuPG), backed up and synced (e.g. by Dropbox), imported/exported, and accessed on the go (e.g. on an iPhone or Android smartphone). It can even be used for authoring web pages and documents.
-   #+END_QUOTE
-
-   Depending on how this section grows, org-mode might need its own litterate
-   org configuration file.
-
-*** Standard configuration
-
-     First let's define the default directory for the =org= files, the one to be added
-     to the agenda and the archives.
-
-     #+begin_src emacs-lisp
-       (require 'find-lisp)
-       (setq org-directory org-root-directory)
-       (setq org-agenda-files (find-lisp-find-files org-todos-directory "\.org$"))
-       ;; (setq org-enforce-todo-dependencies t)
-       (setq org-enforce-todo-checkbox-dependencies t)
-
-       ;;open agenda in current window
-       (setq org-agenda-window-setup (quote current-window))
-       ;;warn me of any deadlines in next 7 days
-       (setq org-deadline-warning-days 7)
-       ;;show me tasks scheduled or due in next fortnight
-       (setq org-agenda-span (quote fortnight))
-       ;;don't show tasks as scheduled if they are already shown as a deadline
-       (setq org-agenda-skip-scheduled-if-deadline-is-shown t)
-       ;;don't give awarning colour to tasks with impending deadlines
-       ;;if they are scheduled to be done
-       (setq org-agenda-skip-deadline-prewarning-if-scheduled (quote pre-scheduled))
-       ;;don't show tasks that are scheduled or have deadlines in the
-       ;;normal todo list
-       (setq org-agenda-todo-ignore-deadlines (quote all))
-       (setq org-agenda-todo-ignore-scheduled (quote all))
-       ;;sort tasks in order of when they are due and then by priority
-       (setq org-agenda-sorting-strategy
-         (quote
-          ((agenda deadline-up priority-down)
-           (todo priority-down category-keep)
-           (tags priority-down category-keep)
-           (search category-keep))))
-     #+end_src
-
-     We'll also set which files should be opened using org-mode :
-     =*.org=, =*.org_archive=, =*.txt=.
-
-     #+begin_src emacs-lisp
-       (add-to-list 'auto-mode-alist '("\\.\\(org\\|org_archive\\|txt\\)$" . org-mode))
-     #+end_src
-
-     Let's /beautify/ org-mode a little bit too, changing some
-     defaults
-
-
-     #+BEGIN_SRC emacs-lisp
-       ;;; Change the ellipsis (default is ...)
-       (setq org-ellipsis " ↴")
-       ;; Change the default bullets
-       (font-lock-add-keywords 'org-mode
-                               '(("^ +\\([-*]\\) "
-                                  (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
-       ;;; Use org-bullets
-       (use-package org-bullets
-         :config
-         (setq org-bullets-face-name (quote org-bullet-face))
-         (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
-     #+END_SRC
-
-
-     Let's also define the default /todo-keywords/ and the workflow
-     between them.
-
-- =TODO= : task not started yet, part of the backlog :)
-- =PROGRESS= : task that are currently in progress, should be a minimum
-- =BLOCKED= : task that I start working on but cannot anymore (for
-  some reason), thus they are blocked
-- =REVIEW= : task that should be done, but I need or wait for a
-  review (by someone else or by me)
-- =DONE= : task that are completed.
-- =ARCHIVED= : same as done but keep it here (and not moving into archive)
-
-  #+begin_src emacs-lisp
-    (defface org-progress ; font-lock-warning-face
-      (org-compatible-face nil
-        '((((class color) (min-colors 16) (background light)) (:foreground "#A197BF" :bold t :background "#E8E6EF" :box (:line-width 1 :color "#A197BF")))
-          (((class color) (min-colors 8)  (background light)) (:foreground "blue"  :bold t))
-          (t (:inverse-video t :bold t))))
-      "Face for PROGRESS keywords."
-      :group 'org-faces)
-    (defface org-paused ; font-lock-warning-face
-      (org-compatible-face nil
-        '((((class color) (min-colors 16) (background light)) (:foreground "#D6CCF4" :bold t :background "#ECE9F5" :box (:line-width 1 :color "#D6CCF4")))
-          (((class color) (min-colors 8)  (background light)) (:foreground "cyan"  :bold t))
-          (t (:inverse-video t :bold t))))
-      "Face for PAUSED keywords."
-      :group 'org-faces)
-    (defface org-cancelled ; font-lock-warning-face
-      (org-compatible-face nil
-        '((((class color) (min-colors 16) (background light)) (:foreground "#3D3D3D" :bold t :background "#7A7A7A" :box (:line-width 1 :color "#3D3D3D")))
-          (((class color) (min-colors 8)  (background light)) (:foreground "black"  :bold t))
-          (t (:inverse-video t :bold t))))
-      "Face for PROGRESS keywords."
-      :group 'org-faces)
-    (defface org-review ; font-lock-warning-face
-      (org-compatible-face nil
-        '((((class color) (min-colors 16) (background light)) (:foreground "#FC9B17" :bold t :background "#FEF2C2" :box (:line-width 1 :color "#FC9B17")))
-          (((class color) (min-colors 8)  (background light)) (:foreground "yellow"  :bold t))
-          (t (:inverse-video t :bold t))))
-      "Face for PROGRESS keywords."
-      :group 'org-faces)
-    (defface org-blocked ; font-lock-warning-face
-      (org-compatible-face nil
-        '((((class color) (min-colors 16) (background light)) (:foreground "#FF8A80" :bold t :background "#ffdad6" :box (:line-width 1 :color "#FF8A80")))
-          (((class color) (min-colors 8)  (background light)) (:foreground "red"  :bold t))
-          (t (:inverse-video t :bold t))))
-      "Face for PROGRESS keywords."
-      :group 'org-faces)
-
-    (setq org-todo-keywords
-          (quote ((sequence "TODO(t!)" "PROGRESS(p!)" "PAUSED" "BLOCKED" "REVIEW" "|" "DONE(d!)" "ARCHIVED")
-                  (sequence "REPORT(r!)" "BUG" "KNOWNCAUSE" "|" "FIXED(f!)")
-                  (sequence "|" "CANCELLED(c@)"))))
-
-
-    (setq org-todo-keyword-faces
-          (quote (("TODO" . org-todo)
-                  ("PROGRESS" . org-progress)
-                  ("PAUSED" . org-paused)
-                  ("BLOCKED" . org-blocked)
-                  ("REVIEW" . org-review)
-                  ("DONE" . org-done)
-                  ("ARCHIVED" . org-done)
-                  ("CANCELLED" . org-cancelled)
-                  ("REPORT" . org-todo)
-                  ("BUG" . org-blocked)
-                  ("KNOWNCAUSE" . org-review)
-                  ("FIXED" . org-done))))
-
-    (setq org-todo-state-tags-triggers
-          (quote (("CANCELLED" ("CANCELLED" . t)))))
-  #+end_src
-
-
-  I have a folder with notes, where I don't want =auto-fill-mode=
-  enabled, but =visual-line-mode=, let's do that.
-
-#+BEGIN_SRC emacs-lisp
-  (defun turn-on-auto-visual-line (expression)
-    (if buffer-file-name
-        (cond ((string-match expression buffer-file-name)
-               (progn
-                 (auto-fill-mode -1)
-                 (visual-line-mode 1))
-               ))))
-#+END_SRC
-
-  Undefine some binding (=C-c [=, =C-c ]= since this breaks org-agenda files that
-  have been defined in this file (a directory).
-
-  #+begin_src emacs-lisp
-    (add-hook 'org-mode-hook
-              '(lambda ()
-                 (org-defkey org-mode-map "\C-c[" 'undefined)
-                 (org-defkey org-mode-map "\C-c]" 'undefined)
-                 (org-defkey org-mode-map "\C-c;" 'undefined)
-                 (turn-on-auto-visual-line (concat org-notes-directory "/*")))
-              'append)
-  #+end_src
-
-  All org-mode buffers will be automatically saved each hours.
-
-  #+BEGIN_SRC emacs-lisp
-       (run-at-time "00:59" 3600 'org-save-all-org-buffers)
-  #+END_SRC
-
-  And add some miscellaneous stuff.
-
-  #+BEGIN_SRC emacs-lisp
-    (setq
-     org-completion-use-ido t         ;; use IDO for completion
-     org-cycle-separator-lines 0      ;; Don't show blank lines
-     org-catch-invisible-edits 'error ;; don't edit invisible text
-     org-refile-targets '((org-agenda-files . (:maxlevel . 6)))
-     )
-  #+END_SRC
-
-  Let's also define a =org= related keymap map.
-
-  #+BEGIN_SRC emacs-lisp
-    (define-prefix-command 'vde/org-map)
-    (global-set-key (kbd "C-c o") 'vde/org-map)
-    (define-key vde/org-map "p" (lambda () (interactive) (find-file (expand-file-name org-main-file org-todos-directory))))
-    (define-key vde/org-map "n" (lambda () (interactive) (find-file org-notes-directory)))
-  #+END_SRC
-
-  If a parent has all it's children =DONE=, make it =DONE= too.
-
-  #+BEGIN_SRC emacs-lisp
-    (defun org-summary-todo (n-done n-not-done)
-      "Switch entry to DONE when all subentries are done, to PROGRESS otherwise."
-      (let (org-log-done org-log-states)   ; turn off logging
-        (org-todo (if (= n-not-done 0) "DONE" "PROGRESS"))))
-
-    (add-hook 'org-after-todo-statistics-hook 'org-summary-todo)
-  #+END_SRC
-
-*** Speed commands
-
-    Org-mode speed keys (or spee commands) are really cool, here is a
-    quotation from the manual
-
-    #+BEGIN_QUOTE
-    Single keys can be made to execute commands when the cursor is at the beginning of a headline, i.e., before the first star.
-    #+END_QUOTE
-
-    #+BEGIN_SRC emacs-lisp
-      (setq org-use-speed-commands t)
-    #+END_SRC
-
-    However the default =n= (next) and =p= (previous) speed keys
-    aren't optimal for my use. When I go to the next one using speed
-    commands I want the others closed. Let's redefine it.
-
-    #+BEGIN_SRC emacs-lisp
-      (defun my/org-show-next-heading-tidily ()
-        "Show next entry, keeping other entries closed."
-        (if (save-excursion (end-of-line) (outline-invisible-p))
-            (progn (org-show-entry) (show-children))
-          (outline-next-heading)
-          (unless (and (bolp) (org-on-heading-p))
-            (org-up-heading-safe)
-            (hide-subtree)
-            (error "Boundary reached"))
-          (org-overview)
-          (org-reveal t)
-          (org-show-entry)
-          (show-children)))
-
-      (defun my/org-show-previous-heading-tidily ()
-        "Show previous entry, keeping other entries closed."
-        (let ((pos (point)))
-          (outline-previous-heading)
-          (unless (and (< (point) pos) (bolp) (org-on-heading-p))
-            (goto-char pos)
-            (hide-subtree)
-            (error "Boundary reached"))
-          (org-overview)
-          (org-reveal t)
-          (org-show-entry)
-          (show-children)))
-    #+END_SRC
-
-    And let's bind it.
-
-    #+BEGIN_SRC emacs-lisp
-      (setq org-speed-commands-user '(("n" . my/org-show-next-heading-tidily)
-                                      ("p" . my/org-show-previous-heading-tidily)
-                                      (":" . org-set-tags-command)
-                                      ("c" . org-toggle-checkbox)
-                                      ("d" . org-cut-special)
-                                      ("P" . org-set-property)
-                                      ("C" . org-clock-display)
-                                      ("z" . (lambda () (interactive)
-                                               (org-tree-to-indirect-buffer)
-                                               (other-window 1)
-                                               (delete-other-windows)))))
-    #+END_SRC
-
-*** Captures
-
-    First thing first, bind a key sequence to org-capture.
-
-    #+BEGIN_SRC emacs-lisp
-      (define-key vde/org-map "r" 'org-capture)
-    #+END_SRC
-
-    Setup captures templates..
-
-    #+BEGIN_SRC emacs-lisp
-      (setq org-capture-templates
-            '(;; other entries
-              ("t" "Inbox list item" entry
-               (file+headline (expand-file-name org-main-file org-todos-directory) "Inbox")
-               "* TODO %?\nSCHEDULED: %(org-insert-time-stamp (org-read-date nil t \"+0d\"))\n")
-              ("z" "Zenika Inbox list item" entry
-               (file+headline (expand-file-name org-zenika-file org-todos-directory) "Inbox")
-               "* TODO %?\nSCHEDULED: %(org-insert-time-stamp (org-read-date nil t \"+0d\"))\n")
-              ("j" "Journal entry" plain
-               (file+datetree+prompt (exand-file-name org-journal-file org-root-directory))
-               "%K - %a\n%i\n%?\n")
-              ;; other entries
-              ))
-    #+END_SRC
-
-*** Links
-
-    #+BEGIN_QUOTE
-    One little-know feature of org-mode is that you can define new
-    types of links with the aptly named org-add-link-type. The
-    applications of this virtue are many.
-    #+END_QUOTE
-
-    Let's define one for =grep= and =pt=.
-
-    #+BEGIN_SRC emacs-lisp
-      (org-add-link-type
-       "grep" 'my/follow-grep-link
-       )
-      (defun my/follow-grep-link (regexp)
-        "Run `rgrep' with REGEXP and FOLDER as argument,
-      like this : [[grep:REGEXP:FOLDER]]."
-        (setq expressions (split-string regexp ":"))
-        (setq exp (nth 0 expressions))
-        (grep-compute-defaults)
-        (if (= (length expressions) 1)
-            (progn
-              (rgrep exp "*" (expand-file-name "./")))
-          (progn
-            (setq folder (nth 1 expressions))
-            (rgrep exp "*" (expand-file-name folder))))
-        )
-
-      (use-package pt
-        :load-path "~/.emacs.d/lisp/pt/")
-
-      ;; pt-regexp (regexp directory &optional args)
-      (org-add-link-type
-       "pt" 'my/follow-pt-link)
-      (defun my/follow-pt-link (regexp)
-        "Run `pt-regexp` with REXEP and FOLDER as argument,
-      like this : [[pt:REGEXP:FOLDER]]"
-        (setq expressions (split-string regexp ":"))
-        (setq exp (nth 0 expressions))
-        (if (= (length expressions) 1)
-            (progn
-              (pt-regexp exp (expand-file-name "./")))
-          (progn
-            (setq folder (nth 1 expressions))
-            (pt-regexp exp (file-name-as-directory (expand-file-name folder)))))
-        )
-    #+END_SRC
-
-    Let's define some for youtube and other media websites.
-
-    #+BEGIN_SRC emacs-lisp
-      (defvar yt-iframe-format
-        ;; You may want to change your width and height.
-        (concat "<iframe width=\"440\""
-                " height=\"335\""
-                " src=\"https://www.youtube.com/embed/%s\""
-                " frameborder=\"0\""
-                " allowfullscreen>%s</iframe>"))
-
-      (org-add-link-type
-       "youtube"
-       (lambda (handle)
-         (browse-url
-          (concat "https://www.youtube.com/embed/"
-                  handle)))
-       (lambda (path desc backend)
-         (cl-case backend
-           (html (format yt-iframe-format
-                         path (or desc "")))
-           (latex (format "\href{%s}{%s}"
-                          path (or desc "video"))))))
-    #+END_SRC
-
-    Let's define some for github.com sites.
-
-
-    #+BEGIN_SRC emacs-lisp
-      (org-add-link-type
-       "gh" 'my/follow-gh-link)
-      (defun my/follow-gh-link (issue)
-        "Browse github issue/pr specified"
-        (setq expressions (split-string issue "#"))
-        (setq project (nth 0 expressions))
-        (setq issue (nth 1 expressions))
-        (browse-url
-         (format "https://github.com/%s/issues/%s" project issue)))
-    #+END_SRC
-
-
-    Add some more abbreviation to links
-
-    #+BEGIN_SRC emacs-lisp
-      (setq org-link-abbrev-alist
-            '(("gmane" . "http://thread.gmane.org/%s")
-              ("google" . "https://www.google.com/search?q=%s")
-              ("github" . "http://github.com/%s")
-              ))
-    #+END_SRC
-
-
-    And some for =org-mode= itself.
-
-    #+BEGIN_SRC emacs-lisp
-      ;; from http://endlessparentheses.com/use-org-mode-links-for-absolutely-anything.html
-      (org-add-link-type
-       "tag" 'endless/follow-tag-link)
-
-      (defun endless/follow-tag-link (tag)
-        "Display a list of TODO headlines with tag TAG.
-      With prefix argument, also display headlines without a TODO keyword."
-        (org-tags-view (null current-prefix-arg) tag))
-    #+END_SRC
-
-
-*** Code blocks
-
-     We are using a lot of code block in org-mode, in this file for example ; let's
-     /fontify/ the code blocks first.
-
-     #+begin_src emacs-lisp
-       (setq org-src-fontify-natively t)
-       (org-babel-do-load-languages
-        'org-babel-load-languages
-        '( (perl . t)
-           (ruby . t)
-           (sh . t)
-           (python . t)
-           (emacs-lisp . t)
-           ;; (golang . t)
-           (haskell . t)
-           (ditaa . t)
-           ))
-     #+end_src
-
-     Add a function to easily add a code block and bind it.
-
-     #+begin_src emacs-lisp
-       (defun my/org-insert-src-block (src-code-type)
-         "Insert a `SRC-CODE-TYPE' type source code block in org-mode."
-         (interactive
-          (let ((src-code-types
-                 '("emacs-lisp" "python" "C" "sh" "java" "js" "clojure" "C++" "css"
-                   "calc" "dot" "gnuplot" "ledger" "R" "sass" "screen" "sql" "awk" 
-                   "ditaa" "haskell" "latex" "lisp" "matlab" "org" "perl" "ruby"
-                   "sqlite" "rust" "scala" "golang")))
-            (list (ido-completing-read "Source code type: " src-code-types))))
-         (progn
-           (newline-and-indent)
-           (insert (format "#+BEGIN_SRC %s\n" src-code-type))
-           (newline-and-indent)
-           (insert "#+END_SRC\n")
-           (previous-line 2)
-           (org-edit-src-code)))
-
-       (defun my/org-insert-html-block ()
-         "Insert a `HTML-BLOCK` type in org-mode."
-         (interactive
-          (progn
-            (newline-and-indent)
-            (insert "#+BEGIN_HTML\n")
-            (newline-and-indent)
-            (insert "#+END_HTML\n")
-            (previous-line 2))))
-
-
-       (defun my/org-insert-blockquote-block ()
-         "Insert a `BLOCKQUOTE-BLOCK` type in org-mode."
-         (interactive
-          (progn
-            (newline-and-indent)
-            (insert "#+BEGIN_BLOCKQUOTE\n")
-            (newline-and-indent)
-            (insert "#+END_BLOCKQUOTE\n")
-            (previous-line 2))))
-
-
-
-       (add-hook 'org-mode-hook
-                 '(lambda ()
-                    (local-set-key (kbd "C-c s e") 'org-edit-src-code)
-                    (local-set-key (kbd "C-c s i") 'my/org-insert-src-block)
-                    (local-set-key (kbd "C-c s h") 'my/org-insert-html-block)
-                    (local-set-key (kbd "C-c s b") 'my/org-insert-blockquote-block))
-                 'append)
-     #+end_src
-
-*** Mobile
-
-    Define some stuff for the /org-mobile/ synchronization. The
-    =org-mobile-directory= is a on a remote ssh, defined in the
-    =~/.emacs.d/user.el= file (using =(setq personal-org-mobile-directory "")=).
-
-    #+BEGIN_SRC emacs-lisp
-      (require 'org-mobile)
-      (setq org-mobile-directory personal-org-mobile-directory
-            org-mobile-inbox-for-pull (expand-file-name org-inbox-file org-todos-directory)
-            org-mobile-files '(org-todos-directory))
-    #+END_SRC
-
-    Let's also configure auto push, asynchronously like in this
-    [[https://gist.github.com/mrvdb/3111823][gist]]. One thing that I should add though is to auto-commit too
-    (because my todos are on git).
-
-    #+BEGIN_SRC emacs-lisp
-      (defun notify-push (result)
-        (notifications-notify
-         :title "Push complete"
-         :body (format "Org-mobile-push: %s" result)
-         ))
-
-      ;; Fork the work of pushing to mobile
-      (defun fork-org-push-mobile ()
-        (interactive)
-        (async-start
-         ;; What to do in the child process
-         `(lambda ()
-            (require 'org)
-            ,(async-inject-variables "org-\\(mobile-\\|directory\\)")
-            (org-mobile-push))
-                                              ; What to do when it finishes
-         (lambda (result)
-           (notify-push result))))
-
-      ;; Define a timer variable
-      (defvar org-mobile-push-timer nil
-        "Timer that `org-mobile-push-timer' used to reschedule itself, or nil.")
-
-      ;; Push to mobile when the idle timer runs out
-      (defun org-mobile-push-with-delay (secs)
-        (when org-mobile-push-timer
-          (cancel-timer org-mobile-push-timer))
-        (setq org-mobile-push-timer
-              (run-with-idle-timer
-               (* 1 secs) nil 'fork-org-push-mobile)))
-
-      ;; After saving files, start a 30 seconds idle timer after which we
-      ;; are going to push
-      (add-hook 'after-save-hook
-                (lambda ()
-                  (when (eq major-mode 'org-mode)
-                    (dolist (file (org-mobile-files-alist))
-                      (if (string= (expand-file-name (car file)) (buffer-file-name))
-                          (org-mobile-push-with-delay 30)))
-                    )))
-
-      ;; At least run it once a day, but no need for a delay this time
-      (run-at-time "12:05" 86400 '(lambda () (org-mobile-push-with-delay 1)))
-    #+END_SRC
-
-
-*** Archives
-
-    We want to be able to archive some /done/ projects. Let's load
-    org-archive and configure it.
-
-    #+BEGIN_SRC emacs-lisp
-      (require 'org-archive)
-      (setq org-archive-location (concat org-archive-directory org-archive-file-pattern))
-    #+END_SRC
-
-*** Tags
-
-    Tags should be displayed from the 90 column.
-
-    #+BEGIN_SRC emacs-lisp
-      (setq org-tags-column -90)
-    #+END_SRC
-
-    Define a list of default tags that should apply for all org-mode
-    buffers.
-
-    #+BEGIN_SRC emacs-lisp
-      ;; Wish I could use taggroup but it doesn't seem to work..
-      (setq org-tag-alist '(
-                            ("important" . ?i)
-                            ("urgent" . ?u)
-                            ("ongoing" . ?o)         ;; ongoing "project", use to filter big project that are on the go
-                            ("next" . ?n)            ;; next "project"/"task", use to filter next things to do
-                            ("@home" . ?h)           ;; needs to be done at home
-                            ("@work" . ?w)           ;; needs to be done at work
-                            ("@client" . ?c)         ;; needs to be done at a client place (consulting..)
-                            ("dev" . ?e)             ;; this is a development task
-                            ("infra" . ?a)           ;; this is a sysadmin/infra task
-                            ("document" . ?d)        ;; needs to produce a document (article, post, ..)
-                            ("download" . ?D)        ;; needs to download something
-                            ("media" . ?m)           ;; this is a media (something to watch, listen, record, ..)
-                            ("mail" . ?M)            ;; mail-related (to write & send or to read)
-                            ("triage" . ?t)          ;; need "triage", tag it to easily find them
-                            ("task" . ?a)            ;; a simple task (no project), the name is kinda misleading
-                            ;; docker tags
-                            ("docker")
-                            ("compose")
-                            ("libcompose")
-                            ("distribution")
-                            ("docs")
-                            ("rancher")
-                            ;; sites tags
-                            ("sites")
-                            ("vdf")
-                            ("znk")
-                            ;; configs tags
-                            ("configs")
-                            ("emacs")
-                            ("i3")
-                            ("shell")
-                            ;; services
-                            ("services")
-                            ;; zenika
-                            ("znk")
-                            ("formation")
-                            ("event")
-                            ("tribu")
-                            ("devops")
-                            ("craftmanship")
-                            ("client")
-                            ))
-    #+END_SRC
-
-    Note that =important= and =urgent= helps me prioritize my
-    /todos/, in a /quadrant fashion way/.
-
-    | Important          | *Kaizen*        | *Panic*             |
-    | /tag important/    | improvements    | emergency           |
-    |--------------------+-----------------+---------------------|
-    | Less Important     | *Organics*      | Social *investment* |
-    | /no tag important/ | inspiration     | Social activities   |
-    |--------------------+-----------------+---------------------|
-    |                    | Less Urgent     | Urgent              |
-    |                    | /no tag urgent/ | /tag urgent/        |
-
-
-*** Agenda(s)
-
-    First thing first, bind a key sequence to org-agenda.
-
-    #+BEGIN_SRC emacs-lisp
-      (global-set-key (kbd "C-c a") 'org-agenda)
-    #+END_SRC
-
-    Then set custom agendas.. For the syntax, look in worg : [[http://orgmode.org/worg/org-tutorials/advanced-searching.html][Advanced
-    searching]] and [[http://orgmode.org/worg/org-tutorials/org-custom-agenda-commands.html][Custom Agenda Commands]].
-
-    #+BEGIN_SRC emacs-lisp
-      (setq org-agenda-custom-commands
-            '(("t" todo "TODO"
-               ((org-agenda-sorting-strategy '(priority-down))
-                (org-agenda-prefix-format "  Mixed: ")))
-              ("p" todo "PROGRESS"
-               ((org-agenda-sorting-strategy '(priority-down))
-                (org-agenda-prefix-format "  Mixed: ")))
-              ("r" todo "REVIEW"
-               ((org-agenda-sorting-strategy '(priority-down))
-                (org-agenda-prefix-format "  Mixed: ")))
-              ("a" todo "PAUSED"
-               ((org-agenda-sorting-strategy '(priority-down))
-                (org-agenda-prefix-format "  Mixed: ")))
-              ("b" todo "BLOCKED"
-               ((org-agenda-sorting-strategy '(priority-down))
-                (org-agenda-prefix-format "  Mixed: ")))
-              ("o" "Ongoing projects" tags-todo "ongoing"
-               ((org-agenda-sorting-strategy '(priority-down))
-                (org-tags-exclude-from-inheritance '("ongoing"))
-                (org-agenda-prefix-format "  Mixed: ")))
-              ("n" "Next tasks" tags-todo "next"
-               ((org-agenda-sorting-strategy '(priority-down))
-                (org-tags-exclude-from-inheritance '("next"))
-                (org-agenda-prefix-format "  Mixed: ")))
-              ("i" "Triage tasks — to look" tags-todo "triage"
-               ((org-agenda-sorting-strategy '(priority-down))
-                (org-agenda-prefix-format "  Mixed: ")))
-              ;; Timelines
-              ("d" "Timeline for today" ((agenda "" ))
-               ((org-agenda-ndays 1)
-                (org-agenda-show-log t)
-                (org-agenda-log-mode-items '(clock closed))
-                (org-agenda-clockreport-mode t)
-                (org-agenda-entry-types '())))
-              ("w" "Weekly review" agenda ""
-               ((org-agenda-span 7)
-                (org-agenda-log-mode 1)))
-              ("W" "Weekly review sans DAILY" agenda ""
-               ((org-agenda-span 7)
-                (org-agenda-log-mode 1)
-                (org-agenda-tag-filter-preset '("-DAILY"))))
-              ("2" "Bi-weekly review" agenda "" ((org-agenda-span 14) (org-agenda-log-mode 1)))
-              ;; Panic tasks : urgent & important
-              ;; Probably the most important to do, but try not have to much of them..
-              ("P" . "Panic -emergency-")
-              ("Pt" "TODOs" tags-todo "important&urgent/!TODO"
-               ((org-agenda-sorting-strategy '(priority-down))
-                (org-agenda-prefix-format "  Mixed: ")))
-              ("Pb" "BLOCKEDs" tags-todo "important&urgent/!BLOCKED"
-               ((org-agenda-sorting-strategy '(priority-down))
-                (org-agenda-prefix-format "  Mixed: ")))
-              ("Pr" "REVIEWs" tags-todo "important&urgent/!REVIEW"
-               ((org-agenda-sorting-strategy '(priority-down))
-                (org-agenda-prefix-format "  Mixed: ")))
-              ;; Kaizen tasks : important but not urgent
-              ("K" . "Kaizen -improvement-")
-              ("Kt" "TODOs" tags-todo "important&-urgent/!TODO"
-               ((org-agenda-sorting-strategy '(priority-down))
-                (org-agenda-prefix-format "  Mixed: ")))
-              ("Kb" "BLOCKEDs" tags-todo "important&-urgent/!BLOCKED"
-               ((org-agenda-sorting-strategy '(priority-down))
-                (org-agenda-prefix-format "  Mixed: ")))
-              ("Kr" "REVIEWs" tags-todo "important&-urgent/!REVIEW"
-               ((org-agenda-sorting-strategy '(priority-down))
-                (org-agenda-prefix-format "  Mixed: ")))
-              ;; Social investment : urgent
-              ("S" . "Social -investment-")
-              ("St" "TODOs" tags-todo "-important&urgent/!TODO"
-               ((org-agenda-sorting-strategy '(priority-down))
-                (org-agenda-prefix-format "  Mixed: ")))
-              ("Sb" "BLOCKEDs" tags-todo "-important&urgent/!BLOCKED"
-               ((org-agenda-sorting-strategy '(priority-down))
-                (org-agenda-prefix-format "  Mixed: ")))
-              ("Sr" "REVIEWs" tags-todo "-important&urgent/!REVIEW"
-               ((org-agenda-sorting-strategy '(priority-down))
-                (org-agenda-prefix-format "  Mixed: ")))
-              ;; Organics
-              ("O" . "Organics -inspiration-")
-              ("Ot" "TODOs" tags-todo "-important&-urgent/!TODO"
-               ((org-agenda-sorting-strategy '(priority-down))
-                (org-agenda-prefix-format "  Mixed: ")))
-              ("Ob" "BLOCKEDs" tags-todo "-important&-urgent/!BLOCKED"
-               ((org-agenda-sorting-strategy '(priority-down))
-                (org-agenda-prefix-format "  Mixed: ")))
-              ("Or" "REVIEWs" tags-todo "-important&-urgent/!REVIEW"
-               ((org-agenda-sorting-strategy '(priority-down))
-                (org-agenda-prefix-format "  Mixed: ")))
-              ("N" search ""
-               ((org-agenda-files '("~org/notes.org"))
-                (org-agenda-text-search-extra-files nil)))))
-    #+END_SRC
-
-*** Pomodoro
-
-    #+BEGIN_SRC emacs-lisp
-      (use-package org-pomodoro
-        :ensure t
-        :init
-        (setq org-pomodoro-play-sounds 1)
-        (setq org-pomodoro-audio-player "paplay"))
-    #+END_SRC
-
-*** Publishing
-
-    Let's configure the publishing part of org-mode. The first
-    org-mode files we want to publish are in =~/desktop/org/{project}=,
-    and we want to publish them in =~/var/public_html/{project}= for
-    now.
-
-    Few org-export and org-html configuration.
-
-    #+BEGIN_SRC emacs-lisp
-      (use-package htmlize
-        :ensure t
-        :defer t)
-      ;;      (setq org-html-head "<link rel=\"stylesheet\" type=\"text/css\" hrefl=\"css/stylesheet.css\" />")
-      (setq org-html-include-timestamps nil)
-      ;; (setq org-html-htmlize-output-type 'css)
-      (setq org-html-head-include-default-style nil)
-    #+END_SRC
-
-    And the projects.
-
-    #+BEGIN_SRC emacs-lisp
-      (use-package ox-publish)
-      ;; (use-package ox-rss)
-
-      ;; Define some variables to write less :D
-      (setq sbr-base-directory (expand-file-name "sbr" org-sites-directory)
-            sbr-publishing-directory (expand-file-name "sbr" org-publish-folder)
-            znk-base-directory (expand-file-name "zenika" org-sites-directory)
-            znk-preview-publishing-directory (expand-file-name "zenika" org-publish-folder)
-            znk-publishing-directory (expand-file-name "zenika-export" org-publish-folder)
-            vdf-base-directory (expand-file-name "vdf" org-sites-directory)
-            vdf-site-directory (expand-file-name "blog" sites-folder)
-            vdf-publishing-directory (expand-file-name "posts" (expand-file-name "content" vdf-site-directory))
-            vdf-static-directory (expand-file-name "static" vdf-site-directory)
-            vdf-css-publishing-directory (expand-file-name "css" vdf-static-directory)
-            vdf-assets-publishing-directory vdf-static-directory)
-
-      ;; Project
-      (setq org-publish-project-alist
-            `(("sbr-notes"
-               :base-directory ,sbr-base-directory
-               :base-extension "org"
-               :publishing-directory ,sbr-publishing-directory
-               :makeindex t
-               :exclude "FIXME"
-               :recursive t
-               :htmlized-source t
-               :publishing-function org-html-publish-to-html
-               :headline-levels 4
-               :auto-preamble t
-               :html-head "<link rel=\"stylesheet\" type=\"text/css\" href=\"style/style.css\" />"
-               :html-preamble "<div id=\"nav\">
-      <ul>
-      <li><a href=\"/\" class=\"home\">Home</a></li>
-      </ul>
-      </div>"
-               :html-postamble "<div id=\"footer\">
-      %a %C %c
-      </div>")
-              ("sbr-static"
-               :base-directory ,sbr-base-directory
-               :base-extension "css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg"
-               :publishing-directory ,sbr-publishing-directory
-               :recursive t
-               :publishing-function org-publish-attachment
-               )
-              ("sbr" :components ("sbr-notes" "sbr-static"))
-              ("vdf-notes"
-               :base-directory ,vdf-base-directory
-               :base-extension "org"
-               :publishing-directory ,vdf-publishing-directory
-               :exclude "FIXME"
-               :section-numbers nil
-               :with-toc nil
-               :with-drawers t
-               :htmlized-source t
-               :publishing-function org-html-publish-to-html
-               :headline-levels 4
-               :body-only t)
-              ("vdf-static-css"
-               :base-directory ,vdf-base-directory
-               :base-extension "css"
-               :publishing-directory ,vdf-css-publishing-directory
-               :recursive t
-               :publishing-function org-publish-attachment
-               )
-              ("vdf-static-assets"
-               :base-directory ,vdf-base-directory
-               :base-extension "png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg"
-               :publishing-directory ,vdf-assets-publishing-directory
-               :recursive t
-               :publishing-function org-publish-attachment
-               )
-              ("vdf" :components ("vdf-notes" "vdf-static-css" "vdf-static-assets"))
-              ("znk-notes"
-               :base-directory ,znk-base-directory
-               :base-extension "org"
-               :publishing-directory ,znk-publishing-directory
-               :exclude "FIXME"
-               :section-numbers nil
-               :with-toc nil
-               :with-drawers t
-               :recursive t
-               :htmlized-source t
-               :publishing-function org-html-publish-to-html
-               :headline-levels 4
-               :body-only t)
-              ("znk-notes-previews"
-               :base-directory ,znk-base-directory
-               :base-extension "org"
-               :publishing-directory ,znk-preview-publishing-directory
-               :makeindex t
-               :exclude "FIXME"
-               :recursive t
-               :htmlized-source t
-               :publishing-function org-html-publish-to-html
-               :headline-levels 4
-               :auto-preamble t
-               :html-head "<link rel=\"stylesheet\" type=\"text/css\" href=\"style/style.css\" />"
-               :html-preamble "<div id=\"nav\">
-      <ul>
-      <li><a href=\"/\" class=\"home\">Home</a></li>
-      </ul>
-      </div>"
-               :html-postamble "<div id=\"footer\">
-      %a %C %c
-      </div>")
-              ("znk-static"
-               :base-directory ,znk-base-directory
-               :base-extension "css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg"
-               :publishing-directory ,znk-publishing-directory
-               :recursive t
-               :publishing-function org-publish-attachment
-               )
-              ("znk" :components ("znk-notes" "znk-notes-previews" "znk-static"))
-              ))
-    #+END_SRC
-
-    Now, I also want to use =org-mode= for some of my talks (if not
-    all), and [[https://github.com/coldnew/org-ioslide][=org-ioslide=]] looks pretty good.
-
-
-    #+BEGIN_SRC emacs-lisp
-      (use-package ox-ioslide
-        :ensure t)
-    #+END_SRC
-
-
-*** Protocol
-
-    Trying out org-protocol based on
-    http://oremacs.com/2015/01/07/org-protocol-1/ and
-    http://oremacs.com/2015/01/08/org-protocol-2/.
-
-
-    #+BEGIN_SRC emacs-lisp
-      (use-package org-capture)
-      (use-package org-protocol)
-      (setq org-protocol-default-template-key "l")
-      (push '("l" "Link" entry (function org-handle-link)
-              "* TODO %(org-wash-link)\nAdded: %U\n%(org-link-hooks)\n%?")
-            org-capture-templates)
-
-      (defun org-wash-link ()
-        (let ((link (caar org-stored-links))
-              (title (cadar org-stored-links)))
-          (setq title (replace-regexp-in-string
-                       " - Stack Overflow" "" title))
-          (org-make-link-string link title)))
-
-      (defvar org-link-hook nil)
-
-      (defun org-link-hooks ()
-        (prog1
-            (mapconcat #'funcall
-                       org-link-hook
-                       "\n")
-          (setq org-link-hook)))
-
-      (defun org-handle-link ()
-        (let ((link (caar org-stored-links))
-              file)
-          (cond ((string-match "^https://www.youtube.com/" link)
-                 (org-handle-link-youtube link))
-                ((string-match (regexp-quote
-                                "http://stackoverflow.com/") link)
-                 (find-file ((expand-file-name org-stackoverflow-file org-notes-directory)))
-                 (goto-char (point-min))
-                 (re-search-forward "^\\*+ +Questions" nil t))
-                (t
-                 (find-file ((expand-file-name org-web-article-file org-notes-directory)))
-                 (goto-char (point-min))
-                 (re-search-forward "^\\*+ +Articles" nil t)))))
-
-      (defun org-handle-link-youtube (link)
-        (lexical-let*
-            ((file-name (org-trim
-                         (shell-command-to-string
-                          (concat
-                           "youtube-dl \""
-                           link
-                           "\""
-                           " -o \"%(title)s.%(ext)s\" --get-filename"))))
-             (dir videos-folder)
-             (full-name
-              (expand-file-name file-name dir)))
-          (add-hook 'org-link-hook
-                    (lambda ()
-                      (concat
-                       (org-make-link-string dir dir)
-                       "\n"
-                       (org-make-link-string full-name file-name))))
-          (async-shell-command
-           (format "youtube-dl \"%s\" -o \"%s\"" link full-name))
-          (find-file (org-expand "ent.org"))
-          (goto-char (point-min))
-          (re-search-forward "^\\*+ +videos" nil t)))
-    #+END_SRC
-
 ** Projectile
 
    #+BEGIN_QUOTE
@@ -2960,7 +2958,9 @@ Let's also rewrite some built-in to better /default/. Let's start with
      (use-package magit-popup
        :ensure t)
      (use-package docker
-       :load-path "~/.emacs.d/lisp/docker/")
+       :ensure t
+       :config
+       (docker-global-mode 1))
    #+END_SRC
 
 *** docker-dev minor mode
