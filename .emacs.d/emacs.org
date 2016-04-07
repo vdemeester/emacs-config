@@ -2729,7 +2729,12 @@ Let's also rewrite some built-in to better /default/. Let's start with
 
     #+BEGIN_SRC emacs-lisp
       (use-package perspective
-        :ensure t)
+        :ensure t
+        :init
+        (progn
+          (setq persp-show-modestring nil)
+          (add-hook 'persp-switch-hook 'hack-dir-local-variables-non-file-buffer)
+          (persp-mode)))
       (use-package persp-projectile
         :ensure t
         :requires perspective
