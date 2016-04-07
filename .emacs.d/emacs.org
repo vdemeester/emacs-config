@@ -297,9 +297,9 @@ It looks kinda like that (click to open the real one) :
       ;;   :init
       ;;   (load-theme 'leuven))
       (use-package spacemacs-theme
-        :ensure t
-        :init
-        (load-theme 'spacemacs-light))
+        :ensure t)
+      (use-package darcula-theme
+        :ensure t)
     #+end_src
 
 *** Powerline
