@@ -3108,7 +3108,10 @@ Let's also rewrite some built-in to better /default/. Let's start with
          (sh-mode                    . "sh")
          (org-mode                   . "ꙮ")
          (go-mode                    . "🐹")
+         (oracle-mode                . "☯")
+         (docker-mode                . "🐳")
          (compilation-minor-mode     . "🚨")
+         (compilation-mode           . "🚨")
          (company-mode               . "")
          (guide-key-mode             . "")
          ;; Major modes
