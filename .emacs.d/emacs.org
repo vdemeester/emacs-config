@@ -2698,6 +2698,21 @@ Let's also rewrite some built-in to better /default/. Let's start with
          (setq projectile-completion-system 'default)
          (setq projectile-enable-caching t)
          (setq projectile-indexing-method 'alien)
+         (setq projectile-create-missing-test-files t)
+         (setq projectile-switch-project-action #'projectile-commander)
+         (def-projectile-commander-method ?s
+           "Open a *shell* buffer for the project."
+           (projectile-run-shell))
+         (def-projectile-commander-method ?c
+           "Run `compile` in the project."
+           (projectile-compile-project nil))
+         (def-projectile-commander-method ?d
+           "Open project root in dired."
+           (projectile-dired))
+         (def-projectile-commander-method ?F
+           "Git fetch on tho project."
+           (magit-status)
+           (call-interactively #'magit-fetch-all-prune))
          (projectile-global-mode)))
    #+END_SRC
 
@@ -2708,7 +2723,7 @@ Let's also rewrite some built-in to better /default/. Let's start with
        :ensure t
        :config
        (progn
-         (setq projectile-switch-project-action 'helm-projectile)
+         ;; (setq projectile-switch-project-action 'helm-projectile)
          (helm-projectile-on))
        )
    #+END_SRC
