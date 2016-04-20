@@ -1258,23 +1258,16 @@ Let's also rewrite some built-in to better /default/. Let's start with
             (setq undo-tree-history-directory-alist (list (cons "." undo-dir))))))
     #+END_SRC
 
-*** Guide-key
+*** Which-key
 
-    =guide-key.el= displays the available key bindings automatically and dynamically.
+    =which-key.el= displays the available key bindings automatically and dynamically.
 
     #+BEGIN_SRC emacs-lisp
-      (use-package guide-key
+      (use-package which-key
         :ensure t
         :config
         (progn
-          (setq guide-key/guide-key-sequence t)
-          (setq guide-key/text-scale-amount 1)
-          (setq guide-key/popup-window-position 'bottom)
-          (guide-key-mode 1)
-          (defun guide-key/my-hook-function-for-org-mode ()
-            ;; (guide-key/add-local-guide-key-sequence "C-c")
-            (guide-key/add-local-highlight-command-regexp "org-"))
-          (add-hook 'org-mode-hook 'guide-key/my-hook-function-for-org-mode)))
+          (which-key-mode 1)))
     #+END_SRC
 
 ** Server mode
@@ -3111,7 +3104,7 @@ Let's also rewrite some built-in to better /default/. Let's start with
          (compilation-minor-mode     . "🚨")
          (compilation-mode           . "🚨")
          (company-mode               . "")
-         (guide-key-mode             . "")
+         (which-key-mode             . "")
          ;; Major modes
          (term-mode                  . "⌨")
          (clojure-mode               . " Ɩ")
