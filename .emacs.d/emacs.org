@@ -3189,3 +3189,31 @@ Let's also rewrite some built-in to better /default/. Let's start with
 
 
 
+* Personal customization
+** On save action
+
+   It's directly taken from [[http://www.howardism.org/Technical/Emacs/save-hooks.html][Howard's folder actions]] article. Let's
+   create a =save-hook= that will look for =.on-save= script and run
+   it on save (using =async-shell-command=).
+
+
+   #+BEGIN_SRC emacs-lisp
+     (defun ha/folder-action-save-hook ()
+       "A file save hook that will look for a script in the same
+     directory, called .on-save.  It will then execute that script
+     asynchronously."
+       (interactive)
+       (let* ((filename (buffer-file-name))
+              (parent   (locate-dominating-file filename ".on-save"))
+              (cmd      (concat parent ".on-save " filename)))
+         (write-file filename nil)
+
+         ;; Need to re-add the hook to the local file:
+         (add-hook 'local-write-file-hooks 'ha/folder-action-save-hook)
+
+         (when parent
+           (async-shell-command cmd))))
+
+     (define-key vde/toggle-map "s" #'ha/folder-action-save-hook)
+   #+END_SRC
+
