@@ -2334,6 +2334,7 @@ Let's also rewrite some built-in to better /default/. Let's start with
       ;; (helm-gtags-mode 1)
     #+END_SRC
 
+Use =helm-grep= and install =helm-git-grep= too
 
     #+BEGIN_SRC emacs-lisp
       (use-package helm-grep
@@ -2341,7 +2342,10 @@ Let's also rewrite some built-in to better /default/. Let's start with
         (progn
           (define-key helm-grep-mode-map (kbd "<return>")  'helm-grep-mode-jump-other-window)
           (define-key helm-grep-mode-map (kbd "n")  'helm-grep-mode-jump-other-window-forward)
-          (define-key helm-grep-mode-map (kbd "p")  'helm-grep-mode-jump-other-window-backward)))
+          (define-key helm-grep-mode-map (kbd "p")  'helm-grep-mode-jump-other-window-backward)
+          ))
+      (use-package helm-git-grep
+        :ensure t)
     #+END_SRC
 
     I'm trying [[https://github.com/monochromegane/the_platinum_searcher][the platinium searcher]] as it's kinda quick, so I'm
@@ -2360,7 +2364,7 @@ Let's also rewrite some built-in to better /default/. Let's start with
     #+END_SRC
 
 
-*** helmp-make
+*** helm-make
 
     #+BEGIN_SRC emacs-lisp
       (use-package helm-make
