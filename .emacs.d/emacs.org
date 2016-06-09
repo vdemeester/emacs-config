@@ -2753,6 +2753,23 @@ Use =helm-grep= and install =helm-git-grep= too
           (define-key projectile-command-map (kbd "p") 'projectile-persp-switch-project)
           (persp-mode)))
     #+END_SRC
+*** Terminal in projectile
+
+    Let's add something to be able to quickly start terminals in the
+    current projectile (and thus leaving even less emacs).
+
+#+BEGIN_SRC emacs-lisp
+  (use-package term-projectile
+    :ensure t
+    :config
+    (defhydra vde:term-hydra (global-map "C-c 7")
+       "term"
+       ("n" term-projectile-forward)
+       ("p" term-projectile-backward)
+       ("c" term-projectile-create-new))
+     )
+#+END_SRC
+
 ** Compilation mode
 
    Set options and key binding for =compile=.
