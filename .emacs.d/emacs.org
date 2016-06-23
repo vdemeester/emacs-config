@@ -2317,7 +2317,8 @@ Let's also rewrite some built-in to better /default/. Let's start with
            ("C-c C-u" . counsel-unicode-char)
            ("C-c s g" . counsel-git-grep)
            ("C-c s s" . counsel-pt)
-           ("M-y" . counsel-yank-pop))
+           ("M-y" . counsel-yank-pop)
+           ("M-x" . counsel-M-x))
     :chords ("xm" . counsel-M-x))
 
 #+END_SRC
@@ -2429,6 +2430,7 @@ Let's also rewrite some built-in to better /default/. Let's start with
          :commands magit-status
          :bind ("C-c g" . magit-status)
          :config
+         (setq magit-completing-read-function 'ivy-completing-read)
          (add-to-list 'magit-no-confirm 'stage-all-changes)
          (setq magit-push-always-verify nil)
          (setq magit-last-seen-setup-instructions "2.1.0"))
