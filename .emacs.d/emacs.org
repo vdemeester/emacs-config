@@ -301,16 +301,18 @@ It looks kinda like that (click to open the real one) :
         (load-theme 'spacemacs-dark))
     #+end_src
 
-*** Powerline
+*** Mode Line
 
-    We are going to use [[https://github.com/milkypostman/powerline][powerline]] because it is way more sexy than the default modeline design.
-
-    #+begin_src emacs-lisp
-      (use-package powerline
-                   :ensure t
-                   :init
-                   (powerline-default-theme))
-    #+end_src
+#+BEGIN_SRC emacs-lisp
+  (use-package spaceline-config
+    :ensure spaceline
+    :config
+    (setq powerline-default-separator 'wave
+          spaceline-workspace-numbers-unicode t
+          spaceline-window-numbers-unicode t)
+    (spaceline-spacemacs-theme)
+    (spaceline-info-mode))
+#+END_SRC
 
 ** Behaviour
 
