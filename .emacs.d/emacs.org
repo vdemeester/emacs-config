@@ -1232,6 +1232,10 @@ Let's also rewrite some built-in to better /default/. Let's start with
         (key-chord-define-global "FF"     'find-file)
         (key-chord-define-global "xx"     'er/expand-region)
         (key-chord-define-global "JJ"     'my/switch-to-previous-buffer))
+
+      (use-package use-package-chords
+        :ensure t
+        :config (key-chord-mode 1))
     #+END_SRC
 
 
@@ -2278,146 +2282,66 @@ Let's also rewrite some built-in to better /default/. Let's start with
        :ensure t
        :bind ("C-h C-m" . discover-my-major))
    #+END_SRC
-** Helm
+** Ivy & co
 
-    #+BEGIN_QUOTE
-    Helm is incremental completion and selection narrowing framework for Emacs. It will help steer you in the right direction when you’re looking for stuff in Emacs (like buffers, files, etc).
+   An alternative to Helm (that I used before) is [[https://github.com/abo-abo/swiper][ivy, counsel and
+   swiper]].
 
-    Helm is a fork of anything.el originaly written by Tamas Patrovic and can be considered to be its successor. Helm sets out to clean up the legacy code in anything.el and provide a cleaner, leaner and more modular tool, that’s not tied in the trap of backward compatibility.
-    #+END_QUOTE
+#+BEGIN_SRC emacs-lisp
+  (use-package counsel
+    :ensure t
+    :bind (("C-x C-f" . counsel-find-file)
+           ("C-h f" . counsel-describe-function)
+           ("C-h v" . counsel-describe-variable)
+           ("C-h i" . counsel-info-lookup-symbol)
+           ("C-c C-u" . counsel-unicode-char)
+           ("C-c s g" . counsel-git-grep)
+           ("C-c s s" . counsel-pt)
+           ("M-y" . counsel-yank-pop))
+    :chords ("xm" . counsel-M-x))
 
-    By default the /completion/ on the selected line is done by =C-z=
-    (the function is =helm-execute-persistent-action=) and =Tab= is
-    used for showing action you can do on it. Let's invert them as
-    =Tab= is used for completion in other tools (shells for example).
+#+END_SRC
 
-    Let's define that all helm commands will be prefixed by =C-h=,
-    =C-h x= will be =Helm M-x=.
-
-    #+begin_src emacs-lisp
-      (use-package helm
-        :ensure t
-        :config
-        (progn
-          (use-package helm-config)
-          (setq helm-idle-delay 0.1
-                helm-input-idle-delay 0.1
-                helm-buffer-max-length 40
-                helm-M-x-always-save-history t
-                helm-move-to-line-cycle-in-source t
-                helm-ff-file-name-history-use-recentf t
-                ;; Enable fuzzy matching
-                helm-M-x-fuzzy-match t
-                helm-buffers-fuzzy-matching t
-                helm-recentf-fuzzy-match t)
-          (add-to-list 'helm-sources-using-default-as-input 'helm-source-man-pages)
-          ;; Rebind actions
-          (define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action)
-          (define-key helm-map (kbd "C-i") 'helm-execute-persistent-action)
-          (define-key helm-map (kbd "C-z") 'helm-select-action)
-          (helm-autoresize-mode t)
-          (helm-mode 1))
-        :bind (("C-c h" . helm-command-prefix)
-               ("C-x C-f" . helm-find-files)
-               ("M-x" . helm-M-x)
-               ("C-c b" . helm-mini)
-               ("C-x C-b" . helm-buffers-list)
-               ("M-y" . helm-show-kill-ring)
-               ("C-c M-i" . helm-imenu)
-               ("C-x c o" . helm-occur)))
-      ;; (add-to-list 'helm-completing-read-handlers-alist '(org-refile)) ; helm-mode does not do org-refile well
-      ;; (add-to-list 'helm-completing-read-handlers-alist '(org-agenda-refile)) ; same goes for org-agenda-refile
-    #+end_src
-
-    Because it can be hard to remember all keybindings, let's use
-    =helm-descbinds=.
-
-    #+BEGIN_SRC emacs-lisp
-      (use-package helm-descbinds
-        :ensure t
-        :defer t
-        :bind ("C-h b" . helm-descbinds))
-    #+END_SRC
-
-    #+BEGIN_SRC emacs-lisp
-      (use-package helm-gtags
-        :ensure t)
-      ;; (helm-gtags-mode 1)
-    #+END_SRC
-
-Use =helm-grep= and install =helm-git-grep= too
-
-    #+BEGIN_SRC emacs-lisp
-      (use-package helm-grep
-        :config
-        (progn
-          (define-key helm-grep-mode-map (kbd "<return>")  'helm-grep-mode-jump-other-window)
-          (define-key helm-grep-mode-map (kbd "n")  'helm-grep-mode-jump-other-window-forward)
-          (define-key helm-grep-mode-map (kbd "p")  'helm-grep-mode-jump-other-window-backward)
-          ))
-      (use-package helm-git-grep
-        :ensure t)
-    #+END_SRC
-
-    I'm trying [[https://github.com/monochromegane/the_platinum_searcher][the platinium searcher]] as it's kinda quick, so I'm
-    trying helm-ag with specifiec configuration.
-
-    #+BEGIN_SRC emacs-lisp
-      (use-package helm-ag
-        :ensure
-        :config
-        (setq helm-ag-base-command "pt -e --nocolor --nogroup"
-              helm-ag-command-option "--all-text"
-              helm-ag-insert-at-point 'symbol)
-        (define-key helm-ag-mode-map (kbd "<return>")  'helm-ag-mode-jump-other-window)
-        (define-key helm-ag-mode-map (kbd "n")  'helm-grep-mode-jump-other-window-forward)
-        (define-key helm-ag-mode-map (kbd "p")  'helm-grep-mode-jump-other-window-backward))
-    #+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (use-package ivy
+    :ensure t
+    :diminish ivy-mode
+    :bind (("C-c C-r" . ivy-resume))
+    :config
+    (ido-mode -1)
+    ;; Enable ivy
+    (ivy-mode 1)
+    ;; Show recently killed buffers when calling `ivy-switch-buffer'
+    (setq ivy-use-virtual-buffers t)
+    (defun modi/ivy-kill-buffer ()
+      (interactive)
+      (ivy-set-action 'kill-buffer)
+      (ivy-done))
+    (bind-keys
+     :map ivy-switch-buffer-map
+     ("C-k" . modi/ivy-kill-buffer))
+    (bind-keys
+     :map ivy-minibuffer-map
+     ;; Exchange the default bindings for C-j and C-m
+     ("C-m" . ivy-alt-done) ; RET, default C-j
+     ("C-j" . ivy-done) ; default C-m
+     ("C-S-m" . ivy-immediate-done)
+     ("C-t" . ivy-toggle-fuzzy)
+     ("C-o" . hydra-ivy/body))
+    ;; (key-chord-define ivy-minibuffer-map "m," #'ivy-beginning-of-buffer)
+    ;; (key-chord-define ivy-minibuffer-map ",." #'ivy-end-of-buffer)
+    )
+#+END_SRC
 
 
-*** helm-make
+#+BEGIN_SRC emacs-lisp
+  (use-package swiper
+    :ensure t
+    :bind
+    (([remap isearch-forward]  . swiper)
+     ([remap isearch-backward] . swiper)))
+#+END_SRC
 
-    #+BEGIN_SRC emacs-lisp
-      (use-package helm-make
-        :ensure t)
-    #+END_SRC
-
-
-*** helm-swoop
-
-    =helm-swoop= is a great Helm powered buffer search/occur interface:
-
-    #+BEGIN_SRC emacs-lisp
-      (use-package helm-swoop
-        :ensure t
-        :defer t
-        :bind (("C-S-s" . helm-swoop)
-               ("M-I" . helm-swoop-back-to-last-point))
-        :config
-        (progn
-          (define-key isearch-mode-map (kbd "M-i") 'helm-swoop-from-isearch)
-          (define-key helm-swoop-map (kbd "M-i") 'helm-multi-swoop-all-from-helm-swoop)))
-    #+END_SRC
-*** helm-google
-
-    #+BEGIN_QUOTE
-    Emacs Helm Interface for quick Google searches
-    #+END_QUOTE
-
-    #+BEGIN_SRC emacs-lisp
-      (use-package helm-google
-        :ensure t)
-    #+END_SRC
-
-
-*** helm-firefox
-
-    Because helm is soo fun :D.
-
-    #+BEGIN_SRC emacs-lisp
-      (use-package helm-firefox
-        :ensure t)
-    #+END_SRC
 
 ** Company-mode
 
@@ -2710,7 +2634,7 @@ Use =helm-grep= and install =helm-git-grep= too
        :ensure t
        :config
        (progn
-         (setq projectile-completion-system 'default)
+         (setq projectile-completion-system 'ivy)
          (setq projectile-enable-caching t)
          (setq projectile-indexing-method 'alien)
          (setq projectile-create-missing-test-files t)
@@ -2729,18 +2653,6 @@ Use =helm-grep= and install =helm-git-grep= too
            (magit-status)
            (call-interactively #'magit-fetch-all-prune))
          (projectile-global-mode)))
-   #+END_SRC
-
-   And let's use the helm integration too.
-
-   #+BEGIN_SRC emacs-lisp
-     (use-package helm-projectile
-       :ensure t
-       :config
-       (progn
-         ;; (setq projectile-switch-project-action 'helm-projectile)
-         (helm-projectile-on))
-       )
    #+END_SRC
 
 *** Perspective
@@ -3111,9 +3023,6 @@ Use =helm-grep= and install =helm-git-grep= too
          (define-key yas-minor-mode-map (kbd "TAB") nil)
          (define-key yas-minor-mode-map (kbd "<C-tab>") 'yas-expand)
          (yas-global-mode 1)))
-     (use-package helm-c-yasnippet
-       :ensure t
-       :bind ("C-c y" . helm-yas-complete))
    #+END_SRC
 
 
@@ -3140,7 +3049,6 @@ Use =helm-grep= and install =helm-git-grep= too
          (highlight-parentheses-mode . "")
          (highlight-symbol-mode      . "")
          (projectile-mode            . "")
-         (helm-mode                  . "")
          (ace-window-mode            . "")
          (magit-auto-revert-mode     . "")
          (sh-mode                    . "sh")
