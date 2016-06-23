@@ -2409,6 +2409,19 @@ Let's also rewrite some built-in to better /default/. Let's start with
        :bind ("<f9>" . deft))
    #+END_SRC
 
+** Fullframe
+
+[[https://github.com/tomterl/fullframe][Fullframe]] advises commands to execute fullscreen, restoring the window
+setup when exiting.
+
+#+BEGIN_SRC emacs-lisp
+  (use-package fullframe
+    :ensure t
+    :config
+    (fullframe magit-status magit-mode-quit-window)
+    (fullframe ibuffer ibuffer-quit))
+#+END_SRC
+
 ** Version control integration
 *** Git
 
