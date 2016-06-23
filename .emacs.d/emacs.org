@@ -346,6 +346,12 @@ It looks kinda like that (click to open the real one) :
      (setq echo-keystrokes 0.1)
    #+END_SRC
 
+*** diminish
+
+    #+BEGIN_SRC emacs-lisp
+      (use-package diminish)
+    #+END_SRC
+
 *** Setting the PATH
 
     I'm playing a lot with the =$PATH= variable in my shell, and I
