@@ -3034,12 +3034,12 @@ Let's also rewrite some built-in to better /default/. Let's start with
    #+BEGIN_SRC emacs-lisp
      ;; FIXME handle this with provided configuration
      (defvar mode-line-cleaner-alist
-       `((auto-complete-mode         . " α")
-         (yas-minor-mode             . " γ")
+       `((auto-complete-mode         . "")
+         (yas-minor-mode             . "")
          (paredit-mode               . " Φ")
          (eldoc-mode                 . "")
          (abbrev-mode                . "")
-         (undo-tree-mode             . " τ")
+         (undo-tree-mode             . "")
          (volatile-highlights-mode   . " υ")
          (elisp-slime-nav-mode       . " δ")
          (nrepl-mode                 . " ηζ")
