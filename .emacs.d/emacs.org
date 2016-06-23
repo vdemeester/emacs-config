@@ -450,6 +450,13 @@ It looks kinda like that (click to open the real one) :
       (global-set-key (kbd "C-x k") 'kill-default-buffer)
     #+END_SRC
 
+    Also, let's use =ibuffer= for listing the buffer (which is bind to
+    =C-x C-b=).
+
+    #+BEGIN_SRC emacs-lisp
+      (defalias 'list-buffers 'ibuffer) ; make ibuffer default
+    #+END_SRC
+
 *** Comment/Uncomment region
 
     There is a cool function in emacs wich is =commend-dwim= (bounded
@@ -770,7 +777,6 @@ Let's also rewrite some built-in to better /default/. Let's start with
 
    =bpr= from ilya babanov provides a way to do asynchronuous
    processing in Emacs but with style and output.
-
 
    #+BEGIN_SRC emacs-lisp
      (use-package bpr
