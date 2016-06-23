@@ -165,6 +165,7 @@ It looks kinda like that (click to open the real one) :
      music-folder (expand-file-name "music" desktop-folder)
      pictures-folder (expand-file-name "pictures" desktop-folder)
      ;; Orgmode related
+     my-org-file "emacs.org"
      org-root-directory (substitute-env-in-file-name "$HOME/desktop/org")
      org-todos-directory-name "todos"
      org-notes-directory-name "notes"
@@ -733,14 +734,27 @@ Let's also rewrite some built-in to better /default/. Let's start with
 
 *** Async & bacground
 
-   =async.el= is a module for doing asynchronous processing in
-   Emacs. Let's load it as it's gonna be useful. Let's also load
-   =dired-async= for the copy & co to be run asynchroniously (very
-   useful with TRAMP).
+   We add a function to the =after-save-hook= ensuring to always tangle
+   and byte-compile the =org=-document after changes asynchronously.
+
+   We are going to use [[https://github.com/jwiegley/emacs-async][async]], which is a module for doing asynchronous
+   processing in Emacs.
 
    #+BEGIN_SRC emacs-lisp
      (use-package async
-       :ensure t)
+       :ensure t
+       :config
+       (defun my/init-hook ()
+         "If the current buffer is 'emacs.org' the code-blocks
+     are tangled."
+         (when (equal (buffer-file-name) my-org-file)
+           (async-start
+            `(lambda ()
+               (require 'org)
+               (org-babel-tangle-file ,my-org-file))
+            (lambda (result)
+              (message "Tangled file compiled.")))))
+       (add-hook 'after-save-hook 'my/init-hook))
      (use-package dired-async
        :init
        (dired-async-mode 1))
