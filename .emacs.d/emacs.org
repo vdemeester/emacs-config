@@ -2402,6 +2402,14 @@ Let's also rewrite some built-in to better /default/. Let's start with
      ([remap isearch-backward] . swiper)))
 #+END_SRC
 
+** imenu
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package imenu-anywhere
+       :ensure t
+       :chords (";r" . ivy-imenu-anywhere)
+       :bind (("M-i" . ivy-imenu-anywhere)))
+   #+END_SRC
 
 ** Company-mode
 
