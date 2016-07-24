@@ -36,6 +36,8 @@
 ;;     (require 'org)
 ;;     ))
 
+(setq org-root-directory (substitute-env-in-file-name "$HOME/desktop/org"))
+
 ;; keep customize settings in their own file
 (setq custom-file
       (expand-file-name "custom.el"

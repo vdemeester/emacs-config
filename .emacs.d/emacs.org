@@ -293,6 +293,12 @@ It looks kinda like that (click to open the real one) :
     First let's install the theme(s) and load the new theme
 
     #+begin_src emacs-lisp
+      ;;(use-package apropospriate-theme
+      ;;  :ensure t
+      ;;  :config
+      ;;  ;;(load-theme 'apropospriate-dark t)
+      ;;  (load-theme 'apropospriate-light t)
+      ;;  )
       (use-package spacemacs-theme
         :ensure t
         :init
@@ -2773,6 +2779,30 @@ setup when exiting.
        ("p" term-projectile-backward)
        ("c" term-projectile-create-new))
      )
+#+END_SRC
+
+*** Projector
+
+#+BEGIN_SRC emacs-lisp
+  (use-package projector
+    :ensure t
+    :after projectile
+    :bind
+    (("C-x RET"        . projector-run-shell-command-project-root)
+     ("C-x m"          . projector-switch-to-or-create-project-shell)
+     ("C-x <C-return>" . projector-run-default-shell-command)
+     :map comint-mode-map ("s-R" . projector-rerun-buffer-process))
+    :config
+    (setq projector-completion-system 'ivy
+          projector-always-background-regex
+          '("^make test\\.*"
+            "^make binary\\.*"
+            "^make binaries\\.*"
+            "^./script/make.sh\\.*"
+            "^git push\\.*"
+            "^pkill\\.*")
+          projector-command-modes-alist
+          '(("^heroku run console" . inf-ruby-mode))))
 #+END_SRC
 
 ** Compilation mode
