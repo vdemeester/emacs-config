@@ -513,7 +513,7 @@ It looks kinda like that (click to open the real one) :
     #+END_SRC
 
 
-*** Kill advice
+*** Killing
 
     Let's define few advice with =kill-ring-save= and =kill-region=.
 
@@ -524,15 +524,30 @@ It looks kinda like that (click to open the real one) :
          (if mark-active (list (region-beginning) (region-end))
            (list (line-beginning-position)
                  (line-beginning-position 2)))))
-
-      (defadvice kill-ring-save (before slick-copy activate compile)
-        "When called interactively with no active region, copy a single line instead."
-        (interactive
-         (if mark-active (list (region-beginning) (region-end))
-           (message "Copied line")
-           (list (line-beginning-position)
-                 (line-beginning-position 2)))))
     #+END_SRC
+
+    Let's use a well done package for the killing machine :D.
+
+#+BEGIN_SRC emacs-lisp
+  (use-package easy-kill
+    :ensure t
+    :bind (([remap kill-ring-save] . easy-kill)
+           ([remap mark-sexp] . easy-mark))
+    :config
+    (use-package easy-kill-extras
+      :ensure t
+      :bind (([remap mark-word] . easy-mark-word)
+             ([remap zap-to-char] . easy-mark-to-char))
+      :config (add-to-list 'easy-kill-alist '(?^ backward-line-edge ""))
+      (add-to-list 'easy-kill-alist '(?$ forward-line-edge ""))
+      (add-to-list 'easy-kill-alist '(?b buffer ""))
+      (add-to-list 'easy-kill-alist '(?< buffer-before-point ""))
+      (add-to-list 'easy-kill-alist '(?> buffer-after-point ""))
+      (add-to-list 'easy-kill-alist '(?f string-to-char-forward ""))
+      (add-to-list 'easy-kill-alist '(?F string-up-to-char-forward ""))
+      (add-to-list 'easy-kill-alist '(?t string-to-char-backward ""))
+      (add-to-list 'easy-kill-alist '(?T string-up-to-char-backward ""))))
+#+END_SRC
 
 *** Formatting
 
