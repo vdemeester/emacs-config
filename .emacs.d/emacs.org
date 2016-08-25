@@ -293,18 +293,18 @@ It looks kinda like that (click to open the real one) :
     First let's install the theme(s) and load the new theme
 
     #+begin_src emacs-lisp
-      ;;(use-package apropospriate-theme
-      ;;  :ensure t
-      ;;  :config
-      ;;  ;;(load-theme 'apropospriate-dark t)
-      ;;  (load-theme 'apropospriate-light t)
-      ;;  )
-      (use-package spacemacs-theme
+      (use-package apropospriate-theme
         :ensure t
-        :init
-        (setq spacemacs-theme-org-height t)
-        (setq spacemacs-theme-org-highlight t)
-        (load-theme 'spacemacs-dark))
+        :config
+        (load-theme 'apropospriate-dark t)
+        ;; (load-theme 'apropospriate-light t)
+        )
+      ;; (use-package spacemacs-theme
+      ;;   :ensure t
+      ;;   :init
+      ;;   (setq spacemacs-theme-org-height t)
+      ;;   (setq spacemacs-theme-org-highlight t)
+      ;;   (load-theme 'spacemacs-dark))
     #+end_src
 
 *** Mode Line
