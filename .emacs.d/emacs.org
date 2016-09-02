@@ -2131,7 +2131,7 @@ Let's also rewrite some built-in to better /default/. Let's start with
 ** Publishing
 
    Let's configure the publishing part of org-mode. The first
-   org-mode files we want to publish are in =~/desktop/org/{project}=,
+   org-mode files we want to publish are in =~/desktop/org/sites/{project}=,
    and we want to publish them in =~/var/public_html/{project}= for
    now.
 
@@ -2413,31 +2413,32 @@ Let's also rewrite some built-in to better /default/. Let's start with
      ("C-o" . hydra-ivy/body))
     ;; (key-chord-define ivy-minibuffer-map "m," #'ivy-beginning-of-buffer)
     ;; (key-chord-define ivy-minibuffer-map ",." #'ivy-end-of-buffer)
+    ;; version of ivy-yank-word to yank from start of word
+    (defun bjm/ivy-yank-whole-word ()
+      "Pull next word from buffer into search string."
+      (interactive)
+      (let (amend)
+        (with-ivy-window
+         ;;move to last word boundary
+         (re-search-backward "\\b")
+         (let ((pt (point))
+               (le (line-end-position)))
+           (forward-word 1)
+           (if (> (point) le)
+               (goto-char pt)
+             (setq amend (buffer-substring-no-properties pt (point))))))
+        (when amend
+          (insert (replace-regexp-in-string " +" " " amend)))))
+
+    ;; bind it to M-j
+    (define-key ivy-minibuffer-map (kbd "M-j") 'bjm/ivy-yank-whole-word)
     )
 #+END_SRC
 
 Add a small customization to ivy-yank word.
 
 #+BEGIN_SRC emacs-lisp
-  ;; version of ivy-yank-word to yank from start of word
-  (defun bjm/ivy-yank-whole-word ()
-    "Pull next word from buffer into search string."
-    (interactive)
-    (let (amend)
-      (with-ivy-window
-        ;;move to last word boundary
-        (re-search-backward "\\b")
-        (let ((pt (point))
-              (le (line-end-position)))
-          (forward-word 1)
-          (if (> (point) le)
-              (goto-char pt)
-            (setq amend (buffer-substring-no-properties pt (point))))))
-      (when amend
-        (insert (replace-regexp-in-string " +" " " amend)))))
 
-  ;; bind it to M-j
-  (define-key ivy-minibuffer-map (kbd "M-j") 'bjm/ivy-yank-whole-word)
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
