@@ -2763,6 +2763,9 @@ setup when exiting.
        :ensure t
        :config
        (progn
+         (use-package projectile-direnv
+           :ensure t
+           :config (add-hook 'projectile-mode-hook 'projectile-direnv-export-variables))
          (setq projectile-completion-system 'ivy)
          (setq projectile-enable-caching t)
          (setq projectile-indexing-method 'alien)
