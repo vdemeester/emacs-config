@@ -55,5 +55,6 @@
   (message "Loaded settings...done in %.3fs" elapsed))
 
 
+;; TODO(vdemeester) move t«his to the org-file
 (put 'narrow-to-region 'disabled nil)
 (put 'narrow-to-page 'disabled nil)

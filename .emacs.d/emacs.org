@@ -46,7 +46,7 @@ It looks kinda like that (click to open the real one) :
   If you don't want to use =vcsh= but still want to have my =.emacs.d= folder
   in your =$HOME=, you could link it like that :
 
-  #+BEGIN_SRC sh
+  #+BEGIN_SRC sh :tangle no
  $ cd $HOME
  $ mkdir -p src
  $ git clone git://github.com/vdemeester/emacs-config src/vde-emacs-config
@@ -147,6 +147,55 @@ It looks kinda like that (click to open the real one) :
                                                 emacs-start-time))))
        (message "Loaded settings...done in %.3fs" elapsed))
    #+END_SRC
+
+** Tangle on save
+
+This was taken and adapted from [[https://github.com/alanpearce/dotfiles/blob/master/tag-emacs/emacs.d/init.org#tangling][Alan Pearce's dotfiles]] so as to tangle
+it on save instead of tangling it every time I open it again.
+
+/Note/: async doesn't work here.. thinking of moving this definition
+away (in a separate =lisp= file) and load it/run it async. For now
+it's freezing a bit when saving this file...
+
+#+BEGIN_SRC emacs-lisp
+  (defun tangle-if-config ()
+    "If the current buffer is a config '*.org' the code-blocks are
+      tangled, and the tangled file is compiled."
+    (when (member (file-name-nondirectory buffer-file-name) '("emacs.org" "provided/go-config.org"))
+      (tangle-config buffer-file-name)))
+
+  (defun tangle-config-sync (file-name)
+    (interactive)
+
+    ;; Avoid running hooks when tangling.
+    (let* ((prog-mode-hook nil)
+           (src  file-name)
+           ;; (dest (expand-file-name "emacs.el"  user-emacs-directory))
+           (dest (format "%s.el" (file-name-sans-extension file-name))))
+      (message (format "%s -> %s" src dest))
+      (require 'ob-tangle)
+      (org-babel-tangle-file src dest)
+      (if (byte-compile-file dest)
+          (byte-compile-dest-file dest)
+        (with-current-buffer byte-compile-log-buffer
+          (buffer-string)))))
+
+  (defun tangle-config (file-name)
+    "Tangle init.org asynchronously."
+
+    (interactive)
+    (message (format "Tangling %s" file-name))
+    (tangle-config-sync file-name)
+    ;; (async-start
+    ;;  (lambda ()
+    ;;    (set 'file-name ,file-name)
+    ;;    (fset 'tangle-config-sync ,(symbol-function 'tangle-config-sync))
+    ;;    (tangle-config-sync file-name))
+    ;;  ;; (symbol-function #'tangle-config-sync)
+    ;;  (lambda (result)
+    ;;    (message "Init tangling completed: %s" result)))
+    )
+#+END_SRC
 
 * Personal information 👨
 
@@ -3326,3 +3375,17 @@ setup when exiting.
      (define-key vde/toggle-map "s" #'ha/folder-action-save-hook)
    #+END_SRC
 
+* Automatically invoke tangle on save
+
+This is the magic line(s) to make the tangle on save automatic.
+
+
+#+BEGIN_SRC emacs-lisp :tangle no
+# Local Variables:
+# eval: (when (fboundp #'tangle-if-config) (add-hook 'after-save-hook #'tangle-if-config))
+# End:
+#+END_SRC
+
+# Local Variables:
+# eval: (when (fboundp #'tangle-if-config) (add-hook 'after-save-hook #'tangle-if-config))
+# End:
