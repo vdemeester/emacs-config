@@ -55,3 +55,5 @@
   (message "Loaded settings...done in %.3fs" elapsed))
 
 
+(put 'narrow-to-region 'disabled nil)
+(put 'narrow-to-page 'disabled nil)
