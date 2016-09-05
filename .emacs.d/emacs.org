@@ -354,6 +354,20 @@ It looks kinda like that (click to open the real one) :
      (setq echo-keystrokes 0.1)
    #+END_SRC
 
+*** Text manipulation
+
+    One thing I really like in IntelliJ IDEA is the possibility to
+    select part of camelcase word. Emacs has the same feature but
+    cooler (easier to switch back and forth), and it's called
+    =subword= mode.
+
+    Let's enable it by default, and have a toggle-map entry (later
+    defined) to /toggle/ it.
+
+#+BEGIN_SRC emacs-lisp
+  (subword-mode +1)
+#+END_SRC
+
 *** diminish
 
     #+BEGIN_SRC emacs-lisp
@@ -365,7 +379,6 @@ It looks kinda like that (click to open the real one) :
     I'm playing a lot with the =$PATH= variable in my shell, and I
     sometimes pested that Emacs didn't have the same one. But thanks
     to [[https://github.com/purcell/exec-path-from-shell][exec-path-from-shell]] it's all ok now =:P=.
-
 
     #+BEGIN_SRC emacs-lisp
       (use-package exec-path-from-shell
