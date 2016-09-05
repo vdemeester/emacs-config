@@ -39,7 +39,7 @@ It looks kinda like that (click to open the real one) :
   You can obtain the source by cloning this repository somewhere, but the repository
   is made to work with [[https://github.com/RichiH/vcsh][vcsh]].
 
-  #+BEGIN_SRC sh
+  #+BEGIN_SRC sh :tangle no
  vcsh clone git://github.com/vdemeester/emacs-config emacs-config
   #+END_SRC
 
