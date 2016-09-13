@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Makes sure emacs daemon is running and opens the file in Emacs in
 # the terminal.
