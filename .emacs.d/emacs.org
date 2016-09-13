@@ -346,14 +346,7 @@ it's freezing a bit when saving this file...
         :ensure t
         :config
         (load-theme 'apropospriate-dark t)
-        ;; (load-theme 'apropospriate-light t)
         )
-      ;; (use-package spacemacs-theme
-      ;;   :ensure t
-      ;;   :init
-      ;;   (setq spacemacs-theme-org-height t)
-      ;;   (setq spacemacs-theme-org-highlight t)
-      ;;   (load-theme 'spacemacs-dark))
     #+end_src
 
 *** Mode Line
@@ -626,7 +619,7 @@ it's freezing a bit when saving this file...
 
      Let's define a few /cleaning/ functions :
 
-- untabify the buffer
+**** untabify the buffer
 
 #+begin_src emacs-lisp
   (defun my/untabify-buffer ()
@@ -649,7 +642,7 @@ it's freezing a bit when saving this file...
         )))
 #+end_src
 
-- ident the buffer, using the mode indentation stuff
+**** ident the buffer, using the mode indentation stuff
 
 #+begin_src emacs-lisp
   (defun my/indent-buffer ()
@@ -672,7 +665,7 @@ it's freezing a bit when saving this file...
         (whitespace-cleanup))))
 #+end_src
 
-- cleanup the buffer
+**** cleanup the buffer
 
 #+begin_src emacs-lisp
   (defun my/cleanup-buffer ()
@@ -683,7 +676,7 @@ it's freezing a bit when saving this file...
     (delete-trailing-whitespace))
 #+end_src
 
-- cleanup the region
+**** cleanup the region
 
 #+begin_src emacs-lisp
 (defun my/cleanup-region (beg end)
@@ -720,7 +713,6 @@ cases.
 Let's also rewrite some built-in to better /default/. Let's start with
 [[http://emacsredux.com/blog/2013/05/22/smarter-navigation-to-the-beginning-of-a-line/][smarter navigation to the beginning of a line]].
 
-
 #+BEGIN_SRC emacs-lisp
   (defun smarter-move-beginning-of-line (arg)
     "Move point back to indentation of beginning of line.
@@ -750,20 +742,6 @@ Let's also rewrite some built-in to better /default/. Let's start with
                   'smarter-move-beginning-of-line)
 #+END_SRC
 
-
-*** pretty-mode
-
-    Pretty mode turn some stuff prettier, for example in Haskell =/== becomes =≠=, or
-    =->= becomes =→=.
-
-    #+BEGIN_SRC emacs-lisp
-      (use-package pretty-mode
-                   :ensure t
-                   :init
-                   (add-hook 'prog-mode-hook
-                             'turn-on-pretty-mode))
-    #+END_SRC
-
 *** raindow-identifiers
 
     I read an intersting article about [[https://medium.com/p/3a6db2743a1e/][how to make syntax highlighting more useful]]
@@ -787,7 +765,7 @@ Let's also rewrite some built-in to better /default/. Let's start with
     explanation.
 
 
-    #+BEGIN_SRC emacs-lisp
+    #+BEGIN_SRC emacs-lisp :tangle no
       (use-package hydra
         :ensure t
         :config
@@ -841,7 +819,6 @@ Let's also rewrite some built-in to better /default/. Let's start with
         (define-key Buffer-menu-mode-map "." 'hydra-buffer-menu/body))
     #+END_SRC
 
-
 *** Async & bacground
 
    We add a function to the =after-save-hook= ensuring to always tangle
@@ -869,18 +846,6 @@ Let's also rewrite some built-in to better /default/. Let's start with
        :init
        (dired-async-mode 1))
    #+END_SRC
-
-   =bpr= from ilya babanov provides a way to do asynchronuous
-   processing in Emacs but with style and output.
-
-   #+BEGIN_SRC emacs-lisp
-     (use-package bpr
-       :ensure t
-       :init
-       (setq bpr-colorize-output t)
-       (setq bpr-close-after-success t))
-   #+END_SRC
-
 
 *** Dired
 
@@ -1064,18 +1029,6 @@ Let's also rewrite some built-in to better /default/. Let's start with
         )
     #+END_SRC
 
-*** Search
-
-    Make isearch-forward put the cursor at the start of the search, not the end, so that isearch can be used for navigation. See also http://www.emacswiki.org/emacs/IsearchOtherEnd.
-
-
-    #+BEGIN_SRC emacs-lisp
- (defun my-isearch-goto-match-beginning ()
-   (when (and isearch-forward (not isearch-mode-end-hook-quit)) (goto-char isearch-other-end)))
- (add-hook 'isearch-mode-end-hook 'my-isearch-goto-match-beginning)
-    #+END_SRC
-
-
 *** selection
 
     One feature of IntelliJ that really rocks is the =C-w= shortcuts
@@ -1198,6 +1151,7 @@ Let's also rewrite some built-in to better /default/. Let's start with
       ;; From https://github.com/abo-abo/ace-window/wiki but adapted to bepo
       (use-package ace-window
         :ensure t
+        :bind ([remap other-window] . ace-window)
         :config
         (set-face-attribute 'aw-leading-char-face nil :foreground "deep sky blue" :weight 'bold :height 3.0)
         (set-face-attribute 'aw-mode-line-face nil :inherit 'mode-line-buffer-id :foreground "lawn green")
@@ -1304,13 +1258,6 @@ Let's also rewrite some built-in to better /default/. Let's start with
     #+END_SRC
 
 
-*** Key-chord
-
-    I'm going to experiment wiht =key-chord= as I don't really use
-    evil (except from undo-tree but can get this without
-    =evil=). =key-chord= lets you define keyboard shortcuts that use
-    ordinary keys.
-
 
     #+BEGIN_SRC emacs-lisp
       ;; Move this elsewhere, it's not related to key-chord
@@ -1329,36 +1276,6 @@ Let's also rewrite some built-in to better /default/. Let's start with
          ((get-buffer "*Org Agenda*")
           (switch-to-buffer-other-window "*Org Agenda*"))
          (t (org-agenda nil "a"))))
-
-      (use-package key-chord
-        :ensure t
-        :config
-        (progn
-          (setq key-chord-one-key-delay 0.16)
-          (key-chord-mode 1)
-          ;; k can be bound too
-          (key-chord-define-global "uu"     'undo)
-          (key-chord-define-global "jw"     'ace-window)
-          (key-chord-define-global "jj" 'avy-goto-word-1)
-          (key-chord-define-global "jl" 'avy-goto-line)
-          (key-chord-define-global "jk" 'avy-goto-char)
-          (key-chord-define-global "j."
-                                   (defhydra join-lines ()
-                                     ("<up>" join-line)
-                                     ("<down>" (join-line 1))
-                                     ("t" join-line)
-                                     ("n" (join-line 1)))))
-        ;; buffer actions
-        (key-chord-define-global "vg"     'eval-region)
-        (key-chord-define-global "vb"     'eval-buffer)
-        ;; commands
-        (key-chord-define-global "FF"     'find-file)
-        (key-chord-define-global "xx"     'er/expand-region)
-        (key-chord-define-global "JJ"     'my/switch-to-previous-buffer))
-
-      (use-package use-package-chords
-        :ensure t
-        :config (key-chord-mode 1))
     #+END_SRC
 
 
@@ -2440,8 +2357,7 @@ Let's also rewrite some built-in to better /default/. Let's start with
            ("C-c s g" . counsel-git-grep)
            ("C-c s s" . counsel-pt)
            ("M-y" . counsel-yank-pop)
-           ("M-x" . counsel-M-x))
-    :chords ("xm" . counsel-M-x))
+           ("M-x" . counsel-M-x)))
 
 #+END_SRC
 
@@ -2516,7 +2432,6 @@ Add a small customization to ivy-yank word.
    #+BEGIN_SRC emacs-lisp
      (use-package imenu-anywhere
        :ensure t
-       :chords (";r" . ivy-imenu-anywhere)
        :bind (("M-i" . ivy-imenu-anywhere)))
    #+END_SRC
 
