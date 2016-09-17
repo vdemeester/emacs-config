@@ -649,6 +649,28 @@ It looks kinda like that (click to open the real one) :
          (add-hook 'text-mode-hook 'flyspell-mode)
          (add-hook 'prog-mode-hook 'flyspell-prog-mode)))
    #+END_SRC
+** Server mode
+
+   Start a server in not already running. I usually start emacs as a
+   daemon when at the start of the computer, but you never know =;-)=.
+
+   I have an error about /unsafe directory/ for =/tmp/emacs100=, that's
+   why the advice is there, to ignore the error (from [[http://stackoverflow.com/a/17069276/89249][stackoverflow]]).
+
+   #+BEGIN_SRC emacs-lisp
+     (defadvice server-ensure-safe-dir (around
+                                        my-around-server-ensure-safe-dir
+                                        activate)
+       "Ignores any errors raised from server-ensure-safe-dir"
+       (ignore-errors ad-do-it))
+     (unless (string= (user-login-name) "root")
+       (require 'server)
+       (when (or (not server-process)
+                 (not (eq (process-status server-process)
+                          'listen)))
+         (unless (server-running-p server-name)
+           (server-start))))
+   #+END_SRC
 ** Bind key to bind some unbound defaults
 
    There are some pretty nice default functions that are unbound. I use
@@ -3406,12 +3428,12 @@ It looks kinda like that (click to open the real one) :
 
 ** Nix related modes
 
-    #+BEGIN_QUOTE
-    NixOS is a Linux distribution with a unique approach to package and
-    configuration management. Built on top of the Nix package manager, it
-    is completely declarative, makes upgrading systems reliable, and has
-    many other advantages.
-    #+END_QUOTE
+   #+BEGIN_QUOTE
+   NixOS is a Linux distribution with a unique approach to package and
+   configuration management. Built on top of the Nix package manager, it
+   is completely declarative, makes upgrading systems reliable, and has
+   many other advantages.
+   #+END_QUOTE
 
 *** Nix mode
 
