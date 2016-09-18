@@ -450,6 +450,153 @@ It looks kinda like that (click to open the real one) :
            tramp-backup-directory-alist backup-directory-alist
            tramp-ssh-controlmaster-options "ssh")
    #+END_SRC
+** =dired=
+
+   Dired is really a cool mode, let's enhance it.
+
+   First load =dired-x= and set a list of default guess when issuing
+   =!= (=dired-do-shell-command=) or =&= (=dired-do-async-shell-command=).
+
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package dired-x)
+     (setq dired-guess-shell-alist-user
+              '(("\\.pdf\\'" "evince" "okular")
+                ("\\.\\(?:djvu\\|eps\\)\\'" "evince")
+                ("\\.\\(?:jpg\\|jpeg\\|png\\|gif\\|xpm\\)\\'" "geeqie")
+                ("\\.\\(?:xcf\\)\\'" "gimp")
+                ("\\.csv\\'" "libreoffice")
+                ("\\.tex\\'" "pdflatex" "latex")
+                ("\\.\\(?:mp4\\|mkv\\|avi\\|flv\\|ogv\\)\\(?:\\.part\\)?\\'"
+                 "mpv")
+                ("\\.\\(?:mp3\\|flac\\)\\'" "mpv")
+                ("\\.html?\\'" "firefox")
+                ("\\.cue?\\'" "audacious")))
+     (put 'dired-find-alternate-file 'disabled nil)
+   #+END_SRC
+
+   Install dired+.
+
+   #+BEGIN_SRC emacs-lisp
+     (setq diredp-hide-details-initially-flag nil)
+     (use-package dired+
+                  :ensure t
+                  :init)
+   #+END_SRC
+
+   Then, use nohup to not attach a process to emacs.
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package dired-aux)
+
+     (defvar dired-filelist-cmd
+       '(("vlc" "-L")))
+
+     (defun dired-start-process (cmd &optional file-list)
+       (interactive
+        (let ((files (dired-get-marked-files
+                      t current-prefix-arg)))
+          (list
+           (dired-read-shell-command "& on %s: "
+                                     current-prefix-arg files)
+           files)))
+       (let (list-switch)
+         (start-process
+          cmd nil shell-file-name
+          shell-command-switch
+          (format
+           "nohup 1>/dev/null 2>/dev/null %s \"%s\""
+           (if (and (> (length file-list) 1)
+                    (setq list-switch
+                          (cadr (assoc cmd dired-filelist-cmd))))
+               (format "%s %s" cmd list-switch)
+             cmd)
+           (mapconcat #'expand-file-name file-list "\" \"")))))
+
+     (define-key dired-mode-map "c" 'dired-start-process)
+   #+END_SRC
+
+   Let's also add a command to display the size of marked files.
+
+   #+BEGIN_SRC emacs-lisp
+     (defun dired-get-size ()
+       (interactive)
+       (let ((files (dired-get-marked-files)))
+         (with-temp-buffer
+           (apply 'call-process "/usr/bin/du" nil t nil "-schL" files) ;; -L to dereference (git-annex folder)
+           (message
+            "Size of all marked files: %s"
+            (progn
+              (re-search-backward "\\(^[ 0-9.,]+[A-Za-z]+\\).*total$")
+              (match-string 1))))))
+     (define-key dired-mode-map (kbd "z") 'dired-get-size)
+   #+END_SRC
+
+   Add a binding for =find-name-dired=. It will transform a =find=
+   /search/ into a dired buffer, which is.. well.. pretty cool =:D=.
+
+   #+BEGIN_SRC emacs-lisp
+     (define-key dired-mode-map "F" 'find-name-dired)
+   #+END_SRC
+
+   Also add a binding to switch to =wdired= which is the awsomeness
+   of awesome, because it let's you edit the dired buffer as a text
+   file (changing name, etc.) and will apply it when leaving (=C-c
+   C-c=)
+
+   #+BEGIN_SRC emacs-lisp
+     (define-key dired-mode-map "e" 'wdired-change-to-wdired-mode)
+   #+END_SRC
+
+
+   Open or re-use the =ansi-term= from the current directory in dired.
+
+   #+BEGIN_SRC emacs-lisp
+     (define-key dired-mode-map (kbd "`") 'dired-open-term)
+     ;; FIXME it seems not to work propertly..
+     (defun dired-open-term ()
+       "Open an `ansi-term' that corresponds to current directory."
+       (interactive)
+       (let ((current-dir (dired-current-directory)))
+         (term-send-string
+          (terminal)
+          (if (file-remote-p current-dir)
+              (let ((v (tramp-dissect-file-name current-dir t)))
+                (format "ssh %s@%s\n"
+                        (aref v 1) (aref v 2)))
+            (format "cd '%s'\n" current-dir)))))
+   #+END_SRC
+
+   Customize a bit the dired buffer
+
+   #+BEGIN_SRC emacs-lisp
+     (setq dired-listing-switches "-laGh1v --group-directories-first")
+   #+END_SRC
+
+   Let's also use =peep-dired= wich allows to quickly preview files
+   from a dired buffer (images, …)
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package peep-dired
+       :ensure t
+       :defer t ; don't access `dired-mode-map' until `peep-dired' is loaded
+       :bind (:map dired-mode-map
+                   ("P" . peep-dired)))
+   #+END_SRC
+
+   Another really cool package is dired-narrow, that allows to
+   dynamically filter a dired folder.
+
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package dired-narrow
+       :ensure t
+       :defer t
+       :bind (:map dired-mode-map
+                   ("/" . dired-narrow)))
+   #+END_SRC
+
+
 ** Diminish minor modes from the mode line
 
    Now that we have made sure we have installed use-package, we will make
