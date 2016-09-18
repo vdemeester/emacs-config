@@ -1009,6 +1009,20 @@ It looks kinda like that (click to open the real one) :
     #+END_SRC
 
 
+*** Fullframe
+
+    [[https://github.com/tomterl/fullframe][Fullframe]] advises commands to execute fullscreen, restoring the window
+    setup when exiting.
+
+    #+BEGIN_SRC emacs-lisp
+      (use-package fullframe
+        :ensure t
+        :config
+        (fullframe magit-status magit-mode-quit-window)
+        (fullframe ibuffer ibuffer-quit)
+        (fullframe list-packages quit-window))
+    #+END_SRC
+
 ** Bookmarks navigation
 
    #+BEGIN_SRC emacs-lisp
@@ -2493,6 +2507,8 @@ It looks kinda like that (click to open the real one) :
      (use-package ox-publish)
      ;; (use-package ox-rss)
 
+     (setq org-html-html5-fancy t)
+
      ;; Define some variables to write less :D
      (setq sbr-base-directory (expand-file-name "sbr" org-sites-directory)
            sbr-publishing-directory (expand-file-name "sbr" org-publish-folder)
@@ -2545,6 +2561,7 @@ It looks kinda like that (click to open the real one) :
               :with-toc nil
               :with-drawers t
               :htmlized-source t
+              :html-html5-fancy t
               :publishing-function org-html-publish-to-html
               :headline-levels 4
               :body-only t)
