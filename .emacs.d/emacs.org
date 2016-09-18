@@ -1596,6 +1596,17 @@ It looks kinda like that (click to open the real one) :
      (add-hook 'shell-mode-hook 'sk/force-yasnippet-off)
    #+END_SRC
 
+** Writable grep
+
+   wgrep allows you to edit a grep buffer and apply those changes to
+   the file buffer. This is pretty /badass/ when doing some
+   refactoring.
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package wgrep
+       :ensure t)
+   #+END_SRC
+
 ** Custom functions
 *** Better move-beginning-of-line
 
