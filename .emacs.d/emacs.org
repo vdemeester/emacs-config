@@ -785,16 +785,16 @@ It looks kinda like that (click to open the real one) :
        :init
        (progn
          (use-package flyspell-lazy
-           :ensure t))
+           :ensure t)
+         (add-hook 'text-mode-hook 'flyspell-mode)
+         (add-hook 'prog-mode-hook 'flyspell-prog-mode))
        :config
        (progn
          (setq ispell-program-name "aspell")
          (setq ispell-local-dictionary "en_US")
          (setq ispell-local-dictionary-alist
                '(("en_US" "[[:alpha:]]" "[^[:alpha:]]" "[']" nil nil nil utf-8)
-                 ("fr_FR" "[[:alpha:]]" "[^[:alpha:]]" "[']" nil nil nil utf-8)))
-         (add-hook 'text-mode-hook 'flyspell-mode)
-         (add-hook 'prog-mode-hook 'flyspell-prog-mode)))
+                 ("fr_FR" "[[:alpha:]]" "[^[:alpha:]]" "[']" nil nil nil utf-8)))))
    #+END_SRC
 ** Server mode
 
@@ -1208,11 +1208,12 @@ It looks kinda like that (click to open the real one) :
                 ("M-m SPC D"   . projectile-switch-project)
                 ("M-m SPC TAB" . projectile-find-other-file))
         :diminish projectile-mode
+        :init (add-hook 'prog-mode-hook 'projectile-mode)
         :config
         (setq projectile-keymap-prefix (kbd "C-c p"))
         (use-package projectile-direnv
           :ensure t
-          :config (add-hook 'projectile-mode-hook 'projectile-direnv-export-variables))
+          :init (add-hook 'projectile-mode-hook 'projectile-direnv-export-variables))
         (setq projectile-completion-system 'ivy)
         (setq projectile-enable-caching t)
         (setq projectile-indexing-method 'alien)
@@ -1230,9 +1231,7 @@ It looks kinda like that (click to open the real one) :
         (def-projectile-commander-method ?F
           "Git fetch on the project."
           (magit-status)
-          (call-interactively #'magit-fetch-all-prune))
-        (add-hook 'prog-mode-hook 'projectile-mode)
-        )
+          (call-interactively #'magit-fetch-all-prune)))
     #+END_SRC
 
 *** Perspective
@@ -1266,7 +1265,6 @@ It looks kinda like that (click to open the real one) :
                ("M-m g T" . ggtags-update-tags))
        :init
        (setq-local imenu-create-index-function #'ggtags-build-imenu-index)
-       :config
        (add-hook 'prog-mode-hook 'ggtags-mode))
    #+END_SRC
 
@@ -1310,7 +1308,7 @@ It looks kinda like that (click to open the real one) :
    #+BEGIN_SRC emacs-lisp
      (use-package highlight-symbol
        :ensure t
-       :config
+       :init
        (progn
          (setq highlight-symbol-on-navigation-p t)
          (add-hook 'prog-mode-hook 'highlight-symbol-mode))
@@ -3283,6 +3281,7 @@ It looks kinda like that (click to open the real one) :
        (setq company-idle-delay .3)                         ; decrease delay before autocompletion popup shows
        (setq company-echo-delay 0)                          ; remove annoying blinking
        (setq company-begin-commands '(self-insert-command)) ; start autocompletion only after typing
+       (add-hook 'after-init-hook 'global-company-mode)
        :bind (("M-t"   . company-complete)
               ("C-c f" . company-files)
               ("C-c a" . company-dabbrev)
@@ -3296,7 +3295,6 @@ It looks kinda like that (click to open the real one) :
               ("C-c"    . company-search-abort))
        :diminish (company-mode . "ς")
        :config
-       (add-hook 'after-init-hook 'global-company-mode)
        (use-package company-quickhelp
          :ensure t
          :config
@@ -3321,7 +3319,6 @@ It looks kinda like that (click to open the real one) :
              eshell-cmpl-ignore-case t
              eshell-aliases-file (concat user-emacs-directory ".eshell-aliases")
              eshell-last-dir-ring-size 512)
-       :config
        (add-hook 'shell-mode-hook 'goto-address-mode))
    #+END_SRC
 
@@ -3464,11 +3461,11 @@ It looks kinda like that (click to open the real one) :
      (use-package flycheck
        :ensure t
        :diminish flycheck-mode
+       :init (add-hook 'after-init-hook #'global-flycheck-mode)
        :config
        (progn
          (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc))
-         (setq flycheck-indication-mode 'right-fringe)
-         (add-hook 'after-init-hook #'global-flycheck-mode)))
+         (setq flycheck-indication-mode 'right-fringe)))
    #+END_SRC
 ** Editorconfig
 
