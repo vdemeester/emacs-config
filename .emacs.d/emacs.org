@@ -447,8 +447,7 @@ It looks kinda like that (click to open the real one) :
 
    #+BEGIN_SRC emacs-lisp
      (setq tramp-default-method "ssh"
-           tramp-backup-directory-alist backup-directory-alist
-           tramp-ssh-controlmaster-options "ssh")
+           tramp-backup-directory-alist backup-directory-alist)
    #+END_SRC
 ** =dired=
 
