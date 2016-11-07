@@ -1600,10 +1600,12 @@ It looks kinda like that (click to open the real one) :
        :config
        (require 'smartparens-config)
        (smartparens-global-mode)
-       (smartparens-global-strict-mode)
        (show-smartparens-global-mode)
        (which-key-add-key-based-replacements
-         "M-m m" "move prefix"))
+         "M-m m" "move prefix")
+       :init
+       (add-hook 'prog-mode-hook 'turn-on-smartparens-strict-mode)
+       (add-hook 'markdown-mode-hook 'turn-on-smartparens-strict-mode))
    #+END_SRC
 
 ** Killing
