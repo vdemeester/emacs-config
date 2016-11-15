@@ -32,16 +32,16 @@
   (message "Loaded packages in %.3fs" elapsed))
 
 ;; Make sure we have a decent and recent org-mode version
-;; (unload-org-mode)
-;; (require 'org)
-;; (when (string-match "^[1234567]" (org-version))
-;;   (progn
-;;     (warn "Org-mode is out of date. We expect org 8 or higher, but instead we have %s" (org-version))
-;;     (warn "Force the installation from org elpa.")
-;;     (package-install 'org)
-;;     (unload-org-mode)
-;;     (require 'org)
-;;     ))
+(unload-org-mode)
+(require 'org)
+(when (string-match "^[12345678]" (org-version))
+  (progn
+    (warn "Org-mode is out of date. We expect org 8 or higher, but instead we have %s" (org-version))
+    (warn "Force the installation from org elpa.")
+    (package-install 'org)
+    (unload-org-mode)
+    (require 'org)
+    ))
 
 (setq org-root-directory (substitute-env-in-file-name "$HOME/desktop/org"))
 

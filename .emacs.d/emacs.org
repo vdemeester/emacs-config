@@ -283,7 +283,6 @@ It looks kinda like that (click to open the real one) :
      github-personal-folder (expand-file-name github-username github-general-folder))
   #+END_SRC
 
-
 * Defaults 🐣
 ** Disabling some GUI elements
 
@@ -595,7 +594,6 @@ It looks kinda like that (click to open the real one) :
                    ("/" . dired-narrow)))
    #+END_SRC
 
-
 ** Diminish minor modes from the mode line
 
    Now that we have made sure we have installed use-package, we will make
@@ -677,7 +675,7 @@ It looks kinda like that (click to open the real one) :
    defined) to /toggle/ it.
 
    #+BEGIN_SRC emacs-lisp
-     (subword-mode)
+     (subword-mode t)
    #+END_SRC
 
 ** Narrow to region
@@ -722,9 +720,8 @@ It looks kinda like that (click to open the real one) :
     cool : 🙆 😆 😁 ♨ ⛅ 🚲.
 
     #+BEGIN_SRC emacs-lisp
-      (set-fontset-font t 'unicode "Symbola" nil 'prepend)
+    ;;  (set-fontset-font t 'unicode "Symbola" nil 'prepend)
     #+END_SRC
-
 
 ** Buffers
 
@@ -817,42 +814,6 @@ It looks kinda like that (click to open the real one) :
          (unless (server-running-p server-name)
            (server-start))))
    #+END_SRC
-** Bind key to bind some unbound defaults
-
-   There are some pretty nice default functions that are unbound. I use
-   the =bind-key= package that comes along with use-package to bind these
-   keys.
-
-   #+BEGIN_SRC emacs-lisp
-     (bind-keys*
-       ("C-r"       . dabbrev-expand)
-       ("M-/"       . hippie-expand)
-       ("M-m SPC R" . locate)
-       ("M-m W"     . winner-undo)
-       ("M-m g m"   . make-frame)
-       ("M-m g M"   . delete-frame)
-       ("M-m g n"   . select-frame-by-name)
-       ("M-m g N"   . set-frame-name)
-       ("M-m B"     . mode-line-other-buffer)
-       ("M-m ="     . indent-region)
-       ("M-m g ("   . Info-prev)
-       ("M-m g )"   . Info-next)
-       ("M-m ^"     . Info-up)
-       ("M-m &"     . Info-goto-node)
-       ("M-m g f"   . find-file-at-point)
-       ("M-m g u"   . downcase-region)
-       ("M-m g U"   . upcase-region)
-       ("M-m g C"   . capitalize-region)
-       ("M-m g F"   . follow-mode)
-       ("M-m R"     . overwrite-mode)
-       ("M-m g j"   . doc-view-next-page)
-       ("M-m g k"   . doc-view-previous-page)
-       ("M-m : t"   . emacs-init-time)
-       ("M-m g q"   . fill-paragraph)
-       ("M-m g @"   . compose-mail)
-       ("M-m SPC ?" . describe-bindings))
-   #+END_SRC
-
 * Key hints
 ** Which-key
 
@@ -996,21 +957,6 @@ It looks kinda like that (click to open the real one) :
                ("M-x" . counsel-M-x)))
     #+END_SRC
 
-*** swiper
-
-    #+BEGIN_QUOTE
-    Swiper is an alternative to isearch that uses ivy to show an
-    overview of all matches.
-    #+END_QUOTE
-
-    #+BEGIN_SRC emacs-lisp
-      (use-package swiper
-        :ensure t
-        :bind
-        (([remap isearch-forward]  . swiper)
-         ([remap isearch-backward] . swiper)))
-    #+END_SRC
-
 ** Undo tree
 
    The default Emacs [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Undo.html][undo]] command is weird. Better undo and redo
@@ -1052,78 +998,7 @@ It looks kinda like that (click to open the real one) :
    #+END_SRC
 
 ** Window management
-*** Ace window
-
-    [[https://github.com/abo-abo/ace-window][This package]] allows way better window movement that the default
-    =other-window= binding.
-
-    #+BEGIN_SRC emacs-lisp
-      (defun joe-scroll-other-window()
-        (interactive)
-        (scroll-other-window 1))
-      (defun joe-scroll-other-window-down ()
-        (interactive)
-        (scroll-other-window-down 1))
-      ;; From https://github.com/abo-abo/ace-window/wiki but adapted to bepo
-      (use-package ace-window
-        :ensure t
-        :bind ([remap other-window] . ace-window)
-        :config
-        (set-face-attribute 'aw-leading-char-face nil :foreground "deep sky blue" :weight 'bold :height 3.0)
-        (set-face-attribute 'aw-mode-line-face nil :inherit 'mode-line-buffer-id :foreground "lawn green")
-        (setq aw-keys   '(?a ?u ?i ?e ?t ?s ?r)
-              aw-dispatch-always t
-              aw-dispatch-alist
-              '((?y aw-delete-window      "Ace - Delete Window")
-                (?x aw-swap-window        "Ace - Swap Window")
-                (?\' aw-flip-window       "Ace - Flip Window")
-                (?\. aw-split-window-vert "Ace - Split Vert Window")
-                (?c aw-split-window-horz  "Ace - Split Horz Window")
-                (?n delete-other-windows  "Ace - Maximize Window")
-                (?k balance-windows)
-                (?v winner-undo)
-                (?o winner-redo)))
-
-        (when (package-installed-p 'hydra)
-          (defhydra hydra-window-size (:color red)
-            "Windows size"
-            ("c" shrink-window-horizontally "shrink horizontal")
-            ("t" shrink-window "shrink vertical")
-            ("s" enlarge-window "enlarge vertical")
-            ("r" enlarge-window-horizontally "enlarge horizontal")
-            ("+" text-scale-increase "increase text size")
-            ("-" text-scale-decrease "decrease text size"))
-          (defhydra hydra-window-frame (:color red)
-            "Frame"
-            ("e" make-frame "new frame")
-            ("y" delete-frame "delete frame"))
-          (defhydra hydra-window-scroll (:color red)
-            "Scroll other window"
-            ("'" joe-scroll-other-window "scroll")
-            ("j" joe-scroll-other-window-down "scroll down"))
-          (add-to-list 'aw-dispatch-alist '(?w hydra-window-size/body) t)
-          (add-to-list 'aw-dispatch-alist '(?l hydra-window-scroll/body) t)
-          (add-to-list 'aw-dispatch-alist '(?g hydra-window-frame/body) t))
-        (ace-window-display-mode t)
-        (winner-mode 1))
-    #+END_SRC
-
-*** Toggle zoom window
-
-    I generally have multiple windows open and might need to zoom into
-    one every now and then. I also might split them and change them. I
-    would like to think of [[https://github.com/syohex/emacs-zoom-window][this package]] as smart zoom where I zoom into
-    a window, split further, and have =winner= handle the history and
-    just zoom right back out and continue working on the previous
-    configuration. It also indicates if you are zoomed in or not via
-    the status line color.
-
-    #+BEGIN_SRC emacs-lisp
-      (use-package zoom-window
-        :ensure t
-        :bind* (("M-m Z" . zoom-window-zoom)))
-    #+END_SRC
-
+*** TODO Ace window
 *** Popwin
 
     #+BEGIN_QUOTE
@@ -1154,7 +1029,6 @@ It looks kinda like that (click to open the real one) :
           (global-set-key (kbd "C-z") popwin:keymap)))
     #+END_SRC
 
-
 *** Fullframe
 
     [[https://github.com/tomterl/fullframe][Fullframe]] advises commands to execute fullscreen, restoring the window
@@ -1169,104 +1043,10 @@ It looks kinda like that (click to open the real one) :
         (fullframe list-packages quit-window))
     #+END_SRC
 
-** Bookmarks navigation
-
-   #+BEGIN_SRC emacs-lisp
-          (defhydra sk/hydra-bookmarks (:color blue
-                                        :hint nil)
-            "
-           _s_: set  _b_: bookmark   _j_: jump   _d_: delete   _q_: quit
-            "
-            ("s" bookmark-set)
-            ("b" bookmark-save)
-            ("j" bookmark-jump)
-            ("d" bookmark-delete)
-            ("q" nil :color blue))
-     (bind-keys*
-       ("M-m `" . sk/hydra-bookmarks/body))
-   #+END_SRC
-
 ** Project management
-
-*** Projectile
-
-    #+BEGIN_QUOTE
-    Projectile is a project interaction library for Emacs. Its goal is
-    to provide a nice set of features operating on a project level
-    without introducing external dependencies(when feasible). For
-    instance - finding project files has a portable implementation
-    written in pure Emacs Lisp without the use of GNU find (but for
-    performance sake an indexing mechanism backed by external commands
-    exists as well).
-    #+END_QUOTE
-
-    #+BEGIN_SRC emacs-lisp
-      (use-package projectile
-        :ensure t
-        :bind* (("M-m SPC d"   . projectile-find-file)
-                ("M-m SPC D"   . projectile-switch-project)
-                ("M-m SPC TAB" . projectile-find-other-file))
-        :diminish projectile-mode
-        :init (add-hook 'prog-mode-hook 'projectile-mode)
-        :config
-        (setq projectile-keymap-prefix (kbd "C-c p"))
-        (use-package projectile-direnv
-          :ensure t
-          :init (add-hook 'projectile-mode-hook 'projectile-direnv-export-variables))
-        (setq projectile-completion-system 'ivy)
-        (setq projectile-enable-caching t)
-        (setq projectile-indexing-method 'alien)
-        (setq projectile-create-missing-test-files t)
-        (setq projectile-switch-project-action #'projectile-commander)
-        (def-projectile-commander-method ?s
-          "Open a *shell* buffer for the project."
-          (projectile-run-shell))
-        (def-projectile-commander-method ?c
-          "Run `compile` in the project."
-          (projectile-compile-project nil))
-        (def-projectile-commander-method ?d
-          "Open project root in dired."
-          (projectile-dired))
-        (def-projectile-commander-method ?F
-          "Git fetch on the project."
-          (magit-status)
-          (call-interactively #'magit-fetch-all-prune)))
-    #+END_SRC
-
-*** Perspective
-
-    [[https://github.com/nex3/perspective-el][Perspective]] is a minor mode that provides the ability to manage
-    different workspaces. It integrates well with projectile.
-
-    #+BEGIN_SRC emacs-lisp
-      (use-package perspective
-        :ensure t
-        :init
-        (progn
-          (setq persp-show-modestring nil)
-          (add-hook 'persp-switch-hook 'hack-dir-local-variables-non-file-buffer)
-          (persp-mode)))
-      (use-package persp-projectile
-        :ensure t
-        :requires perspective
-        :bind* (("M-m SPC p" . projectile-persp-switch-project)))
-    #+END_SRC
-** Tags based navigation
-
-   [[https://www.gnu.org/software/global/][GNU global]] is a code tagging system and I use it to navigate the code base. It can use different backends, including [[http://ctags.sourceforge.net][ctags]].
-
-   #+BEGIN_SRC emacs-lisp
-     (use-package ggtags
-       :ensure t
-       :diminish ggtags-mode
-       :bind* (("M-m T"   . ggtags-find-tag-regexp)
-               ("M-m g t" . ggtags-create-tags)
-               ("M-m g T" . ggtags-update-tags))
-       :init
-       (setq-local imenu-create-index-function #'ggtags-build-imenu-index)
-       (add-hook 'prog-mode-hook 'ggtags-mode))
-   #+END_SRC
-
+*** TODO Projectile
+*** TODO Perspective
+** TODO Tags based navigation
 * Visual 😎
 ** Color theme(s)
 
@@ -1385,41 +1165,7 @@ It looks kinda like that (click to open the real one) :
        :init (add-hook 'prog-mode-hook
                        'rainbow-identifiers-mode))
    #+END_SRC
-** Hydras
-*** Activate minor modes
-
-    There are many minor modes that I don't need to be active all the
-    time. And this hydra activates them on my command. This replace my
-    previous =toogle-map=.
-
-    #+BEGIN_SRC emacs-lisp
-      (defhydra vde/hydra-of-activate (:color red
-                                              :hint nil)
-        "
-             _f_: fill      _n_: number       _v_: wrap        _i_: indent    _k_: which-key     _q_: quit
-             _t_: time      _u_: truncate     _y_: yasnippet   _m_: margin    _s_: smartparens
-             _l_: flyspell  _a_: auto-comp    _d_: fold        _g_: ggtags    _e_: error
-            "
-        ("f" auto-fill-mode)
-        ("t" display-time-mode)
-        ("l" flyspell-mode)
-        ("n" linum-mode)
-        ("u" toggle-truncate-lines)
-        ("a" company-mode)
-        ("v" visual-line-mode)
-        ("y" yas-global-mode)
-        ("d" global-origami-mode)
-        ("i" highlight-indentation-mode)
-        ("m" fci-mode)
-        ("g" ggtags-mode)
-        ("k" which-key-mode)
-        ("s" smartparens-strict-mode)
-        ("e" global-flycheck-mode)
-        ("q" nil :color blue))
-      (bind-keys*
-       ("M-m g a" . vde/hydra-of-activate/body))
-    #+END_SRC
-
+** TODO Hydras
 * Editing 🖦
 
   For writing text, I prefer Emacs to do line wrapping for me. Also, superfluous
@@ -1438,7 +1184,7 @@ It looks kinda like that (click to open the real one) :
               )
   #+END_SRC
 
-** Selection
+** TODO Selection
 
    One feature of IntelliJ that really rocks is the =C-w= shortcuts
    that select "intelligently". =exand-region= is doing this for
@@ -1451,91 +1197,7 @@ It looks kinda like that (click to open the real one) :
    letters after pressing prefix =i= will select the complete blocks. To do this,
    we need to define a few functions.
 
-   #+BEGIN_SRC emacs-lisp
-     (defun sk/mark-inside-org-code ()
-       "Select inside an Org code block without the org specific syntax"
-       (interactive)
-       (er/mark-org-code-block)
-       (next-line 1)
-       (exchange-point-and-mark)
-       (previous-line 1)
-       (end-of-line 1))
-
-     (defun sk/mark-around-LaTeX-environment ()
-       "Select around a LaTeX environment with both the begin and end keywords"
-       (interactive)
-       (er/mark-LaTeX-inside-environment)
-       (previous-line 1)
-       (exchange-point-and-mark)
-       (next-line 1)
-       (end-of-line 1))
-
-     (defun sk/mark-around-word ()
-       "Mark the word and the adjacent whitespace"
-       (interactive)
-       (er/mark-word)
-       (exchange-point-and-mark)
-       (forward-char 1))
-
-     (defun sk/mark-around-text-paragraph ()
-       "Mark the paragraph and the newline"
-       (interactive)
-       (er/mark-text-paragraph)
-       (exchange-point-and-mark)
-       (next-line 1))
-
-     (defun sk/mark-inside-LaTeX-math ()
-       "Mark inside the latex math"
-       (interactive)
-       (er/mark-LaTeX-math)
-       (forward-char 1)
-       (exchange-point-and-mark)
-       (backward-char 1))
-
-     (defun sk/mark-inside-python-block ()
-       "Mark inside a python block"
-       (interactive)
-       (er/mark-python-block)
-       (next-line 1))
-
-     (defun sk/mark-around-symbol ()
-       "Mark around a symbol including the nearby whitespace"
-       (interactive)
-       (er/mark-symbol)
-       (exchange-point-and-mark)
-       (forward-char 1))
-   #+END_SRC
-
-   #+BEGIN_SRC emacs-lisp
-     (use-package expand-region
-       :ensure t
-       :bind* (("C-=" . er/expand-region)
-               ("M-m a o" . er/mark-org-code-block)
-               ("M-m a w" . sk/mark-around-word)
-               ("M-m a p" . sk/mark-around-text-paragraph)
-               ("M-m a f" . er/mark-defun)
-               ("M-m a e" . sk/mark-around-LaTeX-environment)
-               ("M-m a t" . er/mark-LaTeX-math)
-               ("M-m a m" . er/mark-python-block)
-               ("M-m a q" . er/mark-outside-quotes)
-               ("M-m a b" . er/mark-outside-pairs)
-               ("M-m a u" . er/mark-url)
-               ("M-m a c" . er/mark-comment)
-               ("M-m a v" . sk/mark-around-symbol)
-               ("M-m i p" . er/mark-text-paragraph)
-               ("M-m i f" . er/mark-defun)
-               ("M-m i w" . er/mark-word)
-               ("M-m i e" . er/mark-LaTeX-inside-environment)
-               ("M-m i t" . sk/mark-inside-LaTeX-math)
-               ("M-m i u" . er/mark-url)
-               ("M-m i c" . er/mark-comment)
-               ("M-m i b" . er/mark-inside-pairs)
-               ("M-m i q" . er/mark-inside-quotes)
-               ("M-m i o" . sk/mark-inside-org-code)
-               ("M-m i m" . sk/mark-inside-python-block)
-               ("M-m i v" . er/mark-symbol)))
-   #+END_SRC
-
+*** TODO expand regien
 ** Comment/Uncomment region
 
    Something I'm really use to, with IntelliJ or Eclipse, is being
@@ -1558,56 +1220,8 @@ It looks kinda like that (click to open the real one) :
    to =M-;=). This adds a comment at the right place (at the end of
    the line, up the method, etc..
 
-** Smartparens
-
-   [[https://github.com/Fuco1/smartparens][This package]] aims to be the one-stop solution for semantic language in any
-   language. It is a little hard to wrap your head around though. I mostly use it
-   for its wrapping and unwrapping features more than semantic navigation.
-
-   #+BEGIN_SRC emacs-lisp
-     (use-package smartparens
-       :ensure t
-       :demand t
-       :bind* (("M-m m j" . sp-down-sexp)
-               ("M-m m k" . sp-backward-up-sexp)
-               ("M-m m h" . sp-backward-down-sexp)
-               ("M-m m l" . sp-up-sexp)
-               ("M-m m f" . sp-forward-sexp)
-               ("M-m m b" . sp-backward-sexp)
-               ("M-m m a" . sp-beginning-of-sexp)
-               ("M-m m e" . sp-end-of-sexp)
-               ("M-m m n" . sp-next-sexp)
-               ("M-m m p" . sp-previous-sexp)
-               ("M-m m >" . sp-forward-barf-sexp)
-               ("M-m m <" . sp-backward-barf-sexp)
-               ("M-m m )" . sp-forward-slurp-sexp)
-               ("M-m m (" . sp-backward-slurp-sexp)
-               ("M-m m x" . sp-transpose-sexp)
-               ("M-m m d" . sp-kill-sexp)
-               ("M-m m y" . sp-copy-sexp)
-               ("M-m m u" . sp-unwrap-sexp)
-               ("M-m m U" . sp-backward-unwrap-sexp)
-               ("M-m m C" . sp-convolute-sexp)
-               ("M-m m r" . sp-raise-sexp)
-               ("M-m m s" . sp-split-sexp)
-               ("M-m m S" . sp-splice-sexp)
-               ("M-m m F" . sp-splice-sexp-killing-forward)
-               ("M-m m B" . sp-splice-sexp-killing-backward)
-               ("M-m m A" . sp-splice-sexp-killing-around))
-       :diminish smartparens-mode
-       :diminish smartparens-strict-mode
-       :config
-       (require 'smartparens-config)
-       (smartparens-global-mode)
-       (show-smartparens-global-mode)
-       (which-key-add-key-based-replacements
-         "M-m m" "move prefix")
-       :init
-       (add-hook 'prog-mode-hook 'turn-on-smartparens-strict-mode)
-       (add-hook 'markdown-mode-hook 'turn-on-smartparens-strict-mode))
-   #+END_SRC
-
-** Killing
+** TODO Smartparens
+** TODO Killing
 
    Let's define few advice with =kill-ring-save= and =kill-region=.
 
@@ -1620,89 +1234,9 @@ It looks kinda like that (click to open the real one) :
                 (line-beginning-position 2)))))
    #+END_SRC
 
-   Let's use a well done package for the killing machine :D.
-
-   #+BEGIN_SRC emacs-lisp
-     (use-package easy-kill
-       :ensure t
-       :bind (([remap kill-ring-save] . easy-kill)
-              ([remap mark-sexp] . easy-mark))
-       :config
-       (use-package easy-kill-extras
-         :ensure t
-         :bind (([remap mark-word] . easy-mark-word)
-                ([remap zap-to-char] . easy-mark-to-char))
-         :config (add-to-list 'easy-kill-alist '(?^ backward-line-edge ""))
-         (add-to-list 'easy-kill-alist '(?$ forward-line-edge ""))
-         (add-to-list 'easy-kill-alist '(?b buffer ""))
-         (add-to-list 'easy-kill-alist '(?< buffer-before-point ""))
-         (add-to-list 'easy-kill-alist '(?> buffer-after-point ""))
-         (add-to-list 'easy-kill-alist '(?f string-to-char-forward ""))
-         (add-to-list 'easy-kill-alist '(?F string-up-to-char-forward ""))
-         (add-to-list 'easy-kill-alist '(?t string-to-char-backward ""))
-         (add-to-list 'easy-kill-alist '(?T string-up-to-char-backward ""))))
-   #+END_SRC
-
-** Interactive edit
-
-   [[https://www.masteringemacs.org/article/iedit-interactive-multi-occurrence-editing-in-your-buffer][Iedit-mode]] is the bomb. Quick, fast edits of every symbol selected. Although [[*Multiple
-   cursors][Multiple cursors]]
-   has some more features, this is the best choice for quick renaming of variables/words.
-
-   #+BEGIN_SRC emacs-lisp
-     (use-package iedit
-       :ensure t
-       :commands (iedit-mode)
-       :bind* (("M-m *" . iedit-mode)))
-   #+END_SRC
-
-** Multiple cursors
-
-   [[https://github.com/magnars/multiple-cursors.el][Multiple cursors]] is an amazing, but admittedly quirky, package that needs
-   some setting up. Also, this conflicts with [[*Modalka mode][Modalka mode]] and when having
-   multiple cursors, it's best to stay in Emacs state. Since I use this for
-   quick edits, I'm fine with this. Also, [[*Region bindings mode][Region bindings mode]] acts as a glue
-   between this and its corresponding modal binding
-
-   #+BEGIN_SRC emacs-lisp
-     (use-package multiple-cursors
-       :ensure t
-       :bind* (("M-m ." . mc/edit-lines)
-               ("M-m >" . mc/mark-next-like-this)
-               ("M-m ," . mc/skip-to-next-like-this)
-               ("M-m <" . mc/mark-previous-like-this)))
-   #+END_SRC
-
-*** Region bindings mode
-
-    [[https://github.com/fgallina/region-bindings-mode][This]] is also kind of a modal mode. This activates only when a region is active. I use it exclusively for multiple cursors.
-
-    #+BEGIN_SRC emacs-lisp
-(use-package region-bindings-mode
-  :ensure t
-  :demand t
-  :bind (:map region-bindings-mode-map
-              ("<" . mc/mark-previous-like-this)
-              ("," . mc/skip-to-next-like-this)
-              (">" . mc/mark-next-like-this)
-              ("." . mc/edit-lines))
-  :diminish (region-bindings-mode . "ρ")
-  :config
-  (progn
-    (add-hook 'after-init-hook 'region-bindings-mode-enable)))
-    #+END_SRC
-
-** Moving text around
-
-   Allows to move the current line or region up/down. The source code is
-   on the Wiki: http://www.emacswiki.org/emacs/move-text.el
-
-   #+BEGIN_SRC emacs-lisp
-     (use-package move-text
-       :ensure t
-       :config (move-text-default-bindings))
-   #+END_SRC
-** Snippets
+*** TODO easy-kill
+** TODO Moving text around
+** TODO Snippets
 
    [[https://github.com/capitaomorte/yasnippet][Yasnippets]] gives you the snippets functionality. It also comes bundled
    with a lot of pre-configured snippets and is extensible via Emacs
@@ -2313,7 +1847,6 @@ It looks kinda like that (click to open the real one) :
        (org-tags-view (null current-prefix-arg) tag))
    #+END_SRC
 
-
 ** Code blocks
 
    We are using a lot of code block in org-mode, in this file for example ; let's
@@ -2385,70 +1918,6 @@ It looks kinda like that (click to open the real one) :
                    (local-set-key (kbd "C-c s b") 'my/org-insert-blockquote-block))
                 'append)
    #+END_SRC
-
-** Mobile (temporarly disable)
-
-   Define some stuff for the /org-mobile/ synchronization. The
-   =org-mobile-directory= is a on a remote ssh, defined in the
-   =~/.emacs.d/user.el= file (using =(setq personal-org-mobile-directory "")=).
-
-   #+BEGIN_SRC emacs-lisp :tangle no
-     (require 'org-mobile)
-     (setq org-mobile-directory personal-org-mobile-directory
-           org-mobile-inbox-for-pull (expand-file-name org-inbox-file org-todos-directory)
-           org-mobile-files '(org-todos-directory))
-   #+END_SRC
-
-   Let's also configure auto push, asynchronously like in this
-   [[https://gist.github.com/mrvdb/3111823][gist]]. One thing that I should add though is to auto-commit too
-   (because my todos are on git).
-
-   #+BEGIN_SRC emacs-lisp :tangle no
-     (defun notify-push (result)
-       (notifications-notify
-        :title "Push complete"
-        :body (format "Org-mobile-push: %s" result)
-        ))
-
-     ;; Fork the work of pushing to mobile
-     (defun fork-org-push-mobile ()
-       (interactive)
-       (async-start
-        ;; What to do in the child process
-        `(lambda ()
-           (require 'org)
-           ,(async-inject-variables "org-\\(mobile-\\|directory\\)")
-           (org-mobile-push))
-                                             ; What to do when it finishes
-        (lambda (result)
-          (notify-push result))))
-
-     ;; Define a timer variable
-     (defvar org-mobile-push-timer nil
-       "Timer that `org-mobile-push-timer' used to reschedule itself, or nil.")
-
-     ;; Push to mobile when the idle timer runs out
-     (defun org-mobile-push-with-delay (secs)
-       (when org-mobile-push-timer
-         (cancel-timer org-mobile-push-timer))
-       (setq org-mobile-push-timer
-             (run-with-idle-timer
-              (* 1 secs) nil 'fork-org-push-mobile)))
-
-     ;; After saving files, start a 30 seconds idle timer after which we
-     ;; are going to push
-     (add-hook 'after-save-hook
-               (lambda ()
-                 (when (eq major-mode 'org-mode)
-                   (dolist (file (org-mobile-files-alist))
-                     (if (string= (expand-file-name (car file)) (buffer-file-name))
-                         (org-mobile-push-with-delay 30)))
-                   )))
-
-     ;; At least run it once a day, but no need for a delay this time
-     (run-at-time "12:05" 86400 '(lambda () (org-mobile-push-with-delay 1)))
-   #+END_SRC
-
 
 ** Archives
 
@@ -2529,7 +1998,6 @@ It looks kinda like that (click to open the real one) :
    |--------------------+-----------------+---------------------|
    |                    | Less Urgent     | Urgent              |
    |                    | /no tag urgent/ | /tag urgent/        |
-
 
 ** Agenda(s)
 
@@ -2789,7 +2257,6 @@ It looks kinda like that (click to open the real one) :
      (use-package ox-ioslide
        :ensure t)
    #+END_SRC
-
 
 ** Protocol
 
@@ -3170,46 +2637,6 @@ It looks kinda like that (click to open the real one) :
          (setq magit-push-always-verify nil)
          (setq magit-last-seen-setup-instructions "2.1.0"))
    #+END_SRC
-** Highlight diffs
-
-   [[https://github.com/dgutov/diff-hl][Highlight git diffs on the fly]].
-
-   #+BEGIN_SRC emacs-lisp
-     (use-package diff-hl
-       :ensure t
-       :commands (global-diff-hl-mode
-                  diff-hl-mode
-                  diff-hl-next-hunk
-                  diff-hl-previous-hunk
-                  diff-hl-mark-hunk
-                  diff-hl-diff-goto-hunk
-                  diff-hl-revert-hunk)
-       :bind* (("M-m ] h" . diff-hl-next-hunk)
-               ("M-m [ h" . diff-hl-previous-hunk)
-               ("M-m i h" . diff-hl-mark-hunk)
-               ("M-m a h" . diff-hl-mark-hunk)
-               ("M-m g h" . diff-hl-diff-goto-hunk)
-               ("M-m g H" . diff-hl-revert-hunk))
-       :config
-       (global-diff-hl-mode)
-       (diff-hl-flydiff-mode)
-       (diff-hl-margin-mode)
-       (diff-hl-dired-mode))
-   #+END_SRC
-
-** Git time machine
-
-   The ability to move to past versions of the current file, [[https://github.com/pidu/git-timemachine][like a time machine]].
-
-   #+BEGIN_SRC emacs-lisp
-     (use-package git-timemachine
-       :ensure t
-       :commands (git-timemachine-toggle
-                  git-timemachine-switch-branch)
-       :bind* (("M-m g l" . git-timemachine-toggle)
-               ("M-m g L" . git-timemachine-switch-branch)))
-   #+END_SRC
-
 ** Git annex support
 
    [[http://git-annex.branchable.com/][Git-annex]] is a wonderful piece of software that I use a lot in my repositories.
@@ -3302,7 +2729,6 @@ It looks kinda like that (click to open the real one) :
          (company-quickhelp-mode)))
    #+END_SRC
 
-
 ** Eshell
 
    Eshell is a built-in shell that is written in Lisp. It's pretty good.
@@ -3371,41 +2797,6 @@ It looks kinda like that (click to open the real one) :
            (kill-buffer (current-buffer))))
    #+END_SRC
 
-** Multi term
-
-   [[https://www.emacswiki.org/emacs/MultiTerm][Multi term]] doesn't provide any additional commands to built-in Emacs
-   ~term~ and ~ansi-term~ but helps in managing multiple terminal
-   buffers.
-
-   #+BEGIN_SRC emacs-lisp
-     (use-package multi-term
-       :ensure t
-       :commands (multi-term)
-       :bind* (("M-m SPC u" . sk/multi-term-vertical)
-               ("M-m SPC U". sk/multi-term-horizontal)))
-   #+END_SRC
-
-   Let's also define a couple of wrapper functions to open this in
-   splits.
-
-   #+BEGIN_SRC emacs-lisp
-     ;; Vertical split multi-term
-     (defun sk/multi-term-vertical ()
-       "opens up a new terminal in the directory associated with the current buffer's file."
-       (interactive)
-       (split-window-right)
-       (other-window 1)
-       (multi-term))
-
-     ;; Horizontal split multi-term
-     (defun sk/multi-term-horizontal ()
-       "opens up a new terminal in the directory associated with the current buffer's file."
-       (interactive)
-       (split-window-below)
-       (other-window 1)
-       (multi-term))
-   #+END_SRC
-
 ** Compilation buffer
 
    Let's configure the compilation-mode to follow the compilation, not waiting
@@ -3433,7 +2824,7 @@ It looks kinda like that (click to open the real one) :
      (add-hook 'compilation-filter-hook 'my/colorize-compilation-buffer)
    #+END_SRC
 
-** Quickrun
+** TODO Quickrun
 
    [[https://github.com/syohex/emacs-quickrun][This package]] helps you quickly run little pieces of code.
 
@@ -3447,7 +2838,7 @@ It looks kinda like that (click to open the real one) :
                   quickrun-compile-only
                   quickrun-replace-region))
    #+END_SRC
-** Error checking
+** TODO Error checking
 
    #+BEGIN_QUOTE
    Flycheck is a modern on-the-fly syntax checking extension for GNU Emacs 24, intended as replacement for the older Flymake extension which is part of GNU Emacs.
@@ -3520,7 +2911,7 @@ It looks kinda like that (click to open the real one) :
        :ensure t)
    #+END_SRC
 
-** Lisp
+** TODO Lisp
 
    Let's install some modes that proves to be useful for any LISP.
 
