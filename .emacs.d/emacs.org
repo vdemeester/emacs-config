@@ -387,6 +387,18 @@ It looks kinda like that (click to open the real one) :
      (setq echo-keystrokes 0.1)
    #+END_SRC
 
+** Remap M-x
+
+   Alt-x is one of the most frequently typed Emacs key combos, and it
+   involves scrunching your left hand up. Anything you're going to do
+   thousands of times should be streamlined, so you want to be able to
+   start a M-x sequence with the Ctrl key.
+
+   #+BEGIN_SRC emacs-lisp
+     (global-set-key "\C-c\C-m" 'execute-extended-command)
+   #+END_SRC
+
+
 ** Expand some words and auto-correct
 
    =abbrev-mode= or abbreviation mode is a built-in mode that
