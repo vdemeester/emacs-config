@@ -876,8 +876,7 @@ It looks kinda like that (click to open the real one) :
        :ensure t)
    #+END_SRC
 
-** Ivy, counsel and swiper
-
+** TODO Ivy, counsel and swiper
    An alternative to Helm (that I used before) is [[https://github.com/abo-abo/swiper][ivy, counsel and
    swiper]].
 
