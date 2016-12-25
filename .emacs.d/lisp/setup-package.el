@@ -1,4 +1,5 @@
 (require 'package)
+(require 'cl-lib)
 
 ;; add org to package repos
 (add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/"))
@@ -21,7 +22,7 @@
   (setq gnutls-trustfiles (list trustfile)))
 
 (let ((bad-hosts
-       (loop for bad
+       (cl-loop for bad
              in `("https://wrong.host.badssl.com/"
                   "https://self-signed.badssl.com/")
              if (condition-case e
