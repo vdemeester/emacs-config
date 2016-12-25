@@ -2777,6 +2777,7 @@ It looks kinda like that (click to open the real one) :
              eshell-buffer-shorthand t
              eshell-history-size 1024
              eshell-cmpl-ignore-case t
+             eshell-prompt-regexp " λ "
              eshell-aliases-file (concat user-emacs-directory ".eshell-aliases")
              eshell-last-dir-ring-size 512)
        (add-hook 'shell-mode-hook 'goto-address-mode))
@@ -2829,6 +2830,44 @@ It looks kinda like that (click to open the real one) :
             (string-match "finished" state))
            (kill-buffer (current-buffer))))
    #+END_SRC
+
+   Stolen from
+   http://www.emacswiki.org/cgi-bin/wiki.pl/EshellEnhancedLS, makes
+   =ls= in eshell /RET/-able.
+
+   #+BEGIN_SRC emacs-lisp
+     ;;
+     (eval-after-load "em-ls"
+       '(progn
+          (defun ted-eshell-ls-find-file-at-point (point)
+            "RET on Eshell's `ls' output to open files."
+            (interactive "d")
+            (find-file (buffer-substring-no-properties
+                        (previous-single-property-change point 'help-echo)
+                        (next-single-property-change point 'help-echo))))
+
+          (defun pat-eshell-ls-find-file-at-mouse-click (event)
+            "Middle click on Eshell's `ls' output to open files.
+      From Patrick Anderson via the wiki."
+            (interactive "e")
+            (ted-eshell-ls-find-file-at-point (posn-point (event-end event))))
+
+          (let ((map (make-sparse-keymap)))
+            (define-key map (kbd "RET")      'ted-eshell-ls-find-file-at-point)
+            (define-key map (kbd "<return>") 'ted-eshell-ls-find-file-at-point)
+            (define-key map (kbd "<mouse-2>") 'pat-eshell-ls-find-file-at-mouse-click)
+            (defvar ted-eshell-ls-keymap map))
+
+          (defadvice eshell-ls-decorated-name (after ted-electrify-ls activate)
+            "Eshell's `ls' now lets you click or RET on file names to open them."
+            (add-text-properties 0 (length ad-return-value)
+                                 (list 'help-echo "RET, mouse-2: visit this file"
+                                       'mouse-face 'highlight
+                                       'keymap ted-eshell-ls-keymap)
+                                 ad-return-value)
+            ad-return-value)))
+   #+END_SRC
+   
 
 ** Compilation buffer
 
