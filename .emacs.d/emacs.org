@@ -158,43 +158,65 @@ It looks kinda like that (click to open the real one) :
    it's freezing a bit when saving this file...
 
    #+BEGIN_SRC emacs-lisp
-  (defun tangle-if-config ()
-    "If the current buffer is a config '*.org' the code-blocks are
-      tangled, and the tangled file is compiled."
-    (when (member (file-name-nondirectory buffer-file-name) '("emacs.org" "provided/go-config.org"))
-      (tangle-config buffer-file-name)))
+     (defun tangle-if-config ()
+       "If the current buffer is a config '*.org' the code-blocks are
+         tangled, and the tangled file is compiled."
+       (when (member (file-name-nondirectory buffer-file-name) '("emacs.org" "provided/go-config.org"))
+         (tangle-config buffer-file-name)))
 
-  (defun tangle-config-sync (file-name)
-    (interactive)
+     (defun tangle-config-sync (file-name)
+       (interactive)
 
-    ;; Avoid running hooks when tangling.
-    (let* ((prog-mode-hook nil)
-           (src  file-name)
-           ;; (dest (expand-file-name "emacs.el"  user-emacs-directory))
-           (dest (format "%s.el" (file-name-sans-extension file-name))))
-      (message (format "%s -> %s" src dest))
-      (require 'ob-tangle)
-      (org-babel-tangle-file src dest)
-      (if (byte-compile-file dest)
-          (byte-compile-dest-file dest)
-        (with-current-buffer byte-compile-log-buffer
-          (buffer-string)))))
+       ;; Avoid running hooks when tangling.
+       (let* ((prog-mode-hook nil)
+              (src  file-name)
+              ;; (dest (expand-file-name "emacs.el"  user-emacs-directory))
+              (dest (format "%s.el" (file-name-sans-extension file-name))))
+         (message (format "%s -> %s" src dest))
+         (require 'ob-tangle)
+         (org-babel-tangle-file src dest)
+         (if (byte-compile-file dest)
+             (byte-compile-dest-file dest)
+           (with-current-buffer byte-compile-log-buffer
+             (buffer-string)))))
 
-  (defun tangle-config (file-name)
-    "Tangle init.org asynchronously."
+     (defun tangle-config-async (file-name)
+       (async-start
+        (lambda ()
+          ;; make async emacs aware of packages (for byte-compilation)
+          (package-initialize)
+          (setq package-enable-at-startup nil)
+          (require 'org)
 
-    (interactive)
-    (message (format "Tangling %s" file-name))
-    (tangle-config-sync file-name)
-    ;; (async-start
-    ;;  (lambda ()
-    ;;    (set 'file-name ,file-name)
-    ;;    (fset 'tangle-config-sync ,(symbol-function 'tangle-config-sync))
-    ;;    (tangle-config-sync file-name))
-    ;;  ;; (symbol-function #'tangle-config-sync)
-    ;;  (lambda (result)
-    ;;    (message "Init tangling completed: %s" result)))
-    )
+          ;; Avoid running hooks when tangling.
+          (let* ((prog-mode-hook nil)
+                 (src  file-name)
+                 ;; (dest (expand-file-name "emacs.el"  user-emacs-directory))
+                 (dest (format "%s.el" (file-name-sans-extension file-name))))
+            (message (format "%s -> %s" src dest))
+            (require 'ob-tangle)
+            (org-babel-tangle-file src dest)
+            (if (byte-compile-file dest)
+                (byte-compile-dest-file dest)
+              (with-current-buffer byte-compile-log-buffer
+                (buffer-string))))     
+          )))
+
+     (defun tangle-config (file-name)
+       "Tangle init.org asynchronously."
+
+       (interactive)
+       (message (format "Tangling %s" file-name))
+       (tangle-config-async file-name)
+       ;; (async-start
+       ;;  (lambda ()
+       ;;    (set 'file-name ,file-name)
+       ;;    (fset 'tangle-config-sync ,(symbol-function 'tangle-config-sync))
+       ;;    (tangle-config-sync file-name))
+       ;;  ;; (symbol-function #'tangle-config-sync)
+       ;;  (lambda (result)
+       ;;    (message "Init tangling completed: %s" result)))
+       )
    #+END_SRC
 
 ** Edit configuration shortcut
