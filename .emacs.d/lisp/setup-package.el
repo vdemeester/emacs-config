@@ -1,15 +1,39 @@
 (require 'package)
 
 ;; add org to package repos
-(add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/"))
+(add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/"))
 
 ;; add melpa and melpa-stable to package repos
-(add-to-list 'package-archives '("mela-stable" . "http://stable.melpa.org/packages/"))
-(add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
+(add-to-list 'package-archives '("mela-stable" . "https://stable.melpa.org/packages/"))
+(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
 
 ;; elpy
 (add-to-list 'package-archives
-             '("elpy" . "http://jorgenschaefer.github.io/packages/"))
+             '("elpy" . "https://jorgenschaefer.github.io/packages/"))
+
+(setq tls-checktrust t)
+(setq gnutls-verify-error t)
+
+(let ((trustfile "/etc/ssl/cert.pem"))
+  (setq tls-program
+        `(,(format  "gnutls-cli --x509cafile %s -p %%p %%h" trustfile)
+          ,(format "openssl s_client -connect %%h:%%p -CAfile %s -no_ssl2 -ign_eof" trustfile)))
+  (setq gnutls-trustfiles (list trustfile)))
+
+(let ((bad-hosts
+       (loop for bad
+             in `("https://wrong.host.badssl.com/"
+                  "https://self-signed.badssl.com/")
+             if (condition-case e
+                    (url-retrieve
+                     bad (lambda (retrieved) t))
+                  (error nil))
+             collect bad)))
+  (if bad-hosts
+      (error (format "tls misconfigured; retrieved %s ok"
+                     bad-hosts))
+    (url-retrieve "https://badssl.com"
+                  (lambda (retrieved) t))))
 
 ;; If gpg cannot be found, signature checking will fail, so we
 ;; conditionnally enable it according wether gpg is availabel.
