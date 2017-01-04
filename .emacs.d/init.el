@@ -31,8 +31,6 @@
 					   emacs-start-time))))
   (message "Loaded packages in %.3fs" elapsed))
 
-(setq org-root-directory (substitute-env-in-file-name "$HOME/desktop/org"))
-
 ;; keep customize settings in their own file
 (setq custom-file
       (expand-file-name "custom.el"
@@ -46,7 +44,6 @@
 (let ((elapsed (float-time (time-subtract (current-time)
 					   emacs-start-time))))
   (message "Loaded settings...done in %.3fs" elapsed))
-
 
 ;; TODO(vdemeester) move t«his to the org-file
 (put 'narrow-to-region 'disabled nil)

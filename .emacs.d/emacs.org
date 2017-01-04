@@ -65,24 +65,49 @@ It looks kinda like that (click to open the real one) :
 
    #+BEGIN_SRC emacs-lisp :tangle no
      (require 'package)
-
-     ;; add org to package repos
-     (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/"))
+     (require 'cl-lib)
 
      ;; add melpa and melpa-stable to package repos
-     (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
-     (add-to-list 'package-archives '("mela-stable" . "http://stable.melpa.org/packages/"))
+     (add-to-list 'package-archives '("mela-stable" . "https://stable.melpa.org/packages/"))
+     (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
+
+     (setq use-package-always-pin "melpa")
+
+     ;; elpy
+     (add-to-list 'package-archives
+                  '("elpy" . "https://jorgenschaefer.github.io/packages/"))
+
+     (setq tls-checktrust t)
+     (setq gnutls-verify-error t)
+
+     (let ((trustfile "/etc/ssl/cert.pem"))
+       (setq tls-program
+             `(,(format  "gnutls-cli --x509cafile %s -p %%p %%h" trustfile)
+               ,(format "openssl s_client -connect %%h:%%p -CAfile %s -no_ssl2 -ign_eof" trustfile)))
+       (setq gnutls-trustfiles (list trustfile)))
+
+     (let ((bad-hosts
+   	 (cl-loop for bad
+                     in `("https://wrong.host.badssl.com/"
+                          "https://self-signed.badssl.com/")
+                     if (condition-case e
+   			 (url-retrieve
+                             bad (lambda (retrieved) t))
+                          (error nil))
+                     collect bad)))
+       (if bad-hosts
+   	(error (format "tls misconfigured; retrieved %s ok"
+                          bad-hosts))
+         (url-retrieve "https://badssl.com"
+                       (lambda (retrieved) t))))
 
      ;; If gpg cannot be found, signature checking will fail, so we
-     ;; conditionally enable it according whether gpg is available.
+     ;; conditionnally enable it according wether gpg is availabel.
      ;; We re-run this check once $PATH has been configured
      (defun sanityinc/package-maybe-enable-signatures ()
-       (setq package-check-signature (when (executable-find "gpg") 'allow-unsigned)))
+       (setq package-check-signature (when (executable-find "gpg2") 'allow-unsigned)))
 
      (sanityinc/package-maybe-enable-signatures)
-
-     ;; Fire up package.el
-     (package-initialize)
 
      ;; Load package contents if not present
      (when (not package-archive-contents)
@@ -99,7 +124,8 @@ It looks kinda like that (click to open the real one) :
    if not, I'm unload the current one, installing a recent one and load it.
 
    #+BEGIN_SRC emacs-lisp :tangle no
-     ;; Support for Emacs 24 and higher only
+     (package-initialize)
+
      (let ((minver 24))
        (unless (>= emacs-major-version minver)
          (error "Your Emacs is too old -- this config requires v%s or higher" minver)))
@@ -117,106 +143,22 @@ It looks kinda like that (click to open the real one) :
      (require 'setup-package)
 
      (let ((elapsed (float-time (time-subtract (current-time)
-                                                emacs-start-time))))
+                                               emacs-start-time))))
        (message "Loaded packages in %.3fs" elapsed))
-
-     ;; Make sure we have a decent and recent org-mode version
-     (require 'org)
-     (when (string-match "^[1234567]" (org-version))
-       (progn
-         (warn "Org-mode is out of date. We expect org 8 or higher, but instead we have %s" (org-version))
-         (warn "Force the installation from org elpa.")
-         (package-install 'org)
-         (unload-org-mode)
-         (require 'org)
-         ))
 
      ;; keep customize settings in their own file
      (setq custom-file
-           (expand-file-name "custom.el"
+        (expand-file-name "custom.el"
                              user-emacs-directory))
      (when (file-exists-p custom-file)
        (load custom-file))
 
-     ;; load the literate configuration
-     (require 'ob-tangle)
-
-     (org-babel-load-file "~/.emacs.d/emacs.org")
+     ;; Load the generated file from emacs.org
+     (load-file "~/.emacs.d/emacs.el")
 
      (let ((elapsed (float-time (time-subtract (current-time)
-                                                emacs-start-time))))
+                                               emacs-start-time))))
        (message "Loaded settings...done in %.3fs" elapsed))
-   #+END_SRC
-
-** Tangle on save
-
-   This was taken and adapted from [[https://github.com/alanpearce/dotfiles/blob/master/tag-emacs/emacs.d/init.org#tangling][Alan Pearce's dotfiles]] so as to tangle
-   it on save instead of tangling it every time I open it again.
-
-   /Note/: async doesn't work here.. thinking of moving this definition
-   away (in a separate =lisp= file) and load it/run it async. For now
-   it's freezing a bit when saving this file...
-
-   #+BEGIN_SRC emacs-lisp
-     (defun tangle-if-config ()
-       "If the current buffer is a config '*.org' the code-blocks are
-         tangled, and the tangled file is compiled."
-       (when (member (file-name-nondirectory buffer-file-name) '("emacs.org" "provided/go-config.org"))
-         (tangle-config buffer-file-name)))
-
-     (defun tangle-config-sync (file-name)
-       (interactive)
-
-       ;; Avoid running hooks when tangling.
-       (let* ((prog-mode-hook nil)
-              (src  file-name)
-              ;; (dest (expand-file-name "emacs.el"  user-emacs-directory))
-              (dest (format "%s.el" (file-name-sans-extension file-name))))
-         (message (format "%s -> %s" src dest))
-         (require 'ob-tangle)
-         (org-babel-tangle-file src dest)
-         (if (byte-compile-file dest)
-             (byte-compile-dest-file dest)
-           (with-current-buffer byte-compile-log-buffer
-             (buffer-string)))))
-
-     (defun tangle-config-async (file-name)
-       (async-start
-        (lambda ()
-          ;; make async emacs aware of packages (for byte-compilation)
-          (package-initialize)
-          (setq package-enable-at-startup nil)
-          (require 'org)
-
-          ;; Avoid running hooks when tangling.
-          (let* ((prog-mode-hook nil)
-                 (src  file-name)
-                 ;; (dest (expand-file-name "emacs.el"  user-emacs-directory))
-                 (dest (format "%s.el" (file-name-sans-extension file-name))))
-            (message (format "%s -> %s" src dest))
-            (require 'ob-tangle)
-            (org-babel-tangle-file src dest)
-            (if (byte-compile-file dest)
-                (byte-compile-dest-file dest)
-              (with-current-buffer byte-compile-log-buffer
-                (buffer-string))))     
-          )))
-
-     (defun tangle-config (file-name)
-       "Tangle init.org asynchronously."
-
-       (interactive)
-       (message (format "Tangling %s" file-name))
-       (tangle-config-async file-name)
-       ;; (async-start
-       ;;  (lambda ()
-       ;;    (set 'file-name ,file-name)
-       ;;    (fset 'tangle-config-sync ,(symbol-function 'tangle-config-sync))
-       ;;    (tangle-config-sync file-name))
-       ;;  ;; (symbol-function #'tangle-config-sync)
-       ;;  (lambda (result)
-       ;;    (message "Init tangling completed: %s" result)))
-       )
    #+END_SRC
 
 ** Edit configuration shortcut
@@ -243,6 +185,7 @@ It looks kinda like that (click to open the real one) :
     (setq
      ;; General
      ;; TODO use xdg to get these
+     org-root-directory (substitute-env-in-file-name "$HOME/desktop/org")
      desktop-folder (substitute-env-in-file-name "$HOME/desktop")
      videos-folder (expand-file-name "videos" desktop-folder)
      downloads-folder (expand-file-name "downloads" desktop-folder)
@@ -1452,6 +1395,8 @@ It looks kinda like that (click to open the real one) :
    to the agenda and the archives.
 
    #+BEGIN_SRC emacs-lisp
+     (use-package org
+       :ensure t)
      (require 'find-lisp)
      (setq org-directory org-root-directory)
      (setq org-agenda-files (find-lisp-find-files org-todos-directory "\.org$"))
@@ -3140,6 +3085,61 @@ It looks kinda like that (click to open the real one) :
   #+END_SRC
 
 * Automatically invoke tangle on save
+
+   This was taken and adapted from [[https://github.com/alanpearce/dotfiles/blob/master/tag-emacs/emacs.d/init.org#tangling][Alan Pearce's dotfiles]] so as to tangle
+   it on save instead of tangling it every time I open it again.
+
+   #+BEGIN_SRC emacs-lisp
+     (defun tangle-if-config ()
+       "If the current buffer is a config '*.org' the code-blocks are
+         tangled, and the tangled file is compiled."
+       (when (member (file-name-nondirectory buffer-file-name) '("emacs.org" "provided/go-config.org"))
+         (tangle-config buffer-file-name)))
+
+     (defun tangle-config-sync (file-name)
+       (interactive)
+
+       ;; Avoid running hooks when tangling.
+       (let* ((prog-mode-hook nil)
+              (src  file-name)
+              ;; (dest (expand-file-name "emacs.el"  user-emacs-directory))
+              (dest (format "%s.el" (file-name-sans-extension file-name))))
+         (message (format "%s -> %s" src dest))
+         (require 'ob-tangle)
+         (org-babel-tangle-file src dest)
+         (if (byte-compile-file dest)
+             (byte-compile-dest-file dest)
+        (with-current-buffer byte-compile-log-buffer
+             (buffer-string)))))
+
+     (defun tangle-config-async (file-name)
+       (async-start
+        (lambda ()
+          ;; make async emacs aware of packages (for byte-compilation)
+          (package-initialize)
+          (setq package-enable-at-startup nil)
+          (require 'org)
+
+          ;; Avoid running hooks when tangling.
+          (let* ((prog-mode-hook nil)
+                 (src  file-name)
+                 (dest (format "%s.el" (file-name-sans-extension file-name))))
+         (message (format "%s -> %s" src dest))
+         (require 'ob-tangle)
+         (org-babel-tangle-file src dest)
+         (if (byte-compile-file dest)
+                (byte-compile-dest-file dest)
+              (with-current-buffer byte-compile-log-buffer
+                (buffer-string))))     
+          )))
+
+     (defun tangle-config (file-name)
+       "Tangle init.org asynchronously."
+
+       (interactive)
+       (message (format "Tangling %s" file-name))
+       (tangle-config-async file-name))
+   #+END_SRC
 
   This is the magic line(s) to make the tangle on save automatic.
 
