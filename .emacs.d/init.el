@@ -31,18 +31,6 @@
 					   emacs-start-time))))
   (message "Loaded packages in %.3fs" elapsed))
 
-;; Make sure we have a decent and recent org-mode version
-(unload-org-mode)
-(require 'org)
-(when (string-match "^[12345678]" (org-version))
-  (progn
-    (warn "Org-mode is out of date. We expect org 8 or higher, but instead we have %s" (org-version))
-    (warn "Force the installation from org elpa.")
-    (package-install 'org)
-    (unload-org-mode)
-    (require 'org)
-    ))
-
 (setq org-root-directory (substitute-env-in-file-name "$HOME/desktop/org"))
 
 ;; keep customize settings in their own file
@@ -52,10 +40,8 @@
 (when (file-exists-p custom-file)
   (load custom-file))
 
-;; load the literate configuration
-(require 'ob-tangle)
-
-(org-babel-load-file "~/.emacs.d/emacs.org")
+;; Load the generated file from emacs.org
+(load-file "~/.emacs.d/emacs.el")
 
 (let ((elapsed (float-time (time-subtract (current-time)
 					   emacs-start-time))))

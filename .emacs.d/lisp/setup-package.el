@@ -38,6 +38,18 @@
     (url-retrieve "https://badssl.com"
                   (lambda (retrieved) t))))
 
+;; Make sure we have a decent and recent org-mode version
+;; (unload-org-mode)
+(require 'org)
+(when (string-match "^[12345678]" (org-version))
+  (progn
+    (warn "Org-mode is out of date. We expect org 8 or higher, but instead we have %s" (org-version))
+    (warn "Force the installation from org elpa.")
+    (package-install 'org)
+    ;; (unload-org-mode)
+    (require 'org)
+    ))
+
 ;; If gpg cannot be found, signature checking will fail, so we
 ;; conditionnally enable it according wether gpg is availabel.
 ;; We re-run this check once $PATH has been configured

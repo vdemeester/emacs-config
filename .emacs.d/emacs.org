@@ -510,7 +510,7 @@ It looks kinda like that (click to open the real one) :
    Install dired+.
 
    #+BEGIN_SRC emacs-lisp
-     (setq diredp-hide-details-initially-flag nil)
+     (setq diredp-hide-details-initially-flag nil) ;
      (use-package dired+
                   :ensure t
                   :init)
@@ -1563,7 +1563,7 @@ It looks kinda like that (click to open the real one) :
          :group 'org-faces)
 
        (setq org-todo-keywords
-             (quote ((sequence "TODO(t!)" "PROGRESS(p!)" "PAUSED" "BLOCKED" "REVIEW" "|" "DONE(d!)" "ARCHIVED")
+             (quote ((sequence "TODO(t)" "PROGRESS(p)" "PAUSED" "BLOCKED" "REVIEW" "|" "DONE(d!)" "ARCHIVED")
                      (sequence "REPORT(r!)" "BUG" "KNOWNCAUSE" "|" "FIXED(f!)")
                      (sequence "|" "CANCELLED(c@)"))))
 
@@ -1886,18 +1886,20 @@ It looks kinda like that (click to open the real one) :
    /fontify/ the code blocks first.
 
    #+BEGIN_SRC emacs-lisp
-      (setq org-src-fontify-natively t)
-      (org-babel-do-load-languages
-       'org-babel-load-languages
-       '( (perl . t)
-          (ruby . t)
-          (sh . t)
-          (python . t)
-          (emacs-lisp . t)
-          ;; (golang . t)
-          (haskell . t)
-          (ditaa . t)
-          ))
+     (setq org-src-fontify-natively t)
+     (setq org-html-htmlize-output-type 'css)
+     (setq org-html-htmlize-font-prefix "org-")
+     (org-babel-do-load-languages
+      'org-babel-load-languages
+      '( (perl . t)
+         (ruby . t)
+         (sh . t)
+         (python . t)
+         (emacs-lisp . t)
+         ;; (golang . t)
+         (haskell . t)
+         (ditaa . t)
+         ))
    #+END_SRC
 
    Add a function to easily add a code block and bind it.
@@ -2219,6 +2221,7 @@ It looks kinda like that (click to open the real one) :
               :with-toc nil
               :with-drawers t
               :htmlized-source t
+              :org-html-htmlize-output-type 'css
               :html-html5-fancy t
               :publishing-function org-html-publish-to-html
               :headline-levels 4
