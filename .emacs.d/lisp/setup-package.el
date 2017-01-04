@@ -2,11 +2,13 @@
 (require 'cl-lib)
 
 ;; add org to package repos
-(add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/"))
+;; (add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/"))
 
 ;; add melpa and melpa-stable to package repos
 (add-to-list 'package-archives '("mela-stable" . "https://stable.melpa.org/packages/"))
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
+
+(setq use-package-always-pin "melpa")
 
 ;; elpy
 (add-to-list 'package-archives
