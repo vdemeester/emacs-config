@@ -20,20 +20,21 @@
           ,(format "openssl s_client -connect %%h:%%p -CAfile %s -no_ssl2 -ign_eof" trustfile)))
   (setq gnutls-trustfiles (list trustfile)))
 
-(let ((bad-hosts
-       (cl-loop for bad
-             in `("https://wrong.host.badssl.com/"
-                  "https://self-signed.badssl.com/")
-             if (condition-case e
-                    (url-retrieve
-                     bad (lambda (retrieved) t))
-                  (error nil))
-             collect bad)))
-  (if bad-hosts
-      (error (format "tls misconfigured; retrieved %s ok"
-                     bad-hosts))
-    (url-retrieve "https://badssl.com"
-                  (lambda (retrieved) t))))
+(ignore-errors (let ((bad-hosts
+                      (cl-loop for bad
+                               in `("https://wrong.host.badssl.com/"
+                                    "https://self-signed.badssl.com/")
+                               if (condition-case e
+                                      (url-retrieve
+                                       bad (lambda (retrieved) t))
+                                    (error nil))
+                               collect bad)))
+                 (if bad-hosts
+                     (error (format "tls misconfigured; retrieved %s ok"
+                                    bad-hosts))
+                   (url-retrieve "https://badssl.com"
+                                 (lambda (retrieved) t)))))
+
 
 ;; If gpg cannot be found, signature checking will fail, so we
 ;; conditionnally enable it according wether gpg is availabel.
