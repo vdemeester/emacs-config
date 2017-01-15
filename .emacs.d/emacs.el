@@ -1,3 +1,4 @@
+
 (defun my/edit-emacs-configuration ()
   (interactive)
   (find-file "~/.emacs.d/emacs.org"))
@@ -617,8 +618,11 @@ point reaches the beginning or end of the buffer, stop there."
 (require 'find-lisp)
 (setq org-directory org-root-directory)
 (setq org-agenda-files (find-lisp-find-files org-todos-directory "\.org$"))
-;; (setq org-enforce-todo-dependencies t)
+(setq org-enforce-todo-dependencies t)
 (setq org-enforce-todo-checkbox-dependencies t)
+
+(setq org-log-redeadline (quote time))
+(setq org-log-reschedule (quote time))
 
 ;;open agenda in current window
 (setq org-agenda-window-setup (quote current-window))
@@ -1035,8 +1039,29 @@ With prefix argument, also display headlines without a TODO keyword."
                       ("client")
                       ))
 
+;; Sometimes I change tasks I'm clocking quickly
+;; this removes clocked tasks with 0:00 duration
+(setq org-clock-out-remove-zero-time-clocks 1)
+;; Clock out when moving task to a done state
+(setq org-clock-out-when-done 1)
+
+(defadvice org-clock-in (after sacha activate)
+  "Set this task's status to 'PROGRESS'."
+  (org-todo "PROGRESS"))
+
 (setq org-agenda-custom-commands
-      '(("t" todo "TODO"
+      '(("d" "Daily agenda and all TODOs"
+         ((tags "PRIORITY=\"A\""
+                ((org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
+                 (org-agenda-overriding-header "High-priority unfinished tasks:")))
+          (agenda "" ((org-agenda-ndays 1)))
+          (alltodo ""
+                   ((org-agenda-skip-function '(or (vde/org-skip-subtree-if-habit)
+                                                   (vde/org-skip-subtree-if-priority ?A)
+                                                   (org-agenda-skip-if nil '(scheduled deadline))))
+                    (org-agenda-overriding-header "ALL normal priority tasks:"))))
+         ((org-agenda-compact-blocks t)))
+        ("t" todo "TODO"
          ((org-agenda-sorting-strategy '(priority-down))
           (org-agenda-prefix-format "  Mixed: ")))
         ("p" todo "PROGRESS"
@@ -1045,7 +1070,7 @@ With prefix argument, also display headlines without a TODO keyword."
         ("r" todo "REVIEW"
          ((org-agenda-sorting-strategy '(priority-down))
           (org-agenda-prefix-format "  Mixed: ")))
-        ("a" todo "PAUSED"
+        ("u" todo "PAUSED"
          ((org-agenda-sorting-strategy '(priority-down))
           (org-agenda-prefix-format "  Mixed: ")))
         ("b" todo "BLOCKED"
@@ -1125,6 +1150,24 @@ With prefix argument, also display headlines without a TODO keyword."
         ("N" search ""
          ((org-agenda-files '("~org/notes.org"))
           (org-agenda-text-search-extra-files nil)))))
+
+(defun vde/org-skip-subtree-if-priority (priority)
+  "Skip an agenda subtree if it has a priority of PRIORITY.
+
+PRIORITY may be one of the characters ?A, ?B, or ?C."
+  (let ((subtree-end (save-excursion (org-end-of-subtree t)))
+        (pri-value (* 1000 (- org-lowest-priority priority)))
+        (pri-current (org-get-priority (thing-at-point 'line t))))
+    (if (= pri-value pri-current)
+        subtree-end
+      nil)))
+
+(defun vde/org-skip-subtree-if-habit ()
+  "Skip an agenda entry if it has a STYLE property equal to \"habit\"."
+  (let ((subtree-end (save-excursion (org-end-of-subtree t))))
+    (if (string= (org-entry-get nil "STYLE") "habit")
+        subtree-end
+      nil)))
 
 (use-package org-pomodoro
   :ensure t
@@ -1750,137 +1793,3 @@ With prefix argument, also display headlines without a TODO keyword."
   :demand t
   :config
   (editorconfig-mode 1))
-
-(use-package markdown-mode
-  :ensure t
-  :mode ("\\.markdown\\'" "\\.mkd\\'" "\\.md\\'")
-  :config
-  (use-package pandoc-mode
-    :ensure t
-    :mode ("\\.markdown\\'" "\\.mkd\\'" "\\.md\\'")))
-
-(use-package yaml-mode
-  :ensure t
-  :mode "\\.yml$")
-
-(use-package toml-mode
-  :ensure t)
-
-(use-package paredit
-  :ensure t)
-(use-package rainbow-mode
-  :ensure t)
-(use-package rainbow-delimiters
-  :ensure t)
-(use-package highlight-parentheses
-  :ensure t)
-
-(defun my/lisps-mode-hook ()
-  (paredit-mode t)
-  (rainbow-delimiters-mode t)
-  (highlight-parentheses-mode t)
-  )
-
-(add-hook 'emacs-lisp-mode-hook
-          (lambda ()
-            (my/lisps-mode-hook)
-            (eldoc-mode 1))
-          )
-
-(add-hook 'sql-interactive-mode-hook
-          (lambda ()
-            (toggle-truncate-lines t)))
-
-(use-package dockerfile-mode
-  :ensure t)
-
-(use-package restclient
-  :ensure t)
-(use-package ob-restclient
-  :ensure t
-  :config
-  (org-babel-do-load-languages
-   'org-babel-load-languages
-   '((restclient . t))))
-
-(use-package nix-mode
-  :ensure t)
-
-(use-package company-nixos-options
-  :ensure t
-  :config
-  (add-to-list 'company-backends 'company-nixos-options))
-
-(use-package nix-sandbox
-  :ensure t)
-
-;; The folder is by default $HOME/.emacs.d/provided
-(setq user-emacs-provided-directory (concat user-emacs-directory "provided/"))
-;; Regexp to find org files in the folder
-(setq provided-configuration-file-regexp "\\`[^.].*\\.org\\'")
-;; Define the function
-(defun load-provided-configuration (dir)
-  "Load org file from =use-emacs-provided-directory= as configuration with org-babel"
-  (unless (file-directory-p dir) (error "Not a directory '%s'" dir))
-  (dolist (file (directory-files dir nil provided-configuration-file-regexp nil) nil)
-    (unless (member file '("." ".."))
-      (let ((file (concat dir file)))
-        (unless (file-directory-p file)
-          (message "loading file %s" file)
-          (org-babel-load-file file)
-          )
-        ))
-    )
-  )
-;; Load it
-(load-provided-configuration user-emacs-provided-directory)
-
-(defun tangle-if-config ()
-  "If the current buffer is a config '*.org' the code-blocks are
-    tangled, and the tangled file is compiled."
-  (when (member (file-name-nondirectory buffer-file-name) '("emacs.org" "provided/go-config.org"))
-    (tangle-config buffer-file-name)))
-
-(defun tangle-config-sync (file-name)
-  (interactive)
-
-  ;; Avoid running hooks when tangling.
-  (let* ((prog-mode-hook nil)
-         (src  file-name)
-         ;; (dest (expand-file-name "emacs.el"  user-emacs-directory))
-         (dest (format "%s.el" (file-name-sans-extension file-name))))
-    (message (format "%s -> %s" src dest))
-    (require 'ob-tangle)
-    (org-babel-tangle-file src dest)
-    (if (byte-compile-file dest)
-        (byte-compile-dest-file dest)
-   (with-current-buffer byte-compile-log-buffer
-        (buffer-string)))))
-
-(defun tangle-config-async (file-name)
-  (async-start
-   (lambda ()
-     ;; make async emacs aware of packages (for byte-compilation)
-     (package-initialize)
-     (setq package-enable-at-startup nil)
-     (require 'org)
-
-     ;; Avoid running hooks when tangling.
-     (let* ((prog-mode-hook nil)
-            (src  file-name)
-            (dest (format "%s.el" (file-name-sans-extension file-name))))
-    (message (format "%s -> %s" src dest))
-    (require 'ob-tangle)
-    (org-babel-tangle-file src dest)
-    (if (byte-compile-file dest)
-           (byte-compile-dest-file dest)
-         (with-current-buffer byte-compile-log-buffer
-           (buffer-string))))     
-     )))
-
-(defun tangle-config (file-name)
-  "Tangle init.org asynchronously."
-
-  (interactive)
-  (message (format "Tangling %s" file-name))
-  (tangle-config-async file-name))

@@ -1400,8 +1400,11 @@ It looks kinda like that (click to open the real one) :
      (require 'find-lisp)
      (setq org-directory org-root-directory)
      (setq org-agenda-files (find-lisp-find-files org-todos-directory "\.org$"))
-     ;; (setq org-enforce-todo-dependencies t)
+     (setq org-enforce-todo-dependencies t)
      (setq org-enforce-todo-checkbox-dependencies t)
+
+     (setq org-log-redeadline (quote time))
+     (setq org-log-reschedule (quote time))
 
      ;;open agenda in current window
      (setq org-agenda-window-setup (quote current-window))
@@ -1577,12 +1580,12 @@ It looks kinda like that (click to open the real one) :
    If a parent has all it's children =DONE=, make it =DONE= too.
 
    #+BEGIN_SRC emacs-lisp
-    (defun org-summary-todo (n-done n-not-done)
-      "Switch entry to DONE when all subentries are done, to PROGRESS otherwise."
-      (let (org-log-done org-log-states)   ; turn off logging
-        (org-todo (if (= n-not-done 0) "DONE" "PROGRESS"))))
+     (defun org-summary-todo (n-done n-not-done)
+       "Switch entry to DONE when all subentries are done, to PROGRESS otherwise."
+       (let (org-log-done org-log-states)   ; turn off logging
+         (org-todo (if (= n-not-done 0) "DONE" "PROGRESS"))))
 
-    (add-hook 'org-after-todo-statistics-hook 'org-summary-todo)
+     (add-hook 'org-after-todo-statistics-hook 'org-summary-todo)
    #+END_SRC
 
    Also, setup some nice template expansion, usable with =<= before them.
@@ -1979,6 +1982,29 @@ It looks kinda like that (click to open the real one) :
    |                    | Less Urgent     | Urgent              |
    |                    | /no tag urgent/ | /tag urgent/        |
 
+** Clocks
+
+   Let's configure org-mode clocks a little bit. Let's first setup
+   some common things
+
+   #+BEGIN_SRC emacs-lisp
+     ;; Sometimes I change tasks I'm clocking quickly
+     ;; this removes clocked tasks with 0:00 duration
+     (setq org-clock-out-remove-zero-time-clocks 1)
+     ;; Clock out when moving task to a done state
+     (setq org-clock-out-when-done 1)
+   #+END_SRC
+
+   We also want to set the state to =PROGRESS= when we are clocking
+   in.
+
+   #+BEGIN_SRC emacs-lisp
+     (defadvice org-clock-in (after sacha activate)
+       "Set this task's status to 'PROGRESS'."
+       (org-todo "PROGRESS"))
+   #+END_SRC
+   
+
 ** Agenda(s)
 
    Set custom agendas.. For the syntax, look in worg : [[http://orgmode.org/worg/org-tutorials/advanced-searching.html][Advanced
@@ -1986,7 +2012,18 @@ It looks kinda like that (click to open the real one) :
 
    #+BEGIN_SRC emacs-lisp
      (setq org-agenda-custom-commands
-           '(("t" todo "TODO"
+           '(("d" "Daily agenda and all TODOs"
+              ((tags "PRIORITY=\"A\""
+                     ((org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
+                      (org-agenda-overriding-header "High-priority unfinished tasks:")))
+               (agenda "" ((org-agenda-ndays 1)))
+               (alltodo ""
+                        ((org-agenda-skip-function '(or (vde/org-skip-subtree-if-habit)
+                                                        (vde/org-skip-subtree-if-priority ?A)
+                                                        (org-agenda-skip-if nil '(scheduled deadline))))
+                         (org-agenda-overriding-header "ALL normal priority tasks:"))))
+              ((org-agenda-compact-blocks t)))
+             ("t" todo "TODO"
               ((org-agenda-sorting-strategy '(priority-down))
                (org-agenda-prefix-format "  Mixed: ")))
              ("p" todo "PROGRESS"
@@ -1995,7 +2032,7 @@ It looks kinda like that (click to open the real one) :
              ("r" todo "REVIEW"
               ((org-agenda-sorting-strategy '(priority-down))
                (org-agenda-prefix-format "  Mixed: ")))
-             ("a" todo "PAUSED"
+             ("u" todo "PAUSED"
               ((org-agenda-sorting-strategy '(priority-down))
                (org-agenda-prefix-format "  Mixed: ")))
              ("b" todo "BLOCKED"
@@ -2075,6 +2112,25 @@ It looks kinda like that (click to open the real one) :
              ("N" search ""
               ((org-agenda-files '("~org/notes.org"))
                (org-agenda-text-search-extra-files nil)))))
+
+     (defun vde/org-skip-subtree-if-priority (priority)
+       "Skip an agenda subtree if it has a priority of PRIORITY.
+
+     PRIORITY may be one of the characters ?A, ?B, or ?C."
+       (let ((subtree-end (save-excursion (org-end-of-subtree t)))
+             (pri-value (* 1000 (- org-lowest-priority priority)))
+             (pri-current (org-get-priority (thing-at-point 'line t))))
+         (if (= pri-value pri-current)
+             subtree-end
+           nil)))
+
+     (defun vde/org-skip-subtree-if-habit ()
+       "Skip an agenda entry if it has a STYLE property equal to \"habit\"."
+       (let ((subtree-end (save-excursion (org-end-of-subtree t))))
+         (if (string= (org-entry-get nil "STYLE") "habit")
+             subtree-end
+           nil)))
+
    #+END_SRC
 
 ** Pomodoro
@@ -2310,6 +2366,20 @@ It looks kinda like that (click to open the real one) :
          (re-search-forward "^\\*+ +videos" nil t)))
    #+END_SRC
 
+** Integrations
+
+   Let's sync some stuff with google calendar. Set to no-tangle for
+   now as it's not compatible with org 9.
+
+   #+BEGIN_SRC emacs-lisp :tangle no
+     (use-package org-gcal
+       :ensure t
+       :config
+       (setq org-gcal-client-id "1036024858303-u8c65p4h8ofgq4dl0nov6df5f3l5gblo.apps.googleusercontent.com"
+             org-gcal-client-secret "2gCU6NrqpHEi23FyXQB4EdWB"
+             org-gcal-file-alist '(("vinc.demeester@gmail.com" .  "~/desktop/org/todos/gcal.org"))))
+   #+END_SRC
+   
 ** Some bindings
 
    Add some bindings that wouldn't have been defined before. This should
