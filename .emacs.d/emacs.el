@@ -663,42 +663,6 @@ point reaches the beginning or end of the buffer, stop there."
   (setq org-bullets-face-name (quote org-bullet-face))
   (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
 
-(defface org-progress ; font-lock-warning-face
-  (org-compatible-face nil
-    '((((class color) (min-colors 16) (background light)) (:foreground "#A197BF" :bold t :background "#E8E6EF" :box (:line-width 1 :color "#A197BF")))
-      (((class color) (min-colors 8)  (background light)) (:foreground "blue"  :bold t))
-      (t (:inverse-video t :bold t))))
-  "Face for PROGRESS keywords."
-  :group 'org-faces)
-(defface org-paused ; font-lock-warning-face
-  (org-compatible-face nil
-    '((((class color) (min-colors 16) (background light)) (:foreground "#D6CCF4" :bold t :background "#ECE9F5" :box (:line-width 1 :color "#D6CCF4")))
-      (((class color) (min-colors 8)  (background light)) (:foreground "cyan"  :bold t))
-      (t (:inverse-video t :bold t))))
-  "Face for PAUSED keywords."
-  :group 'org-faces)
-(defface org-cancelled ; font-lock-warning-face
-  (org-compatible-face nil
-    '((((class color) (min-colors 16) (background light)) (:foreground "#3D3D3D" :bold t :background "#7A7A7A" :box (:line-width 1 :color "#3D3D3D")))
-      (((class color) (min-colors 8)  (background light)) (:foreground "black"  :bold t))
-      (t (:inverse-video t :bold t))))
-  "Face for PROGRESS keywords."
-  :group 'org-faces)
-(defface org-review ; font-lock-warning-face
-  (org-compatible-face nil
-    '((((class color) (min-colors 16) (background light)) (:foreground "#FC9B17" :bold t :background "#FEF2C2" :box (:line-width 1 :color "#FC9B17")))
-      (((class color) (min-colors 8)  (background light)) (:foreground "yellow"  :bold t))
-      (t (:inverse-video t :bold t))))
-  "Face for PROGRESS keywords."
-  :group 'org-faces)
-(defface org-blocked ; font-lock-warning-face
-  (org-compatible-face nil
-    '((((class color) (min-colors 16) (background light)) (:foreground "#FF8A80" :bold t :background "#ffdad6" :box (:line-width 1 :color "#FF8A80")))
-      (((class color) (min-colors 8)  (background light)) (:foreground "red"  :bold t))
-      (t (:inverse-video t :bold t))))
-  "Face for PROGRESS keywords."
-  :group 'org-faces)
-
 (setq org-todo-keywords
       (quote ((sequence "TODO(t)" "PROGRESS(p)" "PAUSED" "BLOCKED" "REVIEW" "|" "DONE(d!)" "ARCHIVED")
               (sequence "REPORT(r!)" "BUG" "KNOWNCAUSE" "|" "FIXED(f!)")
@@ -707,16 +671,16 @@ point reaches the beginning or end of the buffer, stop there."
 ;; FIXME(vdemeester) rework the faces, it's ugly on current theme...
 (setq org-todo-keyword-faces
       (quote (("TODO" . org-todo)
-              ("PROGRESS" . org-progress)
-              ("PAUSED" . org-paused)
-              ("BLOCKED" . org-blocked)
-              ("REVIEW" . org-review)
+              ("PROGRESS" . "green")
+              ("PAUSED" . "cyan")
+              ("BLOCKED" . "red")
+              ("REVIEW" . "yellow")
               ("DONE" . org-done)
               ("ARCHIVED" . org-done)
-              ("CANCELLED" . org-cancelled)
+              ("CANCELLED" . "black")
               ("REPORT" . org-todo)
-              ("BUG" . org-blocked)
-              ("KNOWNCAUSE" . org-review)
+              ("BUG" . "red")
+              ("KNOWNCAUSE" . "yellow")
               ("FIXED" . org-done))))
 
 (setq org-todo-state-tags-triggers
@@ -1793,3 +1757,137 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
   :demand t
   :config
   (editorconfig-mode 1))
+
+(use-package markdown-mode
+  :ensure t
+  :mode ("\\.markdown\\'" "\\.mkd\\'" "\\.md\\'")
+  :config
+  (use-package pandoc-mode
+    :ensure t
+    :mode ("\\.markdown\\'" "\\.mkd\\'" "\\.md\\'")))
+
+(use-package yaml-mode
+  :ensure t
+  :mode "\\.yml$")
+
+(use-package toml-mode
+  :ensure t)
+
+(use-package paredit
+  :ensure t)
+(use-package rainbow-mode
+  :ensure t)
+(use-package rainbow-delimiters
+  :ensure t)
+(use-package highlight-parentheses
+  :ensure t)
+
+(defun my/lisps-mode-hook ()
+  (paredit-mode t)
+  (rainbow-delimiters-mode t)
+  (highlight-parentheses-mode t)
+  )
+
+(add-hook 'emacs-lisp-mode-hook
+          (lambda ()
+            (my/lisps-mode-hook)
+            (eldoc-mode 1))
+          )
+
+(add-hook 'sql-interactive-mode-hook
+          (lambda ()
+            (toggle-truncate-lines t)))
+
+(use-package dockerfile-mode
+  :ensure t)
+
+(use-package restclient
+  :ensure t)
+(use-package ob-restclient
+  :ensure t
+  :config
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((restclient . t))))
+
+(use-package nix-mode
+  :ensure t)
+
+(use-package company-nixos-options
+  :ensure t
+  :config
+  (add-to-list 'company-backends 'company-nixos-options))
+
+(use-package nix-sandbox
+  :ensure t)
+
+;; The folder is by default $HOME/.emacs.d/provided
+(setq user-emacs-provided-directory (concat user-emacs-directory "provided/"))
+;; Regexp to find org files in the folder
+(setq provided-configuration-file-regexp "\\`[^.].*\\.org\\'")
+;; Define the function
+(defun load-provided-configuration (dir)
+  "Load org file from =use-emacs-provided-directory= as configuration with org-babel"
+  (unless (file-directory-p dir) (error "Not a directory '%s'" dir))
+  (dolist (file (directory-files dir nil provided-configuration-file-regexp nil) nil)
+    (unless (member file '("." ".."))
+      (let ((file (concat dir file)))
+        (unless (file-directory-p file)
+          (message "loading file %s" file)
+          (org-babel-load-file file)
+          )
+        ))
+    )
+  )
+;; Load it
+(load-provided-configuration user-emacs-provided-directory)
+
+(defun tangle-if-config ()
+  "If the current buffer is a config '*.org' the code-blocks are
+    tangled, and the tangled file is compiled."
+  (when (member (file-name-nondirectory buffer-file-name) '("emacs.org" "provided/go-config.org"))
+    (tangle-config buffer-file-name)))
+
+(defun tangle-config-sync (file-name)
+  (interactive)
+
+  ;; Avoid running hooks when tangling.
+  (let* ((prog-mode-hook nil)
+         (src  file-name)
+         ;; (dest (expand-file-name "emacs.el"  user-emacs-directory))
+         (dest (format "%s.el" (file-name-sans-extension file-name))))
+    (message (format "%s -> %s" src dest))
+    (require 'ob-tangle)
+    (org-babel-tangle-file src dest)
+    (if (byte-compile-file dest)
+        (byte-compile-dest-file dest)
+   (with-current-buffer byte-compile-log-buffer
+        (buffer-string)))))
+
+(defun tangle-config-async (file-name)
+  (async-start
+   (lambda ()
+     ;; make async emacs aware of packages (for byte-compilation)
+     (package-initialize)
+     (setq package-enable-at-startup nil)
+     (require 'org)
+
+     ;; Avoid running hooks when tangling.
+     (let* ((prog-mode-hook nil)
+            (src  file-name)
+            (dest (format "%s.el" (file-name-sans-extension file-name))))
+    (message (format "%s -> %s" src dest))
+    (require 'ob-tangle)
+    (org-babel-tangle-file src dest)
+    (if (byte-compile-file dest)
+           (byte-compile-dest-file dest)
+         (with-current-buffer byte-compile-log-buffer
+           (buffer-string))))     
+     )))
+
+(defun tangle-config (file-name)
+  "Tangle init.org asynchronously."
+
+  (interactive)
+  (message (format "Tangling %s" file-name))
+  (tangle-config-async file-name))

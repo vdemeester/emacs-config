@@ -1474,42 +1474,6 @@ It looks kinda like that (click to open the real one) :
    - =ARCHIVED= : same as done but keep it here (and not moving into archive)
 
      #+BEGIN_SRC emacs-lisp
-       (defface org-progress ; font-lock-warning-face
-         (org-compatible-face nil
-           '((((class color) (min-colors 16) (background light)) (:foreground "#A197BF" :bold t :background "#E8E6EF" :box (:line-width 1 :color "#A197BF")))
-             (((class color) (min-colors 8)  (background light)) (:foreground "blue"  :bold t))
-             (t (:inverse-video t :bold t))))
-         "Face for PROGRESS keywords."
-         :group 'org-faces)
-       (defface org-paused ; font-lock-warning-face
-         (org-compatible-face nil
-           '((((class color) (min-colors 16) (background light)) (:foreground "#D6CCF4" :bold t :background "#ECE9F5" :box (:line-width 1 :color "#D6CCF4")))
-             (((class color) (min-colors 8)  (background light)) (:foreground "cyan"  :bold t))
-             (t (:inverse-video t :bold t))))
-         "Face for PAUSED keywords."
-         :group 'org-faces)
-       (defface org-cancelled ; font-lock-warning-face
-         (org-compatible-face nil
-           '((((class color) (min-colors 16) (background light)) (:foreground "#3D3D3D" :bold t :background "#7A7A7A" :box (:line-width 1 :color "#3D3D3D")))
-             (((class color) (min-colors 8)  (background light)) (:foreground "black"  :bold t))
-             (t (:inverse-video t :bold t))))
-         "Face for PROGRESS keywords."
-         :group 'org-faces)
-       (defface org-review ; font-lock-warning-face
-         (org-compatible-face nil
-           '((((class color) (min-colors 16) (background light)) (:foreground "#FC9B17" :bold t :background "#FEF2C2" :box (:line-width 1 :color "#FC9B17")))
-             (((class color) (min-colors 8)  (background light)) (:foreground "yellow"  :bold t))
-             (t (:inverse-video t :bold t))))
-         "Face for PROGRESS keywords."
-         :group 'org-faces)
-       (defface org-blocked ; font-lock-warning-face
-         (org-compatible-face nil
-           '((((class color) (min-colors 16) (background light)) (:foreground "#FF8A80" :bold t :background "#ffdad6" :box (:line-width 1 :color "#FF8A80")))
-             (((class color) (min-colors 8)  (background light)) (:foreground "red"  :bold t))
-             (t (:inverse-video t :bold t))))
-         "Face for PROGRESS keywords."
-         :group 'org-faces)
-
        (setq org-todo-keywords
              (quote ((sequence "TODO(t)" "PROGRESS(p)" "PAUSED" "BLOCKED" "REVIEW" "|" "DONE(d!)" "ARCHIVED")
                      (sequence "REPORT(r!)" "BUG" "KNOWNCAUSE" "|" "FIXED(f!)")
@@ -1518,16 +1482,16 @@ It looks kinda like that (click to open the real one) :
        ;; FIXME(vdemeester) rework the faces, it's ugly on current theme...
        (setq org-todo-keyword-faces
              (quote (("TODO" . org-todo)
-                     ("PROGRESS" . org-progress)
-                     ("PAUSED" . org-paused)
-                     ("BLOCKED" . org-blocked)
-                     ("REVIEW" . org-review)
+                     ("PROGRESS" . "green")
+                     ("PAUSED" . "cyan")
+                     ("BLOCKED" . "red")
+                     ("REVIEW" . "yellow")
                      ("DONE" . org-done)
                      ("ARCHIVED" . org-done)
-                     ("CANCELLED" . org-cancelled)
+                     ("CANCELLED" . "black")
                      ("REPORT" . org-todo)
-                     ("BUG" . org-blocked)
-                     ("KNOWNCAUSE" . org-review)
+                     ("BUG" . "red")
+                     ("KNOWNCAUSE" . "yellow")
                      ("FIXED" . org-done))))
 
        (setq org-todo-state-tags-triggers
