@@ -1020,7 +1020,10 @@ With prefix argument, also display headlines without a TODO keyword."
                  (org-agenda-overriding-header "High-priority unfinished tasks:")))
           (agenda "" ((org-agenda-ndays 1)))
           (alltodo ""
-                   ((org-agenda-skip-function '(or (vde/org-skip-subtree-if-habit)
+                   ((org-agenda-skip-function '(or (org-agenda-skip-entry-if 'todo 'progress)
+                                                   (org-agenda-skip-entry-if 'todo 'review)
+                                                   (org-agenda-skip-entry-if 'todo 'done)
+                                                   (vde/org-skip-subtree-if-habit)
                                                    (vde/org-skip-subtree-if-priority ?A)
                                                    (org-agenda-skip-if nil '(scheduled deadline))))
                     (org-agenda-overriding-header "ALL normal priority tasks:"))))
