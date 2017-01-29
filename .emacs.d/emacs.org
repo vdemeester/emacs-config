@@ -2101,16 +2101,6 @@ It looks kinda like that (click to open the real one) :
 
    #+END_SRC
 
-** Pomodoro
-
-   #+BEGIN_SRC emacs-lisp
-     (use-package org-pomodoro
-       :ensure t
-       :init
-       (setq org-pomodoro-play-sounds 1)
-       (setq org-pomodoro-audio-player "paplay"))
-   #+END_SRC
-
 ** Publishing
 
    Let's configure the publishing part of org-mode. The first

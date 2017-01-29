@@ -1136,12 +1136,6 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
         subtree-end
       nil)))
 
-(use-package org-pomodoro
-  :ensure t
-  :init
-  (setq org-pomodoro-play-sounds 1)
-  (setq org-pomodoro-audio-player "paplay"))
-
 (use-package htmlize
   :ensure t
   :defer t)
