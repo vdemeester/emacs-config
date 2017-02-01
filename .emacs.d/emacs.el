@@ -1,4 +1,3 @@
-
 (defun my/edit-emacs-configuration ()
   (interactive)
   (find-file "~/.emacs.d/emacs.org"))
@@ -378,10 +377,12 @@
 (use-package counsel
   :ensure t
   :bind (("C-x C-f" . counsel-find-file)
+     ("C-x r C-f" . counsel-recentf)
          ("C-h f" . counsel-describe-function)
          ("C-h v" . counsel-describe-variable)
          ("C-h i" . counsel-info-lookup-symbol)
          ("C-c C-u" . counsel-unicode-char)
+         ("C-x g C-f" . counsel-git)
          ("C-c s g" . counsel-git-grep)
          ("C-c s s" . counsel-pt)
          ("M-y" . counsel-yank-pop)
