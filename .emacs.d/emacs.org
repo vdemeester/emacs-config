@@ -1175,7 +1175,7 @@ It looks kinda like that (click to open the real one) :
    letters after pressing prefix =i= will select the complete blocks. To do this,
    we need to define a few functions.
 
-*** TODO expand regien
+*** TODO expand region
 ** Comment/Uncomment region
 
    Something I'm really use to, with IntelliJ or Eclipse, is being
