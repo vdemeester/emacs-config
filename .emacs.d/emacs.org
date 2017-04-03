@@ -994,7 +994,7 @@ It looks kinda like that (click to open the real one) :
         (progn
           (add-to-list 'popwin:special-display-config `("*Swoop*" :height 0.5 :position bottom))
           (add-to-list 'popwin:special-display-config `("*Warnings*" :height 0.5 :noselect t))
-          (add-to-list 'popwin:special-display-config `("*Procces List*" :height 0.5))
+          (add-to-list 'popwin:special-display-config `("*Process List*" :height 0.5))
           (add-to-list 'popwin:special-display-config `("*Messages*" :height 0.5 :noselect t))
           (add-to-list 'popwin:special-display-config `("*Backtrace*" :height 0.5))
           (add-to-list 'popwin:special-display-config `("*Compile-Log*" :height 0.3 :noselect t))
