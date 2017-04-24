@@ -203,7 +203,6 @@ It looks kinda like that (click to open the real one) :
      org-main-file "personal.org"
      org-journal-file "journal.org"
      org-stackoverflow-file "stack.org"
-     org-zenika-file "zenika.org"
      org-web-article-file "ent.org"
      org-publish-folder (substitute-env-in-file-name "$HOME/var/public_html")
      sites-folder (substitute-env-in-file-name "$HOME/src/sites/")
@@ -498,7 +497,7 @@ It looks kinda like that (click to open the real one) :
        (interactive)
        (let ((files (dired-get-marked-files)))
          (with-temp-buffer
-           (apply 'call-process "/usr/bin/du" nil t nil "-schL" files) ;; -L to dereference (git-annex folder)
+           (apply 'call-process "du" nil t nil "-schL" files) ;; -L to dereference (git-annex folder)
            (message
             "Size of all marked files: %s"
             (progn
@@ -521,25 +520,6 @@ It looks kinda like that (click to open the real one) :
 
    #+BEGIN_SRC emacs-lisp
      (define-key dired-mode-map "e" 'wdired-change-to-wdired-mode)
-   #+END_SRC
-
-
-   Open or re-use the =ansi-term= from the current directory in dired.
-
-   #+BEGIN_SRC emacs-lisp
-     (define-key dired-mode-map (kbd "`") 'dired-open-term)
-     ;; FIXME it seems not to work propertly..
-     (defun dired-open-term ()
-       "Open an `ansi-term' that corresponds to current directory."
-       (interactive)
-       (let ((current-dir (dired-current-directory)))
-         (term-send-string
-          (terminal)
-          (if (file-remote-p current-dir)
-              (let ((v (tramp-dissect-file-name current-dir t)))
-                (format "ssh %s@%s\n"
-                        (aref v 1) (aref v 2)))
-            (format "cd '%s'\n" current-dir)))))
    #+END_SRC
 
    Customize a bit the dired buffer
@@ -841,7 +821,7 @@ It looks kinda like that (click to open the real one) :
        :ensure t)
    #+END_SRC
 
-** TODO Ivy, counsel and swiper
+** Ivy, counsel and swiper
    An alternative to Helm (that I used before) is [[https://github.com/abo-abo/swiper][ivy, counsel and
    swiper]].
 
@@ -1021,21 +1001,16 @@ It looks kinda like that (click to open the real one) :
         (fullframe list-packages quit-window))
     #+END_SRC
 
-** Project management
-*** TODO Projectile
-*** TODO Perspective
-** TODO Tags based navigation
 * Visual 😎
 ** Color theme(s)
 
    First let's install the theme(s) and load the new theme.
 
    #+BEGIN_SRC emacs-lisp
-      (use-package apropospriate-theme
-        :ensure t
-        :config
-        (load-theme 'apropospriate-dark t)
-        )
+     (use-package apropospriate-theme
+       :ensure t
+       :config
+       (load-theme 'apropospriate-dark t))
    #+END_SRC
 
 ** Mode Line
@@ -1043,14 +1018,30 @@ It looks kinda like that (click to open the real one) :
    [[https://github.com/TheBB/spaceline][Spaceline]] is similar to the [[http://spacemacs.org][Spacemacs]] mode-line. I like it. It's pretty cool.
 
    #+BEGIN_SRC emacs-lisp
-      (use-package spaceline-config
-        :ensure spaceline
-        :config
-        (setq powerline-default-separator 'wave
-              spaceline-workspace-numbers-unicode t
-              spaceline-window-numbers-unicode t)
-        (spaceline-spacemacs-theme)
-        (spaceline-info-mode))
+     (use-package spaceline-config
+       :ensure spaceline
+       :config
+       (setq powerline-default-separator 'slant
+             spaceline-workspace-numbers-unicode t
+             spaceline-window-numbers-unicode t)
+       (spaceline-spacemacs-theme)
+       (spaceline-info-mode))
+
+     (defun cycle-powerline-separators (&optional reverse)
+       "Set Powerline separators in turn.  If REVERSE is not nil, go backwards."
+       (interactive)
+       (let* ((fn (if reverse 'reverse 'identity))
+              (separators (funcall fn '("arrow" "arrow-fade" "slant"
+                                        "chamfer" "wave" "brace" "roundstub" "zigzag"
+                                        "butt" "rounded" "contour" "curve")))
+              (found nil))
+         (while (not found)
+        (progn (setq separators (append (cdr separators) (list (car separators))))
+                  (when (string= (car separators) powerline-default-separator)
+      	      (progn (setq powerline-default-separator (cadr separators))
+      		     (setq found t)
+      		     (redraw-display)))))))
+
    #+END_SRC
 
 ** highlight-symbol
@@ -1120,18 +1111,6 @@ It looks kinda like that (click to open the real one) :
              fci-rule-column 79))
    #+END_SRC
 
-** Origami - folding based on indentation/syntax
-
-   Emacs has a built-in =hide-show= mode but it isn't great. [[https://github.com/gregsexton/origami.el][Origami]]
-   improves it a bit.
-
-   #+BEGIN_SRC emacs-lisp
-     (use-package origami
-       :ensure t
-       :commands (origami-toggle-node)
-       :bind* (("M-m -" . orgiami-toggle-node)))
-   #+END_SRC
-
 ** Raindow identifiers
 
    I read an intersting article about [[https://medium.com/p/3a6db2743a1e/][how to make syntax highlighting more useful]]
@@ -1198,7 +1177,6 @@ It looks kinda like that (click to open the real one) :
    to =M-;=). This adds a comment at the right place (at the end of
    the line, up the method, etc..
 
-** TODO Smartparens
 ** TODO Killing
 
    Let's define few advice with =kill-ring-save= and =kill-region=.
@@ -1213,7 +1191,6 @@ It looks kinda like that (click to open the real one) :
    #+END_SRC
 
 *** TODO easy-kill
-** TODO Moving text around
 ** TODO Snippets
 
    [[https://github.com/capitaomorte/yasnippet][Yasnippets]] gives you the snippets functionality. It also comes bundled
@@ -1978,13 +1955,14 @@ It looks kinda like that (click to open the real one) :
 
    #+BEGIN_SRC emacs-lisp
      (setq org-agenda-custom-commands
-           '(("d" "Daily agenda and all TODOs"
+   	'(("d" "Daily agenda and all TODOs"
               ((tags "PRIORITY=\"A\""
                      ((org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
                       (org-agenda-overriding-header "High-priority unfinished tasks:")))
                (agenda "" ((org-agenda-ndays 1)))
                (alltodo ""
-                        ((org-agenda-skip-function '(or (org-agenda-skip-entry-if 'todo 'progress)
+                        ((org-agenda-sorting-strategy '(priority-down))
+                         (org-agenda-skip-function '(or (org-agenda-skip-entry-if 'todo 'progress)
                                                         (org-agenda-skip-entry-if 'todo 'review)
                                                         (org-agenda-skip-entry-if 'todo 'done)
                                                         (vde/org-skip-subtree-if-habit)
@@ -2032,7 +2010,7 @@ It looks kinda like that (click to open the real one) :
               ((org-agenda-span 7)
                (org-agenda-log-mode 1)
                (org-agenda-tag-filter-preset '("-DAILY"))))
-             ("2" "Bi-weekly review" agenda "" ((org-agenda-span 14) (org-agenda-log-mode 1)))
+             ;; ("2" "Bi-weekly review" agenda "" ((org-agenda-span 14) (org-agenda-log-mode 1)))
              ;; Panic tasks : urgent & important
              ;; Probably the most important to do, but try not have to much of them..
              ("P" . "Panic -emergency-")
@@ -2091,15 +2069,14 @@ It looks kinda like that (click to open the real one) :
              (pri-current (org-get-priority (thing-at-point 'line t))))
          (if (= pri-value pri-current)
              subtree-end
-           nil)))
+   	nil)))
 
      (defun vde/org-skip-subtree-if-habit ()
        "Skip an agenda entry if it has a STYLE property equal to \"habit\"."
        (let ((subtree-end (save-excursion (org-end-of-subtree t))))
          (if (string= (org-entry-get nil "STYLE") "habit")
              subtree-end
-           nil)))
-
+   	nil)))
    #+END_SRC
 
 ** Publishing

@@ -25,7 +25,6 @@
  org-main-file "personal.org"
  org-journal-file "journal.org"
  org-stackoverflow-file "stack.org"
- org-zenika-file "zenika.org"
  org-web-article-file "ent.org"
  org-publish-folder (substitute-env-in-file-name "$HOME/var/public_html")
  sites-folder (substitute-env-in-file-name "$HOME/src/sites/")
@@ -176,7 +175,7 @@
   (interactive)
   (let ((files (dired-get-marked-files)))
     (with-temp-buffer
-      (apply 'call-process "/usr/bin/du" nil t nil "-schL" files) ;; -L to dereference (git-annex folder)
+      (apply 'call-process "du" nil t nil "-schL" files) ;; -L to dereference (git-annex folder)
       (message
        "Size of all marked files: %s"
        (progn
@@ -187,20 +186,6 @@
 (define-key dired-mode-map "F" 'find-name-dired)
 
 (define-key dired-mode-map "e" 'wdired-change-to-wdired-mode)
-
-(define-key dired-mode-map (kbd "`") 'dired-open-term)
-;; FIXME it seems not to work propertly..
-(defun dired-open-term ()
-  "Open an `ansi-term' that corresponds to current directory."
-  (interactive)
-  (let ((current-dir (dired-current-directory)))
-    (term-send-string
-     (terminal)
-     (if (file-remote-p current-dir)
-         (let ((v (tramp-dissect-file-name current-dir t)))
-           (format "ssh %s@%s\n"
-                   (aref v 1) (aref v 2)))
-       (format "cd '%s'\n" current-dir)))))
 
 (setq dired-listing-switches "-laGh1v --group-directories-first")
 
@@ -419,7 +404,7 @@
   (progn
     (add-to-list 'popwin:special-display-config `("*Swoop*" :height 0.5 :position bottom))
     (add-to-list 'popwin:special-display-config `("*Warnings*" :height 0.5 :noselect t))
-    (add-to-list 'popwin:special-display-config `("*Procces List*" :height 0.5))
+    (add-to-list 'popwin:special-display-config `("*Process List*" :height 0.5))
     (add-to-list 'popwin:special-display-config `("*Messages*" :height 0.5 :noselect t))
     (add-to-list 'popwin:special-display-config `("*Backtrace*" :height 0.5))
     (add-to-list 'popwin:special-display-config `("*Compile-Log*" :height 0.3 :noselect t))
@@ -441,17 +426,31 @@
 (use-package apropospriate-theme
   :ensure t
   :config
-  (load-theme 'apropospriate-dark t)
-  )
+  (load-theme 'apropospriate-dark t))
 
 (use-package spaceline-config
   :ensure spaceline
   :config
-  (setq powerline-default-separator 'wave
+  (setq powerline-default-separator 'slant
         spaceline-workspace-numbers-unicode t
         spaceline-window-numbers-unicode t)
   (spaceline-spacemacs-theme)
   (spaceline-info-mode))
+
+(defun cycle-powerline-separators (&optional reverse)
+  "Set Powerline separators in turn.  If REVERSE is not nil, go backwards."
+  (interactive)
+  (let* ((fn (if reverse 'reverse 'identity))
+         (separators (funcall fn '("arrow" "arrow-fade" "slant"
+                                   "chamfer" "wave" "brace" "roundstub" "zigzag"
+                                   "butt" "rounded" "contour" "curve")))
+         (found nil))
+    (while (not found)
+   (progn (setq separators (append (cdr separators) (list (car separators))))
+             (when (string= (car separators) powerline-default-separator)
+      	 (progn (setq powerline-default-separator (cadr separators))
+      		(setq found t)
+      		(redraw-display)))))))
 
 (use-package highlight-symbol
   :ensure t
@@ -481,11 +480,6 @@
   :init
   (setq fci-rule-width 3
         fci-rule-column 79))
-
-(use-package origami
-  :ensure t
-  :commands (origami-toggle-node)
-  :bind* (("M-m -" . orgiami-toggle-node)))
 
 (use-package rainbow-identifiers
   :ensure t
@@ -1015,13 +1009,14 @@ With prefix argument, also display headlines without a TODO keyword."
   (org-todo "PROGRESS"))
 
 (setq org-agenda-custom-commands
-      '(("d" "Daily agenda and all TODOs"
+   '(("d" "Daily agenda and all TODOs"
          ((tags "PRIORITY=\"A\""
                 ((org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
                  (org-agenda-overriding-header "High-priority unfinished tasks:")))
           (agenda "" ((org-agenda-ndays 1)))
           (alltodo ""
-                   ((org-agenda-skip-function '(or (org-agenda-skip-entry-if 'todo 'progress)
+                   ((org-agenda-sorting-strategy '(priority-down))
+                    (org-agenda-skip-function '(or (org-agenda-skip-entry-if 'todo 'progress)
                                                    (org-agenda-skip-entry-if 'todo 'review)
                                                    (org-agenda-skip-entry-if 'todo 'done)
                                                    (vde/org-skip-subtree-if-habit)
@@ -1069,7 +1064,7 @@ With prefix argument, also display headlines without a TODO keyword."
          ((org-agenda-span 7)
           (org-agenda-log-mode 1)
           (org-agenda-tag-filter-preset '("-DAILY"))))
-        ("2" "Bi-weekly review" agenda "" ((org-agenda-span 14) (org-agenda-log-mode 1)))
+        ;; ("2" "Bi-weekly review" agenda "" ((org-agenda-span 14) (org-agenda-log-mode 1)))
         ;; Panic tasks : urgent & important
         ;; Probably the most important to do, but try not have to much of them..
         ("P" . "Panic -emergency-")
@@ -1128,14 +1123,14 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
         (pri-current (org-get-priority (thing-at-point 'line t))))
     (if (= pri-value pri-current)
         subtree-end
-      nil)))
+   nil)))
 
 (defun vde/org-skip-subtree-if-habit ()
   "Skip an agenda entry if it has a STYLE property equal to \"habit\"."
   (let ((subtree-end (save-excursion (org-end-of-subtree t))))
     (if (string= (org-entry-get nil "STYLE") "habit")
         subtree-end
-      nil)))
+   nil)))
 
 (use-package htmlize
   :ensure t
