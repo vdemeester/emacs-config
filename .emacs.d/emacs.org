@@ -769,7 +769,7 @@ It looks kinda like that (click to open the real one) :
                  (not (eq (process-status server-process)
                           'listen)))
          (unless (server-running-p server-name)
-           (server-start))))
+   	(server-start))))
    #+END_SRC
 * Key hints
 ** Which-key
@@ -1651,9 +1651,9 @@ It looks kinda like that (click to open the real one) :
              ("d" "Docker task" entry
               (file+headline (expand-file-name org-main-file org-todos-directory) "Tasks")
               "* TODO gh:docker/%(oc/prmt \"project\" 'd-prj)#%(oc/prmt \"issue/pr\" 'd-issue) %?%(oc/inc \"feature content\" \" [/]\n- [ ] Implementation\n- [ ] Tests\n- [ ] Docs\")")
-             ("j" "Journal entry" plain
+             ("j" "Journal entry" entry
               (file+datetree+prompt (expand-file-name org-journal-file org-root-directory))
-              "%K - %a\n%i\n%?\n")
+              "- %?\n%a\n%i\n")
              ;; other entries
              ))
    #+END_SRC

@@ -797,9 +797,9 @@ point reaches the beginning or end of the buffer, stop there."
         ("d" "Docker task" entry
          (file+headline (expand-file-name org-main-file org-todos-directory) "Tasks")
          "* TODO gh:docker/%(oc/prmt \"project\" 'd-prj)#%(oc/prmt \"issue/pr\" 'd-issue) %?%(oc/inc \"feature content\" \" [/]\n- [ ] Implementation\n- [ ] Tests\n- [ ] Docs\")")
-        ("j" "Journal entry" plain
+        ("j" "Journal entry" entry
          (file+datetree+prompt (expand-file-name org-journal-file org-root-directory))
-         "%K - %a\n%i\n%?\n")
+         "- %?\n%a\n%i\n")
         ;; other entries
         ))
 
