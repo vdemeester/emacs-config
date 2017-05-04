@@ -1043,6 +1043,17 @@ It looks kinda like that (click to open the real one) :
        (load-theme 'apropospriate-dark t))
    #+END_SRC
 
+   Also use =all-the-icon= 👼
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package all-the-icons
+       :ensure t)
+     (use-package all-the-icons-dired
+       :ensure t
+       :config (add-hook 'dired-mode-hook 'all-the-icons-dired-mode))
+   #+END_SRC
+
+
 ** Mode Line
 
    [[https://github.com/TheBB/spaceline][Spaceline]] is similar to the [[http://spacemacs.org][Spacemacs]] mode-line. I like it. It's pretty cool.
@@ -1152,6 +1163,14 @@ It looks kinda like that (click to open the real one) :
        :init (add-hook 'prog-mode-hook
                        'rainbow-identifiers-mode))
    #+END_SRC
+** Add command-log-mode
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package command-log-mode
+       :ensure t)
+   #+END_SRC
+
+
 ** TODO Hydras
 * Editing 🖦
 

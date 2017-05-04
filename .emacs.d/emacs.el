@@ -455,6 +455,12 @@
   :config
   (load-theme 'apropospriate-dark t))
 
+(use-package all-the-icons
+  :ensure t)
+(use-package all-the-icons-dired
+  :ensure t
+  :config (add-hook 'dired-mode-hook 'all-the-icons-dired-mode))
+
 (use-package spaceline-config
   :ensure spaceline
   :config
@@ -512,6 +518,9 @@
   :ensure t
   :init (add-hook 'prog-mode-hook
                   'rainbow-identifiers-mode))
+
+(use-package command-log-mode
+  :ensure t)
 
 (add-hook 'text-mode-hook
           (lambda()
