@@ -308,6 +308,9 @@
   :bind (("C-h C-m" . discover-my-major)
          ("C-h M-m" . discover-my-mode)))
 
+(use-package hydra
+  :ensure t)
+
 (use-package ivy
   :ensure t
   :diminish ivy-mode
@@ -344,10 +347,10 @@
         ;;move to last word boundary
         (re-search-backward "\\b")
         (let ((pt (point))
-    	  (le (line-end-position)))
+          (le (line-end-position)))
           (forward-word 1)
           (if (> (point) le)
-    	  (goto-char pt)
+          (goto-char pt)
             (setq amend (buffer-substring-no-properties pt (point))))))
   (when amend
         (insert (replace-regexp-in-string " +" " " amend)))))
@@ -392,11 +395,6 @@
     )
   )
 
-(use-package hydra
-  :ensure t)
-(use-package ivy-hydra
-  :ensure t)
-
 (use-package undo-tree
   :ensure t
   :diminish undo-tree-mode
@@ -422,6 +420,10 @@
   :bind* (("M-m a f" . avy-goto-char-timer)
           ("M-m a g" . avy-goto-line)
           ("M-g g" . avy-goto-line)))
+
+(use-package ace-window
+  :ensure t
+  :bind* (("M-m w o" . ace-window)))
 
 (use-package popwin
   :ensure t
@@ -473,9 +475,9 @@
     (while (not found)
    (progn (setq separators (append (cdr separators) (list (car separators))))
              (when (string= (car separators) powerline-default-separator)
-      	 (progn (setq powerline-default-separator (cadr separators))
-      		(setq found t)
-      		(redraw-display)))))))
+         (progn (setq powerline-default-separator (cadr separators))
+                (setq found t)
+                (redraw-display)))))))
 
 (use-package highlight-symbol
   :ensure t
@@ -1902,7 +1904,7 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
     (if (byte-compile-file dest)
            (byte-compile-dest-file dest)
          (with-current-buffer byte-compile-log-buffer
-           (buffer-string))))     
+           (buffer-string))))
      )))
 
 (defun tangle-config (file-name)

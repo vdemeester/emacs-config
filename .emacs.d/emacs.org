@@ -87,16 +87,16 @@ It looks kinda like that (click to open the real one) :
        (setq gnutls-trustfiles (list trustfile)))
 
      (let ((bad-hosts
-   	 (cl-loop for bad
+         (cl-loop for bad
                      in `("https://wrong.host.badssl.com/"
                           "https://self-signed.badssl.com/")
                      if (condition-case e
-   			 (url-retrieve
+                         (url-retrieve
                              bad (lambda (retrieved) t))
                           (error nil))
                      collect bad)))
        (if bad-hosts
-   	(error (format "tls misconfigured; retrieved %s ok"
+        (error (format "tls misconfigured; retrieved %s ok"
                           bad-hosts))
          (url-retrieve "https://badssl.com"
                        (lambda (retrieved) t))))
@@ -769,7 +769,7 @@ It looks kinda like that (click to open the real one) :
                  (not (eq (process-status server-process)
                           'listen)))
          (unless (server-running-p server-name)
-   	(server-start))))
+        (server-start))))
    #+END_SRC
 * Key hints
 ** Which-key
@@ -818,6 +818,17 @@ It looks kinda like that (click to open the real one) :
    - Counsel, a collection of Ivy-enhanced versions of common Emacs commands.
    - Swiper, an Ivy-enhanced alternative to isearch.
 
+** Hydra
+
+   [[https://github.com/abo-abo/hydra][Hydra]] is not strictly a modal package but it is one that lets you
+   define sticky bindings and I would call it semi-modal. I love it and
+   need it.
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package hydra
+       :ensure t)
+   #+END_SRC
+
 *** ivy
 
     #+BEGIN_QUOTE
@@ -860,16 +871,16 @@ It looks kinda like that (click to open the real one) :
           "Pull next word from buffer into search string."
           (interactive)
           (let (amend)
-    	(with-ivy-window
+        (with-ivy-window
               ;;move to last word boundary
               (re-search-backward "\\b")
               (let ((pt (point))
-    		(le (line-end-position)))
+                (le (line-end-position)))
                 (forward-word 1)
                 (if (> (point) le)
-    		(goto-char pt)
+                (goto-char pt)
                   (setq amend (buffer-substring-no-properties pt (point))))))
-    	(when amend
+        (when amend
               (insert (replace-regexp-in-string " +" " " amend)))))
 
         ;; bind it to M-j
@@ -919,24 +930,12 @@ It looks kinda like that (click to open the real one) :
                          (kill-buffer x)
                          (ivy--reset-state ivy-last))
               "kill")
-    	 ("j"
+         ("j"
               ivy--switch-buffer-other-window-action
               "other window")))
           )
         )
     #+END_SRC
-** Hydra
-
-   [[https://github.com/abo-abo/hydra][Hydra]] is not strictly a modal package but it is one that lets you
-   define sticky bindings and I would call it semi-modal. I love it and
-   need it.
-
-   #+BEGIN_SRC emacs-lisp
-     (use-package hydra
-       :ensure t)
-     (use-package ivy-hydra
-       :ensure t)
-   #+END_SRC
 ** Undo tree
 
    The default Emacs [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Undo.html][undo]] command is weird. Better undo and redo
@@ -979,7 +978,15 @@ It looks kinda like that (click to open the real one) :
    #+END_SRC
 
 ** Window management
-*** TODO Ace window
+*** Ace window
+
+    #+BEGIN_SRC emacs-lisp
+      (use-package ace-window
+        :ensure t
+        :bind* (("M-m w o" . ace-window)))
+    #+END_SRC
+
+
 *** Popwin
 
     #+BEGIN_QUOTE
@@ -1061,9 +1068,9 @@ It looks kinda like that (click to open the real one) :
          (while (not found)
         (progn (setq separators (append (cdr separators) (list (car separators))))
                   (when (string= (car separators) powerline-default-separator)
-      	      (progn (setq powerline-default-separator (cadr separators))
-      		     (setq found t)
-      		     (redraw-display)))))))
+              (progn (setq powerline-default-separator (cadr separators))
+                     (setq found t)
+                     (redraw-display)))))))
 
    #+END_SRC
 
@@ -1969,7 +1976,7 @@ It looks kinda like that (click to open the real one) :
        "Set this task's status to 'PROGRESS'."
        (org-todo "PROGRESS"))
    #+END_SRC
-   
+
 
 ** Agenda(s)
 
@@ -1978,7 +1985,7 @@ It looks kinda like that (click to open the real one) :
 
    #+BEGIN_SRC emacs-lisp
      (setq org-agenda-custom-commands
-   	'(("d" "Daily agenda and all TODOs"
+        '(("d" "Daily agenda and all TODOs"
               ((tags "PRIORITY=\"A\""
                      ((org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
                       (org-agenda-overriding-header "High-priority unfinished tasks:")))
@@ -2092,14 +2099,14 @@ It looks kinda like that (click to open the real one) :
              (pri-current (org-get-priority (thing-at-point 'line t))))
          (if (= pri-value pri-current)
              subtree-end
-   	nil)))
+        nil)))
 
      (defun vde/org-skip-subtree-if-habit ()
        "Skip an agenda entry if it has a STYLE property equal to \"habit\"."
        (let ((subtree-end (save-excursion (org-end-of-subtree t))))
          (if (string= (org-entry-get nil "STYLE") "habit")
              subtree-end
-   	nil)))
+        nil)))
    #+END_SRC
 
 ** Publishing
@@ -2338,7 +2345,7 @@ It looks kinda like that (click to open the real one) :
              org-gcal-client-secret "2gCU6NrqpHEi23FyXQB4EdWB"
              org-gcal-file-alist '(("vinc.demeester@gmail.com" .  "~/desktop/org/todos/gcal.org"))))
    #+END_SRC
-   
+
 ** Some bindings
 
    Add some bindings that wouldn't have been defined before. This should
@@ -2846,7 +2853,7 @@ It looks kinda like that (click to open the real one) :
                                  ad-return-value)
             ad-return-value)))
    #+END_SRC
-   
+
 
 ** Compilation buffer
 
@@ -3117,10 +3124,10 @@ It looks kinda like that (click to open the real one) :
 
 * Automatically invoke tangle on save
 
-   This was taken and adapted from [[https://github.com/alanpearce/dotfiles/blob/master/tag-emacs/emacs.d/init.org#tangling][Alan Pearce's dotfiles]] so as to tangle
-   it on save instead of tangling it every time I open it again.
+  This was taken and adapted from [[https://github.com/alanpearce/dotfiles/blob/master/tag-emacs/emacs.d/init.org#tangling][Alan Pearce's dotfiles]] so as to tangle
+  it on save instead of tangling it every time I open it again.
 
-   #+BEGIN_SRC emacs-lisp
+  #+BEGIN_SRC emacs-lisp
      (defun tangle-if-config ()
        "If the current buffer is a config '*.org' the code-blocks are
          tangled, and the tangled file is compiled."
@@ -3161,7 +3168,7 @@ It looks kinda like that (click to open the real one) :
          (if (byte-compile-file dest)
                 (byte-compile-dest-file dest)
               (with-current-buffer byte-compile-log-buffer
-                (buffer-string))))     
+                (buffer-string))))
           )))
 
      (defun tangle-config (file-name)
@@ -3170,7 +3177,7 @@ It looks kinda like that (click to open the real one) :
        (interactive)
        (message (format "Tangling %s" file-name))
        (tangle-config-async file-name))
-   #+END_SRC
+  #+END_SRC
 
   This is the magic line(s) to make the tangle on save automatic.
 
