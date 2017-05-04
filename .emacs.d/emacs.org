@@ -810,17 +810,6 @@ It looks kinda like that (click to open the real one) :
   This section contains all the package and custom for navigating
   within the buffer, within a project, Emacs, etc.
 
-** Hydra
-
-   [[https://github.com/abo-abo/hydra][Hydra]] is not strictly a modal package but it is one that lets you
-   define sticky bindings and I would call it semi-modal. I love it and
-   need it.
-
-   #+BEGIN_SRC emacs-lisp
-     (use-package hydra
-       :ensure t)
-   #+END_SRC
-
 ** Ivy, counsel and swiper
    An alternative to Helm (that I used before) is [[https://github.com/abo-abo/swiper][ivy, counsel and
    swiper]].
@@ -871,16 +860,16 @@ It looks kinda like that (click to open the real one) :
           "Pull next word from buffer into search string."
           (interactive)
           (let (amend)
-            (with-ivy-window
-             ;;move to last word boundary
-             (re-search-backward "\\b")
-             (let ((pt (point))
-                   (le (line-end-position)))
-               (forward-word 1)
-               (if (> (point) le)
-                   (goto-char pt)
-                 (setq amend (buffer-substring-no-properties pt (point))))))
-            (when amend
+    	(with-ivy-window
+              ;;move to last word boundary
+              (re-search-backward "\\b")
+              (let ((pt (point))
+    		(le (line-end-position)))
+                (forward-word 1)
+                (if (> (point) le)
+    		(goto-char pt)
+                  (setq amend (buffer-substring-no-properties pt (point))))))
+    	(when amend
               (insert (replace-regexp-in-string " +" " " amend)))))
 
         ;; bind it to M-j
@@ -902,19 +891,52 @@ It looks kinda like that (click to open the real one) :
     #+BEGIN_SRC emacs-lisp
       (use-package counsel
         :ensure t
-        :bind (("C-x C-f" . counsel-find-file)
-    	   ("C-x r C-f" . counsel-recentf)
-               ("C-h f" . counsel-describe-function)
-               ("C-h v" . counsel-describe-variable)
-               ("C-h i" . counsel-info-lookup-symbol)
-               ("C-c C-u" . counsel-unicode-char)
-               ("C-x g C-f" . counsel-git)
-               ("C-c s g" . counsel-git-grep)
-               ("C-c s s" . counsel-pt)
-               ("M-y" . counsel-yank-pop)
-               ("M-x" . counsel-M-x)))
-    #+END_SRC
+        :bind* (("M-m f f" . counsel-find-file)
+                ("M-m f r" . counsel-recentf)
+                ("M-m f g" . counsel-git)
 
+                ("M-m i" . counsel-imenu)
+
+                ("C-x C-f" . counsel-find-file)
+                ("C-h f" . counsel-describe-function)
+                ("C-h v" . counsel-describe-variable)
+                ("C-h i" . counsel-info-lookup-symbol)
+                ("C-c C-u" . counsel-unicode-char)
+                ("C-c s g" . counsel-git-grep)
+                ("C-c s s" . counsel-pt)
+                ("M-y" . counsel-yank-pop)
+                ("M-x" . counsel-M-x))
+        :config
+        (progn
+          (ivy-set-actions
+           'counsel-find-file
+           '(("d" (lambda (x) (delete-file (expand-file-name x)))
+              "delete"
+              )))
+          (ivy-set-actions
+           'ivy-switch-buffer
+           '(("k" (lamba (x)
+                         (kill-buffer x)
+                         (ivy--reset-state ivy-last))
+              "kill")
+    	 ("j"
+              ivy--switch-buffer-other-window-action
+              "other window")))
+          )
+        )
+    #+END_SRC
+** Hydra
+
+   [[https://github.com/abo-abo/hydra][Hydra]] is not strictly a modal package but it is one that lets you
+   define sticky bindings and I would call it semi-modal. I love it and
+   need it.
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package hydra
+       :ensure t)
+     (use-package ivy-hydra
+       :ensure t)
+   #+END_SRC
 ** Undo tree
 
    The default Emacs [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Undo.html][undo]] command is weird. Better undo and redo
@@ -951,7 +973,8 @@ It looks kinda like that (click to open the real one) :
        (setq avy-keys-alist
              `((avy-goto-char-timer . (?j ?k ?l ?f ?s ?d ?e ?r ?u ?i))
                (avy-goto-line . (?j ?k ?l ?f ?s ?d ?e ?r ?u ?i))))
-       :bind* (("M-m f" . avy-goto-char-timer)
+       :bind* (("M-m a f" . avy-goto-char-timer)
+               ("M-m a g" . avy-goto-line)
                ("M-g g" . avy-goto-line)))
    #+END_SRC
 
@@ -2355,7 +2378,7 @@ It looks kinda like that (click to open the real one) :
                ("M-m o B"   . org-table-blank-field)
                ("M-m o <"   . org-date-from-calendar)
                ("M-m o >"   . org-goto-calendar)
-               ("M-m a s"   . org-mark-subtree)
+               ("M-m o m"   . org-mark-subtree)
                ("M-m o RET" . org-open-at-point)
                ("M-m o p"   . org-open-main-file)
                ("M-m o n"   . org-open-notes-folder)))
@@ -2614,15 +2637,16 @@ It looks kinda like that (click to open the real one) :
    [[https://magit.vc][The best interface to Git ever]]. Enough said.
 
    #+BEGIN_SRC emacs-lisp
-       (use-package magit
-         :ensure t
-         :commands magit-status
-         :bind ("C-c g" . magit-status)
-         :config
-         (setq magit-completing-read-function 'ivy-completing-read)
-         (add-to-list 'magit-no-confirm 'stage-all-changes)
-         (setq magit-push-always-verify nil)
-         (setq magit-last-seen-setup-instructions "2.1.0"))
+     (use-package magit
+       :ensure t
+       :commands magit-status
+       :bind* (("C-c g" . magit-status)
+               ("M-m s g" . magit-status))
+       :config
+       (setq magit-completing-read-function 'ivy-completing-read)
+       (add-to-list 'magit-no-confirm 'stage-all-changes)
+       (setq magit-push-always-verify nil)
+       (setq magit-last-seen-setup-instructions "2.1.0"))
    #+END_SRC
 ** Git annex support
 
@@ -2638,6 +2662,7 @@ It looks kinda like that (click to open the real one) :
      (use-package git-annex
        :ensure t)
      (use-package magit-annex
+       :bind* (("M-m s @" . magit-annex-sync))
        :ensure t)
    #+END_SRC
 

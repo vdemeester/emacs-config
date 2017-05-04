@@ -289,7 +289,7 @@
             (not (eq (process-status server-process)
                      'listen)))
     (unless (server-running-p server-name)
-      (server-start))))
+   (server-start))))
 
 (use-package which-key
   :ensure t
@@ -307,9 +307,6 @@
   :ensure t
   :bind (("C-h C-m" . discover-my-major)
          ("C-h M-m" . discover-my-mode)))
-
-(use-package hydra
-  :ensure t)
 
 (use-package ivy
   :ensure t
@@ -343,16 +340,16 @@
     "Pull next word from buffer into search string."
     (interactive)
     (let (amend)
-      (with-ivy-window
-       ;;move to last word boundary
-       (re-search-backward "\\b")
-       (let ((pt (point))
-             (le (line-end-position)))
-         (forward-word 1)
-         (if (> (point) le)
-             (goto-char pt)
-           (setq amend (buffer-substring-no-properties pt (point))))))
-      (when amend
+  (with-ivy-window
+        ;;move to last word boundary
+        (re-search-backward "\\b")
+        (let ((pt (point))
+    	  (le (line-end-position)))
+          (forward-word 1)
+          (if (> (point) le)
+    	  (goto-char pt)
+            (setq amend (buffer-substring-no-properties pt (point))))))
+  (when amend
         (insert (replace-regexp-in-string " +" " " amend)))))
 
   ;; bind it to M-j
@@ -361,17 +358,44 @@
 
 (use-package counsel
   :ensure t
-  :bind (("C-x C-f" . counsel-find-file)
-     ("C-x r C-f" . counsel-recentf)
-         ("C-h f" . counsel-describe-function)
-         ("C-h v" . counsel-describe-variable)
-         ("C-h i" . counsel-info-lookup-symbol)
-         ("C-c C-u" . counsel-unicode-char)
-         ("C-x g C-f" . counsel-git)
-         ("C-c s g" . counsel-git-grep)
-         ("C-c s s" . counsel-pt)
-         ("M-y" . counsel-yank-pop)
-         ("M-x" . counsel-M-x)))
+  :bind* (("M-m f f" . counsel-find-file)
+          ("M-m f r" . counsel-recentf)
+          ("M-m f g" . counsel-git)
+
+          ("M-m i" . counsel-imenu)
+
+          ("C-x C-f" . counsel-find-file)
+          ("C-h f" . counsel-describe-function)
+          ("C-h v" . counsel-describe-variable)
+          ("C-h i" . counsel-info-lookup-symbol)
+          ("C-c C-u" . counsel-unicode-char)
+          ("C-c s g" . counsel-git-grep)
+          ("C-c s s" . counsel-pt)
+          ("M-y" . counsel-yank-pop)
+          ("M-x" . counsel-M-x))
+  :config
+  (progn
+    (ivy-set-actions
+     'counsel-find-file
+     '(("d" (lambda (x) (delete-file (expand-file-name x)))
+        "delete"
+        )))
+    (ivy-set-actions
+     'ivy-switch-buffer
+     '(("k" (lamba (x)
+                   (kill-buffer x)
+                   (ivy--reset-state ivy-last))
+        "kill")
+   ("j"
+        ivy--switch-buffer-other-window-action
+        "other window")))
+    )
+  )
+
+(use-package hydra
+  :ensure t)
+(use-package ivy-hydra
+  :ensure t)
 
 (use-package undo-tree
   :ensure t
@@ -395,7 +419,8 @@
   (setq avy-keys-alist
         `((avy-goto-char-timer . (?j ?k ?l ?f ?s ?d ?e ?r ?u ?i))
           (avy-goto-line . (?j ?k ?l ?f ?s ?d ?e ?r ?u ?i))))
-  :bind* (("M-m f" . avy-goto-char-timer)
+  :bind* (("M-m a f" . avy-goto-char-timer)
+          ("M-m a g" . avy-goto-line)
           ("M-g g" . avy-goto-line)))
 
 (use-package popwin
@@ -1358,7 +1383,7 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
           ("M-m o B"   . org-table-blank-field)
           ("M-m o <"   . org-date-from-calendar)
           ("M-m o >"   . org-goto-calendar)
-          ("M-m a s"   . org-mark-subtree)
+          ("M-m o m"   . org-mark-subtree)
           ("M-m o RET" . org-open-at-point)
           ("M-m o p"   . org-open-main-file)
           ("M-m o n"   . org-open-notes-folder)))
@@ -1565,7 +1590,8 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
 (use-package magit
   :ensure t
   :commands magit-status
-  :bind ("C-c g" . magit-status)
+  :bind* (("C-c g" . magit-status)
+          ("M-m s g" . magit-status))
   :config
   (setq magit-completing-read-function 'ivy-completing-read)
   (add-to-list 'magit-no-confirm 'stage-all-changes)
@@ -1575,6 +1601,7 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
 (use-package git-annex
   :ensure t)
 (use-package magit-annex
+  :bind* (("M-m s @" . magit-annex-sync))
   :ensure t)
 
 (use-package yagist
