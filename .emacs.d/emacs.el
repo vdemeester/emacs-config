@@ -513,9 +513,16 @@
     (while (not found)
    (progn (setq separators (append (cdr separators) (list (car separators))))
              (when (string= (car separators) powerline-default-separator)
-         (progn (setq powerline-default-separator (cadr separators))
-                (setq found t)
-                (redraw-display)))))))
+   	    (progn (setq powerline-default-separator (cadr separators))
+   		   (setq found t)
+   		   (redraw-display)))))))
+
+(use-package spaceline-all-the-icons
+  :ensure t
+  :after spaceline
+  :config
+  (spaceline-all-the-icons-theme)
+  (spaceline-all-the-icons--setup-git-ahead))
 
 (use-package highlight-symbol
   :ensure t

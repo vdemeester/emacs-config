@@ -1118,12 +1118,18 @@ It looks kinda like that (click to open the real one) :
                                         "butt" "rounded" "contour" "curve")))
               (found nil))
          (while (not found)
-        (progn (setq separators (append (cdr separators) (list (car separators))))
+   	(progn (setq separators (append (cdr separators) (list (car separators))))
                   (when (string= (car separators) powerline-default-separator)
-              (progn (setq powerline-default-separator (cadr separators))
-                     (setq found t)
-                     (redraw-display)))))))
+   		 (progn (setq powerline-default-separator (cadr separators))
+   			(setq found t)
+   			(redraw-display)))))))
 
+     (use-package spaceline-all-the-icons
+       :ensure t
+       :after spaceline
+       :config
+       (spaceline-all-the-icons-theme)
+       (spaceline-all-the-icons--setup-git-ahead))
    #+END_SRC
 
 ** highlight-symbol
