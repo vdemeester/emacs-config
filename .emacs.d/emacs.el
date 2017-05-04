@@ -450,6 +450,38 @@
   (fullframe ibuffer ibuffer-quit)
   (fullframe list-packages quit-window))
 
+(use-package perspective
+  :ensure t
+  :bind* (("M-m SPC s" . persp-switch)
+    ("M-m SPC n" . persp-next)
+    ("M-m SPC p" . persp-prev)
+    ("M-m SPC r" . persp-rename)
+    ("M-m SPC k" . pers-kill)
+    ("M-m SPC o" . custom-persp/org)
+    ("M-m SPC d d" . custom-persp/docker)
+    ("M-m SPC d p" . custom-persp/pipeline))
+  :config
+  (persp-mode t)
+  (defmacro custom-persp (name &rest body)
+    `(let ((initialize (not (gethash ,name perspectives-hash)))
+           (current-perspective persp-curr))
+    (persp-switch ,name)
+    (when initialize ,@body)
+    (setq persp-last current-perspective)))
+  (defun custom-persp/org ()
+    (interactive)
+    (custom-persp "org"
+                  (find-file (expand-file-name "todos/personal.org" org-root-directory))))
+  (defun custom-persp/docker ()
+    (interactive)
+    (custom-persp "docker"
+                  (find-file (substitute-env-in-file-name "$HOME/go/src/github.com/docker/docker"))))
+  (defun custom-persp/pipeline ()
+    (interactive)
+    (custom-persp "docker"
+                  (find-file (substitute-env-in-file-name "$HOME/go/src/github.com/docker/pipeline"))))
+  )
+
 (use-package apropospriate-theme
   :ensure t
   :config
