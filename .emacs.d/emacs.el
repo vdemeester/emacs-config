@@ -524,7 +524,7 @@
   (defun custom-persp/magit-docker ()
     (interactive)
     (custom-persp "magit-docker"
-              (magit-status (substitute-env-in-file-name "$HOME/go/src/github.com/docker/docker"))))
+   	   (magit-status (substitute-env-in-file-name "$HOME/go/src/github.com/docker/docker"))))
   (defun custom-persp/magit-docker-pipeline ()
     (interactive)
     (custom-persp "magit-pipeline"
@@ -1090,6 +1090,25 @@ With prefix argument, also display headlines without a TODO keyword."
 
 (require 'org-archive)
 (setq org-archive-location (concat org-archive-directory org-archive-file-pattern))
+
+(defvar org-my-archive-expiry-days 9
+  "The number of days after which a completed task should be auto-archived.
+This can be 0 for immediate, or a floating point value.")
+
+(defun org-archive-done-tasks ()
+  (interactive)
+  (save-excursion
+    (goto-char (point-min))
+    (while (re-search-forward "\* \\(DONE\\|CANCELED\\) " nil t)
+   (if (save-restriction
+            (save-excursion
+   	   (org-narrow-to-subtree)
+   	   (search-forward ":LOGBOOK:" nil t)))
+          (forward-line)
+        (org-archive-subtree)
+        (goto-char (line-beginning-position))))))
+
+(defalias 'archive-done-tasks 'org-archive-done-tasks)
 
 (setq org-tags-column -90)
 

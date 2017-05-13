@@ -2016,6 +2016,30 @@ It looks kinda like that (click to open the real one) :
      (setq org-archive-location (concat org-archive-directory org-archive-file-pattern))
    #+END_SRC
 
+   Let's also have some /auto-archive/ stuff, taken inspiration from [[http://article.gmane.org/gmane.emacs.orgmode/2963][john wiegley]].
+
+   #+BEGIN_SRC emacs-lisp
+     (defvar org-my-archive-expiry-days 9
+       "The number of days after which a completed task should be auto-archived.
+     This can be 0 for immediate, or a floating point value.")
+
+     (defun org-archive-done-tasks ()
+       (interactive)
+       (save-excursion
+         (goto-char (point-min))
+         (while (re-search-forward "\* \\(DONE\\|CANCELED\\) " nil t)
+        (if (save-restriction
+                 (save-excursion
+      	     (org-narrow-to-subtree)
+      	     (search-forward ":LOGBOOK:" nil t)))
+               (forward-line)
+             (org-archive-subtree)
+             (goto-char (line-beginning-position))))))
+
+     (defalias 'archive-done-tasks 'org-archive-done-tasks)
+   #+END_SRC
+   
+
 ** Tags
 
    Tags should be displayed from the 90 column.
