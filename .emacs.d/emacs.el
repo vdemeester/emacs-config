@@ -452,14 +452,27 @@
 
 (use-package perspective
   :ensure t
-  :bind* (("M-m SPC s" . persp-switch)
+  :bind* (("M-m SPC c" . persp-switch)
     ("M-m SPC n" . persp-next)
     ("M-m SPC p" . persp-prev)
     ("M-m SPC r" . persp-rename)
     ("M-m SPC k" . pers-kill)
-    ("M-m SPC o" . custom-persp/org)
+    ("M-m SPC o o" . custom-persp/org)
+    ("M-m SPC o d d" . custom-persp/org-docker)
+    ("M-m SPC o d p" . custom-persp/org-docker-pipeline)
+    ("M-m SPC o m" . custom-persp/org-moby)
+    ("M-m SPC s d d" . custom-persp/magit-docker)
+    ("M-m SPC s d p" . custom-persp/magit-docker-pipeline)
+    ("M-m SPC s d i i" . custom-persp/magit-docker-infrakit)
+    ("M-m SPC s d i d" . custom-persp/magit-docker-infrakit-do)
+    ("M-m SPC s d i g" . custom-persp/magit-docker-infrakit-gcp)
+    ("M-m SPC s l" . custom-persp/magit-linuxkit)
     ("M-m SPC d d" . custom-persp/docker)
-    ("M-m SPC d p" . custom-persp/pipeline))
+    ("M-m SPC d p" . custom-persp/docker-pipeline)
+    ("M-m SPC d i i" . custom-persp/docker-infrakit)
+    ("M-m SPC d i d" . custom-persp/docker-infrakit-do)
+    ("M-m SPC d i g" . custom-persp/docker-infrakit-gcp)
+    ("M-m SPC l" . custom-persp/linuxkit))
   :config
   (persp-mode t)
   (defmacro custom-persp (name &rest body)
@@ -472,14 +485,66 @@
     (interactive)
     (custom-persp "org"
                   (find-file (expand-file-name "todos/personal.org" org-root-directory))))
+  (defun custom-persp/org-docker ()
+    (interactive)
+    (custom-persp "org-docker"
+                  (find-file (expand-file-name "todos/docker.org" org-root-directory))))
+  (defun custom-persp/org-docker-pipeline ()
+    (interactive)
+    (custom-persp "org-pipeline"
+                  (find-file (expand-file-name "todos/docker-pipeline.org" org-root-directory))))
+  (defun custom-persp/org-moby ()
+    (interactive)
+    (custom-persp "org-moby"
+                  (find-file (expand-file-name "todos/moby.org" org-root-directory))))
   (defun custom-persp/docker ()
     (interactive)
     (custom-persp "docker"
                   (find-file (substitute-env-in-file-name "$HOME/go/src/github.com/docker/docker"))))
-  (defun custom-persp/pipeline ()
+  (defun custom-persp/docker-pipeline ()
     (interactive)
-    (custom-persp "docker"
+    (custom-persp "pipeline"
                   (find-file (substitute-env-in-file-name "$HOME/go/src/github.com/docker/pipeline"))))
+  (defun custom-persp/docker-infrakit ()
+    (interactive)
+    (custom-persp "infrakit"
+                  (find-file (substitute-env-in-file-name "$HOME/go/src/github.com/docker/infrakit"))))
+  (defun custom-persp/docker-infrakit-do ()
+    (interactive)
+    (custom-persp "infrakit.digitalocean"
+                  (find-file (substitute-env-in-file-name "$HOME/go/src/github.com/docker/infrakit.digitalocean"))))
+  (defun custom-persp/docker-infrakit-gcp ()
+    (interactive)
+    (custom-persp "infrakit.gcp"
+                  (find-file (substitute-env-in-file-name "$HOME/go/src/github.com/docker/infrakit.gcp"))))
+  (defun custom-persp/linuxkit ()
+    (interactive)
+    (custom-persp "linuxkit"
+                  (find-file (substitute-env-in-file-name "$HOME/go/src/github.com/linuxkit/linuxkit"))))
+  (defun custom-persp/magit-docker ()
+    (interactive)
+    (custom-persp "magit-docker"
+              (magit-status (substitute-env-in-file-name "$HOME/go/src/github.com/docker/docker"))))
+  (defun custom-persp/magit-docker-pipeline ()
+    (interactive)
+    (custom-persp "magit-pipeline"
+                  (magit-status (substitute-env-in-file-name "$HOME/go/src/github.com/docker/pipeline"))))
+  (defun custom-persp/magit-docker-infrakit ()
+    (interactive)
+    (custom-persp "magit-infrakit"
+                  (magit-status (substitute-env-in-file-name "$HOME/go/src/github.com/docker/infrakit"))))
+  (defun custom-persp/magit-docker-infrakit-do ()
+    (interactive)
+    (custom-persp "magit-infrakit.digitalocean"
+                  (magit-status (substitute-env-in-file-name "$HOME/go/src/github.com/docker/infrakit.digitalocean"))))
+  (defun custom-persp/magit-docker-infrakit-gcp ()
+    (interactive)
+    (custom-persp "magit-infrakit.gcp"
+                  (magit-status (substitute-env-in-file-name "$HOME/go/src/github.com/docker/infrakit.gcp"))))
+  (defun custom-persp/magit-linuxkit ()
+    (interactive)
+    (custom-persp "magit-linuxkit"
+                  (magit-status (substitute-env-in-file-name "$HOME/go/src/github.com/linuxkit/linuxkit"))))
   )
 
 (use-package apropospriate-theme
@@ -1705,8 +1770,8 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
 
 (use-package eshell
   :commands (eshell)
-  :bind* (("M-m SPC s" . sk/eshell-vertical)
-          ("M-m SPC S" . sk/eshell-horizontal))
+  :bind* (("M-m SPC e" . sk/eshell-vertical)
+          ("M-m SPC E" . sk/eshell-horizontal))
   :init
   (setq eshell-glob-case-insensitive t
         eshell-scroll-to-bottom-on-input 'this
@@ -1961,3 +2026,8 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
   (interactive)
   (message (format "Tangling %s" file-name))
   (tangle-config-async file-name))
+
+(defun tangle-emacs-config ()
+  (interactive)
+  (message (format "Tangling emacs config"))
+  (tangle-config-sync (substitute-env-in-file-name "$HOME/src/configs/emacs-config/.emacs.d/emacs.org")))
