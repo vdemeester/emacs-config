@@ -3239,6 +3239,19 @@ It looks kinda like that (click to open the real one) :
         :ensure t)
     #+END_SRC
 
+*** =direnv=
+
+    Although it's not completely relevant to =nix= (as it can be used
+    on other systems), let's try to integrate =direnv= with emacs.
+
+    #+BEGIN_SRC emacs-lisp
+      (use-package direnv
+        :ensure t)
+    #+END_SRC
+    
+    Not automatically enabling it for now as it might be a little bit
+    too resource hungry (and might need network).
+
 * Provided configuration
 
   I'm managing my configurations using [[https://github.com/RichiH/vcsh][vcsh]] and [[http://myrepos.branchable.com/][myrepos]], like [[https://github.com/vdemeester/vcsh-home#how-it-is-supposed-to-work][that]]. I have a lot

@@ -1102,8 +1102,8 @@ This can be 0 for immediate, or a floating point value.")
     (while (re-search-forward "\* \\(DONE\\|CANCELED\\) " nil t)
    (if (save-restriction
             (save-excursion
-   	   (org-narrow-to-subtree)
-   	   (search-forward ":LOGBOOK:" nil t)))
+      	(org-narrow-to-subtree)
+      	(search-forward ":LOGBOOK:" nil t)))
           (forward-line)
         (org-archive-subtree)
         (goto-char (line-beginning-position))))))
@@ -1974,6 +1974,11 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
 
 (use-package nix-sandbox
   :ensure t)
+
+(use-package direnv
+  :ensure t
+  :init
+  (direnv-mode))
 
 ;; The folder is by default $HOME/.emacs.d/provided
 (setq user-emacs-provided-directory (concat user-emacs-directory "provided/"))
