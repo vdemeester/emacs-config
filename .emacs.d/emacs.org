@@ -771,6 +771,15 @@ It looks kinda like that (click to open the real one) :
          (unless (server-running-p server-name)
         (server-start))))
    #+END_SRC
+** mac osx specific
+
+   By default, it is super annoying, so customizing a tiny bit.
+
+   #+BEGIN_SRC emacs-lisp
+     (when (eq system-type 'darwin)
+       (setq ns-right-alternate-modifier nil)
+       (setq mac-right-option-modifier 'none))
+   #+END_SRC
 * Key hints
 ** Which-key
 

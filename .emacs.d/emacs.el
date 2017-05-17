@@ -291,6 +291,10 @@
     (unless (server-running-p server-name)
    (server-start))))
 
+(when (eq system-type 'darwin)
+  (setq ns-right-alternate-modifier nil)
+  (setq mac-right-option-modifier 'none))
+
 (use-package which-key
   :ensure t
   :defer t
@@ -1976,9 +1980,7 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
   :ensure t)
 
 (use-package direnv
-  :ensure t
-  :init
-  (direnv-mode))
+  :ensure t)
 
 ;; The folder is by default $HOME/.emacs.d/provided
 (setq user-emacs-provided-directory (concat user-emacs-directory "provided/"))
