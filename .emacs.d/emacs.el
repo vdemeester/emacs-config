@@ -556,12 +556,6 @@
   :config
   (load-theme 'apropospriate-dark t))
 
-(use-package all-the-icons
-  :ensure t)
-(use-package all-the-icons-dired
-  :ensure t
-  :config (add-hook 'dired-mode-hook 'all-the-icons-dired-mode))
-
 (use-package spaceline-config
   :ensure spaceline
   :config
@@ -585,13 +579,6 @@
    	    (progn (setq powerline-default-separator (cadr separators))
    		   (setq found t)
    		   (redraw-display)))))))
-
-(use-package spaceline-all-the-icons
-  :ensure t
-  :after spaceline
-  :config
-  (spaceline-all-the-icons-theme)
-  (spaceline-all-the-icons--setup-git-ahead))
 
 (use-package highlight-symbol
   :ensure t
