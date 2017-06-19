@@ -513,14 +513,6 @@
     (interactive)
     (custom-persp "infrakit"
                   (find-file (substitute-env-in-file-name "$HOME/go/src/github.com/docker/infrakit"))))
-  (defun custom-persp/docker-infrakit-do ()
-    (interactive)
-    (custom-persp "infrakit.digitalocean"
-                  (find-file (substitute-env-in-file-name "$HOME/go/src/github.com/docker/infrakit.digitalocean"))))
-  (defun custom-persp/docker-infrakit-gcp ()
-    (interactive)
-    (custom-persp "infrakit.gcp"
-                  (find-file (substitute-env-in-file-name "$HOME/go/src/github.com/docker/infrakit.gcp"))))
   (defun custom-persp/linuxkit ()
     (interactive)
     (custom-persp "linuxkit"
@@ -528,7 +520,7 @@
   (defun custom-persp/magit-docker ()
     (interactive)
     (custom-persp "magit-docker"
-   	   (magit-status (substitute-env-in-file-name "$HOME/go/src/github.com/docker/docker"))))
+      	(magit-status (substitute-env-in-file-name "$HOME/go/src/github.com/docker/docker"))))
   (defun custom-persp/magit-docker-pipeline ()
     (interactive)
     (custom-persp "magit-pipeline"
@@ -537,24 +529,20 @@
     (interactive)
     (custom-persp "magit-infrakit"
                   (magit-status (substitute-env-in-file-name "$HOME/go/src/github.com/docker/infrakit"))))
-  (defun custom-persp/magit-docker-infrakit-do ()
-    (interactive)
-    (custom-persp "magit-infrakit.digitalocean"
-                  (magit-status (substitute-env-in-file-name "$HOME/go/src/github.com/docker/infrakit.digitalocean"))))
-  (defun custom-persp/magit-docker-infrakit-gcp ()
-    (interactive)
-    (custom-persp "magit-infrakit.gcp"
-                  (magit-status (substitute-env-in-file-name "$HOME/go/src/github.com/docker/infrakit.gcp"))))
   (defun custom-persp/magit-linuxkit ()
     (interactive)
     (custom-persp "magit-linuxkit"
                   (magit-status (substitute-env-in-file-name "$HOME/go/src/github.com/linuxkit/linuxkit"))))
   )
 
-(use-package apropospriate-theme
+;; (use-package apropospriate-theme
+;;   :ensure t
+;;   :config
+;;   (load-theme 'apropospriate-dark t))
+(use-package atom-one-dark-theme
   :ensure t
   :config
-  (load-theme 'apropospriate-dark t))
+  (load-theme 'atom-one-dark t))
 
 (use-package spaceline-config
   :ensure spaceline
