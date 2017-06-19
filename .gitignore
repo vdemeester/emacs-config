@@ -1,4 +1,8 @@
 .cache
 .emacs.d/elpa/archives
+.emacs.d/custom.el
+.emacs.d/recentf
+.emacs.d/undo
+.emacs.d/emacs.elc
 .gnupg
 .org-timestamps
