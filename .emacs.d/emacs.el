@@ -909,16 +909,16 @@ point reaches the beginning or end of the buffer, stop there."
     (apply 'format text fmtvars)))
 
 (setq org-capture-templates
-      '(;; other entries
+   '(;; other entries
         ("t" "Inbox list item" entry
          (file+headline (expand-file-name org-main-file org-todos-directory) "Inbox")
          "* TODO %?\nSCHEDULED: %(org-insert-time-stamp (org-read-date nil t \"+0d\"))\n")
         ("d" "Docker task" entry
          (file+headline (expand-file-name org-main-file org-todos-directory) "Tasks")
          "* TODO gh:docker/%(oc/prmt \"project\" 'd-prj)#%(oc/prmt \"issue/pr\" 'd-issue) %?%(oc/inc \"feature content\" \" [/]\n- [ ] Implementation\n- [ ] Tests\n- [ ] Docs\")")
-        ("j" "Journal entry" entry
-         (file+datetree+prompt (expand-file-name org-journal-file org-root-directory))
-         "- %?\n%a\n%i\n")
+        ("j" "Journal entry"
+         entry (file+datetree+prompt (expand-file-name org-journal-file org-root-directory))
+         "* %?\n%U\%i\n%a" :empty-lines 1)
         ;; other entries
         ))
 
