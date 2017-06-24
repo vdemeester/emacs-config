@@ -3254,10 +3254,12 @@ It looks kinda like that (click to open the real one) :
     (load-provided-configuration user-emacs-provided-directory)
   #+END_SRC
 
-* Automatically invoke tangle on save
+* Tangle configuration
 
-  This was taken and adapted from [[https://github.com/alanpearce/dotfiles/blob/master/tag-emacs/emacs.d/init.org#tangling][Alan Pearce's dotfiles]] so as to tangle
-  it on save instead of tangling it every time I open it again.
+  Define function to tangle this file (without thinking about
+  it). It's a little bit hardcoded still (the path for example)..
+  I'll need to update that to make it work on Windows at some point
+  👼.
 
   #+BEGIN_SRC emacs-lisp
     (defun tangle-config-sync (file-name)
