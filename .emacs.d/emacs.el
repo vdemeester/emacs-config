@@ -918,7 +918,7 @@ point reaches the beginning or end of the buffer, stop there."
          "* TODO gh:docker/%(oc/prmt \"project\" 'd-prj)#%(oc/prmt \"issue/pr\" 'd-issue) %?%(oc/inc \"feature content\" \" [/]\n- [ ] Implementation\n- [ ] Tests\n- [ ] Docs\")")
         ("j" "Journal entry"
          entry (file+datetree+prompt (expand-file-name org-journal-file org-root-directory))
-         "* %?\n%U\%i\n%a" :empty-lines 1)
+         "* %?\n%i\nFrom: %a\n%U" :empty-lines 1)
         ;; other entries
         ))
 
@@ -1978,12 +1978,6 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
 ;; Load it
 (load-provided-configuration user-emacs-provided-directory)
 
-(defun tangle-if-config ()
-  "If the current buffer is a config '*.org' the code-blocks are
-    tangled, and the tangled file is compiled."
-  (when (member (file-name-nondirectory buffer-file-name) '("emacs.org" "provided/go-config.org"))
-    (tangle-config buffer-file-name)))
-
 (defun tangle-config-sync (file-name)
   (interactive)
 
@@ -1999,34 +1993,6 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
         (byte-compile-dest-file dest)
    (with-current-buffer byte-compile-log-buffer
         (buffer-string)))))
-
-(defun tangle-config-async (file-name)
-  (async-start
-   (lambda ()
-     ;; make async emacs aware of packages (for byte-compilation)
-     (package-initialize)
-     (setq package-enable-at-startup nil)
-     (require 'org)
-
-     ;; Avoid running hooks when tangling.
-     (let* ((prog-mode-hook nil)
-            (src  file-name)
-            (dest (format "%s.el" (file-name-sans-extension file-name))))
-    (message (format "%s -> %s" src dest))
-    (require 'ob-tangle)
-    (org-babel-tangle-file src dest)
-    (if (byte-compile-file dest)
-           (byte-compile-dest-file dest)
-         (with-current-buffer byte-compile-log-buffer
-           (buffer-string))))
-     )))
-
-(defun tangle-config (file-name)
-  "Tangle init.org asynchronously."
-
-  (interactive)
-  (message (format "Tangling %s" file-name))
-  (tangle-config-async file-name))
 
 (defun tangle-emacs-config ()
   (interactive)
