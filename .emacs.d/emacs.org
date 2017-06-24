@@ -1792,7 +1792,7 @@ It looks kinda like that (click to open the real one) :
               "* TODO gh:docker/%(oc/prmt \"project\" 'd-prj)#%(oc/prmt \"issue/pr\" 'd-issue) %?%(oc/inc \"feature content\" \" [/]\n- [ ] Implementation\n- [ ] Tests\n- [ ] Docs\")")
              ("j" "Journal entry"
               entry (file+datetree+prompt (expand-file-name org-journal-file org-root-directory))
-              "* %?\n%U\%i\n%a" :empty-lines 1)
+              "* %?\n%i\nFrom: %a\n%U" :empty-lines 1)
              ;; other entries
              ))
    #+END_SRC
@@ -2463,20 +2463,6 @@ It looks kinda like that (click to open the real one) :
          (find-file (org-expand "ent.org"))
          (goto-char (point-min))
          (re-search-forward "^\\*+ +videos" nil t)))
-   #+END_SRC
-
-** Integrations
-
-   Let's sync some stuff with google calendar. Set to no-tangle for
-   now as it's not compatible with org 9.
-
-   #+BEGIN_SRC emacs-lisp :tangle no
-     (use-package org-gcal
-       :ensure t
-       :config
-       (setq org-gcal-client-id "1036024858303-u8c65p4h8ofgq4dl0nov6df5f3l5gblo.apps.googleusercontent.com"
-             org-gcal-client-secret "2gCU6NrqpHEi23FyXQB4EdWB"
-             org-gcal-file-alist '(("vinc.demeester@gmail.com" .  "~/desktop/org/todos/gcal.org"))))
    #+END_SRC
 
 ** Some bindings
