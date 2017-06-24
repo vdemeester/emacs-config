@@ -23,6 +23,7 @@
  org-archive-file-pattern "/%s_archive::"
  org-inbox-file "inbox.org"
  org-main-file "personal.org"
+ org-docker-file "docker.org"
  org-journal-file "journal.org"
  org-stackoverflow-file "stack.org"
  org-web-article-file "ent.org"
@@ -48,8 +49,8 @@
 
 (setq
  ;; Orgmode related
- org-todos-directory (expand-file-name org-todos-directory-name org-root-directory)
- org-notes-directory (expand-file-name org-notes-directory-name org-root-directory)
+ org-todos-directory org-root-directory
+ org-notes-directory org-root-directory
  org-sites-directory (expand-file-name org-sites-directory-name org-root-directory)
  org-archive-directory (expand-file-name org-archive-directory-name org-root-directory)
  ;; Github related
@@ -520,7 +521,7 @@
   (defun custom-persp/magit-docker ()
     (interactive)
     (custom-persp "magit-docker"
-      	(magit-status (substitute-env-in-file-name "$HOME/go/src/github.com/docker/docker"))))
+        (magit-status (substitute-env-in-file-name "$HOME/go/src/github.com/docker/docker"))))
   (defun custom-persp/magit-docker-pipeline ()
     (interactive)
     (custom-persp "magit-pipeline"
@@ -564,9 +565,9 @@
     (while (not found)
    (progn (setq separators (append (cdr separators) (list (car separators))))
              (when (string= (car separators) powerline-default-separator)
-   	    (progn (setq powerline-default-separator (cadr separators))
-   		   (setq found t)
-   		   (redraw-display)))))))
+            (progn (setq powerline-default-separator (cadr separators))
+                   (setq found t)
+                   (redraw-display)))))))
 
 (use-package highlight-symbol
   :ensure t
@@ -910,11 +911,14 @@ point reaches the beginning or end of the buffer, stop there."
 
 (setq org-capture-templates
    '(;; other entries
-        ("t" "Inbox list item" entry
-         (file+headline (expand-file-name org-main-file org-todos-directory) "Inbox")
+        ("t" "inbox"
+      entry (file+headline (expand-file-name org-main-file org-todos-directory) "Inbox")
+         "* TODO %?\n%i\n%a")
+        ("d" "task"
+      entry (file+headline (expand-file-name org-main-file org-todos-directory) "Tasks")
          "* TODO %?\nSCHEDULED: %(org-insert-time-stamp (org-read-date nil t \"+0d\"))\n")
-        ("d" "Docker task" entry
-         (file+headline (expand-file-name org-main-file org-todos-directory) "Tasks")
+        ("d" "docker task"
+      entry (file+headline (expand-file-name org-docker-file org-todos-directory) "Tasks")
          "* TODO gh:docker/%(oc/prmt \"project\" 'd-prj)#%(oc/prmt \"issue/pr\" 'd-issue) %?%(oc/inc \"feature content\" \" [/]\n- [ ] Implementation\n- [ ] Tests\n- [ ] Docs\")")
         ("j" "Journal entry"
          entry (file+datetree+prompt (expand-file-name org-journal-file org-root-directory))
@@ -1081,8 +1085,8 @@ This can be 0 for immediate, or a floating point value.")
     (while (re-search-forward "\* \\(DONE\\|CANCELED\\) " nil t)
    (if (save-restriction
             (save-excursion
-      	(org-narrow-to-subtree)
-      	(search-forward ":LOGBOOK:" nil t)))
+        (org-narrow-to-subtree)
+        (search-forward ":LOGBOOK:" nil t)))
           (forward-line)
         (org-archive-subtree)
         (goto-char (line-beginning-position))))))
@@ -1093,48 +1097,41 @@ This can be 0 for immediate, or a floating point value.")
 
 ;; Wish I could use taggroup but it doesn't seem to work..
 (setq org-tag-alist '(
-                      ("important" . ?i)
-                      ("urgent" . ?u)
-                      ("ongoing" . ?o)         ;; ongoing "project", use to filter big project that are on the go
-                      ("next" . ?n)            ;; next "project"/"task", use to filter next things to do
-                      ("@home" . ?h)           ;; needs to be done at home
-                      ("@work" . ?w)           ;; needs to be done at work
-                      ("@client" . ?c)         ;; needs to be done at a client place (consulting..)
-                      ("dev" . ?e)             ;; this is a development task
-                      ("infra" . ?a)           ;; this is a sysadmin/infra task
-                      ("document" . ?d)        ;; needs to produce a document (article, post, ..)
-                      ("download" . ?D)        ;; needs to download something
-                      ("media" . ?m)           ;; this is a media (something to watch, listen, record, ..)
-                      ("mail" . ?M)            ;; mail-related (to write & send or to read)
-                      ("triage" . ?t)          ;; need "triage", tag it to easily find them
-                      ("task" . ?a)            ;; a simple task (no project), the name is kinda misleading
-                      ;; docker tags
-                      ("docker")
-                      ("compose")
-                      ("libcompose")
-                      ("distribution")
-                      ("docs")
-                      ("rancher")
-                      ;; sites tags
-                      ("sites")
-                      ("vdf")
-                      ("znk")
-                      ;; configs tags
-                      ("configs")
-                      ("emacs")
-                      ("i3")
-                      ("shell")
-                      ;; services
-                      ("services")
-                      ;; zenika
-                      ("znk")
-                      ("formation")
-                      ("event")
-                      ("tribu")
-                      ("devops")
-                      ("craftmanship")
-                      ("client")
-                      ))
+   		   ("important" . ?i)
+   		   ("urgent" . ?u)
+   		   ("ongoing" . ?o)         ;; ongoing "project", use to filter big project that are on the go
+   		   ("next" . ?n)            ;; next "project"/"task", use to filter next things to do
+   		   ("@home" . ?h)           ;; needs to be done at home
+   		   ("@work" . ?w)           ;; needs to be done at work
+   		   ("dev" . ?e)             ;; this is a development task
+   		   ("infra" . ?a)           ;; this is a sysadmin/infra task
+   		   ("document" . ?d)        ;; needs to produce a document (article, post, ..)
+   		   ("download" . ?D)        ;; needs to download something
+   		   ("media" . ?m)           ;; this is a media (something to watch, listen, record, ..)
+   		   ("mail" . ?M)            ;; mail-related (to write & send or to read)
+   		   ("triage" . ?t)          ;; need "triage", tag it to easily find them
+   		   ("task" . ?a)            ;; a simple task (no project), the name is kinda misleading
+   		   ;; docker-related tags
+   		   ("docker")
+   		   ("pipeline")
+   		   ("compose")
+   		   ("distribution")
+   		   ("swarmkit")
+   		   ("infrakit")
+   		   ("moby")
+   		   ("linuxkit")
+   		   ("docs")
+   		   ;; sites tags
+   		   ("sites")
+   		   ("vdf")
+   		   ;; configs tags
+   		   ("configs")
+   		   ("emacs")
+   		   ("i3")
+   		   ("shell")
+   		   ;; services
+   		   ("services")
+   		   ))
 
 ;; Sometimes I change tasks I'm clocking quickly
 ;; this removes clocked tasks with 0:00 duration
@@ -1286,9 +1283,6 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
 ;; Define some variables to write less :D
 (setq sbr-base-directory (expand-file-name "sbr" org-sites-directory)
       sbr-publishing-directory (expand-file-name "sbr" org-publish-folder)
-      znk-base-directory (expand-file-name "zenika" org-sites-directory)
-      znk-preview-publishing-directory (expand-file-name "zenika" org-publish-folder)
-      znk-publishing-directory (expand-file-name "zenika-export" org-publish-folder)
       vdf-base-directory (expand-file-name "vdf" org-sites-directory)
       vdf-site-directory (expand-file-name "blog" sites-folder)
       vdf-publishing-directory (expand-file-name "posts" (expand-file-name "content" vdf-site-directory))
@@ -1355,47 +1349,6 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
          :publishing-function org-publish-attachment
          )
         ("vdf" :components ("vdf-notes" "vdf-static-css" "vdf-static-assets"))
-        ("znk-notes"
-         :base-directory ,znk-base-directory
-         :base-extension "org"
-         :publishing-directory ,znk-publishing-directory
-         :exclude "FIXME"
-         :section-numbers nil
-         :with-toc nil
-         :with-drawers t
-         :recursive t
-         :htmlized-source t
-         :publishing-function org-html-publish-to-html
-         :headline-levels 4
-         :body-only t)
-        ("znk-notes-previews"
-         :base-directory ,znk-base-directory
-         :base-extension "org"
-         :publishing-directory ,znk-preview-publishing-directory
-         :makeindex t
-         :exclude "FIXME"
-         :recursive t
-         :htmlized-source t
-         :publishing-function org-html-publish-to-html
-         :headline-levels 4
-         :auto-preamble t
-         :html-head "<link rel=\"stylesheet\" type=\"text/css\" href=\"style/style.css\" />"
-         :html-preamble "<div id=\"nav\">
-<ul>
-<li><a href=\"/\" class=\"home\">Home</a></li>
-</ul>
-</div>"
-         :html-postamble "<div id=\"footer\">
-%a %C %c
-</div>")
-        ("znk-static"
-         :base-directory ,znk-base-directory
-         :base-extension "css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg"
-         :publishing-directory ,znk-publishing-directory
-         :recursive t
-         :publishing-function org-publish-attachment
-         )
-        ("znk" :components ("znk-notes" "znk-notes-previews" "znk-static"))
         ))
 
 (use-package ox-ioslide
