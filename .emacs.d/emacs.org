@@ -662,15 +662,21 @@ It looks kinda like that (click to open the real one) :
 
 *** Fonts
 
-    I tend to install Ubuntu font family on all my computers, I like
-    it :). But I don't want emacs to fail loading because they aren't
-    there yet, so let's define =Ubuntu Mono= as fonts, only if they
-    are available.
+    Depending on the machine used I might not have the correct font
+    installed or another one renders better. I am a long-time fan of
+    =Ubuntu Mono= fonts but some fonts are starting to interesting me,
+    mainly =[[https://github.com/tonsky/FiraCode][Fira]]= and =[[https://github.com/i-tu/Hasklig][Hasklig]]= which do symbol ligatures.
 
     #+BEGIN_SRC emacs-lisp
-      (set-default-font "Ubuntu Mono-12")
-      (set-frame-font "Ubuntu Mono-12")
-      (set-face-attribute 'default nil :family "Ubuntu Mono" :height 110)
+      (defvar vde/fixed-font-family
+        (cond ((x-list-fonts "Ubuntu Mono") "Ubuntu Mono-12")
+              ((x-list-fonts "Hasklig") "Hasklig-12")
+              ((x-list-fonts "Consolas") "Consolas-12"))
+        "Fixed width font based on what is install")
+
+      (set-frame-font vde/fixed-font-family)
+      (set-face-attribute 'default nil :font vde/fixed-font-family :height 110)
+      (set-face-font 'default vde/fixed-font-family)
     #+END_SRC
 
     This will set Symbola as fallback-font for Emojis when it is

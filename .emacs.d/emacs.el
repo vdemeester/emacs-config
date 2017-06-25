@@ -242,9 +242,15 @@
       recentf-auto-cleanup 'never)
 (recentf-mode)
 
-(set-default-font "Ubuntu Mono-12")
-(set-frame-font "Ubuntu Mono-12")
-(set-face-attribute 'default nil :family "Ubuntu Mono" :height 110)
+(defvar vde/fixed-font-family
+  (cond ((x-list-fonts "Ubuntu Mono") "Ubuntu Mono-12")
+        ((x-list-fonts "Hasklig") "Hasklig-12")
+        ((x-list-fonts "Consolas") "Consolas-12"))
+  "Fixed width font based on what is install")
+
+(set-frame-font vde/fixed-font-family)
+(set-face-attribute 'default nil :font vde/fixed-font-family :height 110)
+(set-face-font 'default vde/fixed-font-family)
 
 ;;  (set-fontset-font t 'unicode "Symbola" nil 'prepend)
 
@@ -274,7 +280,6 @@
                          (mode . markdown-mode)
                          (mode . nix-mode)
                          ))
-      ("docker" (name . "*docker*"))
          ("emacs") (or
                     (name . "^\*scratch\*$")
                     (name . "^\*Messages\*$"))
