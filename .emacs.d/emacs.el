@@ -293,8 +293,25 @@
 
 (setq ibuffer-show-empty-filter-groups nil)
 
-(global-set-key (kbd "C-+") 'text-scale-increase)
-(global-set-key (kbd "C--") 'text-scale-decrease)
+(defun vde/text-scale-frame-change (fn)
+  (let* ((current-font-name (frame-parameter nil 'font))
+         (decomposed-font-name (x-decompose-font-name current-font-name))
+         (font-size (string-to-int (aref decomposed-font-name 5))))
+    (aset decomposed-font-name 5 (int-to-string (funcall fn font-size)))
+    (set-frame-font (x-compose-font-name decomposed-font-name))))
+
+(defun vde/text-scale-frame-increase ()
+  (interactive)
+  (vde/text-scale-frame-change '1+))
+
+(defun vde/text-scale-frame-decrease ()
+  (interactive)
+  (vde/text-scale-frame-change '1-))
+
+(global-set-key (kbd "C-M-+") 'text-scale-increase)
+(global-set-key (kbd "C-M--") 'text-scale-decrease)
+(global-set-key (kbd "C-+") 'vde/text-scale-frame-increase)
+(global-set-key (kbd "C--") 'vde/text-scale-frame-decrease)
 
 (use-package flyspell
   :ensure t

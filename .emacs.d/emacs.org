@@ -722,7 +722,7 @@ It looks kinda like that (click to open the real one) :
 
    #+BEGIN_SRC emacs-lisp
      (setq ibuffer-saved-filter-groups
-   	'(("default"
+        '(("default"
               ("org" (mode . org-mode))
               ("magit" (name . "\*magit"))
               ("dired" (mode . dired-mode))
@@ -755,9 +755,29 @@ It looks kinda like that (click to open the real one) :
    presenting something with emacs ; so that everybody can see
    what's written.
 
+   According to [[http://emacsninja.com/posts/making-emacs-more-presentable.html][this article]], we can update the =text-scale-XYZ=
+   functions to work on a frame instead of just a buffer:
+
    #+BEGIN_SRC emacs-lisp
-     (global-set-key (kbd "C-+") 'text-scale-increase)
-     (global-set-key (kbd "C--") 'text-scale-decrease)
+     (defun vde/text-scale-frame-change (fn)
+       (let* ((current-font-name (frame-parameter nil 'font))
+              (decomposed-font-name (x-decompose-font-name current-font-name))
+              (font-size (string-to-int (aref decomposed-font-name 5))))
+         (aset decomposed-font-name 5 (int-to-string (funcall fn font-size)))
+         (set-frame-font (x-compose-font-name decomposed-font-name))))
+
+     (defun vde/text-scale-frame-increase ()
+       (interactive)
+       (vde/text-scale-frame-change '1+))
+
+     (defun vde/text-scale-frame-decrease ()
+       (interactive)
+       (vde/text-scale-frame-change '1-))
+
+     (global-set-key (kbd "C-M-+") 'text-scale-increase)
+     (global-set-key (kbd "C-M--") 'text-scale-decrease)
+     (global-set-key (kbd "C-+") 'vde/text-scale-frame-increase)
+     (global-set-key (kbd "C--") 'vde/text-scale-frame-decrease)
    #+END_SRC
 
 ** Flyspell
