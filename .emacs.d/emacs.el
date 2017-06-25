@@ -260,6 +260,34 @@
 
 (defalias 'list-buffers 'ibuffer) ; make ibuffer default
 
+(setq ibuffer-saved-filter-groups
+   '(("default"
+         ("org" (mode . org-mode))
+         ("magit" (name . "\*magit"))
+         ("dired" (mode . dired-mode))
+         ("shell" (or (mode . eshell-mode) (mode . shell-mode)))
+         ("programming" (or
+                         (mode . go-mode)
+                         (mode . python-mode)
+                         (mode . makefile-mode)
+                         (mode . makefile-gmake-mode)
+                         (mode . markdown-mode)
+                         (mode . nix-mode)
+                         ))
+      ("docker" (name . "*docker*"))
+         ("emacs") (or
+                    (name . "^\*scratch\*$")
+                    (name . "^\*Messages\*$"))
+         ("others"))
+        ))
+
+(add-hook 'ibuffer-mode-hook
+          (lambda ()
+            (ibuffer-auto-mode 1)
+            (ibuffer-switch-to-saved-filter-groups "default")))
+
+(setq ibuffer-show-empty-filter-groups nil)
+
 (global-set-key (kbd "C-+") 'text-scale-increase)
 (global-set-key (kbd "C--") 'text-scale-decrease)
 
@@ -1097,41 +1125,41 @@ This can be 0 for immediate, or a floating point value.")
 
 ;; Wish I could use taggroup but it doesn't seem to work..
 (setq org-tag-alist '(
-   		   ("important" . ?i)
-   		   ("urgent" . ?u)
-   		   ("ongoing" . ?o)         ;; ongoing "project", use to filter big project that are on the go
-   		   ("next" . ?n)            ;; next "project"/"task", use to filter next things to do
-   		   ("@home" . ?h)           ;; needs to be done at home
-   		   ("@work" . ?w)           ;; needs to be done at work
-   		   ("dev" . ?e)             ;; this is a development task
-   		   ("infra" . ?a)           ;; this is a sysadmin/infra task
-   		   ("document" . ?d)        ;; needs to produce a document (article, post, ..)
-   		   ("download" . ?D)        ;; needs to download something
-   		   ("media" . ?m)           ;; this is a media (something to watch, listen, record, ..)
-   		   ("mail" . ?M)            ;; mail-related (to write & send or to read)
-   		   ("triage" . ?t)          ;; need "triage", tag it to easily find them
-   		   ("task" . ?a)            ;; a simple task (no project), the name is kinda misleading
-   		   ;; docker-related tags
-   		   ("docker")
-   		   ("pipeline")
-   		   ("compose")
-   		   ("distribution")
-   		   ("swarmkit")
-   		   ("infrakit")
-   		   ("moby")
-   		   ("linuxkit")
-   		   ("docs")
-   		   ;; sites tags
-   		   ("sites")
-   		   ("vdf")
-   		   ;; configs tags
-   		   ("configs")
-   		   ("emacs")
-   		   ("i3")
-   		   ("shell")
-   		   ;; services
-   		   ("services")
-   		   ))
+                   ("important" . ?i)
+                   ("urgent" . ?u)
+                   ("ongoing" . ?o)         ;; ongoing "project", use to filter big project that are on the go
+                   ("next" . ?n)            ;; next "project"/"task", use to filter next things to do
+                   ("@home" . ?h)           ;; needs to be done at home
+                   ("@work" . ?w)           ;; needs to be done at work
+                   ("dev" . ?e)             ;; this is a development task
+                   ("infra" . ?a)           ;; this is a sysadmin/infra task
+                   ("document" . ?d)        ;; needs to produce a document (article, post, ..)
+                   ("download" . ?D)        ;; needs to download something
+                   ("media" . ?m)           ;; this is a media (something to watch, listen, record, ..)
+                   ("mail" . ?M)            ;; mail-related (to write & send or to read)
+                   ("triage" . ?t)          ;; need "triage", tag it to easily find them
+                   ("task" . ?a)            ;; a simple task (no project), the name is kinda misleading
+                   ;; docker-related tags
+                   ("docker")
+                   ("pipeline")
+                   ("compose")
+                   ("distribution")
+                   ("swarmkit")
+                   ("infrakit")
+                   ("moby")
+                   ("linuxkit")
+                   ("docs")
+                   ;; sites tags
+                   ("sites")
+                   ("vdf")
+                   ;; configs tags
+                   ("configs")
+                   ("emacs")
+                   ("i3")
+                   ("shell")
+                   ;; services
+                   ("services")
+                   ))
 
 ;; Sometimes I change tasks I'm clocking quickly
 ;; this removes clocked tasks with 0:00 duration

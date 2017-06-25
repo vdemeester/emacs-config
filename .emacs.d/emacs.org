@@ -711,6 +711,38 @@ It looks kinda like that (click to open the real one) :
      (defalias 'list-buffers 'ibuffer) ; make ibuffer default
    #+END_SRC
 
+   And let's also configure it a little bit. Main inspiration comes
+   from [[http://martinowen.net/blog/2010/02/03/tips-for-emacs-ibuffer.html]["Tips for using Emacs Ibuffer"]] by [[http://martinowen.net/][martinowen]].
+
+   #+BEGIN_SRC emacs-lisp
+     (setq ibuffer-saved-filter-groups
+   	'(("default"
+              ("org" (mode . org-mode))
+              ("magit" (name . "\*magit"))
+              ("dired" (mode . dired-mode))
+              ("shell" (or (mode . eshell-mode) (mode . shell-mode)))
+              ("programming" (or
+                              (mode . go-mode)
+                              (mode . python-mode)
+                              (mode . makefile-mode)
+                              (mode . makefile-gmake-mode)
+                              (mode . markdown-mode)
+                              (mode . nix-mode)
+                              ))
+              ("emacs") (or
+                         (name . "^\*scratch\*$")
+                         (name . "^\*Messages\*$"))
+              ("others"))
+             ))
+
+     (add-hook 'ibuffer-mode-hook
+               (lambda ()
+                 (ibuffer-auto-mode 1)
+                 (ibuffer-switch-to-saved-filter-groups "default")))
+
+     (setq ibuffer-show-empty-filter-groups nil)
+   #+END_SRC
+
 ** Zoom(ing)
 
    Being able to zoom in and out can be cool, especially when
@@ -1784,15 +1816,15 @@ It looks kinda like that (click to open the real one) :
 
    #+BEGIN_SRC emacs-lisp
      (setq org-capture-templates
-   	'(;; other entries
+        '(;; other entries
              ("t" "inbox"
-   	   entry (file+headline (expand-file-name org-main-file org-todos-directory) "Inbox")
+           entry (file+headline (expand-file-name org-main-file org-todos-directory) "Inbox")
               "* TODO %?\n%i\n%a")
              ("d" "task"
-   	   entry (file+headline (expand-file-name org-main-file org-todos-directory) "Tasks")
+           entry (file+headline (expand-file-name org-main-file org-todos-directory) "Tasks")
               "* TODO %?\nSCHEDULED: %(org-insert-time-stamp (org-read-date nil t \"+0d\"))\n")
              ("d" "docker task"
-   	   entry (file+headline (expand-file-name org-docker-file org-todos-directory) "Tasks")
+           entry (file+headline (expand-file-name org-docker-file org-todos-directory) "Tasks")
               "* TODO gh:docker/%(oc/prmt \"project\" 'd-prj)#%(oc/prmt \"issue/pr\" 'd-issue) %?%(oc/inc \"feature content\" \" [/]\n- [ ] Implementation\n- [ ] Tests\n- [ ] Docs\")")
              ("j" "Journal entry"
               entry (file+datetree+prompt (expand-file-name org-journal-file org-root-directory))
@@ -2036,41 +2068,41 @@ It looks kinda like that (click to open the real one) :
    #+BEGIN_SRC emacs-lisp
      ;; Wish I could use taggroup but it doesn't seem to work..
      (setq org-tag-alist '(
-   			("important" . ?i)
-   			("urgent" . ?u)
-   			("ongoing" . ?o)         ;; ongoing "project", use to filter big project that are on the go
-   			("next" . ?n)            ;; next "project"/"task", use to filter next things to do
-   			("@home" . ?h)           ;; needs to be done at home
-   			("@work" . ?w)           ;; needs to be done at work
-   			("dev" . ?e)             ;; this is a development task
-   			("infra" . ?a)           ;; this is a sysadmin/infra task
-   			("document" . ?d)        ;; needs to produce a document (article, post, ..)
-   			("download" . ?D)        ;; needs to download something
-   			("media" . ?m)           ;; this is a media (something to watch, listen, record, ..)
-   			("mail" . ?M)            ;; mail-related (to write & send or to read)
-   			("triage" . ?t)          ;; need "triage", tag it to easily find them
-   			("task" . ?a)            ;; a simple task (no project), the name is kinda misleading
-   			;; docker-related tags
-   			("docker")
-   			("pipeline")
-   			("compose")
-   			("distribution")
-   			("swarmkit")
-   			("infrakit")
-   			("moby")
-   			("linuxkit")
-   			("docs")
-   			;; sites tags
-   			("sites")
-   			("vdf")
-   			;; configs tags
-   			("configs")
-   			("emacs")
-   			("i3")
-   			("shell")
-   			;; services
-   			("services")
-   			))
+                        ("important" . ?i)
+                        ("urgent" . ?u)
+                        ("ongoing" . ?o)         ;; ongoing "project", use to filter big project that are on the go
+                        ("next" . ?n)            ;; next "project"/"task", use to filter next things to do
+                        ("@home" . ?h)           ;; needs to be done at home
+                        ("@work" . ?w)           ;; needs to be done at work
+                        ("dev" . ?e)             ;; this is a development task
+                        ("infra" . ?a)           ;; this is a sysadmin/infra task
+                        ("document" . ?d)        ;; needs to produce a document (article, post, ..)
+                        ("download" . ?D)        ;; needs to download something
+                        ("media" . ?m)           ;; this is a media (something to watch, listen, record, ..)
+                        ("mail" . ?M)            ;; mail-related (to write & send or to read)
+                        ("triage" . ?t)          ;; need "triage", tag it to easily find them
+                        ("task" . ?a)            ;; a simple task (no project), the name is kinda misleading
+                        ;; docker-related tags
+                        ("docker")
+                        ("pipeline")
+                        ("compose")
+                        ("distribution")
+                        ("swarmkit")
+                        ("infrakit")
+                        ("moby")
+                        ("linuxkit")
+                        ("docs")
+                        ;; sites tags
+                        ("sites")
+                        ("vdf")
+                        ;; configs tags
+                        ("configs")
+                        ("emacs")
+                        ("i3")
+                        ("shell")
+                        ;; services
+                        ("services")
+                        ))
    #+END_SRC
 
    Note that =important= and =urgent= helps me prioritize my
