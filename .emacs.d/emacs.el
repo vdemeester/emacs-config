@@ -1,3 +1,65 @@
+(defun curr-dir-git-branch-string (pwd)
+  "Returns current git branch as a string, or the empty string if
+PWD is not in a git repo (or the git command is not found)."
+  (interactive)
+  (when (and (eshell-search-path "git")
+             (locate-dominating-file pwd ".git"))
+    (let ((git-output (shell-command-to-string (concat "cd " pwd " && git branch | grep '\\*' | sed -e 's/^\\* //'"))))
+      (if (> (length git-output) 0)
+          (concat " :" (substring git-output 0 -1))
+        "(no branch)"))))
+
+(defun pwd-replace-home (pwd)
+  "Replace home in PWD with tilde (~) character."
+  (interactive)
+  (let* ((home (expand-file-name (getenv "HOME")))
+         (home-len (length home)))
+    (if (and
+         (>= (length pwd) home-len)
+         (equal home (substring pwd 0 home-len)))
+        (concat "~" (substring pwd home-len))
+   pwd)))
+
+(defun pwd-shorten-dirs (pwd)
+  "Shorten all directory names in PWD except the last two."
+  (let ((p-lst (split-string pwd "/")))
+    (if (> (length p-lst) 2)
+        (concat
+         (mapconcat (lambda (elm) (if (zerop (length elm)) ""
+                                    (substring elm 0 1)))
+                    (butlast p-lst 2)
+                    "/")
+         "/"
+         (mapconcat (lambda (elm) elm)
+                    (last p-lst 2)
+                    "/"))
+   pwd)))  ;; Otherwise, we just return the PWD
+
+(defun split-directory-prompt (directory)
+  (if (string-match-p ".*/.*" directory)
+   (list (file-name-directory directory) (file-name-base directory))
+    (list "" directory)))
+
+(setq eshell-highlight-prompt nil)
+
+(require 'em-smart)
+(setq eshell-where-to-jump 'begin)
+(setq eshell-review-quick-commands nil)
+(setq eshell-smart-space-goes-to-end t)
+
+(defun ha/eshell-quit-or-delete-char (arg)
+  (interactive "p")
+  (if (and (eolp) (looking-back eshell-prompt-regexp))
+      (progn
+        (eshell-life-is-too-much) ; Why not? (eshell/exit)
+        (ignore-errors
+          (delete-window)))
+    (delete-forward-char arg)))
+
+(add-hook 'eshell-mode-hook (lambda ()
+   (define-key eshell-mode-map (kbd "C-d")
+                               'ha/eshell-quit-or-delete-char)))
+
 (defun my/edit-emacs-configuration ()
   (interactive)
   (find-file "~/.emacs.d/emacs.org"))
@@ -1773,92 +1835,6 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
     :config
     (company-quickhelp-mode)))
 
-(use-package eshell
-  :commands (eshell)
-  :bind* (("M-m SPC e" . sk/eshell-vertical)
-          ("M-m SPC E" . sk/eshell-horizontal))
-  :init
-  (setq eshell-glob-case-insensitive t
-        eshell-scroll-to-bottom-on-input 'this
-        eshell-buffer-shorthand t
-        eshell-history-size 1024
-        eshell-cmpl-ignore-case t
-        eshell-prompt-regexp " λ "
-        eshell-aliases-file (concat user-emacs-directory ".eshell-aliases")
-        eshell-last-dir-ring-size 512)
-  (add-hook 'shell-mode-hook 'goto-address-mode))
-
-;; Vertical split eshell
-(defun sk/eshell-vertical ()
-  "opens up a new shell in the directory associated with the current buffer's file."
-  (interactive)
-  (let* ((parent (if (buffer-file-name)
-                     (file-name-directory (buffer-file-name))
-                   default-directory))
-         (name (car (last (split-string parent "/" t)))))
-    (split-window-right)
-    (other-window 1)
-    (eshell "new")
-    (rename-buffer (concat "*eshell: " name "*"))
-    (eshell-send-input)))
-
-;; Horizontal split eshell
-(defun sk/eshell-horizontal ()
-  "opens up a new shell in the directory associated with the current buffer's file."
-  (interactive)
-  (let* ((parent (if (buffer-file-name)
-                     (file-name-directory (buffer-file-name))
-                   default-directory))
-         (name (car (last (split-string parent "/" t)))))
-    (split-window-below)
-    (other-window 1)
-    (eshell "new")
-    (rename-buffer (concat "*eshell: " name "*"))
-    (eshell-send-input)))
-
-(add-hook 'shell-mode-hook 'wcy-shell-mode-hook-func)
-(defun wcy-shell-mode-hook-func  ()
-  (set-process-sentinel (get-buffer-process (current-buffer))
-                        #'shell-mode-kill-buffer-on-exit)
-  )
-(defun shell-mode-kill-buffer-on-exit (process state)
-  (message "%s" state)
-  (if (or
-       (string-match "exited abnormally with code.*" state)
-       (string-match "finished" state))
-      (kill-buffer (current-buffer))))
-
-;;
-(eval-after-load "em-ls"
-  '(progn
-     (defun ted-eshell-ls-find-file-at-point (point)
-       "RET on Eshell's `ls' output to open files."
-       (interactive "d")
-       (find-file (buffer-substring-no-properties
-                   (previous-single-property-change point 'help-echo)
-                   (next-single-property-change point 'help-echo))))
-
-     (defun pat-eshell-ls-find-file-at-mouse-click (event)
-       "Middle click on Eshell's `ls' output to open files.
- From Patrick Anderson via the wiki."
-       (interactive "e")
-       (ted-eshell-ls-find-file-at-point (posn-point (event-end event))))
-
-     (let ((map (make-sparse-keymap)))
-       (define-key map (kbd "RET")      'ted-eshell-ls-find-file-at-point)
-       (define-key map (kbd "<return>") 'ted-eshell-ls-find-file-at-point)
-       (define-key map (kbd "<mouse-2>") 'pat-eshell-ls-find-file-at-mouse-click)
-       (defvar ted-eshell-ls-keymap map))
-
-     (defadvice eshell-ls-decorated-name (after ted-electrify-ls activate)
-       "Eshell's `ls' now lets you click or RET on file names to open them."
-       (add-text-properties 0 (length ad-return-value)
-                            (list 'help-echo "RET, mouse-2: visit this file"
-                                  'mouse-face 'highlight
-                                  'keymap ted-eshell-ls-keymap)
-                            ad-return-value)
-       ad-return-value)))
-
 (setq compilation-scroll-output t)
 ;; I'm not scared of saving everything.
 (setq compilation-ask-about-save nil)
@@ -1963,6 +1939,127 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
 
 (use-package direnv
   :ensure t)
+
+(setenv "PAGER" "cat")
+
+(use-package eshell
+  :commands (eshell)
+  :bind* (("M-m SPC e" . vde/eshell-here)
+       ("C-d" . ha/eshell-quit-or-delete-char))
+  :init
+  (setq eshell-banner-message ""
+        eshell-glob-case-insensitive t
+        eshell-error-if-no-glob t
+        eshell-scroll-to-bottom-on-input 'all
+        eshell-buffer-shorthand t
+        eshell-save-history-on-exit t
+        eshell-history-size 1024
+        eshell-hist-ignoredups t
+        eshell-cmpl-ignore-case t
+        eshell-prompt-regexp " λ "
+        eshell-aliases-file (concat user-emacs-directory ".eshell-aliases")
+        eshell-last-dir-ring-size 512)
+  (add-hook 'shell-mode-hook 'goto-address-mode))
+
+(setq eshell-prompt-function
+   (lambda ()
+        (let* ((directory (split-directory-prompt
+                           (pwd-shorten-dirs
+                            (pwd-replace-home (eshell/pwd)))))
+            (parent (car directory))
+            (name (cadr directory))
+            (branch (or (curr-dir-git-branch-string (eshell/pwd)) ""))
+            (for-parent `(:foreground "#8888FF"))
+            (for-dir `(:foreground "#aaaaFF" :weight bold))
+            (for-git `(:foreground "#FFFFFF" :background "#58D68D" :weight bold)))
+          (concat
+           (propertize parent 'face for-parent)
+           (propertize name 'face for-dir)
+           (propertize " " 'face `())
+           (propertize branch 'face for-git)
+           (propertize " " 'face for-git)
+           (propertize "\n" 'face `())
+           (propertize (if (= (user-uid) 0) " #" " λ") 'face `(:weight ultra-bold))
+           (propertize " " 'face `(:weight bold))))))
+
+;; 👻
+
+(add-hook 'eshell-mode-hook
+          (lambda ()
+            (eshell/alias "emacs" "find-file")
+            (eshell/alias "e" "find-file")
+            (eshell/alias "ee" "find-file-other-window")
+            (eshell/alias "gs" "magit-status")
+            (eshell/alias "gd" "magit-diff-unstaged")
+            (eshell/alias "gds" "magit-diff-staged")
+            (eshell/alias "ll" (concat ls " -AlohG --color=always"))))
+
+(defun eshell/d (&rest args)
+  (dired (pop args) "."))
+
+(defun eshell/gst (&rest args)
+  (magit-status (pop args) nil)
+  (eshell/echo)) ;; The echo command suppresses output
+
+(defun vde/eshell-here ()
+  "Opens up a new shell in the directory associated with
+the current buffer's file. The eshell is renamed to match
+that directory."
+  (interactive)
+  (let* ((parent (if (buffer-file-name)
+                     (file-name-directory (buffer-file-name))
+                   default-directory))
+         (height (/ (window-total-height) 3))
+         (name (car (last (split-string parent "/" t)))))
+    (split-window-vertically (- height))
+    (other-window 1)
+    (eshell "new")
+    (rename-buffer (concat "*eshell: " name "*"))
+    (insert (concat "ls"))
+    (eshell-send-input)))
+
+(add-hook 'shell-mode-hook 'wcy-shell-mode-hook-func)
+(defun wcy-shell-mode-hook-func  ()
+  (set-process-sentinel (get-buffer-process (current-buffer))
+                        #'shell-mode-kill-buffer-on-exit)
+  )
+(defun shell-mode-kill-buffer-on-exit (process state)
+  (message "%s" state)
+  (if (or
+       (string-match "exited abnormally with code.*" state)
+       (string-match "finished" state))
+      (kill-buffer (current-buffer))))
+
+;;
+(eval-after-load "em-ls"
+  '(progn
+     (defun ted-eshell-ls-find-file-at-point (point)
+     "RET on Eshell's `ls' output to open files."
+     (interactive "d")
+     (find-file (buffer-substring-no-properties
+                   (previous-single-property-change point 'help-echo)
+                   (next-single-property-change point 'help-echo))))
+
+     (defun pat-eshell-ls-find-file-at-mouse-click (event)
+     "Middle click on Eshell's `ls' output to open files.
+ From Patrick Anderson via the wiki."
+     (interactive "e")
+     (ted-eshell-ls-find-file-at-point (posn-point (event-end event))))
+
+     (let ((map (make-sparse-keymap)))
+     (define-key map (kbd "RET")      'ted-eshell-ls-find-file-at-point)
+     (define-key map (kbd "<return>") 'ted-eshell-ls-find-file-at-point)
+     (define-key map (kbd "<mouse-2>") 'pat-eshell-ls-find-file-at-mouse-click)
+     (defvar ted-eshell-ls-keymap map))
+
+     (defadvice eshell-ls-decorated-name (after ted-electrify-ls activate)
+     "Eshell's `ls' now lets you click or RET on file names to open them."
+     (add-text-properties 0 (length ad-return-value)
+                            (list 'help-echo "RET, mouse-2: visit this file"
+                                  'mouse-face 'highlight
+                                  'keymap ted-eshell-ls-keymap)
+                            ad-return-value)
+     ad-return-value)))
 
 ;; The folder is by default $HOME/.emacs.d/provided
 (setq user-emacs-provided-directory (concat user-emacs-directory "provided/"))

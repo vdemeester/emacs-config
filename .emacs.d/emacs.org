@@ -1,6 +1,7 @@
 #+TITLE: Vincent Demeester's emacs configuration
 #+AUTHOR: Vincent Demeester
 #+EMAIL: vincent [at] demeester [dot] fr
+#+TAGS: emacs
 
 #+BEGIN_SRC
                                                               ___ __
@@ -2886,112 +2887,6 @@ It looks kinda like that (click to open the real one) :
          (company-quickhelp-mode)))
    #+END_SRC
 
-** Eshell
-
-   Eshell is a built-in shell that is written in Lisp. It's pretty good.
-
-   #+BEGIN_SRC emacs-lisp
-     (use-package eshell
-       :commands (eshell)
-       :bind* (("M-m SPC e" . sk/eshell-vertical)
-               ("M-m SPC E" . sk/eshell-horizontal))
-       :init
-       (setq eshell-glob-case-insensitive t
-             eshell-scroll-to-bottom-on-input 'this
-             eshell-buffer-shorthand t
-             eshell-history-size 1024
-             eshell-cmpl-ignore-case t
-             eshell-prompt-regexp " λ "
-             eshell-aliases-file (concat user-emacs-directory ".eshell-aliases")
-             eshell-last-dir-ring-size 512)
-       (add-hook 'shell-mode-hook 'goto-address-mode))
-   #+END_SRC
-
-   Let's also define a couple of functions to open it in a vertical or horizontal split.
-
-   #+BEGIN_SRC emacs-lisp
-     ;; Vertical split eshell
-     (defun sk/eshell-vertical ()
-       "opens up a new shell in the directory associated with the current buffer's file."
-       (interactive)
-       (let* ((parent (if (buffer-file-name)
-                          (file-name-directory (buffer-file-name))
-                        default-directory))
-              (name (car (last (split-string parent "/" t)))))
-         (split-window-right)
-         (other-window 1)
-         (eshell "new")
-         (rename-buffer (concat "*eshell: " name "*"))
-         (eshell-send-input)))
-
-     ;; Horizontal split eshell
-     (defun sk/eshell-horizontal ()
-       "opens up a new shell in the directory associated with the current buffer's file."
-       (interactive)
-       (let* ((parent (if (buffer-file-name)
-                          (file-name-directory (buffer-file-name))
-                        default-directory))
-              (name (car (last (split-string parent "/" t)))))
-         (split-window-below)
-         (other-window 1)
-         (eshell "new")
-         (rename-buffer (concat "*eshell: " name "*"))
-         (eshell-send-input)))
-   #+END_SRC
-
-   let's kill the buffer on exit.
-
-   #+BEGIN_SRC emacs-lisp
-     (add-hook 'shell-mode-hook 'wcy-shell-mode-hook-func)
-     (defun wcy-shell-mode-hook-func  ()
-       (set-process-sentinel (get-buffer-process (current-buffer))
-                             #'shell-mode-kill-buffer-on-exit)
-       )
-     (defun shell-mode-kill-buffer-on-exit (process state)
-       (message "%s" state)
-       (if (or
-            (string-match "exited abnormally with code.*" state)
-            (string-match "finished" state))
-           (kill-buffer (current-buffer))))
-   #+END_SRC
-
-   Stolen from
-   http://www.emacswiki.org/cgi-bin/wiki.pl/EshellEnhancedLS, makes
-   =ls= in eshell /RET/-able.
-
-   #+BEGIN_SRC emacs-lisp
-     ;;
-     (eval-after-load "em-ls"
-       '(progn
-          (defun ted-eshell-ls-find-file-at-point (point)
-            "RET on Eshell's `ls' output to open files."
-            (interactive "d")
-            (find-file (buffer-substring-no-properties
-                        (previous-single-property-change point 'help-echo)
-                        (next-single-property-change point 'help-echo))))
-
-          (defun pat-eshell-ls-find-file-at-mouse-click (event)
-            "Middle click on Eshell's `ls' output to open files.
-      From Patrick Anderson via the wiki."
-            (interactive "e")
-            (ted-eshell-ls-find-file-at-point (posn-point (event-end event))))
-
-          (let ((map (make-sparse-keymap)))
-            (define-key map (kbd "RET")      'ted-eshell-ls-find-file-at-point)
-            (define-key map (kbd "<return>") 'ted-eshell-ls-find-file-at-point)
-            (define-key map (kbd "<mouse-2>") 'pat-eshell-ls-find-file-at-mouse-click)
-            (defvar ted-eshell-ls-keymap map))
-
-          (defadvice eshell-ls-decorated-name (after ted-electrify-ls activate)
-            "Eshell's `ls' now lets you click or RET on file names to open them."
-            (add-text-properties 0 (length ad-return-value)
-                                 (list 'help-echo "RET, mouse-2: visit this file"
-                                       'mouse-face 'highlight
-                                       'keymap ted-eshell-ls-keymap)
-                                 ad-return-value)
-            ad-return-value)))
-   #+END_SRC
-
 
 ** Compilation buffer
 
@@ -3144,7 +3039,6 @@ It looks kinda like that (click to open the real one) :
                   (eldoc-mode 1))
                 )
     #+END_SRC
-
 ** SQL
 
    Emacs is really more than an editor. The SQL mode is quick and cool to
@@ -3234,6 +3128,288 @@ It looks kinda like that (click to open the real one) :
 
     Not automatically enabling it for now as it might be a little bit
     too resource hungry (and might need network).
+* Eshell
+
+  Eshell is a built-in shell that is written in Lisp. It's pretty good
+  but I somehow find not using enough. As a rule of thumb, I want to
+  try tame it and see where I get.
+
+** Configuration
+
+   First let's setup the in-emacs =PAGER=, if any program wants to
+   pause the output through a =PAGER=, let's not..
+
+   #+BEGIN_SRC emacs-lisp
+    (setenv "PAGER" "cat")
+   #+END_SRC
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package eshell
+       :commands (eshell)
+       :bind* (("M-m SPC e" . vde/eshell-here)
+   	    ("C-d" . ha/eshell-quit-or-delete-char))
+       :init
+       (setq eshell-banner-message ""
+             eshell-glob-case-insensitive t
+             eshell-error-if-no-glob t
+             eshell-scroll-to-bottom-on-input 'all
+             eshell-buffer-shorthand t
+             eshell-save-history-on-exit t
+             eshell-history-size 1024
+             eshell-hist-ignoredups t
+             eshell-cmpl-ignore-case t
+             eshell-prompt-regexp " λ "
+             eshell-aliases-file (concat user-emacs-directory ".eshell-aliases")
+             eshell-last-dir-ring-size 512)
+       (add-hook 'shell-mode-hook 'goto-address-mode))
+   #+END_SRC
+
+** Special Prompt
+
+   Just as I like customizing my /shell-of-choice/ =zsh='s prompt, I
+   want to build a better prompt, with =git= branch support and
+   probably more.
+
+   First, we need a function that returns a string with the git branch
+   it it (e.g. ":master")
+
+   #+BEGIN_SRC elisp
+    (defun curr-dir-git-branch-string (pwd)
+      "Returns current git branch as a string, or the empty string if
+    PWD is not in a git repo (or the git command is not found)."
+      (interactive)
+      (when (and (eshell-search-path "git")
+                 (locate-dominating-file pwd ".git"))
+        (let ((git-output (shell-command-to-string (concat "cd " pwd " && git branch | grep '\\*' | sed -e 's/^\\* //'"))))
+          (if (> (length git-output) 0)
+              (concat " :" (substring git-output 0 -1))
+            "(no branch)"))))
+   #+END_SRC
+
+   The function takes the current directory passed in via =pwd= and
+   replaces the =$HOME= part with a tilde. I'm sure this function
+   already exists in the eshell source, but I didn't find it...
+
+   #+BEGIN_SRC elisp
+     (defun pwd-replace-home (pwd)
+       "Replace home in PWD with tilde (~) character."
+       (interactive)
+       (let* ((home (expand-file-name (getenv "HOME")))
+              (home-len (length home)))
+         (if (and
+              (>= (length pwd) home-len)
+              (equal home (substring pwd 0 home-len)))
+             (concat "~" (substring pwd home-len))
+        pwd)))
+   #+END_SRC
+
+   Make the directory name be shorter...by replacing all directory
+   names with just its first names. However, we leave the last two to
+   be the full names. Why yes, I did steal this.
+
+   #+BEGIN_SRC elisp
+     (defun pwd-shorten-dirs (pwd)
+       "Shorten all directory names in PWD except the last two."
+       (let ((p-lst (split-string pwd "/")))
+         (if (> (length p-lst) 2)
+             (concat
+              (mapconcat (lambda (elm) (if (zerop (length elm)) ""
+                                         (substring elm 0 1)))
+                         (butlast p-lst 2)
+                         "/")
+              "/"
+              (mapconcat (lambda (elm) elm)
+                         (last p-lst 2)
+                         "/"))
+        pwd)))  ;; Otherwise, we just return the PWD
+   #+END_SRC
+
+   Break up the directory into a "parent" and a "base":
+
+   #+BEGIN_SRC elisp
+     (defun split-directory-prompt (directory)
+       (if (string-match-p ".*/.*" directory)
+        (list (file-name-directory directory) (file-name-base directory))
+         (list "" directory)))
+   #+END_SRC
+
+   Now tie it all together with a prompt function can color each of the
+   prompts components.
+
+   #+BEGIN_SRC emacs-lisp
+     (setq eshell-prompt-function
+        (lambda ()
+             (let* ((directory (split-directory-prompt
+                                (pwd-shorten-dirs
+                                 (pwd-replace-home (eshell/pwd)))))
+                 (parent (car directory))
+                 (name (cadr directory))
+                 (branch (or (curr-dir-git-branch-string (eshell/pwd)) ""))
+                 (for-parent `(:foreground "#8888FF"))
+                 (for-dir `(:foreground "#aaaaFF" :weight bold))
+                 (for-git `(:foreground "#FFFFFF" :background "#58D68D" :weight bold)))
+               (concat
+                (propertize parent 'face for-parent)
+                (propertize name 'face for-dir)
+                (propertize " " 'face `())
+                (propertize branch 'face for-git)
+                (propertize " " 'face for-git)
+                (propertize "\n" 'face `())
+                (propertize (if (= (user-uid) 0) " #" " λ") 'face `(:weight ultra-bold))
+                (propertize " " 'face `(:weight bold))))))
+
+     ;; 👻
+   #+END_SRC
+
+
+   Turn off the default prompt, otherwise, it won't use ours:
+
+   #+BEGIN_SRC elisp
+     (setq eshell-highlight-prompt nil)
+   #+END_SRC
+
+** Aliases
+
+   Let's define some aliases
+
+   #+BEGIN_SRC emacs-lisp
+    (add-hook 'eshell-mode-hook
+              (lambda ()
+                (eshell/alias "emacs" "find-file")
+                (eshell/alias "e" "find-file")
+                (eshell/alias "ee" "find-file-other-window")
+                (eshell/alias "gs" "magit-status")
+                (eshell/alias "gd" "magit-diff-unstaged")
+                (eshell/alias "gds" "magit-diff-staged")
+                (eshell/alias "ll" (concat ls " -AlohG --color=always"))))
+   #+END_SRC
+
+** Dired
+
+   Pull up dired, current directory if no parameters.
+
+   #+BEGIN_SRC emacs-lisp
+    (defun eshell/d (&rest args)
+      (dired (pop args) "."))
+   #+END_SRC
+
+** Git
+
+   Let's do some magic trick with =git= and =magit=, like opening
+   =magit-status= on the current folder
+
+   #+BEGIN_SRC emacs-lisp
+    (defun eshell/gst (&rest args)
+      (magit-status (pop args) nil)
+      (eshell/echo)) ;; The echo command suppresses output
+   #+END_SRC
+
+** Smarter Shell
+
+  After reading Mickey Petersen's [[http://www.masteringemacs.org/articles/2010/12/13/complete-guide-mastering-eshell/][Mastering EShell]] article, I like the
+  /smart/ approach where the cursor stays on the command (where it can
+  be re-edited). Sure, it takes a little while to get used to...
+
+  #+BEGIN_SRC elisp
+    (require 'em-smart)
+    (setq eshell-where-to-jump 'begin)
+    (setq eshell-review-quick-commands nil)
+    (setq eshell-smart-space-goes-to-end t)
+  #+END_SRC
+
+** Utility functions
+
+   Let's also define a couple of functions to open it in a vertical or horizontal split.
+
+   #+BEGIN_SRC emacs-lisp
+     (defun vde/eshell-here ()
+       "Opens up a new shell in the directory associated with
+     the current buffer's file. The eshell is renamed to match
+     that directory."
+       (interactive)
+       (let* ((parent (if (buffer-file-name)
+                          (file-name-directory (buffer-file-name))
+                        default-directory))
+              (height (/ (window-total-height) 3))
+              (name (car (last (split-string parent "/" t)))))
+         (split-window-vertically (- height))
+         (other-window 1)
+         (eshell "new")
+         (rename-buffer (concat "*eshell: " name "*"))
+         (insert (concat "ls"))
+         (eshell-send-input)))
+   #+END_SRC
+
+   Used to ~C-d~ exiting from a shell? Want it to keep working, but still
+   allow deleting a character? We can have it both (thanks to [[https://github.com/wasamasa/dotemacs/blob/master/init.org#eshell][wasamasa]]):
+
+   #+BEGIN_SRC elisp
+      (defun ha/eshell-quit-or-delete-char (arg)
+        (interactive "p")
+        (if (and (eolp) (looking-back eshell-prompt-regexp))
+            (progn
+              (eshell-life-is-too-much) ; Why not? (eshell/exit)
+              (ignore-errors
+                (delete-window)))
+          (delete-forward-char arg)))
+
+      (add-hook 'eshell-mode-hook (lambda ()
+         (define-key eshell-mode-map (kbd "C-d")
+                                     'ha/eshell-quit-or-delete-char)))
+   #+END_SRC
+
+   Let's kill the buffer on exit.
+
+   #+BEGIN_SRC emacs-lisp
+    (add-hook 'shell-mode-hook 'wcy-shell-mode-hook-func)
+    (defun wcy-shell-mode-hook-func  ()
+      (set-process-sentinel (get-buffer-process (current-buffer))
+                            #'shell-mode-kill-buffer-on-exit)
+      )
+    (defun shell-mode-kill-buffer-on-exit (process state)
+      (message "%s" state)
+      (if (or
+           (string-match "exited abnormally with code.*" state)
+           (string-match "finished" state))
+          (kill-buffer (current-buffer))))
+   #+END_SRC
+
+   Stolen from
+   http://www.emacswiki.org/cgi-bin/wiki.pl/EshellEnhancedLS, makes
+   =ls= in eshell /RET/-able.
+
+   #+BEGIN_SRC emacs-lisp
+    ;;
+    (eval-after-load "em-ls"
+      '(progn
+         (defun ted-eshell-ls-find-file-at-point (point)
+         "RET on Eshell's `ls' output to open files."
+         (interactive "d")
+         (find-file (buffer-substring-no-properties
+                       (previous-single-property-change point 'help-echo)
+                       (next-single-property-change point 'help-echo))))
+
+         (defun pat-eshell-ls-find-file-at-mouse-click (event)
+         "Middle click on Eshell's `ls' output to open files.
+     From Patrick Anderson via the wiki."
+         (interactive "e")
+         (ted-eshell-ls-find-file-at-point (posn-point (event-end event))))
+
+         (let ((map (make-sparse-keymap)))
+         (define-key map (kbd "RET")      'ted-eshell-ls-find-file-at-point)
+         (define-key map (kbd "<return>") 'ted-eshell-ls-find-file-at-point)
+         (define-key map (kbd "<mouse-2>") 'pat-eshell-ls-find-file-at-mouse-click)
+         (defvar ted-eshell-ls-keymap map))
+
+         (defadvice eshell-ls-decorated-name (after ted-electrify-ls activate)
+         "Eshell's `ls' now lets you click or RET on file names to open them."
+         (add-text-properties 0 (length ad-return-value)
+                                (list 'help-echo "RET, mouse-2: visit this file"
+                                      'mouse-face 'highlight
+                                      'keymap ted-eshell-ls-keymap)
+                                ad-return-value)
+         ad-return-value)))
+   #+END_SRC
 
 * Provided configuration
 
@@ -3302,3 +3478,4 @@ It looks kinda like that (click to open the real one) :
       (message (format "Tangling emacs config"))
       (tangle-config-sync (substitute-env-in-file-name "$HOME/src/configs/emacs-config/.emacs.d/emacs.org")))
   #+END_SRC
+
