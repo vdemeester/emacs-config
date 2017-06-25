@@ -543,13 +543,21 @@ It looks kinda like that (click to open the real one) :
    Another really cool package is dired-narrow, that allows to
    dynamically filter a dired folder.
 
-
    #+BEGIN_SRC emacs-lisp
      (use-package dired-narrow
        :ensure t
        :defer t
        :bind (:map dired-mode-map
                    ("/" . dired-narrow)))
+   #+END_SRC
+
+   Finally, I want to be able to sort stuff up. [[https://gitlab.com/xuhdev/dired-quick-sort][dired-quick-sort]] seem
+   to do that in style with hydra.
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package dired-quick-sort
+       :ensure t
+       :init (dired-quick-sort-setup))
    #+END_SRC
 
 ** Diminish minor modes from the mode line

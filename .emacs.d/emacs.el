@@ -202,6 +202,10 @@
   :bind (:map dired-mode-map
               ("/" . dired-narrow)))
 
+(use-package dired-quick-sort
+  :ensure t
+  :init (dired-quick-sort-setup))
+
 (use-package diminish
   :ensure t
   :demand t
