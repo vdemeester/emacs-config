@@ -1148,19 +1148,19 @@ It looks kinda like that (click to open the real one) :
        (defun custom-persp/org ()
          (interactive)
          (custom-persp "org"
-                       (find-file (expand-file-name "todos/personal.org" org-root-directory))))
+                       (find-file (expand-file-name org-main-file org-root-directory))))
        (defun custom-persp/org-docker ()
          (interactive)
          (custom-persp "org-docker"
-                       (find-file (expand-file-name "todos/docker.org" org-root-directory))))
+                       (find-file (expand-file-name "docker.org" org-root-directory))))
        (defun custom-persp/org-docker-pipeline ()
          (interactive)
          (custom-persp "org-pipeline"
-                       (find-file (expand-file-name "todos/docker-pipeline.org" org-root-directory))))
+                       (find-file (expand-file-name "docker-pipeline.org" org-root-directory))))
        (defun custom-persp/org-moby ()
          (interactive)
          (custom-persp "org-moby"
-                       (find-file (expand-file-name "todos/moby.org" org-root-directory))))
+                       (find-file (expand-file-name "moby.org" org-root-directory))))
        (defun custom-persp/docker ()
          (interactive)
          (custom-persp "docker"
