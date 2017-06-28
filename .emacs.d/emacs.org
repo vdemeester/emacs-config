@@ -1057,12 +1057,47 @@ It looks kinda like that (click to open the real one) :
 ** Window management
 *** Ace window
 
+    Ace window is a really cool module from =abo-abo= (yet another one
+    👼) that helps quite a lot navigating between windows. Combined
+    with =hydra=, it does some amazing things.
+
     #+BEGIN_SRC emacs-lisp
       (use-package ace-window
         :ensure t
-        :bind* (("M-m w o" . ace-window)))
-    #+END_SRC
+        :bind* (("M-m w o" . ace-window))
+        :config
+        (set-face-attribute 'aw-leading-char-face nil :foreground "deep sky blue" :weight 'bold :height 3.0)
+        (set-face-attribute 'aw-mode-line-face nil :inherit 'mode-line-buffer-id :foreground "lawn green")
+        (setq aw-keys   '(?a ?s ?d ?f ?j ?k ?l)
+              aw-dispatch-always t
+              aw-dispatch-alist
+              '((?x aw-delete-window     "Ace - Delete Window")
+                (?c aw-swap-window       "Ace - Swap Window")
+                (?n aw-flip-window)
+                (?v aw-split-window-vert "Ace - Split Vert Window")
+                (?h aw-split-window-horz "Ace - Split Horz Window")
+                (?m delete-other-windows "Ace - Maximize Window")
+                (?g delete-other-windows)
+                (?b balance-windows)
+                (?u winner-undo)
+                (?r winner-redo)))
 
+        (when (package-installed-p 'hydra)
+          (defhydra hydra-window-size (:color red)
+    	"Windows size"
+    	("h" shrink-window-horizontally "shrink horizontal")
+    	("j" shrink-window "shrink vertical")
+    	("k" enlarge-window "enlarge vertical")
+    	("l" enlarge-window-horizontally "enlarge horizontal"))
+          (defhydra hydra-window-frame (:color red)
+    	"Frame"
+    	("f" make-frame "new frame")
+    	("x" delete-frame "delete frame"))
+          (add-to-list 'aw-dispatch-alist '(?w hydra-window-size/body) t)
+          (add-to-list 'aw-dispatch-alist '(?o hydra-window-scroll/body) t)
+          (add-to-list 'aw-dispatch-alist '(?\; hydra-window-frame/body) t))
+        (ace-window-display-mode t))
+    #+END_SRC
 
 *** Popwin
 
@@ -3147,7 +3182,7 @@ It looks kinda like that (click to open the real one) :
      (use-package eshell
        :commands (eshell)
        :bind* (("M-m SPC e" . vde/eshell-here)
-   	    ("C-d" . ha/eshell-quit-or-delete-char))
+            ("C-d" . ha/eshell-quit-or-delete-char))
        :init
        (setq eshell-banner-message ""
              eshell-glob-case-insensitive t
@@ -3306,16 +3341,16 @@ It looks kinda like that (click to open the real one) :
 
 ** Smarter Shell
 
-  After reading Mickey Petersen's [[http://www.masteringemacs.org/articles/2010/12/13/complete-guide-mastering-eshell/][Mastering EShell]] article, I like the
-  /smart/ approach where the cursor stays on the command (where it can
-  be re-edited). Sure, it takes a little while to get used to...
+   After reading Mickey Petersen's [[http://www.masteringemacs.org/articles/2010/12/13/complete-guide-mastering-eshell/][Mastering EShell]] article, I like the
+   /smart/ approach where the cursor stays on the command (where it can
+   be re-edited). Sure, it takes a little while to get used to...
 
-  #+BEGIN_SRC elisp
+   #+BEGIN_SRC elisp
     (require 'em-smart)
     (setq eshell-where-to-jump 'begin)
     (setq eshell-review-quick-commands nil)
     (setq eshell-smart-space-goes-to-end t)
-  #+END_SRC
+   #+END_SRC
 
 ** Utility functions
 
@@ -3478,4 +3513,3 @@ It looks kinda like that (click to open the real one) :
       (message (format "Tangling emacs config"))
       (tangle-config-sync (substitute-env-in-file-name "$HOME/src/configs/emacs-config/.emacs.d/emacs.org")))
   #+END_SRC
-
