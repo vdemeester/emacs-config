@@ -684,14 +684,22 @@ PWD is not in a git repo (or the git command is not found)."
                   (magit-status (substitute-env-in-file-name "$HOME/go/src/github.com/linuxkit/linuxkit"))))
   )
 
-;; (use-package apropospriate-theme
-;;   :ensure t
-;;   :config
-;;   (load-theme 'apropospriate-dark t))
-(use-package atom-one-dark-theme
+(use-package doom-themes
   :ensure t
   :config
-  (load-theme 'atom-one-dark t))
+  (setq doom-themes-enable-bolt t)
+  (setq doom-themes-enable-italic t)
+  (load-theme 'doom-one t)
+  (doom-themes-visual-bell-config))
+(use-package solaire-mode
+  :ensure t
+  :config
+  (setq solaire-mode-remap-modeline nil)
+  (add-hook 'after-change-major-mode-hook #'turn-on-solaire-mode)
+  (add-hook 'after-revert-hook #'turn-on-solaire-mode)
+  (add-hook 'minibuffer-setup-hook #'solaire-mode-in-minibuffer)
+  (add-hook 'ediff-prepare-buffer-hook #'solaire-mode)
+  (advice-add #'persp-load-state-from-file :after #'solaire-mode-restore-persp-mode-buffers))
 
 (use-package spaceline-config
   :ensure spaceline
