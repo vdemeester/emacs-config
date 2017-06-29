@@ -923,7 +923,7 @@ point reaches the beginning or end of the buffer, stop there."
 (add-to-list 'auto-mode-alist '("\\.\\(org\\|org_archive\\|txt\\)$" . org-mode))
 
 ;;; Change the ellipsis (default is ...)
-(setq org-ellipsis " ↴")
+;; (setq org-ellipsis " ↴")
 ;; Change the default bullets
 (font-lock-add-keywords 'org-mode
                         '(("^ +\\([-*]\\) "
