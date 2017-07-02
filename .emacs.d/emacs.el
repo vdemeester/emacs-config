@@ -1,64 +1,3 @@
-(defun curr-dir-git-branch-string (pwd)
-  "Returns current git branch as a string, or the empty string if
-PWD is not in a git repo (or the git command is not found)."
-  (interactive)
-  (when (and (eshell-search-path "git")
-             (locate-dominating-file pwd ".git"))
-    (let ((git-output (shell-command-to-string (concat "cd " pwd " && git branch | grep '\\*' | sed -e 's/^\\* //'"))))
-      (if (> (length git-output) 0)
-          (concat " :" (substring git-output 0 -1))
-        "(no branch)"))))
-
-(defun pwd-replace-home (pwd)
-  "Replace home in PWD with tilde (~) character."
-  (interactive)
-  (let* ((home (expand-file-name (getenv "HOME")))
-         (home-len (length home)))
-    (if (and
-         (>= (length pwd) home-len)
-         (equal home (substring pwd 0 home-len)))
-        (concat "~" (substring pwd home-len))
-   pwd)))
-
-(defun pwd-shorten-dirs (pwd)
-  "Shorten all directory names in PWD except the last two."
-  (let ((p-lst (split-string pwd "/")))
-    (if (> (length p-lst) 2)
-        (concat
-         (mapconcat (lambda (elm) (if (zerop (length elm)) ""
-                                    (substring elm 0 1)))
-                    (butlast p-lst 2)
-                    "/")
-         "/"
-         (mapconcat (lambda (elm) elm)
-                    (last p-lst 2)
-                    "/"))
-   pwd)))  ;; Otherwise, we just return the PWD
-
-(defun split-directory-prompt (directory)
-  (if (string-match-p ".*/.*" directory)
-   (list (file-name-directory directory) (file-name-base directory))
-    (list "" directory)))
-
-(setq eshell-highlight-prompt nil)
-
-(require 'em-smart)
-(setq eshell-where-to-jump 'begin)
-(setq eshell-review-quick-commands nil)
-(setq eshell-smart-space-goes-to-end t)
-
-(defun ha/eshell-quit-or-delete-char (arg)
-  (interactive "p")
-  (if (and (eolp) (looking-back eshell-prompt-regexp))
-      (progn
-        (eshell-life-is-too-much) ; Why not? (eshell/exit)
-        (ignore-errors
-          (delete-window)))
-    (delete-forward-char arg)))
-
-(add-hook 'eshell-mode-hook (lambda ()
-   (define-key eshell-mode-map (kbd "C-d")
-                               'ha/eshell-quit-or-delete-char)))
 
 (defun my/edit-emacs-configuration ()
   (interactive)
@@ -768,6 +707,16 @@ PWD is not in a git repo (or the git command is not found)."
             (setq show-trailing-whitespace 't))
           )
 
+(setq  whitespace-line-column fill-column
+     whitespace-style
+     '(face indentation tabs tab-mark spaces space-mark newline newline-mark
+          trailing lines-tail)
+     whitespace-display-mappings
+     '((tab-mark ?\t [?› ?\t])
+     (newline-mark ?\n [?¬ ?\n])
+     (space-mark ?\ [?·] [?.])))
+(whitespace-mode +1)
+
 (use-package comment-dwim-2
   :ensure t
   :bind* (("C-M-/" . comment-dwim-2)))
@@ -1294,6 +1243,9 @@ This can be 0 for immediate, or a floating point value.")
 (setq org-clock-out-remove-zero-time-clocks 1)
 ;; Clock out when moving task to a done state
 (setq org-clock-out-when-done 1)
+;; If idle for more than 15 minutes, resolve the things by asking what to do
+;; with the clock time
+(setq org-clock-idle-time 15)
 
 (defadvice org-clock-in (after sacha activate)
   "Set this task's status to 'PROGRESS'."
@@ -2142,3 +2094,65 @@ that directory."
   (interactive)
   (message (format "Tangling emacs config"))
   (tangle-config-sync (substitute-env-in-file-name "$HOME/src/configs/emacs-config/.emacs.d/emacs.org")))
+
+(defun curr-dir-git-branch-string (pwd)
+  "Returns current git branch as a string, or the empty string if
+PWD is not in a git repo (or the git command is not found)."
+  (interactive)
+  (when (and (eshell-search-path "git")
+             (locate-dominating-file pwd ".git"))
+    (let ((git-output (shell-command-to-string (concat "cd " pwd " && git branch | grep '\\*' | sed -e 's/^\\* //'"))))
+      (if (> (length git-output) 0)
+          (concat " :" (substring git-output 0 -1))
+        "(no branch)"))))
+
+(defun pwd-replace-home (pwd)
+  "Replace home in PWD with tilde (~) character."
+  (interactive)
+  (let* ((home (expand-file-name (getenv "HOME")))
+         (home-len (length home)))
+    (if (and
+         (>= (length pwd) home-len)
+         (equal home (substring pwd 0 home-len)))
+        (concat "~" (substring pwd home-len))
+   pwd)))
+
+(defun pwd-shorten-dirs (pwd)
+  "Shorten all directory names in PWD except the last two."
+  (let ((p-lst (split-string pwd "/")))
+    (if (> (length p-lst) 2)
+        (concat
+         (mapconcat (lambda (elm) (if (zerop (length elm)) ""
+                                    (substring elm 0 1)))
+                    (butlast p-lst 2)
+                    "/")
+         "/"
+         (mapconcat (lambda (elm) elm)
+                    (last p-lst 2)
+                    "/"))
+   pwd)))  ;; Otherwise, we just return the PWD
+
+(defun split-directory-prompt (directory)
+  (if (string-match-p ".*/.*" directory)
+   (list (file-name-directory directory) (file-name-base directory))
+    (list "" directory)))
+
+(setq eshell-highlight-prompt nil)
+
+(require 'em-smart)
+(setq eshell-where-to-jump 'begin)
+(setq eshell-review-quick-commands nil)
+(setq eshell-smart-space-goes-to-end t)
+
+(defun ha/eshell-quit-or-delete-char (arg)
+  (interactive "p")
+  (if (and (eolp) (looking-back eshell-prompt-regexp))
+      (progn
+        (eshell-life-is-too-much) ; Why not? (eshell/exit)
+        (ignore-errors
+          (delete-window)))
+    (delete-forward-char arg)))
+
+(add-hook 'eshell-mode-hook (lambda ()
+   (define-key eshell-mode-map (kbd "C-d")
+                               'ha/eshell-quit-or-delete-char)))

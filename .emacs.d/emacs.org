@@ -1084,15 +1084,15 @@ It looks kinda like that (click to open the real one) :
 
         (when (package-installed-p 'hydra)
           (defhydra hydra-window-size (:color red)
-    	"Windows size"
-    	("h" shrink-window-horizontally "shrink horizontal")
-    	("j" shrink-window "shrink vertical")
-    	("k" enlarge-window "enlarge vertical")
-    	("l" enlarge-window-horizontally "enlarge horizontal"))
+        "Windows size"
+        ("h" shrink-window-horizontally "shrink horizontal")
+        ("j" shrink-window "shrink vertical")
+        ("k" enlarge-window "enlarge vertical")
+        ("l" enlarge-window-horizontally "enlarge horizontal"))
           (defhydra hydra-window-frame (:color red)
-    	"Frame"
-    	("f" make-frame "new frame")
-    	("x" delete-frame "delete frame"))
+        "Frame"
+        ("f" make-frame "new frame")
+        ("x" delete-frame "delete frame"))
           (add-to-list 'aw-dispatch-alist '(?w hydra-window-size/body) t)
           (add-to-list 'aw-dispatch-alist '(?o hydra-window-scroll/body) t)
           (add-to-list 'aw-dispatch-alist '(?\; hydra-window-frame/body) t))
@@ -1389,6 +1389,21 @@ It looks kinda like that (click to open the real one) :
                 (turn-on-auto-fill)
                 (setq show-trailing-whitespace 't))
               )
+  #+END_SRC
+
+  I like to see /invisible/ characters, like tab, etc… In `Emacs`, to
+  display those, it's called whitespace-mode.
+
+  #+BEGIN_SRC emacs-lisp
+    (setq  whitespace-line-column fill-column
+         whitespace-style
+         '(face indentation tabs tab-mark spaces space-mark newline newline-mark
+              trailing lines-tail)
+         whitespace-display-mappings
+         '((tab-mark ?\t [?› ?\t])
+         (newline-mark ?\n [?¬ ?\n])
+         (space-mark ?\ [?·] [?.])))
+    (whitespace-mode +1)
   #+END_SRC
 
 ** TODO Selection
@@ -2206,6 +2221,9 @@ It looks kinda like that (click to open the real one) :
      (setq org-clock-out-remove-zero-time-clocks 1)
      ;; Clock out when moving task to a done state
      (setq org-clock-out-when-done 1)
+     ;; If idle for more than 15 minutes, resolve the things by asking what to do
+     ;; with the clock time
+     (setq org-clock-idle-time 15)
    #+END_SRC
 
    We also want to set the state to =PROGRESS= when we are clocking
