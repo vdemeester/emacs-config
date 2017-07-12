@@ -532,6 +532,8 @@
     (add-to-list 'popwin:special-display-config `("*Go Test*" :height 0.3))
     (add-to-list 'popwin:special-display-config `("*Async Shell Command*" :height 0.3))
     (add-to-list 'popwin:special-display-config `(flycheck-error-list-mode :height 0.5 :regexp t :position bottom))
+    (add-to-list 'popwin:special-display-config `("*Shell Command Output*" :height 0.3 :position bottom))
+    (add-to-list 'popwin:special-display-config `(pt-search-mode :height 0.4 :regexp t :position bottom :noselect t))
     (popwin-mode 1)
     (global-set-key (kbd "C-z") popwin:keymap)))
 
@@ -661,6 +663,18 @@
   :after projectile
   :bind*
   (("M-m p p" . projectile-persp-switch-project)))
+
+(use-package ripgrep
+  :ensure t
+  :after projectile
+  :bind*
+  (("M-m p s r" . projectile-ripgrep)))
+
+(use-package pt
+  :ensure t
+  :after projectile
+  :bind*
+  (("M-m p s p" . projectile-pt)))
 
 (use-package doom-themes
   :ensure t
@@ -1056,8 +1070,8 @@ point reaches the beginning or end of the buffer, stop there."
 (setq org-capture-templates
    '(;; other entries
         ("t" "inbox"
-      entry (file+headline (expand-file-name org-main-file org-todos-directory) "Inbox")
-         "* TODO %?\n%i\n%a")
+      entry (file (expand-file-name org-inbox-file org-todos-directory))
+         "* %?\n%i\n%a")
         ("d" "task"
       entry (file+headline (expand-file-name org-main-file org-todos-directory) "Tasks")
          "* TODO %?\nSCHEDULED: %(org-insert-time-stamp (org-read-date nil t \"+0d\"))\n")
