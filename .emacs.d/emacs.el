@@ -623,6 +623,45 @@
                   (magit-status (substitute-env-in-file-name "$HOME/go/src/github.com/linuxkit/linuxkit"))))
   )
 
+(use-package projectile
+  :ensure t
+  :bind*
+  (("M-m p" . projectile-command-map)
+   ("M-m p S" . projectile-run-shell))
+  :init
+  (setq projectile-enable-caching t
+        projectile-verbose nil
+        projectile-completion-system 'ivy)
+  (put 'projectile-project-run-cmd 'safe-local-variable #'stringp)
+  (defun projectile-do-invalidate-cache (&rest _args)
+    (projectile-invalidate-cache nil))
+  (advice-add 'rename-file :after #'projectile-do-invalidate-cache)
+  (defmacro make-projectile-switch-project-defun (func)
+    `(let ((defun-name (format "projectile-switch-project-%s" (symbol-name ,func))))
+       (fset (intern defun-name)
+             (function
+              (lambda ()
+                (interactive)
+                (let ((projectile-switch-project-action ,func))
+                  (projectile-switch-project)))))))
+  (make-projectile-switch-project-defun #'projectile-run-shell)
+  (make-projectile-switch-project-defun #'projectile-run-project)
+  (make-projectile-switch-project-defun #'projectile-find-file)
+  (make-projectile-switch-project-defun #'projectile-vc)
+  (projectile-mode)
+  (projectile-cleanup-known-projects))
+
+(use-package counsel-projectile
+  :ensure t
+  :after projectile
+  :config (counsel-projectile-on))
+
+(use-package persp-projectile
+  :ensure t
+  :after projectile
+  :bind*
+  (("M-m p p" . projectile-persp-switch-project)))
+
 (use-package doom-themes
   :ensure t
   :config
@@ -707,15 +746,15 @@
             (setq show-trailing-whitespace 't))
           )
 
-(setq  whitespace-line-column fill-column
-     whitespace-style
-     '(face indentation tabs tab-mark spaces space-mark newline newline-mark
-          trailing lines-tail)
-     whitespace-display-mappings
-     '((tab-mark ?\t [?› ?\t])
-     (newline-mark ?\n [?¬ ?\n])
-     (space-mark ?\ [?·] [?.])))
-(whitespace-mode +1)
+(setq whitespace-line-column fill-column
+      whitespace-style
+      '(face indentation tabs tab-mark spaces space-mark newline newline-mark
+             trailing lines-tail)
+      whitespace-display-mappings
+      '((tab-mark ?\t [?› ?\t])
+        (newline-mark ?\n [?¬ ?\n])
+        (space-mark ?\ [?·] [?.])))
+(add-hook 'prog-mode-hook 'whitespace-mode)
 
 (use-package comment-dwim-2
   :ensure t
@@ -1763,6 +1802,7 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
 
 (use-package magit
   :ensure t
+  :diminish "🔮 "
   :commands magit-status
   :bind* (("C-c g" . magit-status)
           ("M-m s g" . magit-status))
@@ -1930,7 +1970,9 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
   :ensure t)
 
 (use-package direnv
-  :ensure t)
+  :ensure t
+  :init
+  (direnv-mode t))
 
 (setenv "PAGER" "cat")
 
