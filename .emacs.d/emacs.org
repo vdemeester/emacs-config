@@ -3156,6 +3156,17 @@ It looks kinda like that (click to open the real one) :
                   (eldoc-mode 1))
                 )
     #+END_SRC
+** Protobuf
+
+   Starting to use more and more [[https://grpci.io][grpc]] at work (and probably at home
+   too), so I end up editing a lot of protobuf files.. Let's support
+   that in emacs.
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package protobuf-mode
+       :ensure t)
+   #+END_SRC
+
 ** SQL
 
    Emacs is really more than an editor. The SQL mode is quick and cool to

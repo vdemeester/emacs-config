@@ -1956,6 +1956,9 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
             (eldoc-mode 1))
           )
 
+(use-package protobuf-mode
+  :ensure t)
+
 (add-hook 'sql-interactive-mode-hook
           (lambda ()
             (toggle-truncate-lines t)))
