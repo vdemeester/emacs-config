@@ -31,7 +31,7 @@
  org-publish-folder (substitute-env-in-file-name "$HOME/var/public_html")
  sites-folder (substitute-env-in-file-name "$HOME/src/sites/")
  ;; Github related
- github-general-folder (substitute-env-in-file-name "$HOME/src/github")
+ github-general-folder (substitute-env-in-file-name "$HOME/src/github.com")
  github-username "vdemeester")
 
 (when (file-readable-p "~/.emacs.d/user.el")
@@ -550,80 +550,9 @@
     ("M-m SPC n" . persp-next)
     ("M-m SPC p" . persp-prev)
     ("M-m SPC r" . persp-rename)
-    ("M-m SPC k" . pers-kill)
-    ("M-m SPC o o" . custom-persp/org)
-    ("M-m SPC o d d" . custom-persp/org-docker)
-    ("M-m SPC o d p" . custom-persp/org-docker-pipeline)
-    ("M-m SPC o m" . custom-persp/org-moby)
-    ("M-m SPC s d d" . custom-persp/magit-docker)
-    ("M-m SPC s d p" . custom-persp/magit-docker-pipeline)
-    ("M-m SPC s d i i" . custom-persp/magit-docker-infrakit)
-    ("M-m SPC s d i d" . custom-persp/magit-docker-infrakit-do)
-    ("M-m SPC s d i g" . custom-persp/magit-docker-infrakit-gcp)
-    ("M-m SPC s l" . custom-persp/magit-linuxkit)
-    ("M-m SPC d d" . custom-persp/docker)
-    ("M-m SPC d p" . custom-persp/docker-pipeline)
-    ("M-m SPC d i i" . custom-persp/docker-infrakit)
-    ("M-m SPC d i d" . custom-persp/docker-infrakit-do)
-    ("M-m SPC d i g" . custom-persp/docker-infrakit-gcp)
-    ("M-m SPC l" . custom-persp/linuxkit))
+    ("M-m SPC k" . pers-kill))
   :config
-  (persp-mode t)
-  (defmacro custom-persp (name &rest body)
-    `(let ((initialize (not (gethash ,name perspectives-hash)))
-           (current-perspective persp-curr))
-    (persp-switch ,name)
-    (when initialize ,@body)
-    (setq persp-last current-perspective)))
-  (defun custom-persp/org ()
-    (interactive)
-    (custom-persp "org"
-                  (find-file (expand-file-name org-main-file org-root-directory))))
-  (defun custom-persp/org-docker ()
-    (interactive)
-    (custom-persp "org-docker"
-                  (find-file (expand-file-name "docker.org" org-root-directory))))
-  (defun custom-persp/org-docker-pipeline ()
-    (interactive)
-    (custom-persp "org-pipeline"
-                  (find-file (expand-file-name "docker-pipeline.org" org-root-directory))))
-  (defun custom-persp/org-moby ()
-    (interactive)
-    (custom-persp "org-moby"
-                  (find-file (expand-file-name "moby.org" org-root-directory))))
-  (defun custom-persp/docker ()
-    (interactive)
-    (custom-persp "docker"
-                  (find-file (substitute-env-in-file-name "$HOME/go/src/github.com/docker/docker"))))
-  (defun custom-persp/docker-pipeline ()
-    (interactive)
-    (custom-persp "pipeline"
-                  (find-file (substitute-env-in-file-name "$HOME/go/src/github.com/docker/pipeline"))))
-  (defun custom-persp/docker-infrakit ()
-    (interactive)
-    (custom-persp "infrakit"
-                  (find-file (substitute-env-in-file-name "$HOME/go/src/github.com/docker/infrakit"))))
-  (defun custom-persp/linuxkit ()
-    (interactive)
-    (custom-persp "linuxkit"
-                  (find-file (substitute-env-in-file-name "$HOME/go/src/github.com/linuxkit/linuxkit"))))
-  (defun custom-persp/magit-docker ()
-    (interactive)
-    (custom-persp "magit-docker"
-        (magit-status (substitute-env-in-file-name "$HOME/go/src/github.com/docker/docker"))))
-  (defun custom-persp/magit-docker-pipeline ()
-    (interactive)
-    (custom-persp "magit-pipeline"
-                  (magit-status (substitute-env-in-file-name "$HOME/go/src/github.com/docker/pipeline"))))
-  (defun custom-persp/magit-docker-infrakit ()
-    (interactive)
-    (custom-persp "magit-infrakit"
-                  (magit-status (substitute-env-in-file-name "$HOME/go/src/github.com/docker/infrakit"))))
-  (defun custom-persp/magit-linuxkit ()
-    (interactive)
-    (custom-persp "magit-linuxkit"
-                  (magit-status (substitute-env-in-file-name "$HOME/go/src/github.com/linuxkit/linuxkit"))))
-  )
+  (persp-mode t))
 
 (use-package projectile
   :ensure t
@@ -1445,7 +1374,7 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
 (setq sbr-base-directory (expand-file-name "sbr" org-sites-directory)
       sbr-publishing-directory (expand-file-name "sbr" org-publish-folder)
       vdf-base-directory (expand-file-name "vdf" org-sites-directory)
-      vdf-site-directory (expand-file-name "blog" sites-folder)
+      vdf-site-directory (expand-file-name "blog" github-personal-folder)
       vdf-publishing-directory (expand-file-name "posts" (expand-file-name "content" vdf-site-directory))
       vdf-static-directory (expand-file-name "static" vdf-site-directory)
       vdf-css-publishing-directory (expand-file-name "css" vdf-static-directory)
@@ -1928,6 +1857,58 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
     :ensure t
     :mode ("\\.markdown\\'" "\\.mkd\\'" "\\.md\\'")))
 
+;;(exec-path-from-shell-copy-env "GOPATH")
+;;(exec-path-from-shell-copy-env "GO15VENDOREXPERIMENT")
+(setenv "GOPATH" "/home/vincent")
+(use-package go-mode
+  :ensure t
+  :config
+  (bind-key "C-h f" 'godoc-at-point go-mode-map)
+  (bind-key "C-c C-u" 'go-remove-unused-imports go-mode-map)
+  (bind-key "C-c C-i" 'go-godoc-history go-mode-map))
+
+(use-package company-go
+  :ensure t
+  :config (add-to-list 'company-backends 'company-go))
+(use-package go-eldoc
+  :ensure t
+  :config (add-hook 'go-mode-hook 'go-eldoc-setup))
+(use-package gotest
+  :ensure t
+  :init
+  (bind-key "C-c r" 'go-run go-mode-map)
+  (bind-key "C-c t C-g a" 'go-test-current-project go-mode-map)
+  (bind-key "C-c t m" 'go-test-current-file go-mode-map)
+  (bind-key "C-c t ." 'go-test-current-test go-mode-map)
+  (bind-key "C-c t c" 'go-test-current-coverage go-mode-map)
+  (bind-key "C-c t b" 'go-test-current-benchmark go-mode-map)
+  (bind-key "C-c t C-g b" 'go-test-current-project-benchmarks go-mode-map))
+(use-package golint
+  :ensure t)
+(use-package go-guru
+  :load-path "~/lib/go/src/golang.org/x/tools/cmd/guru"
+  :config
+  (add-hook 'go-mode-hook #'go-guru-hl-identifier-mode))
+(use-package go-rename
+  :bind ("C-c r" . go-rename)
+  :load-path "~/lib/go/src/golang.org/x/tools/refactor/rename")
+
+(defun my-go-mode-hook ()
+  (setq gofmt-command "gofmts")
+  (add-hook 'before-save-hook 'gofmt-before-save)
+  (if (not (string-match "go" compile-command))
+      (set (make-local-variable 'compile-command)
+           "go build -v && go test -v && go vet")))
+(add-hook 'go-mode-hook 'my-go-mode-hook)
+
+(defun vde/go-test-after-save-hook ()
+  "A file save hook that will run go test on the current package
+whenever a file is saved. Use it with local variables and go-mode
+for example."
+  (unless (ignore-errors (go-test-current-test))
+    (unless (ignore-errors (go-test-current-file))
+      (go-test-current-project))))
+
 (use-package yaml-mode
   :ensure t
   :mode "\\.yml$")
@@ -2146,13 +2127,13 @@ that directory."
     (org-babel-tangle-file src dest)
     (if (byte-compile-file dest)
         (byte-compile-dest-file dest)
-   (with-current-buffer byte-compile-log-buffer
+      (with-current-buffer byte-compile-log-buffer
         (buffer-string)))))
 
 (defun tangle-emacs-config ()
   (interactive)
   (message (format "Tangling emacs config"))
-  (tangle-config-sync (substitute-env-in-file-name "$HOME/src/configs/emacs-config/.emacs.d/emacs.org")))
+  (tangle-config-sync (expand-file-name "emacs-config/.emacs.d/emacs.org" github-personal-folder)))
 
 (defun curr-dir-git-branch-string (pwd)
   "Returns current git branch as a string, or the empty string if
