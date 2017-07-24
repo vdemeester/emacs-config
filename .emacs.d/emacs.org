@@ -561,6 +561,16 @@ It looks kinda like that (click to open the real one) :
        :init (dired-quick-sort-setup))
    #+END_SRC
 
+   And use =dired-collapse= to have a « à-la-git » dired buffer.
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package dired-collapse
+       :ensure t
+       :init
+       :config
+       (dired-collapse-mode))
+   #+END_SRC
+
 ** Diminish minor modes from the mode line
 
    Now that we have made sure we have installed use-package, we will make
@@ -3550,6 +3560,16 @@ It looks kinda like that (click to open the real one) :
                                 ad-return-value)
          ad-return-value)))
    #+END_SRC
+
+* Kubernetes
+
+  Trying some things out with k8s 👼
+
+  #+BEGIN_SRC emacs-lisp
+    (use-package kubernetes
+      :ensure t
+      :commands (kubernetes-overview))
+  #+END_SRC
 
 * Provided configuration
 

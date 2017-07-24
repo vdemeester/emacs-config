@@ -207,6 +207,12 @@
   :ensure t
   :init (dired-quick-sort-setup))
 
+(use-package dired-collapse
+  :ensure t
+  :init
+  :config
+  (dired-collapse-mode))
+
 (use-package diminish
   :ensure t
   :demand t
@@ -2092,6 +2098,10 @@ that directory."
                                   'keymap ted-eshell-ls-keymap)
                             ad-return-value)
      ad-return-value)))
+
+(use-package kubernetes
+  :ensure t
+  :commands (kubernetes-overview))
 
 ;; The folder is by default $HOME/.emacs.d/provided
 (setq user-emacs-provided-directory (concat user-emacs-directory "provided/"))
