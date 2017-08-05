@@ -440,6 +440,7 @@
           ("C-c C-u" . counsel-unicode-char)
           ("C-c s g" . counsel-git-grep)
           ("C-c s s" . counsel-pt)
+          ("C-c s r" . counsel-rg)
           ("M-y" . counsel-yank-pop)
           ("M-x" . counsel-M-x))
   :config
