@@ -943,7 +943,9 @@ point reaches the beginning or end of the buffer, stop there."
 (defun org-summary-todo (n-done n-not-done)
   "Switch entry to DONE when all subentries are done, to PROGRESS otherwise."
   (let (org-log-done org-log-states)   ; turn off logging
-    (org-todo (if (= n-not-done 0) "DONE" "PROGRESS"))))
+    (if (not (string-blank-p (org-get-todo-state)))
+        (org-todo (if (= n-not-done 0) "DONE" "PROGRESS")))
+    ))
 
 (add-hook 'org-after-todo-statistics-hook 'org-summary-todo)
 
