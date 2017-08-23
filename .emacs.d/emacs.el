@@ -893,6 +893,8 @@ point reaches the beginning or end of the buffer, stop there."
   (setq org-bullets-face-name (quote org-bullet-face))
   (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
 
+(use-package org-habit)
+
 (setq org-todo-keywords
       (quote ((sequence "TODO(t)" "PROGRESS(p)" "PAUSED" "BLOCKED" "REVIEW" "|" "DONE(d!)" "ARCHIVED")
               (sequence "REPORT(r!)" "BUG" "KNOWNCAUSE" "|" "FIXED(f!)")

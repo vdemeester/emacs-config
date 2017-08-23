@@ -1724,6 +1724,11 @@ It looks kinda like that (click to open the real one) :
        (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
    #+END_SRC
 
+   Let's also load =org-habit= module to deal with habits =TODO(s)=.
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package org-habit)
+   #+END_SRC
 
    Let's also define the default /todo-keywords/ and the workflow
    between them.
