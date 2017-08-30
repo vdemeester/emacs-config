@@ -1272,9 +1272,11 @@ This can be 0 for immediate, or a floating point value.")
                  (org-agenda-overriding-header "High-priority unfinished tasks:")))
           (agenda "" ((org-agenda-ndays 1)))
           (tags "next"
-                ((org-agenda-overriding-header "Today's tasks")))
+                ((org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
+                 (org-agenda-overriding-header "Today's tasks")))
           (tags "PRIORITY=\"A\""
-                ((org-agenda-skip-function '(org-agenda-skip-entry-if 'tag 'urgent))
+                ((org-agenda-skip-function '(or (org-agenda-skip-entry-if 'tag 'urgent)
+                                                (org-agenda-skip-entry-if 'todo 'done)))
                  (org-agenda-overriding-header "Kaizen tasks -improvement-")))
           (alltodo ""
                    ((org-agenda-sorting-strategy '(priority-down))

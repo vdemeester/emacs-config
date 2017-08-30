@@ -2269,100 +2269,102 @@ It looks kinda like that (click to open the real one) :
    searching]] and [[http://orgmode.org/worg/org-tutorials/org-custom-agenda-commands.html][Custom Agenda Commands]].
 
    #+BEGIN_SRC emacs-lisp
-     (setq org-agenda-custom-commands
-           '(("d" "Daily agenda and all TODOs"
-              ((tags "urgent+PRIORITY=\"A\""
-                     ((org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
-                      (org-agenda-overriding-header "High-priority unfinished tasks:")))
-               (agenda "" ((org-agenda-ndays 1)))
-               (tags "next"
-                     ((org-agenda-overriding-header "Today's tasks")))
-               (tags "PRIORITY=\"A\""
-                     ((org-agenda-skip-function '(org-agenda-skip-entry-if 'tag 'urgent))
-                      (org-agenda-overriding-header "Kaizen tasks -improvement-")))
-               (alltodo ""
-                        ((org-agenda-sorting-strategy '(priority-down))
-                         (org-agenda-skip-function '(or (org-agenda-skip-entry-if 'todo 'progress)
-                                                        (org-agenda-skip-entry-if 'todo 'review)
-                                                        (org-agenda-skip-entry-if 'todo 'done)
-                                                        (vde/org-skip-subtree-if-habit)
-                                                        (vde/org-skip-subtree-if-priority ?A)
-                                                        (org-agenda-skip-if nil '(scheduled deadline))))
-                         (org-agenda-overriding-header "ALL normal priority tasks:"))))
-              ((org-agenda-compact-blocks t)))
-             ("t" todo "TODO"
-              ((org-agenda-sorting-strategy '(priority-down))
-               (org-agenda-prefix-format "  Mixed: ")))
-             ("p" todo "PROGRESS"
-              ((org-agenda-sorting-strategy '(priority-down))
-               (org-agenda-prefix-format "  Mixed: ")))
-             ("r" todo "REVIEW"
-              ((org-agenda-sorting-strategy '(priority-down))
-               (org-agenda-prefix-format "  Mixed: ")))
-             ("u" todo "PAUSED"
-              ((org-agenda-sorting-strategy '(priority-down))
-               (org-agenda-prefix-format "  Mixed: ")))
-             ("b" todo "BLOCKED"
-              ((org-agenda-sorting-strategy '(priority-down))
-               (org-agenda-prefix-format "  Mixed: ")))
-             ("n" "Next tasks" tags-todo "next"
-              ((org-agenda-sorting-strategy '(priority-down))
-               (org-tags-exclude-from-inheritance '("next"))
-               (org-agenda-prefix-format "  Mixed: ")))
-             ("i" "Triage tasks — to look" tags-todo "triage"
-              ((org-agenda-sorting-strategy '(priority-down))
-               (org-agenda-prefix-format "  Mixed: ")))
-             ;; Timelines
-             ("d" "Timeline for today" ((agenda "" ))
-              ((org-agenda-ndays 1)
-               (org-agenda-show-log t)
-               (org-agenda-log-mode-items '(clock closed))
-               (org-agenda-clockreport-mode t)
-               (org-agenda-entry-types '())))
-             ("w" "Weekly review" agenda ""
-              ((org-agenda-span 7)
-               (org-agenda-log-mode 1)))
-             ("W" "Weekly review sans DAILY" agenda ""
-              ((org-agenda-span 7)
-               (org-agenda-log-mode 1)
-               (org-agenda-tag-filter-preset '("-DAILY"))))
-             ;; Panic tasks : urgent & important
-             ;; Probably the most important to do, but try not have to much of them..
-             ("P" "Panic -emergency-" tags-todo "urgent+PRIORITY=\"A\""
-              ((org-agenda-sorting-strategy '(priority-down))
-               (org-agenda-prefix-format "  Mixed: ")))
-             ;; Kaizen tasks : important but not urgent
-             ("K" "Kaizen -improvement-" tags-todo "PRIORITY=\"A\"&-urgent"
-              ((org-agenda-sorting-strategy '(priority-down))
-               (org-agenda-prefix-format "  Mixed: ")))
-             ;; Social investment : urgent
-             ("S" "Social -investment-" tags-todo "-PRIORITY=\"A\"+urgent"
-              ((org-agenda-sorting-strategy '(priority-down))
-               (org-agenda-prefix-format "  Mixed: ")))
-             ;; Organics
-             ("O" "Organics -inspiration-" tags-todo "-PRIORITY=\"A\"&-urgent"
-              ((org-agenda-sorting-strategy '(priority-down))
-               (org-agenda-prefix-format "  Mixed: ")))
-             ("N" search ""
-              ((org-agenda-text-search-extra-files nil)))))
+          (setq org-agenda-custom-commands
+                '(("d" "Daily agenda and all TODOs"
+                   ((tags "urgent+PRIORITY=\"A\""
+                          ((org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
+                           (org-agenda-overriding-header "High-priority unfinished tasks:")))
+                    (agenda "" ((org-agenda-ndays 1)))
+                    (tags "next"
+                          ((org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
+                           (org-agenda-overriding-header "Today's tasks")))
+                    (tags "PRIORITY=\"A\""
+                          ((org-agenda-skip-function '(or (org-agenda-skip-entry-if 'tag 'urgent)
+                                                          (org-agenda-skip-entry-if 'todo 'done)))
+                           (org-agenda-overriding-header "Kaizen tasks -improvement-")))
+                    (alltodo ""
+                             ((org-agenda-sorting-strategy '(priority-down))
+                              (org-agenda-skip-function '(or (org-agenda-skip-entry-if 'todo 'progress)
+                                                             (org-agenda-skip-entry-if 'todo 'review)
+                                                             (org-agenda-skip-entry-if 'todo 'done)
+                                                             (vde/org-skip-subtree-if-habit)
+                                                             (vde/org-skip-subtree-if-priority ?A)
+                                                             (org-agenda-skip-if nil '(scheduled deadline))))
+                              (org-agenda-overriding-header "ALL normal priority tasks:"))))
+                   ((org-agenda-compact-blocks t)))
+                  ("t" todo "TODO"
+                   ((org-agenda-sorting-strategy '(priority-down))
+                    (org-agenda-prefix-format "  Mixed: ")))
+                  ("p" todo "PROGRESS"
+                   ((org-agenda-sorting-strategy '(priority-down))
+                    (org-agenda-prefix-format "  Mixed: ")))
+                  ("r" todo "REVIEW"
+                   ((org-agenda-sorting-strategy '(priority-down))
+                    (org-agenda-prefix-format "  Mixed: ")))
+                  ("u" todo "PAUSED"
+                   ((org-agenda-sorting-strategy '(priority-down))
+                    (org-agenda-prefix-format "  Mixed: ")))
+                  ("b" todo "BLOCKED"
+                   ((org-agenda-sorting-strategy '(priority-down))
+                    (org-agenda-prefix-format "  Mixed: ")))
+                  ("n" "Next tasks" tags-todo "next"
+                   ((org-agenda-sorting-strategy '(priority-down))
+                    (org-tags-exclude-from-inheritance '("next"))
+                    (org-agenda-prefix-format "  Mixed: ")))
+                  ("i" "Triage tasks — to look" tags-todo "triage"
+                   ((org-agenda-sorting-strategy '(priority-down))
+                    (org-agenda-prefix-format "  Mixed: ")))
+                  ;; Timelines
+                  ("d" "Timeline for today" ((agenda "" ))
+                   ((org-agenda-ndays 1)
+                    (org-agenda-show-log t)
+                    (org-agenda-log-mode-items '(clock closed))
+                    (org-agenda-clockreport-mode t)
+                    (org-agenda-entry-types '())))
+                  ("w" "Weekly review" agenda ""
+                   ((org-agenda-span 7)
+                    (org-agenda-log-mode 1)))
+                  ("W" "Weekly review sans DAILY" agenda ""
+                   ((org-agenda-span 7)
+                    (org-agenda-log-mode 1)
+                    (org-agenda-tag-filter-preset '("-DAILY"))))
+                  ;; Panic tasks : urgent & important
+                  ;; Probably the most important to do, but try not have to much of them..
+                  ("P" "Panic -emergency-" tags-todo "urgent+PRIORITY=\"A\""
+                   ((org-agenda-sorting-strategy '(priority-down))
+                    (org-agenda-prefix-format "  Mixed: ")))
+                  ;; Kaizen tasks : important but not urgent
+                  ("K" "Kaizen -improvement-" tags-todo "PRIORITY=\"A\"&-urgent"
+                   ((org-agenda-sorting-strategy '(priority-down))
+                    (org-agenda-prefix-format "  Mixed: ")))
+                  ;; Social investment : urgent
+                  ("S" "Social -investment-" tags-todo "-PRIORITY=\"A\"+urgent"
+                   ((org-agenda-sorting-strategy '(priority-down))
+                    (org-agenda-prefix-format "  Mixed: ")))
+                  ;; Organics
+                  ("O" "Organics -inspiration-" tags-todo "-PRIORITY=\"A\"&-urgent"
+                   ((org-agenda-sorting-strategy '(priority-down))
+                    (org-agenda-prefix-format "  Mixed: ")))
+                  ("N" search ""
+                   ((org-agenda-text-search-extra-files nil)))))
 
-     (defun vde/org-skip-subtree-if-priority (priority)
-       "Skip an agenda subtree if it has a priority of PRIORITY.
+          (defun vde/org-skip-subtree-if-priority (priority)
+            "Skip an agenda subtree if it has a priority of PRIORITY.
 
-     PRIORITY may be one of the characters ?A, ?B, or ?C."
-       (let ((subtree-end (save-excursion (org-end-of-subtree t)))
-             (pri-value (* 1000 (- org-lowest-priority priority)))
-             (pri-current (org-get-priority (thing-at-point 'line t))))
-         (if (= pri-value pri-current)
-             subtree-end
-           nil)))
+          PRIORITY may be one of the characters ?A, ?B, or ?C."
+            (let ((subtree-end (save-excursion (org-end-of-subtree t)))
+                  (pri-value (* 1000 (- org-lowest-priority priority)))
+                  (pri-current (org-get-priority (thing-at-point 'line t))))
+              (if (= pri-value pri-current)
+                  subtree-end
+                nil)))
 
-     (defun vde/org-skip-subtree-if-habit ()
-       "Skip an agenda entry if it has a STYLE property equal to \"habit\"."
-       (let ((subtree-end (save-excursion (org-end-of-subtree t))))
-         (if (string= (org-entry-get nil "STYLE") "habit")
-             subtree-end
-           nil)))
+          (defun vde/org-skip-subtree-if-habit ()
+            "Skip an agenda entry if it has a STYLE property equal to \"habit\"."
+            (let ((subtree-end (save-excursion (org-end-of-subtree t))))
+              (if (string= (org-entry-get nil "STYLE") "habit")
+                  subtree-end
+                nil)))
    #+END_SRC
 
 ** Publishing
