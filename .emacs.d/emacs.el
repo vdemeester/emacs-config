@@ -1267,10 +1267,15 @@ This can be 0 for immediate, or a floating point value.")
 
 (setq org-agenda-custom-commands
       '(("d" "Daily agenda and all TODOs"
-         ((tags "PRIORITY=\"A\""
+         ((tags "urgent+PRIORITY=\"A\""
                 ((org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
                  (org-agenda-overriding-header "High-priority unfinished tasks:")))
           (agenda "" ((org-agenda-ndays 1)))
+          (tags "next"
+                ((org-agenda-overriding-header "Today's tasks")))
+          (tags "PRIORITY=\"A\""
+                ((org-agenda-skip-function '(org-agenda-skip-entry-if 'tag 'urgent))
+                 (org-agenda-overriding-header "Kaizen tasks -improvement-")))
           (alltodo ""
                    ((org-agenda-sorting-strategy '(priority-down))
                     (org-agenda-skip-function '(or (org-agenda-skip-entry-if 'todo 'progress)
@@ -1296,10 +1301,6 @@ This can be 0 for immediate, or a floating point value.")
         ("b" todo "BLOCKED"
          ((org-agenda-sorting-strategy '(priority-down))
           (org-agenda-prefix-format "  Mixed: ")))
-        ("o" "Ongoing projects" tags-todo "ongoing"
-         ((org-agenda-sorting-strategy '(priority-down))
-          (org-tags-exclude-from-inheritance '("ongoing"))
-          (org-agenda-prefix-format "  Mixed: ")))
         ("n" "Next tasks" tags-todo "next"
          ((org-agenda-sorting-strategy '(priority-down))
           (org-tags-exclude-from-inheritance '("next"))
@@ -1321,27 +1322,25 @@ This can be 0 for immediate, or a floating point value.")
          ((org-agenda-span 7)
           (org-agenda-log-mode 1)
           (org-agenda-tag-filter-preset '("-DAILY"))))
-        ;; ("2" "Bi-weekly review" agenda "" ((org-agenda-span 14) (org-agenda-log-mode 1)))
         ;; Panic tasks : urgent & important
         ;; Probably the most important to do, but try not have to much of them..
-        ("P" "Panic -emergency-" tags-todo "important&urgent"
+        ("P" "Panic -emergency-" tags-todo "urgent+PRIORITY=\"A\""
          ((org-agenda-sorting-strategy '(priority-down))
           (org-agenda-prefix-format "  Mixed: ")))
         ;; Kaizen tasks : important but not urgent
-        ("K" "Kaizen -improvement-" tags-todo "important&-urgent"
+        ("K" "Kaizen -improvement-" tags-todo "PRIORITY=\"A\"&-urgent"
          ((org-agenda-sorting-strategy '(priority-down))
           (org-agenda-prefix-format "  Mixed: ")))
         ;; Social investment : urgent
-        ("S" "Social -investment-" tags-todo "-important&urgent"
+        ("S" "Social -investment-" tags-todo "-PRIORITY=\"A\"+urgent"
          ((org-agenda-sorting-strategy '(priority-down))
           (org-agenda-prefix-format "  Mixed: ")))
         ;; Organics
-        ("O" "Organics -inspiration-" tags-todo "-important&-urgent"
+        ("O" "Organics -inspiration-" tags-todo "-PRIORITY=\"A\"&-urgent"
          ((org-agenda-sorting-strategy '(priority-down))
           (org-agenda-prefix-format "  Mixed: ")))
         ("N" search ""
-         ((org-agenda-files '("~org/notes.org"))
-          (org-agenda-text-search-extra-files nil)))))
+         ((org-agenda-text-search-extra-files nil)))))
 
 (defun vde/org-skip-subtree-if-priority (priority)
   "Skip an agenda subtree if it has a priority of PRIORITY.
