@@ -1,96 +1,14 @@
-# Note to users upgrading to 2.0
-
-## Semantics of :init is now consistent
-
-The meaning of `:init` has been changed: It now *always* happens before
-package load, whether `:config` has been deferred or not.  This means that
-some uses of `:init` in your configuration may need to be changed to `:config`
-(in the non-deferred case).  For the deferred case, the behavior is unchanged
-from before.
-
-Also, because `:init` and `:config` now mean "before" and "after", the `:pre-`
-and `:post-` keywords are gone, as they should no longer be necessary.
-
-Lastly, an effort has been made to make your Emacs start even in the presence
-of use-package configuration failures.  So after this change, be sure to check
-your `*Messages*` buffer.  Most likely, you will have several instances where
-you are using `:init`, but should be using `:config` (this was the case for me
-in a number of places).
-
-## :idle has been removed
-
-I am removing this feature for now because it can result in a nasty
-inconsistency.  Consider the following definition:
-
-``` elisp
-(use-package vkill
-  :commands vkill
-  :idle (some-important-configuration-here)
-  :bind ("C-x L" . vkill-and-helm-occur)
-  :init
-  (defun vkill-and-helm-occur ()
-    (interactive)
-    (vkill)
-    (call-interactively #'helm-occur))
-
-  :config
-  (setq vkill-show-all-processes t))
-```
-
-If I load my Emacs and wait until the idle timer fires, then this is the
-sequence of events:
-
-    :init :idle <load> :config
-
-But if I load Emacs and immediately type C-x L without waiting for the idle
-timer to fire, this is the sequence of events:
-
-    :init <load> :config :idle
-
-It's possible that the user could use `featurep` in their idle to test for
-this case, but that's a subtlety I'd rather avoid.
-
-## :defer now accepts an optional integer argument
-
-`:defer [N]` causes the package to be loaded -- if it has not already been --
-after `N` seconds of idle time.
-
-## Add :preface, occurring before everything except :disabled
-
-`:preface` can be used to establish function and variable definitions that
-will 1) make the byte-compiler happy (it won't complain about functions whose
-definitions are unknown because you have them within a guard block), and 2)
-allow you to define code that can be used in an `:if` test.
-
-Note that whatever is specified within `:preface` is evaluated both at load
-time and at byte-compilation time, in order to ensure that definitions are
-seen by both the Lisp evaluator and the byte-compiler, so you should avoid
-having any side-effects in your preface, and restrict it merely to symbol
-declarations and definitions.
-
-## Add :functions, for declaring functions to the byte-compiler
-
-What `:defines` does for variables, `:functions` does for functions.
-
-## use-package.el is no longer needed at runtime
-
-This means you should put the following at the top of your Emacs, to further
-reduce load time:
-
-``` elisp
-(eval-when-compile
-  (require 'use-package))
-(require 'diminish)                ;; if you use :diminish
-(require 'bind-key)                ;; if you use any :bind variant
-```
-
 # `use-package`
+
+[![Build Status](https://travis-ci.org/jwiegley/use-package.svg?branch=master)](https://travis-ci.org/jwiegley/use-package)
 
 The `use-package` macro allows you to isolate package configuration in your
 `.emacs` file in a way that is both performance-oriented and, well, tidy.  I
 created it because I have over 80 packages that I use in Emacs, and things
 were getting difficult to manage.  Yet with this utility my total load time is
 around 2 seconds, with no loss of functionality!
+
+Notes for users upgrading to 2.x are located [at the bottom](#upgrading-to-2x).
 
 ## The basics
 
@@ -106,7 +24,7 @@ succeeds, a message about `"Loading foo"` is logged, along with the time it
 took to load, if it took over 0.1s.
 
 Use the `:init` keyword to execute code before a package is loaded.  It
-accepts one or more form, up until the next keyword:
+accepts one or more forms, up until the next keyword:
 
 ``` elisp
 (use-package foo
@@ -131,10 +49,12 @@ As you might expect, you can use `:init` and `:config` together:
 ``` elisp
 (use-package color-moccur
   :commands (isearch-moccur isearch-all)
-  :bind ("M-s O" . moccur)
+  :bind (("M-s O" . moccur)
+         :map isearch-mode-map
+         ("M-o" . isearch-moccur)
+         ("M-O" . isearch-moccur-all))
   :init
-  (bind-key "M-o" 'isearch-moccur isearch-mode-map)
-  (bind-key "M-O" 'isearch-moccur-all isearch-mode-map)
+  (setq isearch-lazy-highlight t)
   :config
   (use-package moccur-edit))
 ```
@@ -142,7 +62,7 @@ As you might expect, you can use `:init` and `:config` together:
 In this case, I want to autoload the commands `isearch-moccur` and
 `isearch-all` from `color-moccur.el`, and bind keys both at the global level
 and within the `isearch-mode-map` (see next section).  When the package is
-actually loaded (by using one of these commands), `moccur-edit` is also be
+actually loaded (by using one of these commands), `moccur-edit` is also
 loaded, to allow editing of the `moccur` buffer.
 
 ## Key-binding
@@ -186,6 +106,67 @@ The `:bind` keyword takes either a cons or a list of conses:
 
 The `:commands` keyword likewise takes either a symbol or a list of symbols.
 
+NOTE: Special keys like `tab` or `F1`-`Fn` can be written in square brackets,
+i.e. `[tab]` instead of `"tab"`. The syntax for the keybindings is similar to
+the "kbd" syntax: see [https://www.gnu.org/software/emacs/manual/html_node/emacs/Init-Rebinding.html](https://www.gnu.org/software/emacs/manual/html_node/emacs/Init-Rebinding.html)
+for more information.
+
+Examples:
+
+``` elisp
+(use-package helm
+  :bind (("M-x" . helm-M-x)
+         ("M-<f5>" . helm-find-files)
+         ([f10] . helm-buffers-list)
+         ([S-f10] . helm-recentf)))
+```
+
+
+### Binding to keymaps
+
+Normally `:bind` expects that commands are functions that will be autoloaded
+from the given package. However, this does not work if one of those commands
+is actually a keymap, since keymaps are not functions, and cannot be
+autoloaded using Emacs' `autoload` mechanism.
+
+To handle this case, `use-package` offers a special, limited variant of
+`:bind` called `:bind-keymap`. The only difference is that the "commands"
+bound to by `:bind-keymap` must be keymaps defined in the package, rather than
+command functions. This is handled behind the scenes by generating custom code
+that loads the package containing the keymap, and then re-executes your
+keypress after the first load, to reinterpret that keypress as a prefix key.
+
+### Binding within local keymaps
+
+Slightly different from binding a key to a keymap, is binding a key *within* a
+local keymap that only exists after the package is loaded.  `use-package`
+supports this with a `:map` modifier, taking the local keymap to bind to:
+
+``` elisp
+(use-package helm
+  :bind (:map helm-command-map
+         ("C-c h" . helm-execute-persistent-action)))
+```
+
+The effect of this statement is to wait until `helm` has loaded, and then to
+bind the key `C-c h` to `helm-execute-persistent-action` within Helm's local
+keymap, `helm-mode-map`.
+
+Multiple uses of `:map` may be specified. Any binding occurring before the
+first use of `:map` are applied to the global keymap:
+
+``` elisp
+(use-package term
+  :bind (("C-c t" . term)
+         :map term-mode-map
+         ("M-p" . term-send-up)
+         ("M-n" . term-send-down)
+         :map term-raw-map
+         ("M-o" . other-window)
+         ("M-p" . term-send-up)
+         ("M-n" . term-send-down)))
+```
+
 ## Modes and interpreters
 
 Similar to `:bind`, you can use `:mode` and `:interpreter` to establish a
@@ -217,7 +198,12 @@ still defer loading with the `:defer` keyword:
   (bind-key "C-." 'ace-jump-mode))
 ```
 
-This does exactly the same thing as the other two commands above.
+This does exactly the same thing as the following:
+
+``` elisp
+(use-package ace-jump-mode
+  :bind ("C-." . ace-jump-mode))
+```
 
 ## Notes about lazy loading
 
@@ -234,13 +220,14 @@ not establish an autoload for the bound key.
 
 ## Information about package loads
 
-When a package is loaded, and if you have `use-package-verbose` set t or if
-the package takes longer than 0.1s to load, you will see a message to indicate
-this loading activity in the `*Messages*` buffer.  The same will happen for
-configuration, or `:config` blocks that take longer than 0.1s to execute.  In
-general, you should keep `:init` forms as simple and quick as possible, and
-put as much as you can get away with into the `:config` block.  This way,
-deferred loading can help your Emacs to start as quickly as possible.
+When a package is loaded, and if you have `use-package-verbose` set to `t`, or
+if the package takes longer than 0.1s to load, you will see a message to
+indicate this loading activity in the `*Messages*` buffer.  The same will
+happen for configuration, or `:config` blocks that take longer than 0.1s to
+execute.  In general, you should keep `:init` forms as simple and quick as
+possible, and put as much as you can get away with into the `:config` block.
+This way, deferred loading can help your Emacs to start as quickly as
+possible.
 
 Additionally, if an error occurs while initializing or configuring a package,
 this will not stop your Emacs from loading.  Rather, the error will be
@@ -250,7 +237,9 @@ buffer, so that you can debug the situation in an otherwise functional Emacs.
 ## Conditional loading
 
 You can use the `:if` keyword to predicate the loading and initialization of
-modules.  For example, I only want `edit-server` running for my main,
+modules.
+
+For example, I only want `edit-server` running for my main,
 graphical Emacs, not for other Emacsen I may start at the command line:
 
 ``` elisp
@@ -260,13 +249,22 @@ graphical Emacs, not for other Emacsen I may start at the command line:
   (add-hook 'after-init-hook 'server-start t)
   (add-hook 'after-init-hook 'edit-server-start t))
 ```
+In another example, we can load things conditional on the operating system:
+
+```
+(use-package exec-path-from-shell
+  :if (memq window-system '(mac ns))
+  :ensure t
+  :config
+  (exec-path-from-shell-initialize))
+```
 
 The `:disabled` keyword can turn off a module you're having difficulties with,
-or to stop loading something you're not using at the present time:
+or stop loading something you're not using at the present time:
 
 ``` elisp
 (use-package ess-site
-  :disabled t
+  :disabled
   :commands R)
 ```
 
@@ -352,15 +350,17 @@ looking up the same information again on each startup:
   :commands R)
 ```
 
-## Diminishing minor modes
+## Diminishing and delighting minor modes
 
-`use-package` also provides built-in support for the diminish utility -- if
-you have that installed.  Its purpose is to remove strings from your mode-line
-that provide no useful information.  It is invoked with the `:diminish`
-keyword, which is passed either a minor mode symbol, a cons of the symbol and
-its replacement string, or just a replacement string, in which case the minor
-mode symbol is guessed to be the package name with "-mode" appended at the
-end:
+`use-package` also provides built-in support for the diminish and
+delight utilities -- if you have them installed. Their purpose is to
+remove or change minor mode strings in your mode-line.
+
+[diminish](https://github.com/myrjola/diminish.el) is invoked with
+the `:diminish` keyword, which is passed either a minor mode symbol, a
+cons of the symbol and its replacement string, or just a replacement
+string, in which case the minor mode symbol is guessed to be the
+package name with "-mode" appended at the end:
 
 ``` elisp
 (use-package abbrev
@@ -370,13 +370,45 @@ end:
       (quietly-read-abbrev-file)))
 ```
 
+[delight](https://elpa.gnu.org/packages/delight.html) is invoked with
+the `:delight` keyword, which is passed a minor mode symbol, a
+replacement string or
+quoted
+[mode-line data](https://www.gnu.org/software/emacs/manual/html_node/elisp/Mode-Line-Data.html) (in
+which case the minor mode symbol is guessed to be the package name
+with "-mode" appended at the end), both of these, or several lists of
+both. If no arguments are provided, the default mode name is hidden
+completely.
+
+``` elisp
+;; Don't show anything for rainbow-mode.
+(use-package rainbow-mode
+  :delight)
+
+;; Don't show anything for auto-revert-mode, which doesn't match
+;; its package name.
+(use-package autorevert
+  :delight auto-revert-mode)
+
+;; Remove the mode name for projectile-mode, but show the project name.
+(use-package projectile
+  :delight '(:eval (concat " " (projectile-project-name))))
+
+;; Completely hide visual-line-mode and change auto-fill-mode to " AF".
+(use-package emacs
+  :delight
+  (auto-fill-function " AF")
+  (visual-line-mode))
+```
+
 ## For `package.el` users
 
 You can use `use-package` to load packages from ELPA with `package.el`. This
 is particularly useful if you share your `.emacs` among several machines; the
-relevant packages are download automatically once declared in your `.emacs`.
+relevant packages are downloaded automatically once declared in your `.emacs`.
 The `:ensure` keyword causes the package(s) to be installed automatically if
-not already present on your system:
+not already present on your system (set `(setq use-package-always-ensure t)`
+if you wish this behavior to be global for all packages):
 
 ``` elisp
 (use-package magit
@@ -387,7 +419,7 @@ If you need to install a different package from the one named by
 `use-package`, you can specify it like this:
 
 ``` elisp
-(use-package tex-site
+(use-package tex
   :ensure auctex)
 ```
 
@@ -396,12 +428,13 @@ a specific archive, allowing you to mix and match packages from different
 archives.  The primary use-case for this is preferring packages from the
 `melpa-stable` and `gnu` archives, but using specific packages from `melpa`
 when you need to track newer versions than what is available in the `stable`
-archives.
+archives is also a valid use-case.
 
 By default `package.el` prefers `melpa` over `melpa-stable` due to the
 versioning `(> evil-20141208.623 evil-1.0.9)`, so even if you are tracking
 only a single package from `melpa`, you will need to tag all the non-`melpa`
-packages with the appropriate archive.
+packages with the appropriate archive. If this really annoys you, then you can
+set `use-package-always-pin` to set a default.
 
 If you want to manually keep a package updated and ignore upstream updates,
 you can pin it to `manual`, which as long as there is no repository by that
@@ -440,12 +473,6 @@ Example:
 ```
 
 **NOTE**: the `:pin` argument has no effect on emacs versions < 24.4.
-
-**NOTE**: if you pin a lot of packages, it will be slightly slower to start
-Emacs compared to manually adding all packages to the
-`package-pinned-packages` variable.  However, should you do it this way, you
-need to keep track of when `(package-initialize)` is called, so letting
-`use-package` handle it for you is arguably worth the cost.
 
 ## Extending use-package with new or modified keywords
 
@@ -499,7 +526,7 @@ Once you have a normalizer, you must create a handler for the keyword:
                package-pinned-packages))))))
 ```
 
-Handlers can effect on the handling of keywords in two ways.  First, it can
+Handlers can affect the handling of keywords in two ways.  First, it can
 modify the `state` plist before recursively processing the remaining keywords,
 to influence keywords that pay attention to the state (one example is the
 state keyword `:deferred`, not to be confused with the `use-package` keyword
@@ -541,3 +568,99 @@ time emacs -l init.elc -batch --eval '(message "Hello, world!")'
 
 On the Mac I see an average of 0.36s for the same configuration, and on Linux
 0.26s.
+
+# Upgrading to 2.x
+
+## Semantics of :init is now consistent
+
+The meaning of `:init` has been changed: It now *always* happens before
+package load, whether `:config` has been deferred or not.  This means that
+some uses of `:init` in your configuration may need to be changed to `:config`
+(in the non-deferred case).  For the deferred case, the behavior is unchanged
+from before.
+
+Also, because `:init` and `:config` now mean "before" and "after", the `:pre-`
+and `:post-` keywords are gone, as they should no longer be necessary.
+
+Lastly, an effort has been made to make your Emacs start even in the presence
+of use-package configuration failures.  So after this change, be sure to check
+your `*Messages*` buffer.  Most likely, you will have several instances where
+you are using `:init`, but should be using `:config` (this was the case for me
+in a number of places).
+
+## :idle has been removed
+
+I am removing this feature for now because it can result in a nasty
+inconsistency.  Consider the following definition:
+
+``` elisp
+(use-package vkill
+  :commands vkill
+  :idle (some-important-configuration-here)
+  :bind ("C-x L" . vkill-and-helm-occur)
+  :init
+  (defun vkill-and-helm-occur ()
+    (interactive)
+    (vkill)
+    (call-interactively #'helm-occur))
+
+  :config
+  (setq vkill-show-all-processes t))
+```
+
+If I load my Emacs and wait until the idle timer fires, then this is the
+sequence of events:
+
+    :init :idle <load> :config
+
+But if I load Emacs and immediately type C-x L without waiting for the idle
+timer to fire, this is the sequence of events:
+
+    :init <load> :config :idle
+
+It's possible that the user could use `featurep` in their idle to test for
+this case, but that's a subtlety I'd rather avoid.
+
+## :defer now accepts an optional integer argument
+
+`:defer [N]` causes the package to be loaded -- if it has not already been --
+after `N` seconds of idle time.
+
+```
+(use-package back-button
+  :commands (back-button-mode)
+  :defer 2
+  :init
+  (setq back-button-show-toolbar-buttons nil)
+  :config
+  (back-button-mode 1))
+```
+
+## Add :preface, occurring before everything except :disabled
+
+`:preface` can be used to establish function and variable definitions that
+will 1) make the byte-compiler happy (it won't complain about functions whose
+definitions are unknown because you have them within a guard block), and 2)
+allow you to define code that can be used in an `:if` test.
+
+Note that whatever is specified within `:preface` is evaluated both at load
+time and at byte-compilation time, in order to ensure that definitions are
+seen by both the Lisp evaluator and the byte-compiler, so you should avoid
+having any side-effects in your preface, and restrict it merely to symbol
+declarations and definitions.
+
+## Add :functions, for declaring functions to the byte-compiler
+
+What `:defines` does for variables, `:functions` does for functions.
+
+## use-package.el is no longer needed at runtime
+
+This means you should put the following at the top of your Emacs, to further
+reduce load time:
+
+``` elisp
+(eval-when-compile
+  (require 'use-package))
+(require 'diminish)                ;; if you use :diminish
+(require 'bind-key)                ;; if you use any :bind variant
+```

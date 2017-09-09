@@ -91,6 +91,8 @@
 ;; what the default was.  Also, it will tell you if the key was rebound after
 ;; your binding it with `bind-key', and what it was rebound it to.
 
+;;; Code:
+
 (require 'cl-lib)
 (require 'easy-mmode)
 
@@ -241,9 +243,9 @@ function symbol (unquoted)."
       (cl-flet
           ((wrap (map bindings)
                  (if (and map pkg (not (eq map 'global-map)))
-                     (if (boundp map)
-                         bindings
-                       `((eval-after-load
+                     `((if (boundp ',map)
+                           (progn ,@bindings)
+                         (eval-after-load
                              ,(if (symbolp pkg) `',pkg pkg)
                            '(progn ,@bindings))))
                    bindings)))
@@ -407,6 +409,7 @@ function symbol (unquoted)."
 (provide 'bind-key)
 
 ;; Local Variables:
+;; outline-regexp: ";;;\\(;* [^\s\t\n]\\|###autoload\\)\\|("
 ;; indent-tabs-mode: nil
 ;; End:
 
