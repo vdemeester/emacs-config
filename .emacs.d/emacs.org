@@ -134,6 +134,15 @@ possible.
 (setq load-prefer-newer t)
 #+END_SRC
 
+Let's also use [[https://github.com/myrjola/diminish.el][diminish.el]]. =use-package= provides built-in support
+for diminish. If it's installed, using =:diminish= will remove/hide
+the mode from the modeline.
+
+#+BEGIN_SRC emacs-lisp :tangle init.el
+  (use-package diminish
+    :ensure t)
+#+END_SRC
+
 ** Setup auto-compile
 
 Automatically compile emacs-lisp libraries. This guarantee that Emacs never loads outdated byte code files.
@@ -203,103 +212,43 @@ second).
   (setq echo-keystrokes 0.1)
 #+END_SRC
 
+** Shell environment variables
+
+Let's share most of the shell environment variables with Emacs.
+
+#+BEGIN_SRC emacs-lisp :tangle init.el
+  (use-package exec-path-from-shell
+    :ensure t
+    :config
+    (setq exec-path-from-shell-arguments (list "-l"))
+    (setq exec-path-from-shell-check-startup-files nil)
+    (add-to-list 'exec-path-from-shell-variables "SHELL")
+    (add-to-list 'exec-path-from-shell-variables "GOPATH")
+    (add-to-list 'exec-path-from-shell-variables "ENVIRONMENT_SETUP_DONE")
+    (add-to-list 'exec-path-from-shell-variables "PYTHONPATH")
+    (exec-path-from-shell-initialize))
+#+END_SRC
+
+** Fill Setup
+
+Get rid of nags about requiring setences to end with two spaces.
+
+#+BEGIN_SRC emacs-lisp :tangle init.el9
+  (setq sentence-end-double-space nil)
+#+END_SRC
+
+Set the default fill-column
+
+#+BEGIN_SRC emacs-lisp :tangle init.el
+  (setq-default fill-column 80)
+#+END_SRC
 * Load configurations
 
 It is now time to load other configuration.
 
 #+BEGIN_SRC emacs-lisp :tangle init.el
   ;; (require 'evil-config)
+  (use-package visual-config)
   (use-package org-config)
-#+END_SRC
-* Visual 😎
-
-Let's customize some graphical element, like dashboard, mode-line, and stuff
-
-** Dashboard
-
-The default Emacs splash-screen is not that useful. A useful
-splash-screen would display some recent files opened, bookmaks,
-projects and org-agenda items. Luckily, there is already a project
-that does that, [[https://github.com/rakanalh/emacs-dashboard][emacs-dashboard]].
-
-#+BEGIN_SRC emacs-lisp :tangle init.el
-  (use-package dashboard
-    :ensure t
-    :diminish dashboard-mode
-    :config
-    (setq dashboard-banner-logo-title "Welcome to Emacs, Vincent !"
-          dashboard-startup-banner (expand-file-name "images/okumura_rin_4_by_naruto_lover16-d4ktg50.png" user-emacs-directory))
-    (dashboard-setup-startup-hook))
-#+END_SRC
-
-** Theme
-
-#+BEGIN_SRC emacs-lisp :tangle init.el
-  (use-package doom-themes
-    :ensure t
-    :config
-    (setq doom-themes-enable-bolt t)
-    (setq doom-themes-enable-italic t)
-    (load-theme 'doom-one t))
-#+END_SRC
-
-A good companion to =doom-one= theme is [[https://github.com/hlissner/emacs-solaire-mode][solaire-mode]]. It helps
-visually distinguish file-visiting from other types of windows (like
-popups or sidebars).
-
-#+BEGIN_SRC emacs-lisp :tangle init.el
-  (use-package solaire-mode
-    :ensure t
-    :config
-    (setq solaire-mode-remap-modeline nil)
-    (add-hook 'after-change-major-mode-hook #'turn-on-solaire-mode)
-    (add-hook 'after-revert-hook #'turn-on-solaire-mode)
-    (add-hook 'minibuffer-setup-hook #'solaire-mode-in-minibuffer)
-    (add-hook 'ediff-prepare-buffer-hook #'solaire-mode)
-    (advice-add #'persp-load-state-from-file :after #'solaire-mode-restore-persp-mode-buffers))
-#+END_SRC
-** Lines and columns
-
-We want to see somewhere the column and line number, and also
-highlight the current line to see it easily.
-
-#+BEGIN_SRC emacs-lisp :tangle init.el
-  (line-number-mode 1)
-  (column-number-mode 1)
-  (global-hl-line-mode 1)
-#+END_SRC
-
-** Syntax highlighting
-
-Depending on the files opened and the syntax highlighting enabled,
-~font-lock-mode~ can be slow, we try to limit that, to keep Emacs
-reactive.
-
-#+BEGIN_SRC emacs-lisp :tangle init.el
-  (setq font-lock-maximum-decoration 2)
-#+END_SRC
-
-** Fringe decorations
-
-[[http://www.emacswiki.org/emacs/TheFringe][The fringe]] is the vertical region at the right and left of the
-buffer. Emacs lets you customize it of course.
-
-#+BEGIN_SRC emacs-lisp :tangle init.el
-  (setq-default indicate-buffer-boundaries 'left)
-  (setq-default indicate-empty-lines +1)
-#+END_SRC
-
-** Byte-compiles =.emacs.d= folder
-
-Let's also define a quick function to byte-compile files under
-=.emacs.d= folder to speed things up.
-
-#+BEGIN_SRC emacs-lisp :tangle init.el
-  (defun vde/byte-recompile ()
-    (interactive)
-    (byte-recompile-directory user-emacs-directory 0)
-    (byte-recompile-directory (expand-file-name "lisp" user-emacs-directory) 0)
-    (byte-recompile-directory (expand-file-name "config" user-emacs-directory) 0)
-    (byte-recompile-directory (expand-file-name "lisp/use-package" user-emacs-directory) 0))
 #+END_SRC
 

@@ -43,6 +43,11 @@
 
 (setq load-prefer-newer t)
 
+(use-package diminish
+  :ensure t)
+(use-package delight
+  :ensure t)
+
 (use-package auto-compile
   :ensure t
   :config
@@ -72,46 +77,33 @@
 
 (setq echo-keystrokes 0.1)
 
+(use-package exec-path-from-shell
+  :ensure t
+  :config
+  (setq exec-path-from-shell-arguments (list "-l"))
+  (setq exec-path-from-shell-check-startup-files nil)
+  (add-to-list 'exec-path-from-shell-variables "SHELL")
+  (add-to-list 'exec-path-from-shell-variables "GOPATH")
+  (add-to-list 'exec-path-from-shell-variables "ENVIRONMENT_SETUP_DONE")
+  (add-to-list 'exec-path-from-shell-variables "PYTHONPATH")
+  (exec-path-from-shell-initialize))
+
+(setq-default fill-column 80)
+
 ;; (require 'evil-config)
+(use-package visual-config)
 (use-package org-config)
-
-(use-package dashboard
-  :ensure t
-  :diminish dashboard-mode
-  :config
-  (setq dashboard-banner-logo-title "Welcome to Emacs, Vincent !"
-        dashboard-startup-banner (expand-file-name "images/okumura_rin_4_by_naruto_lover16-d4ktg50.png" user-emacs-directory))
-  (dashboard-setup-startup-hook))
-
-(use-package doom-themes
-  :ensure t
-  :config
-  (setq doom-themes-enable-bolt t)
-  (setq doom-themes-enable-italic t)
-  (load-theme 'doom-one t))
-
-(use-package solaire-mode
-  :ensure t
-  :config
-  (setq solaire-mode-remap-modeline nil)
-  (add-hook 'after-change-major-mode-hook #'turn-on-solaire-mode)
-  (add-hook 'after-revert-hook #'turn-on-solaire-mode)
-  (add-hook 'minibuffer-setup-hook #'solaire-mode-in-minibuffer)
-  (add-hook 'ediff-prepare-buffer-hook #'solaire-mode)
-  (advice-add #'persp-load-state-from-file :after #'solaire-mode-restore-persp-mode-buffers))
-
-(line-number-mode 1)
-(column-number-mode 1)
-(global-hl-line-mode 1)
-
-(setq font-lock-maximum-decoration 2)
-
-(setq-default indicate-buffer-boundaries 'left)
-(setq-default indicate-empty-lines +1)
-
-(defun vde/byte-recompile ()
-  (interactive)
-  (byte-recompile-directory user-emacs-directory 0)
-  (byte-recompile-directory (expand-file-name "lisp" user-emacs-directory) 0)
-  (byte-recompile-directory (expand-file-name "config" user-emacs-directory) 0)
-  (byte-recompile-directory (expand-file-name "lisp/use-package" user-emacs-directory) 0))
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages
+   (quote
+    (delight diminish solaire-mode htmlize exec-path-from-shell doom-themes dashboard auto-compile))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
