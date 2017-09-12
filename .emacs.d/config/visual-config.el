@@ -39,14 +39,14 @@
   (byte-recompile-directory (expand-file-name "config" user-emacs-directory) 0)
   (byte-recompile-directory (expand-file-name "lisp/use-package" user-emacs-directory) 0))
 
-(defvar vde/fixed-font-family
-  (cond ((x-list-fonts "Ubuntu Mono") "Ubuntu Mono-14")
-        ((x-list-fonts "Hasklig") "Hasklig-14")
-        ((x-list-fonts "Consolas") "Consolas-14"))
-  "Fixed width font based on what is install")
+(when (display-graphic-p)
+  (defvar vde/fixed-font-family
+    (cond ((x-list-fonts "Ubuntu Mono") "Ubuntu Mono-14")
+          ((x-list-fonts "Hasklig") "Hasklig-14")
+          ((x-list-fonts "Consolas") "Consolas-14"))
+    "Fixed width font based on what is install")
 
-;; FIXME(vdemeester) extract the condition out 👼
-(unless (eq system-configuration "aarch64-unknown-linux-android")
+  ;; FIXME(vdemeester) extract the condition out 👼
   (set-frame-font vde/fixed-font-family)
   (set-face-attribute 'default nil :font vde/fixed-font-family :height 110)
   (set-face-font 'default vde/fixed-font-family))

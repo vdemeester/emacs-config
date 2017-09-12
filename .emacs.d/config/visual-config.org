@@ -97,14 +97,14 @@ installed or another one renders better. I am a long-time fan of
 mainly =[[https://github.com/tonsky/FiraCode][Fira]]= and =[[https://github.com/i-tu/Hasklig][Hasklig]]= which do symbol ligatures.
 
 #+BEGIN_SRC emacs-lisp :tangle yes
-  (defvar vde/fixed-font-family
-    (cond ((x-list-fonts "Ubuntu Mono") "Ubuntu Mono-14")
-          ((x-list-fonts "Hasklig") "Hasklig-14")
-          ((x-list-fonts "Consolas") "Consolas-14"))
-    "Fixed width font based on what is install")
+  (when (display-graphic-p)
+    (defvar vde/fixed-font-family
+      (cond ((x-list-fonts "Ubuntu Mono") "Ubuntu Mono-14")
+            ((x-list-fonts "Hasklig") "Hasklig-14")
+            ((x-list-fonts "Consolas") "Consolas-14"))
+      "Fixed width font based on what is install")
 
-  ;; FIXME(vdemeester) extract the condition out 👼
-  (unless (eq system-configuration "aarch64-unknown-linux-android")
+    ;; FIXME(vdemeester) extract the condition out 👼
     (set-frame-font vde/fixed-font-family)
     (set-face-attribute 'default nil :font vde/fixed-font-family :height 110)
     (set-face-font 'default vde/fixed-font-family))
