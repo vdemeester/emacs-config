@@ -1,7 +1,6 @@
 
 (use-package dashboard
   :ensure t
-  :diminish dashboard-mode
   :config
   (setq dashboard-banner-logo-title "Welcome to Emacs, Vincent !"
         dashboard-startup-banner (expand-file-name "images/okumura_rin_4_by_naruto_lover16-d4ktg50.png" user-emacs-directory))
@@ -46,9 +45,11 @@
         ((x-list-fonts "Consolas") "Consolas-14"))
   "Fixed width font based on what is install")
 
-(set-frame-font vde/fixed-font-family)
-(set-face-attribute 'default nil :font vde/fixed-font-family :height 110)
-(set-face-font 'default vde/fixed-font-family)
+;; FIXME(vdemeester) extract the condition out 👼
+(unless (eq system-configuration "aarch64-unknown-linux-android")
+  (set-frame-font vde/fixed-font-family)
+  (set-face-attribute 'default nil :font vde/fixed-font-family :height 110)
+  (set-face-font 'default vde/fixed-font-family))
 
 (line-number-mode t)
 (column-number-mode t)
