@@ -45,8 +45,6 @@
 
 (use-package diminish
   :ensure t)
-(use-package delight
-  :ensure t)
 
 (use-package auto-compile
   :ensure t
@@ -88,22 +86,23 @@
   (add-to-list 'exec-path-from-shell-variables "PYTHONPATH")
   (exec-path-from-shell-initialize))
 
+(setq sentence-end-double-space nil)
+
 (setq-default fill-column 80)
+
+(defadvice server-ensure-safe-dir (around
+                                   my-around-server-ensure-safe-dir
+                                   activate)
+  "Ignores any errors raised from server-ensure-safe-dir"
+  (ignore-errors ad-do-it))
+(unless (string= (user-login-name) "root")
+  (require 'server)
+  (when (or (not server-process)
+            (not (eq (process-status server-process)
+                     'listen)))
+    (unless (server-running-p server-name)
+   (server-start))))
 
 ;; (require 'evil-config)
 (use-package visual-config)
 (use-package org-config)
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(package-selected-packages
-   (quote
-    (delight diminish solaire-mode htmlize exec-path-from-shell doom-themes dashboard auto-compile))))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )

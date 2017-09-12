@@ -233,7 +233,7 @@ Let's share most of the shell environment variables with Emacs.
 
 Get rid of nags about requiring setences to end with two spaces.
 
-#+BEGIN_SRC emacs-lisp :tangle init.el9
+#+BEGIN_SRC emacs-lisp :tangle init.el
   (setq sentence-end-double-space nil)
 #+END_SRC
 
@@ -242,6 +242,31 @@ Set the default fill-column
 #+BEGIN_SRC emacs-lisp :tangle init.el
   (setq-default fill-column 80)
 #+END_SRC
+
+** Server
+
+Let's start /the emacs/ server in order to have almost only one shared
+instance of emacs running "long-time". I'm usually starting it using
+i3 (in the background).
+
+I had an error about /unsafe directory/ for =/tmp/emacs100=, that's
+why there is an advice here to ignore the error (see [[http://stackoverflow.com/a/17069276/89249][stackoverflow]]).
+
+#+BEGIN_SRC emacs-lisp :tangle init.el
+  (defadvice server-ensure-safe-dir (around
+                                     my-around-server-ensure-safe-dir
+                                     activate)
+    "Ignores any errors raised from server-ensure-safe-dir"
+    (ignore-errors ad-do-it))
+  (unless (string= (user-login-name) "root")
+    (require 'server)
+    (when (or (not server-process)
+              (not (eq (process-status server-process)
+                       'listen)))
+      (unless (server-running-p server-name)
+     (server-start))))
+#+END_SRC
+
 * Load configurations
 
 It is now time to load other configuration.
