@@ -103,6 +103,32 @@
     (unless (server-running-p server-name)
    (server-start))))
 
-;; (require 'evil-config)
+(use-package which-key
+  :ensure t
+  :defer t
+  :diminish which-key-mode
+  :init
+  (setq which-key-sort-order 'which-key-key-order-alpha)
+  :bind* (("M-m ?" . which-key-show-top-level))
+  :config
+  (which-key-mode)
+  (which-key-add-key-based-replacements
+    "M-m ?" "top level bindings"))
+
 (use-package visual-config)
 (use-package org-config)
+(use-package navigation-config)
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages
+   (quote
+    (evil-indent-textobject evil-surround evil-jumper evil which-key delight diminish solaire-mode htmlize exec-path-from-shell doom-themes dashboard auto-compile))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )

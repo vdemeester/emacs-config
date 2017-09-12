@@ -267,13 +267,35 @@ why there is an advice here to ignore the error (see [[http://stackoverflow.com/
      (server-start))))
 #+END_SRC
 
+** Which-key
+
+Emacs has 100s of bindings and it is impossible to remember them
+all. Sometimes I can remember the start of a key chord but not the
+entire one. [[https://github.com/justbur/emacs-which-key][Which-key]] is a package that gives you key hints on delay
+or if prompted. I really like it and use it extensively to setup the
+modal state.
+
+#+BEGIN_SRC emacs-lisp :tangle init.el
+  (use-package which-key
+    :ensure t
+    :defer t
+    :diminish which-key-mode
+    :init
+    (setq which-key-sort-order 'which-key-key-order-alpha)
+    :bind* (("M-m ?" . which-key-show-top-level))
+    :config
+    (which-key-mode)
+    (which-key-add-key-based-replacements
+      "M-m ?" "top level bindings"))
+#+END_SRC
+
 * Load configurations
 
 It is now time to load other configuration.
 
 #+BEGIN_SRC emacs-lisp :tangle init.el
-  ;; (require 'evil-config)
   (use-package visual-config)
   (use-package org-config)
+  (use-package navigation-config)
 #+END_SRC
 

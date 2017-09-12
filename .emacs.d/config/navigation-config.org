@@ -1,0 +1,129 @@
+#+TITLE: Navigation configuration
+
+Let's configure general navigation elements of emacs here. By that I
+mean using modal edition (like =evil=) but also command and search
+like =ivy= and =counsel=.
+
+* Evil
+
+#+BEGIN_QUOTE
+Evil Mode, or, How I Learned to Stop Worrying and Love Emacs
+#+END_QUOTE
+
+As [[https://blog.aaronbieber.com/][Aaron Bieber]] says in one of his [[https://blog.aaronbieber.com/2015/06/03/evil-mode.html][talk]], let's stop worrying and use
+best of both worlds.
+
+First let's define the =vde:config-evil= function 👼.
+
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (defun vde:config-evil ()
+    "Configure evil mode the way I want"
+    (vde:evil:configure-emacs-mode)
+    (vde:evil:configure-bepo))
+#+END_SRC
+
+Some modes will work better with =emacs= evil mode, i.e. not the
+default vim =normal= mode or =insert= mode. One example would be
+=grep-mode= which has already pretty useful one key bindings.
+
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (defun vde:evil:configure-emacs-mode ()
+    "configure evil emacs mode"
+    (dolist (mode '(custom-mode
+                    dired-mode
+                    eshell-mode
+                    term-mode
+                    grep-mode))
+      (add-to-list 'evil-emacs-state-modes mode)))
+#+END_SRC
+
+I am a =bépo= user in /most/ of my computer. This means the default
+vim bindings of evil are really not optimized for my keyboard
+layout. That said in a few (macbook at work/home and on tablets) I am
+using mainly qwerty or azerty. So…
+
+I need to rebind those bindings to bépo-optimized bindings,
+/conditionaly/. Any bindings I do for evil (and in general) should act
+the same with my bépo keymap *and* a qwerty/azerty keymap. This means
+I need a way to rebind dynamically some stuff — well not that
+dynamically but I need to have *one way* to bind things (the qwerty
+way) that should be translated to the =bépo=-way if I'm on a bépo
+computer. We'll detect they keyboard layout using a variable that
+needs to be set-up on bépo machines.
+
+Let's first create a map that correspond one bépo char to a qwerty
+char.
+
+#+BEGIN_SRC emacs-lisp :tangle no
+    (defvar vde:bepo-base-rebinding-map
+      (;;row0
+       ("=" . "-")
+       ;;row1
+       ("b" . "q")
+       ("é" . "w")
+       ("p" . "e")
+       ("o" . "r")
+       ("è" . "t")
+       ("^" . "y")
+       ("v" . "u")
+       ("d" . "i")
+       ("l" . "o")
+       ("j" . "p")
+       ("z" . "[")
+       ;;row2
+       ("a" . "a")
+       ("u" . "s")
+       ("i" . "d")
+       ("e" . "f")
+       ("," . "g")
+       ("c" . "h")
+       ("t" . "j")
+       ("s" . "k")
+       ("r" . "l")
+       ("n" . ";")
+       ("m" . "'")
+       ;;row3
+       ("à" . "z")
+       ("y" . "x")
+       ("x" . "c")
+       ("." . "v")
+       ("k" . "b")
+       ("'" . "n")
+       ("q" . "m")
+       ("g" . ",")
+       ("h" . ".")
+       ("f" . "/")
+       ("w" . "]")))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (defun vde:evil:configure-bepo ()
+    "Remap default bindings to bépo one *if* the computer is
+    running on a bépo keyboard layout.")
+#+END_SRC
+
+Finally let's tie this altogether.
+
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (use-package evil
+    :ensure t
+    :config
+    (add-hook 'evil-mode-hook 'vde:config-evil)
+    (evil-mode 1)
+    (use-package evil-jumper
+      :ensure t
+      :config
+      (global-evil-jumper-mode))
+    (use-package evil-surround
+      :ensure t
+      :config
+      (global-evil-surround-mode))
+    (use-package evil-indent-textobject
+      :ensure t))
+#+END_SRC
+
+* Provide configuration
+
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (provide 'navigation-config)
+#+END_SRC
