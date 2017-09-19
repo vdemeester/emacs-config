@@ -296,6 +296,7 @@ It is now time to load other configuration.
 #+BEGIN_SRC emacs-lisp :tangle init.el
   (use-package visual-config)
   (use-package org-config)
+  (use-package nix-config)
   (use-package navigation-config)
 #+END_SRC
 
