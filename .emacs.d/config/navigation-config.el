@@ -41,4 +41,77 @@
   :config
   (which-key-mode))
 
+(use-package ivy
+  :ensure t
+  :diminish ivy-mode
+  :config
+  (use-package ivy-hydra
+    :ensure t)
+  (ido-mode -1)
+  (ivy-mode 1)  ;; Show recently killed buffers when calling `ivy-switch-buffer'
+  (setq ivy-use-virtual-buffers t)
+  (defun modi/ivy-kill-buffer ()
+    (interactive)
+    (ivy-set-action 'kill-buffer)
+    (ivy-done))
+  (bind-keys
+   :map ivy-switch-buffer-map
+   ("C-k" . modi/ivy-kill-buffer))
+  (bind-keys
+   :map ivy-minibuffer-map
+   ;; Exchange the default bindings for C-j and C-m
+   ("C-m" . ivy-alt-done) ; RET, default C-j
+   ("C-j" . ivy-done) ; default C-m
+   ("C-S-m" . ivy-immediate-done)
+   ("C-t" . ivy-toggle-fuzzy)
+   ("C-o" . hydra-ivy/body))
+  ;; version of ivy-yank-word to yank from start of word
+  (defun bjm/ivy-yank-whole-word ()
+    "Pull next word from buffer into search string."
+    (interactive)
+    (let (amend)
+  (with-ivy-window
+        ;;move to last word boundary
+        (re-search-backward "\\b")
+        (let ((pt (point))
+          (le (line-end-position)))
+          (forward-word 1)
+          (if (> (point) le)
+          (goto-char pt)
+            (setq amend (buffer-substring-no-properties pt (point))))))
+  (when amend
+        (insert (replace-regexp-in-string " +" " " amend)))))
+
+  ;; bind it to M-j
+  (define-key ivy-minibuffer-map (kbd "M-j") 'bjm/ivy-yank-whole-word))
+
+(use-package counsel
+  :ensure t
+  :bind*                    
+  (("M-x"     . counsel-M-x)
+   ("M-y"     . counsel-yank-pop)
+   ("C-x C-f" . counsel-find-file)
+   ("C-x C-r" . counsel-recentf)
+   ("C-c f"   . counsel-git)
+   ("C-c s"   . counsel-git-grep)
+   ("C-c /"   . counsel-ag))
+  :config
+  (progn
+    (ivy-set-actions
+     'counsel-find-file
+     '(("d" (lambda (x) (delete-file (expand-file-name x)))
+        "delete"
+        )))
+    (ivy-set-actions
+     'ivy-switch-buffer
+     '(("k" (lamba (x)
+                   (kill-buffer x)
+                   (ivy--reset-state ivy-last))
+        "kill")
+   ("j"
+        ivy--switch-buffer-other-window-action
+        "other window")))
+    )
+  )
+
 (provide 'navigation-config)
