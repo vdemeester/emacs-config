@@ -707,5 +707,5 @@ And the projects.
 #+END_SRC
 * Provide configuration
 #+BEGIN_SRC emacs-lisp :tangle yes
-(provide 'org-config)
+  (provide 'org-config)
 #+END_SRC
