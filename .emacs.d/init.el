@@ -126,7 +126,7 @@
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (direnv nixos-sandbox nix-mode s evil-indent-textobject evil-surround evil-jumper evil which-key delight diminish solaire-mode htmlize exec-path-from-shell doom-themes dashboard auto-compile))))
+    (counsel ivy-hydra go-mode direnv nixos-sandbox nix-mode s evil-indent-textobject evil-surround evil-jumper evil which-key delight diminish solaire-mode htmlize exec-path-from-shell doom-themes dashboard auto-compile))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
