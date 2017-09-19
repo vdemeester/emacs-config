@@ -122,6 +122,23 @@ Finally let's tie this altogether.
       :ensure t))
 #+END_SRC
 
+* Which key
+
+ Emacs has 100s of bindings and it is impossible to remember them all. Sometimes
+ I can remember the start of a key chord but not the entire one. [[https://github.com/justbur/emacs-which-key][which-key]] is a
+ package that gives you key hints on delay or if prompted. I really like it and
+ use it extensively to setup the modal state.
+
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (use-package which-key
+    :ensure t
+    :diminish which-key-mode
+    :init
+    (setq which-key-sort-order 'which-key-key-order-alpha)
+    :config
+    (which-key-mode))
+#+END_SRC
+
 * Provide configuration
 
 #+BEGIN_SRC emacs-lisp :tangle yes

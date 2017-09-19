@@ -33,4 +33,12 @@
   (use-package evil-indent-textobject
     :ensure t))
 
+(use-package which-key
+  :ensure t
+  :diminish which-key-mode
+  :init
+  (setq which-key-sort-order 'which-key-key-order-alpha)
+  :config
+  (which-key-mode))
+
 (provide 'navigation-config)
