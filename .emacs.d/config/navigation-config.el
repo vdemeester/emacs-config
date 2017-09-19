@@ -114,4 +114,45 @@
     )
   )
 
+(use-package projectile
+  :ensure t
+  :init
+  (setq projectile-enable-caching t
+        projectile-verbose nil
+        projectile-completion-system 'ivy)
+  (put 'projectile-project-run-cmd 'safe-local-variable #'stringp)
+  (defun projectile-do-invalidate-cache (&rest _args)
+    (projectile-invalidate-cache nil))
+  (advice-add 'rename-file :after #'projectile-do-invalidate-cache))
+
+(use-package counsel-projectile
+  :ensure t
+  :after projectile
+  :config (counsel-projectile-on))
+
+(use-package persp-projectile
+  :ensure t
+  :after projectile)
+
+(use-package general
+  :ensure t
+  :config
+  (let ((leader "SPC")
+        (emacs-leader "M-m"))
+    (general-define-key
+     :states '(normal visual insert emacs)
+     :prefix leader
+     :non-normal-prefix emacs-leader
+     "p" 'projectile-command-map
+     "TAB" '(ivy-switch-buffer :which-key "switch buffer")
+     "/" '(:ignore t :which-key "search")
+     "/a" '(counsel-ag :which-key "ag")
+     "/g" '(counsel-git-grep :which-key "git grep")
+     "y" '(counsel-yank-pop :which-key "yank-pop")
+     "SPC" '(counsel-M-x :which-key "M-x")
+     "f" '(:ignore t :which-key "Files")
+     "ff" '(counsel-find-file :which-key "find file")
+     "fd" '(counsel-git :which-key "find file in git")
+     "r" '(counsel-recentf :which-key "recent file"))))
+
 (provide 'navigation-config)

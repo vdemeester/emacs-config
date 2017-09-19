@@ -239,6 +239,65 @@ provides a very good and lightweight alternative to =helm=.
     )
 #+END_SRC
 
+* Project management
+
+In order to manage project under Emacs, the most used package is =projectile=.
+
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (use-package projectile
+    :ensure t
+    :init
+    (setq projectile-enable-caching t
+          projectile-verbose nil
+          projectile-completion-system 'ivy)
+    (put 'projectile-project-run-cmd 'safe-local-variable #'stringp)
+    (defun projectile-do-invalidate-cache (&rest _args)
+      (projectile-invalidate-cache nil))
+    (advice-add 'rename-file :after #'projectile-do-invalidate-cache))
+
+  (use-package counsel-projectile
+    :ensure t
+    :after projectile
+    :config (counsel-projectile-on))
+
+  (use-package persp-projectile
+    :ensure t
+    :after projectile)
+#+END_SRC
+
+* General
+
+A good complement to =evil= is the [[https://github.com/noctuid/general.el][general]].
+
+> general.el provides a more convenient way to bind keys in emacs for both evil
+> and non-evil users. general-define-key allows defining multiple keys at once,
+> implicitly wrapping key strings with (kbd ...), having named prefix key
+> sequences (like the leader key in vim), and more.
+
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (use-package general
+    :ensure t
+    :config
+    (let ((leader "SPC")
+          (emacs-leader "M-m"))
+      (general-define-key
+       :states '(normal visual insert emacs)
+       :prefix leader
+       :non-normal-prefix emacs-leader
+       "p" 'projectile-command-map
+       "TAB" '(ivy-switch-buffer :which-key "switch buffer")
+       "/" '(:ignore t :which-key "search")
+       "/a" '(counsel-ag :which-key "ag")
+       "/g" '(counsel-git-grep :which-key "git grep")
+       "y" '(counsel-yank-pop :which-key "yank-pop")
+       "SPC" '(counsel-M-x :which-key "M-x")
+       "f" '(:ignore t :which-key "Files")
+       "ff" '(counsel-find-file :which-key "find file")
+       "fd" '(counsel-git :which-key "find file in git")
+       "r" '(counsel-recentf :which-key "recent file"))))
+#+END_SRC
+
+
 * Provide configuration
 
 #+BEGIN_SRC emacs-lisp :tangle yes

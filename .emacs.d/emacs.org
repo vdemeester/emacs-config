@@ -300,4 +300,3 @@ It is now time to load other configuration.
   (use-package go-config)
   (use-package navigation-config)
 #+END_SRC
-
