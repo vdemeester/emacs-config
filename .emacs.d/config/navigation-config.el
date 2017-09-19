@@ -123,7 +123,9 @@
   (put 'projectile-project-run-cmd 'safe-local-variable #'stringp)
   (defun projectile-do-invalidate-cache (&rest _args)
     (projectile-invalidate-cache nil))
-  (advice-add 'rename-file :after #'projectile-do-invalidate-cache))
+  (advice-add 'rename-file :after #'projectile-do-invalidate-cache)
+  (projectile-mode)
+  (projectile-cleanup-known-projects))
 
 (use-package counsel-projectile
   :ensure t
@@ -136,6 +138,7 @@
 
 (use-package general
   :ensure t
+  :after projectile
   :config
   (let ((leader "SPC")
         (emacs-leader "M-m"))
