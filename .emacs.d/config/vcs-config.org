@@ -1,0 +1,44 @@
+#+TITLE: vcs configuration
+
+* Magit
+
+Let's configure [[https://magit.vc/][the best interface to git ever]]. Enough said.
+
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (use-package magit
+    :ensure t
+    :diminish "🔮 "
+    :commands magit-status
+    :config
+    (setq magit-completing-read-function 'ivy-completing-read)
+    (add-to-list 'magit-no-confirm 'stage-all-changes)
+    (setq magit-push-always-verify nil)
+    (setq magit-last-seen-setup-instructions "2.1.0"))
+#+END_SRC
+
+* Git annex
+
+[[http://git-annex.branchable.com/][git-annex]] is a wonderful piece of software — I use it a lot.
+
+#+BEGIN_QUOTE
+git-annex allows managing files with git, without checking the file contents
+into git. While that may seem paradoxical, it is useful when dealing with files
+larger than git can currently easily handle, whether due to limitations in
+memory, time, or disk space.
+#+END_QUOTE
+
+In Emacs, it integrates with =magit= and =dired=. The subcommand for annex in
+magit is =@=.
+
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (use-package git-annex
+    :ensure t)
+  (use-package magit-annex
+    :ensure t)
+#+END_SRC
+
+* Provide configuration
+
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (provide 'vcs-config)
+#+END_SRC

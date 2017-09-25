@@ -156,6 +156,9 @@
      "f" '(:ignore t :which-key "Files")
      "ff" '(counsel-find-file :which-key "find file")
      "fd" '(counsel-git :which-key "find file in git")
+     "g" '(:ignore t :which-key "Git")
+     "gs" '(magit-status :which-key "git status")
+     "g@" '(magit-annex-sync :which-key "git annex sync")
      "r" '(counsel-recentf :which-key "recent file"))))
 
 (provide 'navigation-config)
