@@ -289,6 +289,14 @@ modal state.
       "M-m ?" "top level bindings"))
 #+END_SRC
 
+** Adaptative cursor width
+
+Let's make cursor the width of the character it is under.
+
+#+BEGIN_SRC emacs-lisp :tangle init.el
+  (setq x-stretch-cursor t)
+#+END_SRC
+
 * Load configurations
 
 It is now time to load other configuration.

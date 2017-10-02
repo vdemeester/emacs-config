@@ -115,23 +115,11 @@
   (which-key-add-key-based-replacements
     "M-m ?" "top level bindings"))
 
+(setq x-stretch-cursor t)
+
 (use-package visual-config)
 (use-package org-config)
 (use-package nix-config)
 (use-package go-config)
 (use-package vcs-config)
 (use-package navigation-config)
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(package-selected-packages
-   (quote
-    (magit-annex git-annex magit general persp-projectile counsel-projectile projectile counsel ivy-hydra go-mode direnv nixos-sandbox nix-mode s evil-indent-textobject evil-surround evil-jumper evil which-key delight diminish solaire-mode htmlize exec-path-from-shell doom-themes dashboard auto-compile))))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
