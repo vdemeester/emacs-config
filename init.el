@@ -105,9 +105,31 @@ gc-cons-percentage 0.1))
 ;; Confirm before quitting Emacs
 (setq confirm-kill-emacs #'y-or-n-p)
 
+;;; Default rg arguments
+;; https://github.com/BurntSushi/ripgrep
+(defconst vde/rg-arguments
+  `("--no-ignore-vcs"                   ;Ignore files/dirs ONLY from `.ignore'
+    "--line-number"                     ;Line numbers
+    "--smart-case"
+    "--follow"                 ;Follow symlinks
+    "--max-columns" "150"      ;Emacs doesn't handle long line lengths very well
+    "--ignore-file" ,(expand-file-name ".ignore" (getenv "HOME")))
+  "Default rg arguments used in the functions in `counsel' and `projectile'
+packages.")
+
 ;;; Require files under ~/.emacs.d/lisp
 (add-to-list 'load-path (expand-file-name "lisp" user-emacs-directory))
+
+;; Enable `vde-mode' unless `disable-pkg-vde-mode' is set to `t' in
+;; `setup-var-overrides.el'.
+(when (not (bound-and-true-p disable-pkg-vde-mode))
+  (require 'vde-mode))
+;;(require 'vde-mode)
+
 (use-package vde-style)
+(use-package vde-keybindings)
+(use-package vde-ivy)
+(use-package vde-vcs)
 
 ;; Reset default values
 (add-hook 'emacs-startup-hook #'vde-set-gc-threshold)
