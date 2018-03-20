@@ -130,6 +130,8 @@ packages.")
 (use-package vde-keybindings)
 (use-package vde-ivy)
 (use-package vde-vcs)
+(use-package vde-dired)
+(use-package vde-editing)
 
 ;; Reset default values
 (add-hook 'emacs-startup-hook #'vde-set-gc-threshold)

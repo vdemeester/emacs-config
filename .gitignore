@@ -13,3 +13,7 @@ result-*
 
 # misc
 auto-save-list
+var
+tramp
+elpa
+custom.el

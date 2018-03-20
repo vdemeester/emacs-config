@@ -36,9 +36,6 @@
   (add-hook 'projectile-switch-project-hook
             #'mu-magit-set-repo-dirs-from-projectile)
 
-  ;; Refresh `diff-hl' accordingly
-  (add-hook 'magit-post-refresh-hook #'diff-hl-magit-post-refresh)
-
   ;; Refresh `magit-status' after saving a buffer
   (add-hook 'after-save-hook #'magit-after-save-refresh-status)
 
@@ -84,3 +81,8 @@
   :defer t)
 
 (provide 'vde-vcs)
+
+;; Local Variables:
+;; coding: utf-8
+;; indent-tabs-mode: nil
+;; End:
