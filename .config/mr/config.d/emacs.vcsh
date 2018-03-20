@@ -1,3 +1,0 @@
-[$HOME/.config/vcsh/repo.d/emacs-config.git]
-lib = VCSH_NAME="emacs-config"
-include = cat $HOME/lib/vcsh/mr

@@ -1,0 +1,303 @@
+#+TITLE: shortbrain's emacs configuration
+#+AUTHOR: Vincent Demeester
+#+EMAIL: vincent@sbr.pm
+#+SUBTITLE: Shortbrain's automated Emacs "realm"
+#+DESCRIPTION: My Emacs configuration
+#+Language: en
+#+OPTIONS: c:nil d:t e:t f:t H:3 p:nil ':t *:t -:t ::t <:t \n:nil ^:{} |:t
+#+OPTIONS: arch:nil author:t broken-links:nil
+#+OPTIONS: creator:t date:t email:t inline:nil num:nil pri:t
+#+OPTIONS: prop:nil stat:t tags:nil tasks:nil tex:t timestamp:t title:t toc:nil
+#+PROPERTY: header-args :cache yes :comments link
+#+PROPERTY: header-args:emacs-lisp :results output silent
+#+TAGS: noexport notangle
+#+STARTUP: hideblocks indent align entitiespretty
+#+EXPORT_FILE_NAME: index
+#+KEYWORDS: dotfiles config ide emacs nix sbr
+#+HTML_HEAD: <link rel=stylesheet href=https://emacs.shortbrain.org/style.css />
+#+LINK_HOME: http://shortbrain.org
+#+LINK_UP: http://emacs.shortbrain.org
+
+#+BEGIN_SRC
+                                                              ___ __
+    .-----.--------.---.-.----.-----.______.----.-----.-----.'  _|__|.-----.
+    |  -__|        |  _  |  __|__ --|______|  __|  _  |     |   _|  ||  _  |
+    |_____|__|__|__|___._|____|_____|      |____|_____|__|__|__| |__||___  |
+                                                                     |_____|
+#+END_SRC
+
+This =org-mode= file generates an Emacs configuration. This is a rework of my
+/attempt/ to write a litterate configuration for emacs. The previous versions
+went well but it felt like it didn't go all the way. One thing I still didn't
+manage is to do *everything* litterate — what this mean is, if I want to create
+a =Caskfile= or a shell script, this will also be in an org-mode file with the
+right =tangle= definitions. I'm also a user of [[https://nixos.org][nixos]] and I want to use the power
+of nix in the configuration — while making it work on system that do not have
+=nixpkgs=.
+
+#+TOC: headlines 2
+
+* TODO Usage
+:PROPERTIES:
+:header-args: :tangle no
+:END:
+
+This file aims to be self-standing, i.e. it will generates any file my emacs
+setup needs. And as I'm using =nixos= as my primary default linux system, I want
+to be able to run =nix-build= to update and build my emacs configuration, and
+=nix-env -fi .= to install it.
+
+* Emacs init file
+  :PROPERTIES:
+  :header-args: :tangle init.el :comments link
+  :END:
+** Increase GC
+
+Increasing GC is a common way to speed up Emacs. =gc-cons-threshold= sets at
+what point Emacs should invoke its garbage collector Some people set it to a
+really larger number permanently. This works well until the garbage is actually
+collected (then you have to wait a long time). I’ve decided to just set it
+temporarily to a large number so we only garbage collect once on startup. After
+that we reset it to the standard value. Read [[http://bling.github.io/blog/2016/01/18/why-are-you-changing-gc-cons-threshold/][@bling’s post]] for more info on
+this.
+
+#+BEGIN_SRC emacs-lisp
+  (defvar file-name-handler-alist-backup file-name-handler-alist)
+  (setq gc-cons-threshold most-positive-fixnum
+        file-name-handler-alist nil
+        ;; load-path `(,(expand-file-name "site-lisp" user-emacs-directory)
+        ;;             )
+        )
+  (add-hook 'after-init-hook
+            (lambda ()
+              (garbage-collect)
+              (setq gc-cons-threshold
+                    (car (get 'gc-cons-threshold 'standard-value))
+                    file-name-handler-alist (append
+                                             file-name-handler-alist-backup
+                                             file-name-handler-alist))))
+#+END_SRC
+
+** Defaults
+
+*** Some variables
+
+Let's define some variable that will be used later and by our configuration.
+
+#+BEGIN_SRC emacs-lisp
+  (defvar user-home-directory (file-name-as-directory (getenv "HOME")))
+  (setq user-emacs-directory (file-name-as-directory (expand-file-name ".emacs.d" user-home-directory)))
+
+  (setq org-directory (let ((dir (file-name-as-directory (expand-file-name "org" user-home-directory))))
+                        (make-directory dir :parents)
+                        dir))
+
+  (defvar user-personal-directory (let ((dir (file-name-as-directory (expand-file-name "personal" user-emacs-directory))))
+                                    (make-directory dir :parents)
+                                    dir)
+    "User's personal directory to contain non-git-controlled files.")
+  (setq custom-file (expand-file-name "custom-file.el" user-personal-directory))
+
+  (defvar emacs-version-short (format "%s_%s"
+                                      emacs-major-version emacs-minor-version)
+    "A variable to store the current emacs versions as <MAJORVER>_<MINORVER>.
+  So, for emacs version 25.0.50.1, this variable will be 25_0.")
+
+  (defvar sbr/org-version-select 'elpa
+    "Variable to choose the version of Org to be loaded.
+  Valid values are `dev', `elpa' and `emacs'.
+
+  When set to `dev', the development version of Org built locally is loaded.
+  When set to `elpa', Org is installed and loaded from Org Elpa.
+  When set to `emacs', the Org version shipped with Emacs is used.
+
+  The value is defaulted to `elpa' as few things in this config
+  need Org version to be at least 9.x.")
+#+END_SRC
+
+*** Package at launch
+
+There is quite a few package I want to be available at launch. The other ones
+will be automagically get when required.
+
+#+BEGIN_SRC emacs-lisp
+  (defconst my-packages
+    '(ace-window
+      adaptive-wrap ; indented line wrapping
+      rg wgrep wgrep-ag s ; ag > ack > grep
+                                          ; wgrep+wgrep-ag allow editing files
+                                          ; directly in ag buffer
+      avy
+      benchmark-init
+      dired-single dired+ dired-collapse
+      expand-region
+      fill-column-indicator
+      flycheck
+      flyspell-correct-ivy
+      git-timemachine
+      htmlize
+      hydra
+      ibuffer-projectile
+      imenu-list
+      info+
+      ivy swiper counsel
+      magit
+      markdown-mode
+      multiple-cursors
+      projectile
+      undo-tree
+      use-package use-package-chords
+      which-key
+      wrap-region
+      ;; Themes
+      doom-themes
+      gruvbox-theme
+      )
+    "A list of packages to ensure are installed at launch")
+#+END_SRC
+
+Let's now do some magic to load the setup.
+
+#+BEGIN_SRC emacs-lisp
+  ;; Basic requires
+  ;; Place `setup-var-overrides.el' with `(provide 'setup-var-overrides)' in
+  ;; `user-personal-directory'
+  (add-to-list 'load-path user-personal-directory)
+  (require 'setup-var-overrides nil :noerror)
+
+  (load custom-file :noerror :nomessage) ; Load the `M-x customize` generated file
+  (load (locate-user-emacs-file "general.el") nil :nomessage)
+  (load (locate-user-emacs-file "setup-packages.el") nil :nomessage)
+  ;; (package-initialize) ; Do NOT delete this comment
+  ;;   In emacs 25+, the `package-initialize' call is auto-added to the top of
+  ;; init.el unless the user already has a commented or uncommented
+  ;; `(package-initialize)' line present in their init.el.
+  ;;   I call this function in setup-packages.el and so am keeping the
+  ;; commented out version here so that package.el does not add it again.
+
+  ;; Start `benchmark-init' as soon as possible
+  (require 'benchmark-init)
+
+  (eval-when-compile
+    (require 'use-package)                ;Auto-requires `bind-key' too
+    (setq use-package-always-ensure nil))
+  (require 'use-package-chords)
+
+  ;; Enable `modi-mode' unless `disable-pkg-modi-mode' is set to `t' in
+  ;; `setup-var-overrides.el'.
+  (when (not (bound-and-true-p disable-pkg-modi-mode))
+    (require 'modi-mode))
+  (require 'temp-mode)
+
+  ;(require 'setup-paradox)
+  ;(require 'setup-region-bindings-mode)
+  ;(require 'setup-key-chord)
+  ;(require 'setup-hydra)
+  ;(require 'setup-tags)
+  ;; End of basic requires
+
+  ;; Set up the looks of emacs
+  ;(require 'setup-mode-line)
+  ;(require 'setup-visual)
+  ;(require 'setup-shackle)
+#+END_SRC
+
+** Autoloads & Misc.
+
+Setup some initial aliases for Emacs. These give us an easy way to use these
+functions without actually require'ing them. Ideally, Emacs should pick these up
+through the automatic autoloading method, but that sometimes conflicts with the
+compiling phases used later.
+
+#+BEGIN_SRC emacs-lisp
+  (eval-and-compile
+    (autoload 'package-installed-p "package")
+    (autoload 'use-package-autoload-keymap "use-package")
+    (autoload 'pcomplete-arg   "pcomplete")
+    (autoload 'pcomplete--here "pcomplete")
+    (autoload 'term-set-escape-char "term")
+    (autoload 'tramp-tramp-file-p "tramp")
+    (autoload 'tramp-dissect-file-name "tramp"))
+#+END_SRC
+
+Now we are going to setup some basic Emacs GUI elements. Under normal
+circumstances, we want GUI elements hidden from the user so that we only see the
+text buffer. This gives us a minimalist look that works well with the theme. We
+will end up disabling =tool-bar-mode=, =scroll-bar-mode=, =blink-cursor-mode=,
+and =menu-bar-mode= here. The one exception to this is when we are running macOS
+where the system provides a builtin menubar system that Emacs can use.
+
+#+BEGIN_SRC  emacs-lisp
+  (when window-system
+    (tool-bar-mode -1)
+    (scroll-bar-mode -1)
+    (blink-cursor-mode -1))
+
+  (when (not (memq window-system '(mac ns)))
+    (menu-bar-mode -1))
+#+END_SRC
+
+When we are within a terminal we want to be able to use the mouse, so
+=xterm-mouse-mode= is enabled here.
+
+#+BEGIN_SRC  emacs-lisp
+  (when (not window-system)
+    (xterm-mouse-mode 1))
+#+END_SRC
+** TODO Packages
+*** TODO Essentials
+**** TODO Org
+
+[[https://orgmode.org][Website]]
+
+Org mode is an impressive suite of text editing solutions. It gives you an
+outliner but also much much more.
+
+#+BEGIN_SRC emacs-lisp
+  (use-package org
+               :ensure org-plus-contrib
+               :pin melpa
+               :hook ((message-mode . turn-on-orgstruct++)
+                      (org-mode . (lambda ()
+                                    (add-hook 'completion-at-point-functions
+                                              'pcomplete-completions-at-point nil t)))
+                      (org-mode . auto-fill-mode)
+                      (org-mode . (lambda () (setq-local scroll-margin 3)))
+                      (message-mode . turn-on-orgtbl)
+                      (org-mode . (lambda ()
+                                    (autoload 'org-eldoc-documentation-function "esh-help")
+                                    (setq-local eldoc-documentation-function
+                                                'org-eldoc-documentation-function))))
+               :bind* (("C-c c" . org-capture)
+                       ("C-c a" . org-agenda)
+                       ("C-c l" . org-store-link)
+                       ("C-c b" . org-iswitchb))
+               :config
+               (use-package ox-hugo
+                            :ensure t
+                            :pin melpa
+                            :after ox))
+#+END_SRC
+
+**** TODO Magit
+
+**** TODO which-key
+
+**** TODO projectile
+
+**** TODO Smartparens
+
+*** TODO Built-ins
+
+*** TODO Programming languages
+
+*** TODO Other
+* COMMENT Footer
+# Local Variables:
+# mode: org
+# bug-reference-url-format: "https://github.com/vdemeester/emacs-config/issues/%s"
+# compile-command: "nix-build"
+# fill-column: 80
+# sentence-end-double-space: nil
+# tab-width: 8
+# End:
