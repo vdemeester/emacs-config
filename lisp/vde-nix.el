@@ -8,13 +8,16 @@
   (use-package nix-shell
     :commands (nix-shell nix-unpack)))
 
+(use-package nixos-options
+  :ensure t
+  :pin melpa)
 (use-package company-nixos-options
   :ensure t
   :pin melpa
-  :config
-  (add-hook 'nix-mode-hook
-	    (lambda ()
-	      (add-to-list 'company-backends 'company-nixos-options))))
+  :hook
+  (nix-mode . (lambda ()
+                (set (make-local-variable 'company-backends) '(company-nixos-options))
+                  (company-mode))))
 
 (provide 'vde-nix)
 
