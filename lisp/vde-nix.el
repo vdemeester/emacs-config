@@ -12,7 +12,9 @@
   :ensure t
   :pin melpa
   :config
-  (add-to-list 'company-backends 'company-nixos-options))
+  (add-hook 'nix-mode-hook
+	    (lambda ()
+	      (add-to-list 'company-backends 'company-nixos-options))))
 
 (provide 'vde-nix)
 
