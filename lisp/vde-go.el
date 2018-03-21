@@ -22,11 +22,13 @@
     ("ir" go-remove-unused-imports)
     ("q" nil "quit" :color blue))
   :config
-  
   (setq gofmt-command "goimports")
   (if (not (executable-find "goimports"))
       (warn "go-mode: couldn't find goimports; no code formatting/fixed imports on save")
-    (add-hook 'before-save-hook 'gofmt-before-save)))
+    (add-hook 'before-save-hook 'gofmt-before-save))
+    (if (not (string-match "go" compile-command))   ; set compile command default
+      (set (make-local-variable 'compile-command)
+           "go build -v && go test -v && go vet")))
 
 (use-package go-guru
   :ensure t
@@ -69,13 +71,14 @@ _f_: freevars      ^ ^               _s_: callstack    _e_: whicherrs"
   :pin melpa
   :config
   (setq company-go-show-annotation t)
-    (add-hook 'go-mode-hook
-              (lambda ()
-                (set (make-local-variable 'company-backends) '(company-go))
-                (company-mode))))
+  (add-hook 'go-mode-hook
+	    (lambda ()
+	      (set (make-local-variable 'company-backends) '(company-go))
+	      (company-mode))))
 
 (use-package gorepl-mode
   :ensure t
+  :pin melpa
   :commands (gorepl-run
 	     gorepl-mode)
   :init (add-hook 'go-mode-hook #'gorepl-mode))
