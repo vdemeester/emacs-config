@@ -135,6 +135,7 @@ packages.")
 (use-package vde-windows)
 (use-package vde-buffers)
 (use-package vde-company)
+(use-package vde-projectile)
 ;; Programming languages
 (use-package vde-go)
 
