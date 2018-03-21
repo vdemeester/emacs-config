@@ -140,6 +140,7 @@ packages.")
 ;; Programming languages
 (use-package vde-nix)
 (use-package vde-go)
+(use-package vde-docker)
 
 ;; Reset default values
 (add-hook 'emacs-startup-hook #'vde-set-gc-threshold)
