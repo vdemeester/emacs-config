@@ -34,6 +34,11 @@
   :ensure t
   :after ivy)
 
+(use-package ivy-historian              ; Store minibuffer candidates
+  :ensure t
+  :pin melpa
+  :init (ivy-historian-mode +1))
+
 (use-package counsel
   :ensure t
   :bind (:map vde-mode-map
