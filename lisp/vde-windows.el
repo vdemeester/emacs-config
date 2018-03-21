@@ -58,6 +58,16 @@
           (delete-window)
         (bury-buffer)))))
 
+(use-package eyebrowse                  ; Easy workspaces creation and switching
+  :ensure t
+  :init (eyebrowse-mode t)
+  :config
+  (setq
+   eyebrowse-mode-line-separator " "
+   eyebrowse-mode-line-style 'always
+   eyebrowse-new-workspace t
+   eyebrowse-wrap-around t))
+
 (provide 'vde-windows)
 
 ;; Local Variables:
