@@ -132,6 +132,10 @@ packages.")
 (use-package vde-vcs)
 (use-package vde-dired)
 (use-package vde-editing)
+(use-package vde-windows)
+(use-package vde-buffers)
+;; Programming languages
+(use-package vde-go)
 
 ;; Reset default values
 (add-hook 'emacs-startup-hook #'vde-set-gc-threshold)
