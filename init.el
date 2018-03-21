@@ -136,6 +136,7 @@ packages.")
 (use-package vde-buffers)
 (use-package vde-company)
 (use-package vde-projectile)
+(use-package vde-shells)
 ;; Programming languages
 (use-package vde-nix)
 (use-package vde-go)
