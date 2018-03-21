@@ -137,6 +137,7 @@ packages.")
 (use-package vde-company)
 (use-package vde-projectile)
 ;; Programming languages
+(use-package vde-nix)
 (use-package vde-go)
 
 ;; Reset default values
