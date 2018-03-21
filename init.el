@@ -134,6 +134,7 @@ packages.")
 (use-package vde-editing)
 (use-package vde-windows)
 (use-package vde-buffers)
+(use-package vde-company)
 ;; Programming languages
 (use-package vde-go)
 

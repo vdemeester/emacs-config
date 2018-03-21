@@ -1,4 +1,66 @@
+(use-package go-mode
+  :ensure t
+  :mode "\\.go$"
+  :interpreter "go"
+  :pin melpa
+  :config
+  
+  (setq gofmt-command "goimports")
+  (if (not (executable-find "goimports"))
+      (warn "go-mode: couldn't find goimports; no code formatting/fixed imports on save")
+    (add-hook 'go-mode-hook (add-hook 'before-save-hook #'gofmt-before-save nil t))))
 
+(use-package go-guru
+  :ensure t
+  :pin melpa
+  :commands (go-guru-describe go-guru-freevars go-guru-implements go-guru-peers
+             go-guru-referrers go-guru-definition go-guru-pointsto
+             go-guru-callstack go-guru-whicherrs go-guru-callers go-guru-callees
+             go-guru-expand-region)
+  :config
+  (unless (executable-find "guru")
+    (warn "go-mode: couldn't find guru, refactoring commands won't work"))
+  (add-hook 'go-mode-hook #'go-guru-hl-identifier-mode)
+  (defhydra hydra-go-guru (:color pink :columns 2 :hint nil)
+    "
+^NAME^             ^TYPE^            ^CALL^           ^ALIAS^
+_._: definition    _d_: describe     _lr_: callers     _p_: pointsto
+_r_: referrers     _i_: implement    _le_: callees     _c_: peers
+_f_: freevars      ^ ^               _s_: callstack    _e_: whicherrs"
+    ("." go-guru-definition)
+    ("r" go-guru-referrers)
+    ("f" go-guru-freevars)
+    ("d" go-guru-describe)
+    ("i" go-guru-implements)
+    ("lr" go-guru-callers)
+    ("le" go-guru-callees)
+    ("s" go-guru-callstack)
+    ("p" go-guru-pointsto)
+    ("c" go-guru-peers)
+    ("e" go-guru-whicherrs)
+    ("S" go-guru-set-scope "scope" :color blue)))
+
+(use-package go-eldoc
+  :ensure t
+  :pin melpa
+  :config
+  (add-hook 'go-mode-hook 'go-eldoc-setup))
+
+(use-package company-go
+  :ensure t
+  :pin melpa
+  :config
+  (setq company-go-show-annotation t)
+    (add-hook 'go-mode-hook
+              (lambda ()
+                (set (make-local-variable 'company-backends) '(company-go))
+                (company-mode))))
+
+(use-package gorepl-mode
+  :ensure t
+  :commands (gorepl-run
+	     gorepl-mode)
+  :init (add-hook 'go-mode-hook #'gorepl-mode))
 
 (provide 'vde-go)
 
