@@ -142,6 +142,8 @@ packages.")
 (use-package vde-nix)
 (use-package vde-go)
 (use-package vde-docker)
+;; Fun stuff
+(use-package vde-media)
 
 ;; Reset default values
 (add-hook 'emacs-startup-hook #'vde-set-gc-threshold)
