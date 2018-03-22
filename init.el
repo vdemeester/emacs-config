@@ -141,6 +141,7 @@ packages.")
 ;; Programming languages
 (use-package vde-nix)
 (use-package vde-go)
+(use-package vde-groovy)
 (use-package vde-docker)
 ;; Fun stuff
 (use-package vde-media)
