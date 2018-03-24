@@ -138,6 +138,7 @@ packages.")
 (use-package vde-company)
 (use-package vde-projectile)
 (use-package vde-shells)
+(use-package vde-imenu)
 ;; Programming languages
 (use-package vde-nix)
 (use-package vde-go)
