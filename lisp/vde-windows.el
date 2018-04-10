@@ -81,10 +81,10 @@
   (progn
     (setq shackle-select-reused-windows nil)
     (setq shackle-default-alignment 'below)
-    (setq shackle-default-size 0.4)
+    (setq shackle-default-size 0.25)
 
     (setq shackle-rules
-          '((compilation-mode              :select nil :popup t               :size 0.15             )
+          '((compilation-mode              :select nil :popup t               :size 0.20 :align below)
             ("*undo-tree*"                                                    :size 0.25 :align right)
             ("*eshell*"                    :select t                          :other t               )
             ("*Shell Command Output*"      :select nil                                               )

@@ -140,6 +140,7 @@ packages.")
 (use-package vde-shells)
 (use-package vde-imenu)
 (use-package vde-compile)
+(use-package vde-org)
 ;; Programming languages
 (use-package vde-nix)
 (use-package vde-go)
