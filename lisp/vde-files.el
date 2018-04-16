@@ -1,6 +1,9 @@
 (use-package files                      ; Core commands for files
   :bind (("<f5>" . revert-buffer)))
 
+(use-package ripgrep
+  :ensure t)
+
 (use-package recentf                    ; Manage recent files
   :demand t
   :config
