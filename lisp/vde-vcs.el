@@ -25,7 +25,7 @@
    magit-display-buffer-function #'magit-display-buffer-fullframe-status-v1)
 
   (magit-define-popup-option 'magit-rebase-popup
-    ?S "Sign using gpg" "--gpg-sign=" magit-read-gpg-secret-key)
+    ?S "Sign using gpg" "--gpg-sign=" #'magit-read-gpg-secret-key)
   
   ;; Hide "Recent Commits"
   (magit-add-section-hook 'magit-status-sections-hook
