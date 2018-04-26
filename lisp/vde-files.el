@@ -15,6 +15,11 @@
 
 (setq view-read-only t)                 ; View read-only
 
+(use-package direnv
+  :ensure t
+  :config
+  (direnv-mode))
+
 (use-package hardhat                    ; Protect user-writable files
   :ensure t
   :init (global-hardhat-mode))
