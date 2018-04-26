@@ -16,7 +16,12 @@
     (require 'smartparens-config)
     (add-hook 'prog-mode-hook 'turn-on-smartparens-strict-mode)
     (add-hook 'markdown-mode-hook 'turn-on-smartparens-strict-mode)
-    ))
+    (sp-with-modes 'emacs-lisp-mode
+      ;; disable ', it's the quote character!
+      (sp-local-pair "'" nil :actions nil)
+      ;; also only use the pseudo-quote inside strings where it
+      ;; serves as hyperlink.
+      (sp-local-pair "`" "'" :when '(sp-in-string-p sp-in-comment-p)))))
 
 (provide 'vde-editing)
 
