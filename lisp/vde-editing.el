@@ -16,6 +16,9 @@
     (require 'smartparens-config)
     (add-hook 'prog-mode-hook 'turn-on-smartparens-strict-mode)
     (add-hook 'markdown-mode-hook 'turn-on-smartparens-strict-mode)
+    
+    (sp-local-pair 'minibuffer-inactive-mode "'" nil :actions nil)
+    (sp-local-pair 'web-mode "{%" "%}")
     (sp-with-modes 'emacs-lisp-mode
       ;; disable ', it's the quote character!
       (sp-local-pair "'" nil :actions nil)
