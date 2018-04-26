@@ -5,7 +5,6 @@
   (unless (>= emacs-major-version minver)
 (error "Your Emacs is too old -- this configuration requrise v%s or higher" minver)))
 
-
 ;;; package setup
 (require 'package)
 
