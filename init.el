@@ -148,6 +148,10 @@ packages.")
 ;; Fun stuff
 (use-package vde-media)
 
+(use-package command-log-mode
+  :bind (("C-c e M" . command-log-mode)
+         ("C-c e L" . clm/open-command-log-buffer)))
+
 ;; Reset default values
 (add-hook 'emacs-startup-hook #'vde-set-gc-threshold)
 
