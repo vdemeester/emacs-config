@@ -12,13 +12,13 @@
    company-show-numbers t)
   :config
   (bind-keys :map company-active-map
-    ("C-d" . company-show-doc-buffer)
-    ("C-l" . company-show-location)
-    ("C-n" . company-select-next)
-    ("C-p" . company-select-previous)
-    ("C-t" . company-select-next)
-    ("C-s" . company-select-previous)
-    ("TAB" . company-complete))
+             ("C-d" . company-show-doc-buffer)
+             ("C-l" . company-show-location)
+             ("C-n" . company-select-next)
+             ("C-p" . company-select-previous)
+             ("C-t" . company-select-next)
+             ("C-s" . company-select-previous)
+             ("TAB" . company-complete))
   
   (setq company-backends
         '((company-css
