@@ -10,7 +10,7 @@
   )
 
 (use-package undo-tree                  ; Show buffer changes as a tree
-  :defer 1
+  :defer 1 
   :init (global-undo-tree-mode)
   :config (setq undo-tree-visualizer-timestamps t))
 
@@ -34,6 +34,10 @@
       ;; also only use the pseudo-quote inside strings where it
       ;; serves as hyperlink.
       (sp-local-pair "`" "'" :when '(sp-in-string-p sp-in-comment-p)))))
+
+(use-package super-save                 ; Autosave buffers when they lose focus
+  :init (super-save-mode)
+  :config (setq super-save-auto-save-when-idle t))
 
 (provide 'vde-editing)
 
