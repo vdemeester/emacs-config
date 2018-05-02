@@ -1,12 +1,12 @@
-(use-package mpdel
-  :ensure t
-  :pin melpa
-  :config (mpdel-mode))
+;; (use-package mpdel
+;;   :ensure t
+;;   :pin melpa
+;;   :config (mpdel-mode))
 
-(use-package ivy-mpdel
-  :ensure t
-  :pin melpa
-  :after mpdel)
+;; (use-package ivy-mpdel
+;;   :ensure t
+;;   :pin melpa
+;;   :after mpdel)
 
 (provide 'vde-media)
 
