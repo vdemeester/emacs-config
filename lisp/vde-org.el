@@ -2,6 +2,8 @@
   :mode (("\\.org$" . org-mode))
   :ensure org-plus-contrib)
 
+(use-package smartparens-org)
+
 (use-package ox-hugo
   :ensure t
   :after ox

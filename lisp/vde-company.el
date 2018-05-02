@@ -33,6 +33,21 @@
            company-etags
            company-keywords))))
 
+(use-package lsp-mode
+    :init
+    (add-hook 'prog-mode-hook 'lsp-mode)
+    :config
+    (use-package lsp-flycheck
+        :ensure f ; comes with lsp-mode
+        :after flycheck))
+
+;; `company' backend for `lsp-mode'
+(use-package company-lsp
+  :ensure t
+  :after company lsp-mode
+  :init
+  (push 'company-lsp company-backends))
+
 (provide 'vde-company)
 
 ;; Local Variables:

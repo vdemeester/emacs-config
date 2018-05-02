@@ -143,6 +143,7 @@ packages.")
 ;; Programming languages
 (use-package vde-nix)
 (use-package vde-go)
+(use-package vde-rust)
 (use-package vde-groovy)
 (use-package vde-docker)
 ;; Fun stuff
@@ -157,3 +158,5 @@ packages.")
 ;; End:
 
 ;;; init.el ends here
+(put 'narrow-to-page 'disabled nil)
+(put 'narrow-to-region 'disabled nil)

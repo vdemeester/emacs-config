@@ -83,6 +83,11 @@ _f_: freevars      ^ ^               _s_: callstack    _e_: whicherrs"
 	     gorepl-mode)
   :init (add-hook 'go-mode-hook #'gorepl-mode))
 
+(use-package lsp-go
+  :pin melpa
+  :ensure t
+  :after lsp-mode)
+
 (provide 'vde-go)
 
 ;; Local Variables:

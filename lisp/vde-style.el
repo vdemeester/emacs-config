@@ -10,6 +10,10 @@
                     :family "Fira Sans"
                     :height 120
                     :weight 'regular)
+(set-face-attribute 'variable-pitch nil
+                    :family "Source Sans Pro"
+                    :height 120
+                    :weight 'regular)
 
 ;;; Interface
 (use-package frame                      ; Frames
