@@ -1,3 +1,14 @@
+(use-package aggressive-indent          ; Automatically indent code
+  :bind ("C-c t i" . aggressive-indent-mode)
+  :hook ((lisp-mode       . aggressive-indent-mode)
+         (emacs-lisp-mode . aggressive-indent-mode)
+         (clojure-mode    . aggressive-indent-mode))
+  :config
+  ;; Free C-c C-q, used in Org and in CIDER
+  (unbind-key "C-c C-q" aggressive-indent-mode-map)
+  ;; (add-to-list 'aggressive-indent-excluded-modes 'cider-repl-mode)
+  )
+
 (use-package undo-tree                  ; Show buffer changes as a tree
   :defer 1
   :init (global-undo-tree-mode)
