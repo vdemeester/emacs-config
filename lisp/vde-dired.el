@@ -100,6 +100,12 @@
    ;; Search only file names when point is on a file name
    dired-isearch-filenames'dwim))
 
+(use-package dired-collapse
+  :defer 1
+  :commands (dired-collapse-mode)
+  :init
+  (add-hook 'dired-mode-hook #'dired-collapse-mode))
+
 (provide 'vde-dired)
 
 ;; Local Variables:
