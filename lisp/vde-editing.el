@@ -1,12 +1,10 @@
 (use-package undo-tree                  ; Show buffer changes as a tree
-  :ensure t
-  :pin melpa
+  :defer 1
   :init (global-undo-tree-mode)
   :config (setq undo-tree-visualizer-timestamps t))
 
 (use-package smartparens
-  :ensure t
-  :pin melpa
+  :defer 1
   :init
   (progn
     (use-package smartparens-config)

@@ -122,7 +122,7 @@
                          filename-and-process))))
 
 (use-package ibuffer-vc                 ; Group buffers by VC project and status
-  :ensure t
+  :defer 2
   :init (add-hook 'ibuffer-hook
                   (lambda ()
                     (ibuffer-vc-set-filter-groups-by-vc-root)

@@ -1,6 +1,4 @@
 (use-package imenu-list
-  :pin melpa
-  :ensure t
   :commands (vde/imenu-list-display-toggle)
   :bind (("C-'" . vde/imenu-list-display-toggle))
   :config

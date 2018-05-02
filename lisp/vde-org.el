@@ -5,7 +5,6 @@
 (use-package smartparens-org)
 
 (use-package ox-hugo
-  :ensure t
   :after ox
   :commands (org-hugo-slug)
   :bind (:map modi-mode-map

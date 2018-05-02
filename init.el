@@ -42,8 +42,7 @@ gc-cons-percentage 0.1))
 
 (eval-when-compile (require 'use-package))
 
-(use-package dash                       ; A modern list library
-  :ensure t)
+(use-package dash) ; A modern list library
 
 (require 'subr-x)
 (require 'time-date)
@@ -52,7 +51,6 @@ gc-cons-percentage 0.1))
 (setq inhibit-default-init t)           ; Disable the site default settings
 
 (use-package exec-path-from-shell       ; Set up environment variables
-  :ensure t
   :if (display-graphic-p)
   :config
   (setq exec-path-from-shell-variables
@@ -79,7 +77,6 @@ gc-cons-percentage 0.1))
   :init (load vde-custom-file 'no-error 'no-message))
 
 (use-package no-littering               ; Keep .emacs.d clean
-  :ensure t
   :config
   (require 'recentf)
   (add-to-list 'recentf-exclude no-littering-var-directory)

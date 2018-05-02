@@ -1,6 +1,4 @@
 (use-package groovy-mode
-  :ensure t
-  :defer t
   :mode "\\.groovy\\'\\|\\.gradle\\'\\|\\jenkinsfile\\'")
 
 (provide 'vde-groovy)

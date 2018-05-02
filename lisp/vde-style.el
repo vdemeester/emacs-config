@@ -38,14 +38,12 @@
 (setq custom-safe-themes t)    ; Treat themes as safe
 
 (use-package doom-themes
-  :ensure t
   :config
   (setq doom-themes-enable-bolt t)
   (setq doom-themes-enable-italic t)
   (load-theme 'doom-one t))
 
 (use-package solaire-mode
-  :ensure t
   :config
   (setq solaire-mode-remap-modeline nil)
   (add-hook 'after-change-major-mode-hook #'turn-on-solaire-mode)

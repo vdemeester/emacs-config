@@ -1,8 +1,7 @@
 (setq window-combination-resize t) ; Size new windows proportionally
 
 (use-package fullframe                 ; Generalized execution in a single frame
-  :ensure t
-  :defer t)
+  :defer 2)
 
 ;; Better shrink/enlarge windows
 (bind-keys*
@@ -59,7 +58,6 @@
         (bury-buffer)))))
 
 (use-package eyebrowse                  ; Easy workspaces creation and switching
-  :ensure t
   :init (eyebrowse-mode t)
   :config
   (setq
@@ -69,14 +67,12 @@
    eyebrowse-wrap-around t))
 
 (use-package ace-window                 ; Better movements between windows
-  :ensure t
   :bind (("C-x o"   . ace-window)
          ("C-c w w" . ace-window)
          ("C-c w s" . ace-swap-window))
   :config (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l)))
 
 (use-package shackle
-  :ensure t
   :config
   (progn
     (setq shackle-select-reused-windows nil)

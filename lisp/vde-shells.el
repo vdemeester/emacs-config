@@ -37,7 +37,7 @@
   )
 
 (use-package shx                        ; Enhance comint-mode
-  :ensure t
+  :defer 2
   :init (shx-global-mode 1))
 
 (use-package eshell                     ; Emacs command shell
@@ -91,7 +91,7 @@ The EShell is renamed to match that directory to make multiple windows easier."
   (add-hook 'eshell-mode-hook #'with-editor-export-editor))
 
 (use-package em-prompt                  ; EShell command prompts
-  :ensure eshell
+  :defer 2
   :config
   (defun vde-eshell-quit-or-delete-char (arg)
     "Use C-d to either delete forward char or exit EShell."
@@ -136,13 +136,11 @@ The EShell is renamed to match that directory to make multiple windows easier."
   (add-to-list 'eshell-visual-commands "npm"))
 
 (use-package fish-completion            ; Add Fish completion to EShell
-  :ensure t
-  :pin melpa
+  :defer 2
   :when (executable-find "fish")
   :config (add-hook 'eshell-mode-hook #'fish-completion-mode))
 
 (use-package fish-mode                  ; Handle Fish shell scripts
-  :ensure t
   :mode ("\\.fish\\'" . fish-mode)
   :config
   ;; Run fish_indent before save
@@ -151,16 +149,14 @@ The EShell is renamed to match that directory to make multiple windows easier."
               (add-hook 'before-save-hook 'fish_indent-before-save))))
 
 (use-package eshell-prompt-extras
-  :ensure t
-  :pin melpa
+  :defer 1
   :init
   (progn
     (setq eshell-highlight-prompt nil
 	  eshell-prompt-function 'epe-theme-lambda)))
 
 (use-package esh-autosuggest
-  :ensure t
-  :pin melpa
+  :defer 1
   :hook (eshell-mode . esh-autosuggest-mode))
 
 (provide 'vde-shells)

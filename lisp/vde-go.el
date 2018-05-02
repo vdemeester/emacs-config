@@ -1,10 +1,8 @@
 (use-package go-mode
-  :ensure t
   :mode "\\.go$"
   :interpreter "go"
   :bind (:map go-mode-map
 	      ("C-," . 'hydra-go/body))
-  :pin melpa
   :init
   (defhydra hydra-go (:hint nil :color teal)
     "
@@ -31,8 +29,6 @@
            "go build -v && go test -v && go vet")))
 
 (use-package go-guru
-  :ensure t
-  :pin melpa
   :commands (go-guru-describe go-guru-freevars go-guru-implements go-guru-peers
              go-guru-referrers go-guru-definition go-guru-pointsto
              go-guru-callstack go-guru-whicherrs go-guru-callers go-guru-callees
@@ -61,14 +57,12 @@ _f_: freevars      ^ ^               _s_: callstack    _e_: whicherrs"
     ("S" go-guru-set-scope "scope" :color blue)))
 
 (use-package go-eldoc
-  :ensure t
-  :pin melpa
+  :defer 2
   :config
   (add-hook 'go-mode-hook 'go-eldoc-setup))
 
 (use-package company-go
-  :ensure t
-  :pin melpa
+  :defer 2
   :config
   (setq company-go-show-annotation t)
   (add-hook 'go-mode-hook
@@ -77,15 +71,12 @@ _f_: freevars      ^ ^               _s_: callstack    _e_: whicherrs"
 	      (company-mode))))
 
 (use-package gorepl-mode
-  :ensure t
-  :pin melpa
   :commands (gorepl-run
 	     gorepl-mode)
   :init (add-hook 'go-mode-hook #'gorepl-mode))
 
 (use-package lsp-go
-  :pin melpa
-  :ensure t
+  :defer 2
   :after lsp-mode)
 
 (provide 'vde-go)

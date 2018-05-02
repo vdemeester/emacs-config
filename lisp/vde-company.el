@@ -1,5 +1,4 @@
 (use-package company
-  :ensure t
   :commands global-company-mode
   :init
   (add-hook 'after-init-hook #'global-company-mode)
@@ -43,7 +42,6 @@
 
 ;; `company' backend for `lsp-mode'
 (use-package company-lsp
-  :ensure t
   :after company lsp-mode
   :init
   (push 'company-lsp company-backends))

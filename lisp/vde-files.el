@@ -2,10 +2,10 @@
   :bind (("<f5>" . revert-buffer)))
 
 (use-package ripgrep
-  :ensure t)
+  :defer 2)
 
 (use-package recentf                    ; Manage recent files
-  :demand t
+  :defer 1
   :config
   (add-to-list 'recentf-exclude "^/\\(?:ssh\\|su\\|sudo\\)?:")
 
@@ -16,19 +16,16 @@
 (setq view-read-only t)                 ; View read-only
 
 (use-package direnv
-  :ensure t
   :config
   (direnv-mode))
 
 (use-package hardhat                    ; Protect user-writable files
-  :ensure t
   :init (global-hardhat-mode))
 
 (use-package image-file                 ; Visit images as images
   :init (auto-image-file-mode))
 
 (use-package markdown-mode              ; Edit markdown files
-  :ensure t
   :mode ("\\.md\\'" . markdown-mode)
   :config
   (setq markdown-fontify-code-blocks-natively t)

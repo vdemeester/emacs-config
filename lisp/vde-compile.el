@@ -1,5 +1,5 @@
 (use-package compile
-  :defer t
+  :defer 2
   :config
   (progn
     ;; http://stackoverflow.com/a/13408008/1219634

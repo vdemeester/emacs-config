@@ -1,5 +1,4 @@
 (use-package web-mode
-  :defer t
   :mode
   ("\\.html\\'" . web-mode)
   ("\\.phtml\\'" . web-mode)
@@ -33,14 +32,12 @@
         (sp-local-tag "#" "<%# " " %>")))))
 
 (use-package js2-mode
-  :defer t
   :mode
   ("\\.js\\'" . js2-mode)
   :interpreter
   ("node" . js2-mode))
 
 (use-package js2-refactor
-  :defer t
   :diminish js2-refactor-mode
   :commands
   (js2-refactor-mode)
@@ -49,7 +46,6 @@
 
 (use-package typescript-mode
   ;; npm install -g typescript
-  :defer t
   :mode
   ("\\.ts\\'" . typescript-mode)
   ("\\.ts$\\'" . typescript-mode)
@@ -57,11 +53,9 @@
   (setq typescript-enabled-frameworks '(typescript)))
 
 (use-package js-import
-  :defer t
   :commands (js-import js-import-dev))
 
 (use-package rjsx-mode
-  :defer t
   :mode
   ("\\.jsx?\\'" . rjsx-mode)
   :interpreter

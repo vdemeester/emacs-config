@@ -1,6 +1,5 @@
 ;; This file stores my configuration for Ivy and related packages.
 (use-package ivy
-  :ensure t
   :bind (:map vde-mode-map
          ("M-u" . ivy-resume)    ;Override the default binding for `upcase-word'
          ("C-c w" . ivy-push-view) ;Push window configuration to `ivy-views'
@@ -31,16 +30,12 @@
     ))
 
 (use-package ivy-hydra                  ; Additional bindings for Ivy
-  :ensure t
   :after ivy)
 
 (use-package ivy-historian              ; Store minibuffer candidates
-  :ensure t
-  :pin melpa
   :init (ivy-historian-mode +1))
 
 (use-package counsel
-  :ensure t
   :bind (:map vde-mode-map
 	      ("M-i" . counsel-grep-or-swiper)
 	      ("C-M-y" . counsel-yank-pop)
