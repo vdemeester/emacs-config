@@ -32,6 +32,11 @@
            company-etags
            company-keywords))))
 
+(use-package company-emoji
+  :ensure company
+  :config
+  (add-to-list 'company-backends 'company-emoji))
+
 (use-package lsp-mode
     :init
     (add-hook 'prog-mode-hook 'lsp-mode)
