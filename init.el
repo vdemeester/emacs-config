@@ -145,6 +145,7 @@ packages.")
 (use-package vde-go)
 (use-package vde-rust)
 (use-package vde-groovy)
+(use-package vde-web)
 (use-package vde-docker)
 ;; Fun stuff
 (use-package vde-media)
