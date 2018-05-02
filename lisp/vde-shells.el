@@ -159,6 +159,10 @@ The EShell is renamed to match that directory to make multiple windows easier."
   :defer 1
   :hook (eshell-mode . esh-autosuggest-mode))
 
+(use-package eshell-bookmark
+  :config
+  (add-hook 'eshell-mode-hook 'eshell-bookmark-setup))
+
 (provide 'vde-shells)
 
 ;; Local Variables:
