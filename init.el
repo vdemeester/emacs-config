@@ -152,6 +152,9 @@ packages.")
   :bind (("C-c e M" . command-log-mode)
          ("C-c e L" . clm/open-command-log-buffer)))
 
+(eval-and-compile
+  (define-inline emacs-path (path)
+    (expand-file-name path user-emacs-directory)))
 ;; Reset default values
 (add-hook 'emacs-startup-hook #'vde-set-gc-threshold)
 
