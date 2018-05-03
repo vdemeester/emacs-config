@@ -37,6 +37,11 @@
          ("C-c h S" . helpful-at-point)
          ("C-c h V" . helpful-variable)))
 
+(use-package smart-jump
+  :bind ("M-." . smart-jump-go)
+  :config
+  (smart-jump-setup-default-registers))
+
 (provide 'vde-navigating)
 
 ;; Local Variables:
