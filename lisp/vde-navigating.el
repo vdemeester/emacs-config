@@ -29,6 +29,14 @@
          ("C-c N W" . fancy-widen))
   :commands (fancy-narrow-to-region fancy-widen))
 
+(use-package helpful
+  :bind (("C-c h F" . helpful-function)
+         ("C-c h C" . helpful-command)
+         ("C-c h M" . helpful-macro)
+         ("C-c h L" . helpful-callable)
+         ("C-c h S" . helpful-at-point)
+         ("C-c h V" . helpful-variable)))
+
 (provide 'vde-navigating)
 
 ;; Local Variables:
