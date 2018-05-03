@@ -42,6 +42,21 @@
 (use-package expand-region
   :bind ("C-=" . er/expand-region))
 
+(use-package iedit
+  :defines hydra-iedit/body
+  :bind* (:map global-map
+	       ("C-*" . iedit-mode)
+	       :map iedit-mode-keymap
+	       ("M-n" . iedit-next-occurence)
+	       ("M-p" . iedit-prev-occurence))
+  :config
+  (defhydra hydra-iedit (:color pink :columns 1)
+    "IEDIT"
+    ("C-*" iedit-mode "toggle")
+    ("C-p" iedit-prev-occurrence "prev")
+    ("C-n" iedit-next-occurrence "next")
+    ("C-g" iedit-quit "toggle" :color blue)))
+
 (provide 'vde-editing)
 
 ;; Local Variables:
