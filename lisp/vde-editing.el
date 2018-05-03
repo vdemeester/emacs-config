@@ -71,6 +71,12 @@
     (when (not (member major-mode indent-sensitive-modes))
       (smart-newline-mode))))
 
+(use-package string-edit
+  :bind ("C-c C-'" . string-edit-at-point))
+
+(use-package string-inflection
+  :bind ("C-c `" . string-inflection-all-cycle))
+
 (provide 'vde-editing)
 
 ;; Local Variables:
