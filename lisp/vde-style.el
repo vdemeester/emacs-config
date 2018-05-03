@@ -140,6 +140,16 @@
 (use-package focus
   :commands focus-mode) ;; TODO bind it to hydra or cmd
 
+(use-package highlight-numbers
+  :hook (prog-mode . highlight-numbers-mode))
+
+(use-package highlight-symbol
+  :defer 4
+  :hook (prog-mode . highlight-symbol-mode)
+  :config
+  (setq highlight-symbole-idle-delay .5)
+  (setq highlight-symbol-on-navigation-p t))
+
 (provide 'vde-style)
 
 ;; Local Variables:
