@@ -137,6 +137,9 @@
 
 (bind-key "C-c t f" #'mu-reset-fonts)
 
+(use-package focus
+  :commands focus-mode) ;; TODO bind it to hydra or cmd
+
 (provide 'vde-style)
 
 ;; Local Variables:
