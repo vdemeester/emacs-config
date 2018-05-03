@@ -45,6 +45,12 @@
                      " ")))
   (add-hook 'markdown-mode-hook #'auto-fill-mode))
 
+(use-package yaml-mode
+  :mode "\\.ya?ml\\'")
+
+(use-package toml-mode
+  :mode "\\.to?ml\\'")
+
 ;;;###autoload
 (defun vde-delete-this-file ()
   "Delete the current file, and kill the buffer."
