@@ -46,12 +46,6 @@
     'flycheck-show-error-at-point)
   (setq flycheck-idle-change-delay 1.2))
 
-(use-package flycheck-pos-tip
-  :after flycheck
-  :config
-  (setq flycheck-pos-tip-timeout 10)
-  (flycheck-pos-tip-mode))
-
 (provide 'vde-compile)
 
 ;; Local Variables:
