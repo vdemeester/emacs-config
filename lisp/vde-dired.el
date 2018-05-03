@@ -106,6 +106,11 @@
   :init
   (add-hook 'dired-mode-hook #'dired-collapse-mode))
 
+(use-package dired-sidebar
+  :defer 2
+  :bind (("C-M-'" . dired-sidebar-toggle-sidebar))
+  :commands (dired-sidebar-toggle-sidebar))
+
 (provide 'vde-dired)
 
 ;; Local Variables:

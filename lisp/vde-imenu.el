@@ -2,7 +2,7 @@
   :commands (vde/imenu-list-display-toggle)
   :bind (("C-'" . vde/imenu-list-display-toggle))
   :config
-    (progn
+  (progn
     (setq imenu-list-size     0.2)
     (setq imenu-list-position 'right)
 

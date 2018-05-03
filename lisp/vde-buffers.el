@@ -132,7 +132,6 @@
 ;; Use `emacs-lisp-mode' instead of `lisp-interaction-mode' for scratch buffer
 (setq initial-major-mode 'emacs-lisp-mode)
 
-
 (provide 'vde-buffers)
 
 ;; Local Variables:
