@@ -77,6 +77,11 @@
 (use-package string-inflection
   :bind ("C-c `" . string-inflection-all-cycle))
 
+(use-package visual-regexp
+  :bind (("C-c r"   . vr/replace)
+         ("C-c %"   . vr/query-replace)
+         ("C-c m" . vr/mc-mark)))
+
 (provide 'vde-editing)
 
 ;; Local Variables:
