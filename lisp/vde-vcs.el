@@ -1,4 +1,3 @@
-
 (use-package vc-hooks                   ; Simple version control
   :bind (("S-<f5>" . vc-revert)
          ("C-c v r" . vc-refresh-state))
@@ -24,7 +23,9 @@
    magit-display-buffer-function #'magit-display-buffer-fullframe-status-v1)
 
   (magit-define-popup-option 'magit-rebase-popup
-    ?S "Sign using gpg" "--gpg-sign=" #'magit-read-gpg-secret-key)
+    ?S "Sign using gpg" "--gpg-sign=" #'magit-read-gpg-secret-key) 
+  (magit-define-popup-switch 'magit-log-popup
+    ?m "Omit merge commits" "--no-merges")
   
   ;; Hide "Recent Commits"
   (magit-add-section-hook 'magit-status-sections-hook
@@ -32,6 +33,10 @@
                           'magit-insert-unpushed-to-upstream-or-recent
                           'replace)
 
+  (use-package magit-files
+    :config
+    (global-magit-file-mode))
+  
   ;; Show refined hunks during diffs
   (set-default 'magit-diff-refine-hunk t)
 
