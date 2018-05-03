@@ -24,6 +24,11 @@
                                  (bm-buffer-save-all)
                                  (bm-repository-save))))
 
+(use-package fancy-narrow
+  :bind (("C-c N N" . fancy-narrow-to-region)
+         ("C-c N W" . fancy-widen))
+  :commands (fancy-narrow-to-region fancy-widen))
+
 (provide 'vde-navigating)
 
 ;; Local Variables:
