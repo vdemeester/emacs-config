@@ -24,6 +24,34 @@
         (ansi-color-apply-on-region compilation-filter-start (point))))
     (add-hook 'compilation-filter-hook #'vde/colorize-compilation-buffer)))
 
+(use-package flycheck
+  :if (not (eq system-type 'windows-nt))
+  :defer 4
+  :commands (flycheck-mode
+             flycheck-next-error
+             flycheck-previous-error)
+  :init
+  (dolist (where '((emacs-lisp-mode-hook . emacs-lisp-mode-map)
+                   (haskell-mode-hook    . haskell-mode-map)
+                   (js2-mode-hook        . js2-mode-map)
+                   (go-mode-hook         . go-mode-map)
+                   (c-mode-common-hook   . c-mode-base-map)))
+    (add-hook (car where)
+              `(lambda ()
+                 (bind-key "M-n" #'flycheck-next-error ,(cdr where))
+                 (bind-key "M-p" #'flycheck-previous-error ,(cdr where)))
+              t))
+  :config
+  (defalias 'show-error-at-point-soon
+    'flycheck-show-error-at-point)
+  (setq flycheck-idle-change-delay 1.2))
+
+(use-package flycheck-pos-tip
+  :after flycheck
+  :config
+  (setq flycheck-pos-tip-timeout 10)
+  (flycheck-pos-tip-mode))
+
 (provide 'vde-compile)
 
 ;; Local Variables:
