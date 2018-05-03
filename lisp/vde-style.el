@@ -150,6 +150,12 @@
   (setq highlight-symbole-idle-delay .5)
   (setq highlight-symbol-on-navigation-p t))
 
+(use-package rainbow-delimiters
+  :hook (prog-mode . rainbow-delimiters-mode))
+
+(use-package rainbow-mode
+  :commands rainbow-mode)
+
 (provide 'vde-style)
 
 ;; Local Variables:
