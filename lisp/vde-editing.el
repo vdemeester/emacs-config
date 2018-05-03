@@ -39,6 +39,9 @@
   :init (super-save-mode)
   :config (setq super-save-auto-save-when-idle t))
 
+(use-package expand-region
+  :bind ("C-=" . er/expand-region))
+
 (provide 'vde-editing)
 
 ;; Local Variables:
