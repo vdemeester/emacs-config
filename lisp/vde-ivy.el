@@ -1,9 +1,10 @@
 ;; This file stores my configuration for Ivy and related packages.
 (use-package ivy
   :bind (:map vde-mode-map
-         ("M-u" . ivy-resume)    ;Override the default binding for `upcase-word'
-         ("C-c w" . ivy-push-view) ;Push window configuration to `ivy-views'
-         ("C-c W" . ivy-pop-view)) ;Remove window configuration from `ivy-views'
+              ("C-x b" . ivy-switch-buffer)
+              ("M-u" . ivy-resume)    ;Override the default binding for `upcase-word'
+              ("C-c w" . ivy-push-view) ;Push window configuration to `ivy-views'
+              ("C-c W" . ivy-pop-view)) ;Remove window configuration from `ivy-views'
   :init
   (progn
     (bind-to-vde-map "v" #'counsel-set-variable))
@@ -32,8 +33,15 @@
 (use-package ivy-hydra                  ; Additional bindings for Ivy
   :after ivy)
 
-(use-package ivy-historian              ; Store minibuffer candidates
-  :init (ivy-historian-mode +1))
+(use-package ivy-rich
+  :after ivy
+  :demand t
+  :config
+  (ivy-set-display-transformer 'ivy-switch-buffer
+                               'ivy-rich-switch-buffer-transformer)
+  (setq ivy-virtual-abbreviate 'full
+        ivy-rich-switch-buffer-align-virtual-buffer t
+        ivy-rich-path-style 'abbrev))
 
 (use-package counsel
   :bind (:map vde-mode-map

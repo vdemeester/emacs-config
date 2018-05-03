@@ -13,7 +13,11 @@
   :bind (:map projectile-command-map
               ("p" . counsel-projectile-switch-project)
               ("r" . counsel-projectile-rg))
-  :init (counsel-projectile-mode))
+  :init (counsel-projectile-mode)
+  :config
+  (ivy-set-display-transformer
+   'counsel-projectile-switch-to-buffer
+   'ivy-rich-switch-buffer-transformer))
 
 (provide 'vde-projectile)
 
