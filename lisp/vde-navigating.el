@@ -42,6 +42,12 @@
   :config
   (smart-jump-setup-default-registers))
 
+(use-package winner
+  :unless noninteractive
+  :defer 5
+  :config
+  (winner-mode 1))
+
 (provide 'vde-navigating)
 
 ;; Local Variables:
