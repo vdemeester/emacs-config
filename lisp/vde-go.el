@@ -70,11 +70,6 @@ _f_: freevars      ^ ^               _s_: callstack    _e_: whicherrs"
 	      (set (make-local-variable 'company-backends) '(company-go))
 	      (company-mode))))
 
-(use-package gorepl-mode
-  :commands (gorepl-run
-	     gorepl-mode)
-  :init (add-hook 'go-mode-hook #'gorepl-mode))
-
 (use-package lsp-go
   :defer 2
   :after lsp-mode)
