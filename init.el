@@ -1,9 +1,24 @@
 ;;; -*- lexical-binding: t; -*-
-(require 'package)
+(defconst emacs-start-time (current-time))
+(defvar file-name-handler-alist-old file-name-handler-alist)
+
+(setq package-enable-at-startup nil
+      file-name-handler-alist nil
+      message-log-max 16384
+      gc-cons-threshold 402653184
+      gc-cons-percentage 0.6
+      auto-window-vscroll nil)
+
+(add-hook 'after-init-hook
+          `(lambda ()
+             (setq file-name-handler-alist file-name-handler-alist-old
+                   gc-cons-threshold 800000
+                   gc-cons-percentage 0.1)
+             (garbage-collect)) t)
 
 (let ((minver 25))
   (unless (>= emacs-major-version minver)
-(error "Your Emacs is too old -- this configuration requrise v%s or higher" minver)))
+    (error "Your Emacs is too old -- this configuration requrise v%s or higher" minver)))
 
 ;;; package setup
 (require 'package)
@@ -18,16 +33,6 @@
 
 (setq load-prefer-newer t)              ; Always load newer compiled files
 (setq ad-redefinition-action 'accept)   ; Silence advice redefinition warnings
-(setq message-log-max 10000) ; Debugging
-
-;; Allow more than 800Kb cache during init
-(setq gc-cons-threshold 402653184
-      gc-cons-percentage 0.6)
-
-(defun vde-set-gc-threshold ()
-  "Reset `gc-cons-threshold' and `gc-cons-percentage' to their default values."
-  (setq gc-cons-threshold 16777216
-gc-cons-percentage 0.1))
 
 ;; Bootstrap `use-package'
 (setq use-package-always-pin "melpa-stable")
@@ -155,13 +160,24 @@ packages.")
 (eval-and-compile
   (define-inline emacs-path (path)
     (expand-file-name path user-emacs-directory)))
-;; Reset default values
-(add-hook 'emacs-startup-hook #'vde-set-gc-threshold)
 
 ;; Local Variables:
 ;; coding: utf-8
 ;; indent-tabs-mode: nil
 ;; End:
+;;; Finalization
+
+(let ((elapsed (float-time (time-subtract (current-time)
+                                          emacs-start-time))))
+  (message "Loading %s...done (%.3fs)" load-file-name elapsed))
+
+(add-hook 'after-init-hook
+          `(lambda ()
+             (let ((elapsed
+                    (float-time
+                     (time-subtract (current-time) emacs-start-time))))
+               (message "Loading %s...done (%.3fs) [after-init]"
+                        ,load-file-name elapsed))) t)
 
 ;;; init.el ends here
 (put 'narrow-to-page 'disabled nil)
