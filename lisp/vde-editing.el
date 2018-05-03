@@ -57,6 +57,10 @@
     ("C-n" iedit-next-occurrence "next")
     ("C-g" iedit-quit "toggle" :color blue)))
 
+(use-package shift-number
+  :bind (("C-c +" . shift-number-up)
+         ("C-c -" . shift-number-down)))
+
 (provide 'vde-editing)
 
 ;; Local Variables:
