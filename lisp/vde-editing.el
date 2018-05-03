@@ -61,6 +61,16 @@
   :bind (("C-c +" . shift-number-up)
          ("C-c -" . shift-number-down)))
 
+(defvar indent-sensitive-modes '(coffee-mode slim-mode yaml-mode))
+(use-package smart-newline
+  :defer 2
+  :hook ((prog-mode . maybe-enable-smart-newline-mode))
+  :commands smart-newline-mode
+  :init
+  (defun maybe-enable-smart-newline-mode ()
+    (when (not (member major-mode indent-sensitive-modes))
+      (smart-newline-mode))))
+
 (provide 'vde-editing)
 
 ;; Local Variables:
