@@ -82,6 +82,12 @@
          ("C-c %"   . vr/query-replace)
          ("C-c m" . vr/mc-mark)))
 
+(use-package whitespace-cleanup-mode
+  :defer 5 
+  :commands whitespace-cleanup-mode
+  :config
+  (global-whitespace-cleanup-mode 1))
+
 (provide 'vde-editing)
 
 ;; Local Variables:
