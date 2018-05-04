@@ -77,7 +77,7 @@
   (progn
     (setq shackle-select-reused-windows nil)
     (setq shackle-default-alignment 'below)
-    (setq shackle-default-size 0.25)
+    (setq shackle-default-size 0.20)
 
     (setq shackle-rules
           '((compilation-mode              :select nil :popup t               :size 0.15 :align below)
