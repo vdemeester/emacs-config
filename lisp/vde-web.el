@@ -76,6 +76,13 @@
   (with-eval-after-load 'rjsx
     (define-key rjsx-mode-map "<" nil)))
 
+(use-package lsp-javascript-typescript
+  :hook ((web-mode . lsp-javascript-typescript-enable)
+         (js-mode . lsp-javascript-typescript-enable)
+         (js3-mode . lsp-javascript-typescript-enable)
+         (js2-mode . lsp-javascript-typescript-enable)
+         (typescript-mode . lsp-javascript-typescript-enable)))
+  
 (provide 'vde-web)
 
 ;; Local Variables:
