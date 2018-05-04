@@ -12,7 +12,10 @@
   :hook
   (nix-mode . (lambda ()
                 (set (make-local-variable 'company-backends) '(company-nixos-options))
-                  (company-mode))))
+                (company-mode))))
+
+(use-package nix-update
+  :load-path "lisp/nix-update")
 
 (provide 'vde-nix)
 
