@@ -80,7 +80,7 @@
     (setq shackle-default-size 0.20)
 
     (setq shackle-rules
-          '((compilation-mode              :select nil :popup t               :size 0.15 :align below)
+          '(("*compilation*"               :select nil :popup t               :size 0.15 :align below)
             ("*undo-tree*"                                                    :size 0.25 :align right)
             ("*eshell*"                    :select t                          :other t               )
             ("*Shell Command Output*"      :select nil                                               )
