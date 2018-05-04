@@ -5,7 +5,9 @@
 
 (use-package lsp-rust
   :defer 2
-  :after lsp-mode)
+  :after lsp-mode
+  :hook ((rust-mode . lsp-rust-enable)
+         (rust-mode . flycheck-mode)))
 
 (provide 'vde-rust)
 

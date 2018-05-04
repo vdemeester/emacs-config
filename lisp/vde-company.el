@@ -38,18 +38,30 @@
   (add-to-list 'company-backends 'company-emoji))
 
 (use-package lsp-mode
-    :init
-    (add-hook 'prog-mode-hook 'lsp-mode)
-    :config
-    (use-package lsp-flycheck
-        :ensure f ; comes with lsp-mode
-        :after flycheck))
+  :config
+  (with-eval-after-load "flycheck"
+    (require 'lsp-flycheck)
+    (add-to-list 'flycheck-checkers 'lsp)))
 
-;; `company' backend for `lsp-mode'
-(use-package company-lsp
-  :after company lsp-mode
-  :init
-  (push 'company-lsp company-backends))
+(with-eval-after-load "company"
+  (use-package company-lsp
+    :after lsp-mode
+    :config
+    (push 'company-lsp company-backends)))
+
+(with-eval-after-load "projectile"
+  (defun my-set-projectile-root ()
+    (when lsp--cur-workspace
+      (setq projectile-project-root (lsp--workspace-root lsp--cur-workspace))))
+  (add-hook 'lsp-before-open-hook #'my-set-projectile-root))
+
+(use-package lsp-ui
+  :after lsp-mode
+  :hook ((lsp-mode . lsp-ui-mode) 
+         (lsp-ui-mode . lsp-ui-peek-mode))
+  :config
+  (define-key lsp-ui-mode-map [remap xref-find-definitions] #'lsp-ui-peek-find-definitions)
+  (define-key lsp-ui-mode-map [remap xref-find-references] #'lsp-ui-peek-find-references))
 
 (provide 'vde-company)
 
