@@ -8,6 +8,13 @@
 ;;   :pin melpa
 ;;   :after mpdel)
 
+(use-package pulseaudio-control
+  :defer 5
+  :init
+  (pulseaudio-control-default-keybindings)
+  :config
+  (setq pulseaudio-control-pactl-path (executable-find "pactl")))
+
 (provide 'vde-media)
 
 ;; Local Variables:
