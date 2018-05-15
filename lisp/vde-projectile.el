@@ -1,6 +1,7 @@
 (use-package projectile                 ; Project management
   :init (projectile-mode)
-  :chords (("gf" . projectile-find-file))
+  :chords (("gf" . projectile-find-file)
+           ("gb" . projectile-switch-to-buffer))
   :config
   ;; Remove dead projects when Emacs is idle
   (run-with-idle-timer 10 nil #'projectile-cleanup-known-projects)
