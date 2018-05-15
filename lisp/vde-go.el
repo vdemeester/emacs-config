@@ -70,6 +70,15 @@ _f_: freevars      ^ ^               _s_: callstack    _e_: whicherrs"
 	      (set (make-local-variable 'company-backends) '(company-go))
 	      (company-mode))))
 
+(use-package gotest
+  :defer 2
+  :after go-mode
+  :bind (:map go-mode-map
+              ("C-c t m" . go-test-current-file)
+              ("C-c t ." . go-test-current-test)
+              ("C-c t c" . go-test-current-coverage)
+              ("C-c t b" . go-test-current-benchmark)))
+
 ;; (use-package lsp-go
 ;;   :defer 2
 ;;   :after lsp-mode
