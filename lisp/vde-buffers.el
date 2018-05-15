@@ -78,7 +78,7 @@
   :bind (("C-x C-b" . vde-ibuffer-open)
          ([remap list-buffers] . ibuffer)
          :map ibuffer-mode-map
-         ("q" . vde-pop-window-configuration))
+         ("q" . vde-pop-window-configuration)) 
   :config
   (setq
    ibuffer-expert t              ; Do not prompt when on kill buffers operations
@@ -102,24 +102,24 @@
      (t (format "%8d" (buffer-size)))))
 
   (setq ibuffer-formats
-                 '((mark modified read-only " "
-                         (name 18 18 :left :elide)
-                         " "
-                         (size-h 9 -1 :right)
-                         " "
-                         (mode 16 16 :left :elide)
-                         " "
-                         filename-and-process)
-                   (mark modified read-only " "
-                         (name 18 18 :left :elide)
-                         " "
-                         (size 9 -1 :right)
-                         " "
-                         (mode 16 16 :left :elide)
-                         " "
-                         (vc-status 16 16 :left)
-                         " "
-                         filename-and-process))))
+        '((mark modified read-only " "
+                (name 18 18 :left :elide)
+                " "
+                (size-h 9 -1 :right)
+                " "
+                (mode 16 16 :left :elide)
+                " "
+                filename-and-process)
+          (mark modified read-only " "
+                (name 18 18 :left :elide)
+                " "
+                (size 9 -1 :right)
+                " "
+                (mode 16 16 :left :elide)
+                " "
+                (vc-status 16 16 :left)
+                " "
+                filename-and-process))))
 
 (use-package ibuffer-vc                 ; Group buffers by VC project and status
   :defer 2

@@ -5,6 +5,7 @@
               ("M-u" . ivy-resume)    ;Override the default binding for `upcase-word'
               ("C-c w" . ivy-push-view) ;Push window configuration to `ivy-views'
               ("C-c W" . ivy-pop-view)) ;Remove window configuration from `ivy-views'
+  :chords (("bb" . ivy-switch-buffer))
   :init
   (progn
     (bind-to-vde-map "v" #'counsel-set-variable))
@@ -59,6 +60,7 @@
 	      ([remap finder-by-keyword] . counsel-package) ;C-h p
 	      ([remap describe-variable] . counsel-describe-variable)
 	      ([remap describe-function] . counsel-describe-function))
+  :chords (("ff" . counsel-find-file))
   :init
   (progn
     (bind-to-vde-map "s" #'counsel-rg))

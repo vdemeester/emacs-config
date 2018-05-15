@@ -1,3 +1,11 @@
+(use-package key-chord
+  :chords
+  (("''" . "’"))
+  :custom
+  (key-chord-two-keys-delay 0.05)
+  :config
+  (key-chord-mode 1))
+
 (use-package which-key
   :init (which-key-mode)
   :config
