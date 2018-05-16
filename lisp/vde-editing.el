@@ -10,7 +10,7 @@
   )
 
 (use-package undo-tree                  ; Show buffer changes as a tree
-  :defer 1 
+  :defer 1
   :init (global-undo-tree-mode)
   :config (setq undo-tree-visualizer-timestamps t))
 
@@ -25,7 +25,7 @@
     (require 'smartparens-config)
     (add-hook 'prog-mode-hook 'turn-on-smartparens-strict-mode)
     (add-hook 'markdown-mode-hook 'turn-on-smartparens-strict-mode)
-    
+
     (sp-local-pair 'minibuffer-inactive-mode "'" nil :actions nil)
     (sp-local-pair 'web-mode "{%" "%}")
     (sp-with-modes 'emacs-lisp-mode
@@ -83,7 +83,7 @@
          ("C-c m" . vr/mc-mark)))
 
 (use-package whitespace-cleanup-mode
-  :defer 5 
+  :defer 5
   :commands whitespace-cleanup-mode
   :config
   (global-whitespace-cleanup-mode 1))
@@ -110,7 +110,6 @@
   :init
   (add-hook 'term-mode-hook (lambda ()
                               (yas-minor-mode -1))))
-
 
 (provide 'vde-editing)
 
