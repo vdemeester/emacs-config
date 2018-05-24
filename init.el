@@ -20,6 +20,12 @@
   (unless (>= emacs-major-version minver)
     (error "Your Emacs is too old -- this configuration requrise v%s or higher" minver)))
 
+(prefer-coding-system 'utf-8)
+(set-default-coding-systems 'utf-8)
+(set-language-environment 'utf-8)
+(set-selection-coding-system 'utf-8)
+(set-terminal-coding-system 'utf-8)
+
 ;;; package setup
 (require 'package)
 
