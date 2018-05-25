@@ -46,6 +46,152 @@
   (package-refresh-contents)
   (package-install 'use-package))
 
+;; on windows-nt, install the packages manually from the archives
+;; nix is not available on windows, and using WSL, it seems too heavy
+;; on the filesystem.
+(when (eq system-type 'windows-nt)
+  (setq package-list '(
+                       ace-window
+                       aggressive-indent
+                       async
+                       avy
+                       bm
+                       command-log-mode
+                       company
+                       company-emoji
+                       company-ghc
+                       company-go
+                       company-lsp
+                       company-nixos-options
+                       counsel
+                       counsel-projectile
+                       dash
+                       delight
+                       diff-hl
+                       diffview
+                       dired-collapse
+                       dired-sidebar
+                       direnv
+                       docker
+                       docker-compose-mode
+                       dockerfile-mode
+                       doom-themes
+                       eshell-bookmark
+                       eshell-prompt-extras
+                       esh-autosuggest
+                       exec-path-from-shell
+                       expand-region
+                       eyebrowse
+                       ez-query-replace
+                       fancy-narrow
+                       fish-mode
+                       fish-completion
+                       flycheck
+                       flycheck-popup-tip
+                       focus
+                       fullframe
+                       git-commit
+                       gitattributes-mode
+                       gitconfig-mode
+                       gitignore-mode
+                       go-add-tags
+                       go-eldoc
+                       go-errcheck
+                       go-fill-struct
+                       go-guru
+                       go-mode
+                       go-tag
+                       gotest
+                       groovy-mode
+                       hardhat
+                       helpful
+                       highlight
+                       highlight-numbers
+                       highlight-symbol
+                       hydra
+                       ibuffer-vc
+                       iedit
+                       imenu-list
+                       ivy
+                       ivy-hydra
+                       ivy-pass
+                       ivy-rich
+                       js-import
+                       js2-mode
+                       js2-refactor
+                       json-mode
+                       json-reformat
+                       json-snatcher
+                       key-chord
+                       lsp-haskell
+                       lsp-javascript-typescript
+                       lsp-go
+                       lsp-mode
+                       lsp-python
+                       lsp-rust
+                       lsp-ui
+                       magit
+                       magit-gitflow
+                       magit-popup
+                       markdown-mode
+                       multiple-cursors
+                       nix-buffer
+                       nix-mode
+                       nix-sandbox
+                       nixos-options
+                       no-littering
+                       olivetti
+                       ob-go
+                       ob-rust
+                       ob-typescript
+                       org-plus-contrib
+                       org-ref
+                       ox-epub
+                       ox-hugo
+                       ox-ioslide
+                       ox-pandoc
+                       ox-tufte
+                       ox-twbs
+                       pandoc-mode
+                       pass
+                       password-store
+                       password-store-otp
+                       popup
+                       projectile
+                       projectile-ripgrep
+                       pulseaudio-control
+                       python-mode
+                       rainbow-delimiters
+                       rainbow-mode
+                       ripgrep
+                       rjsx-mode
+                       shift-number
+                       shackle
+                       shx
+                       smart-jump
+                       smart-newline
+                       smartparens
+                       solaire-mode
+                       string-edit
+                       string-inflection
+                       super-save
+                       toml-mode
+                       typescript-mode
+                       undo-tree
+                       visual-fill-column
+                       visual-regexp
+                       web-mode
+                       wgrep
+                       which-key
+                       whitespace-cleanup-mode
+                       with-editor
+                       yasnippet
+                       yaml-mode
+                       ))
+  (dolist (package package-list)
+    (unless (package-installed-p package)
+      (package-install package))))
+
 ;; Init `delight'
 (unless (package-installed-p 'delight)
   (package-refresh-contents)
@@ -66,12 +212,13 @@
 
 (use-package exec-path-from-shell       ; Set up environment variables
   :if (display-graphic-p)
+  :unless (eq system-type 'windows-nt)
   :config
   (setq exec-path-from-shell-variables
-                 '("PATH"               ; Full path
-                   "INFOPATH"           ; Info directories
-		   "GOPATH"             ; Golang path
-                   ))
+        '("PATH"               ; Full path
+          "INFOPATH"           ; Info directories
+          "GOPATH"             ; Golang path
+          ))
 
   (exec-path-from-shell-initialize))
 
@@ -80,37 +227,37 @@
   "File used to store settings from Customization UI.")
 
 (use-package cus-edit                   ; Set up custom.el
-  :defer t
-  :config
-  (setq
-   custom-file vde-custom-file
-   custom-buffer-done-kill nil          ; Kill when existing
-   custom-buffer-verbose-help nil       ; Remove redundant help text
-   custom-unlispify-tag-names nil       ; Show me the real variable name
-   custom-unlispify-menu-entries nil)
-  :init (load vde-custom-file 'no-error 'no-message))
+             :defer t
+             :config
+             (setq
+              custom-file vde-custom-file
+              custom-buffer-done-kill nil          ; Kill when existing
+              custom-buffer-verbose-help nil       ; Remove redundant help text
+              custom-unlispify-tag-names nil       ; Show me the real variable name
+              custom-unlispify-menu-entries nil)
+             :init (load vde-custom-file 'no-error 'no-message))
 
 (use-package no-littering               ; Keep .emacs.d clean
-  :config
-  (require 'recentf)
-  (add-to-list 'recentf-exclude no-littering-var-directory)
-  (add-to-list 'recentf-exclude no-littering-etc-directory)
+             :config
+             (require 'recentf)
+             (add-to-list 'recentf-exclude no-littering-var-directory)
+             (add-to-list 'recentf-exclude no-littering-etc-directory)
 
-  (setq
-   create-lockfiles nil
-   delete-old-versions t
-   kept-new-versions 6
-   kept-old-versions 2
-   version-control t)
+             (setq
+              create-lockfiles nil
+              delete-old-versions t
+              kept-new-versions 6
+              kept-old-versions 2
+              version-control t)
 
-  (setq
-   backup-directory-alist
-   `((".*" . ,(no-littering-expand-var-file-name "backup/")))
-   auto-save-file-name-transforms
-   `((".*" ,(no-littering-expand-var-file-name "auto-save/") t))))
+             (setq
+              backup-directory-alist
+              `((".*" . ,(no-littering-expand-var-file-name "backup/")))
+              auto-save-file-name-transforms
+              `((".*" ,(no-littering-expand-var-file-name "auto-save/") t))))
 
 (use-package server                     ; The server of `emacsclient'
-  :config (or (server-running-p) (server-mode)))
+             :config (or (server-running-p) (server-mode)))
 
 ;; Confirm before quitting Emacs
 (setq confirm-kill-emacs #'y-or-n-p)
@@ -163,8 +310,8 @@ packages.")
 (use-package vde-media)
 
 (use-package command-log-mode
-  :bind (("C-c e M" . command-log-mode)
-         ("C-c e L" . clm/open-command-log-buffer)))
+             :bind (("C-c e M" . command-log-mode)
+                    ("C-c e L" . clm/open-command-log-buffer)))
 
 (eval-and-compile
   (define-inline emacs-path (path)
