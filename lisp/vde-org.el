@@ -28,6 +28,17 @@
                         ("@home" . ?h)))
   (setq org-agenda-skip-scheduled-if-done t))
 
+(use-package org-projectile
+  :defer 3
+  :bind (("C-c n p" . org-projectile-project-todo-completing-read)
+         ("C-c c" . org-capture))
+  :config
+  (progn
+    (setq org-projectile-projects-file
+          "~/sync/org/projects.org")
+    (setq org-agenda-files (append org-agenda-files (org-projectile-todo-files)))
+    (push (org-projectile-project-todo-entry) org-capture-templates)))
+
 (defun vde/org-mode-hook ()
   "Org-mode hook"
   (setq show-trailing-whitespace t)
