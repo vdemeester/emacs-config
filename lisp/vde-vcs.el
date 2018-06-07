@@ -12,8 +12,7 @@
          ("C-c v g" . magit-blame)
          ("C-c v l" . magit-log-buffer-file)
          ("C-c v p" . magit-pull)
-         ("C-c v v" . magit-status))
-  :chords (("gs" . magit-status))
+         ("C-c v v" . magit-status)) 
   :config
   (setq
    magit-save-repository-buffers 'dontask

@@ -1,7 +1,8 @@
 (use-package projectile                 ; Project management
   :init (projectile-mode)
-  :chords (("gf" . projectile-find-file)
-           ("gb" . projectile-switch-to-buffer))
+  :chords (("pf" . projectile-find-file)
+           ("pb" . projectile-switch-to-buffer)
+           ("pv" . projectile-vc))
   :config
   ;; Remove dead projects when Emacs is idle
   (run-with-idle-timer 10 nil #'projectile-cleanup-known-projects)
@@ -15,7 +16,7 @@
   :bind (:map projectile-command-map
               ("p" . counsel-projectile-switch-project)
               ("r" . counsel-projectile-rg))
-  :chords (("gg" . counsel-projectile-rg))
+  :chords (("pg" . counsel-projectile-rg))
   :init (counsel-projectile-mode)
   :config
   (ivy-set-display-transformer
