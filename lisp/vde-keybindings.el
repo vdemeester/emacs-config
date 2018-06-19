@@ -1,7 +1,8 @@
 (use-package key-chord
   :chords
   (("''" . "’")
-   (",l" . whitespace-mode))
+   (",w" . whitespace-mode)
+   (",l" . linum-mode))
   :custom
   (key-chord-two-keys-delay 0.05)
   :config
