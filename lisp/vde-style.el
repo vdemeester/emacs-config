@@ -140,6 +140,9 @@
 (use-package focus
   :commands focus-mode) ;; TODO bind it to hydra or cmd
 
+(use-package highlight
+  :ensure t)
+
 (use-package highlight-numbers
   :hook (prog-mode . highlight-numbers-mode))
 
