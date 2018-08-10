@@ -306,6 +306,7 @@ packages.")
 (use-package vde-groovy)
 (use-package vde-web)
 (use-package vde-docker)
+(use-package vde-hydras)
 ;; Fun stuff
 (use-package vde-media)
 
