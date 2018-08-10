@@ -1,6 +1,7 @@
 (defhydra hydra-projects (:color blue)
   "Open projects"
   ("d" hydra-docker-projects/body "docker")
+  ("e" (find-file "~/.emacs.d/init.el") "emacs")
   ("m" hydra-moby-projects/body "moby")
   ("h" (find-file "~/.config/nixpkgs/README.md") "home-manager")
   ("s" (find-file "/sudo::/etc/nixos/README.md") "nixos"))
