@@ -20,8 +20,8 @@
   ("c" (find-file "~/src/github.com/containerd/containerd/README.md") "containerd"))
 
 (defhydra hydra-goto-line (goto-map ""
-				    :pre (linum-mode 1)
-				    :post (linum-mode -1))
+                                    :pre (linum-mode 1)
+                                    :post (linum-mode -1))
   "goto-line"
   ("g" goto-line "go")
   ("m" set-mark-command "mark" :bind nil)
@@ -33,6 +33,14 @@
   ("M-y" yank-pop nil)
   ("y" (yank-pop 1) "next")
   ("Y" (yank-pop -1) "prev"))   ; or browse-kill-ring
+
+(defhydra hydra-zoom (global-map "<f2>")
+  "zoom"
+  ("g" text-scale-increase "in")
+  ("l" text-scale-decrease "out")
+  ("r" (text-scale-set 0) "reset")
+  ("0" (text-scale-set 0) :bind nil :exit t)
+  ("1" (text-scale-set 0) nil :bind nil :exit t))
 
 (bind-key "M-y" #'hydra-yank-pop/yank-pop)
 (bind-key "C-y" #'hydra-yank-pop/yank)
