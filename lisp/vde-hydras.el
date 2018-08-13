@@ -64,6 +64,13 @@ _l_ org link display:  %`org-descriptive-links
 
 (global-set-key (kbd "C-c C-v") 'hydra-toggle/body)
 
+
+(defhydra hydra-marked-items (dired-mode-map "")
+  "
+Number of marked items: %(length (dired-get-marked-files))
+"
+  ("m" dired-mark "mark"))
+
 (bind-key "M-y" #'hydra-yank-pop/yank-pop)
 (bind-key "C-y" #'hydra-yank-pop/yank)
 
