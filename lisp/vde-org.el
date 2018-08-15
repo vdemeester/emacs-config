@@ -45,9 +45,11 @@
   (when (not (eq major-mode 'org-agenda-mode))
     (setq fill-column 120)
     (flyspell-mode)
-    (org-indent-mode)))
+    (org-indent-mode)
+    (smartparens-mode)))
 
-(use-package smartparens-org)
+(use-package smartparens-org
+  :after org-mode)
 
 (use-package ox-hugo
   :after ox
