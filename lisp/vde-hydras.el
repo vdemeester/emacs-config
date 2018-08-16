@@ -1,12 +1,30 @@
 (defhydra hydra-projects (:color blue)
   "Open projects"
+  ("b" (find-file "~/src/github.com/vdemeester/blog/README.md") "blog")
   ("d" hydra-docker-projects/body "docker")
   ("e" (find-file "~/.emacs.d/init.el") "emacs")
+  ("g" hydra-golang-projects/body "go*")
   ("m" hydra-moby-projects/body "moby")
-  ("h" (find-file "~/.config/nixpkgs/README.md") "home-manager")
-  ("s" (find-file "/sudo::/etc/nixos/README.md") "nixos"))
+  ("n" hydra-nix-projects/body "nix")
+  ("v" hydra-vdemeester-projects/body "vdemeester"))
 
 (bind-key "C-c SPC" #'hydra-projects/body)
+
+(defhydra hydra-vdemeester-projects (:color blue)
+  ("a" (find-file "~/src/github.com/vdemeester/ape/README.md") "ape")
+  ("b" (find-file "~/src/github.com/vdemeester/bee/README.md") "bee") 
+  ("d" (find-file "~/src/github.com/vdemeester/go-doist/README.md") "go-doist")
+  ("f" (find-file "~/src/github.com/vdemeester/fox/README.md") "fox")
+  ("y" (find-file "~/src/github.com/vdemeester/yak/README.md") "yak"))
+
+(defhydra hydra-golang-projects (:color blue)
+  ("t" (find-file "~/src/gotest.tools/README.md") "gotest.tools"))
+
+(defhydra hydra-nix-projects (:color blue)  
+  ("h" (find-file "~/.config/nixpkgs/README.md") "home")
+  ("m" (find-file "~/src/github.com/rycee/home-manager/README.md") "home-manager")
+  ("n" (find-file "~/src/github.com/NixOS/nixpkgs/README.md") "nixpkgs")
+  ("s" (find-file "/sudo::/etc/nixos/README.md") "nixos"))
 
 (defhydra hydra-docker-projects (:color blue)
   "Docker projects"
