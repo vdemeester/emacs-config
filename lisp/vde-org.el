@@ -4,6 +4,7 @@
   :commands (org-capture org-agenda)
   :ensure org-plus-contrib
   :hook (org-mode . vde/org-mode-hook)
+  :bind (("C-c c" . org-capture))  
   :config
   (require 'org-protocol)
   (setq org-modules
@@ -26,12 +27,19 @@
   
   (setq org-tag-alist '(("@cal" . ?c)
                         ("@home" . ?h)))
-  (setq org-agenda-skip-scheduled-if-done t))
+  (setq org-agenda-skip-scheduled-if-done t)
+  (setq org-default-notes-file "~/sync/org/notes.org")
+  (setq org-default-tasks-file "~/sync/org/tasks.org")
+  
+  (setq org-capture-templates '(("n" "Though or Note" entry
+                                 (file org-default-notes-file)) 
+                                ("w" "Work log" entry
+                                 (file+datetree "~/sync/docker/worklog.org")
+                                 "* %?\n%U\n"))))
 
 (use-package org-projectile
   :defer 3
-  :bind (("C-c n p" . org-projectile-project-todo-completing-read)
-         ("C-c c" . org-capture))
+  :bind (("C-c n p" . org-projectile-project-todo-completing-read))
   :config
   (progn
     (setq org-projectile-projects-file
