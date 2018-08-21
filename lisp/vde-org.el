@@ -31,7 +31,10 @@
   (setq org-default-notes-file "~/sync/org/notes.org")
   (setq org-default-tasks-file "~/sync/org/tasks.org")
   
-  (setq org-capture-templates '(("n" "Though or Note" entry
+  (setq org-capture-templates '(("b" "Blog post" entry
+                                 (file+headline "~/src/github.com/vdemeester/blog/content-org/posts.org" "Blog Ideas")
+                                 "* %?\n:PROPERTIES:\n:END:\n")
+                                ("n" "Though or Note" entry
                                  (file org-default-notes-file)) 
                                 ("w" "Work log" entry
                                  (file+datetree "~/sync/docker/worklog.org")
