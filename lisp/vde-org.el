@@ -30,12 +30,16 @@
   (setq org-agenda-skip-scheduled-if-done t)
   (setq org-default-notes-file "~/sync/org/notes.org")
   (setq org-default-tasks-file "~/sync/org/tasks.org")
+
+  (setq org-protocol-default-template-key "l")
   
   (setq org-capture-templates '(("b" "Blog post" entry
                                  (file+headline "~/src/github.com/vdemeester/blog/content-org/posts.org" "Blog Ideas")
                                  "* %?\n:PROPERTIES:\n:END:\n")
                                 ("n" "Though or Note" entry
-                                 (file org-default-notes-file)) 
+                                 (file org-default-notes-file))
+                                ("l" "Link" entry (file+olp org-default-notes-file "Links")
+                                 "* %a\n %?\n %i")
                                 ("w" "Work log" entry
                                  (file+datetree "~/sync/docker/worklog.org")
                                  "* %?\n%U\n"))))
