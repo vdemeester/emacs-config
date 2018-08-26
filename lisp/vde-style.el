@@ -141,7 +141,7 @@
   :commands focus-mode) ;; TODO bind it to hydra or cmd
 
 (use-package highlight
-  :ensure t)
+  :ensure melpa)
 
 (use-package highlight-numbers
   :hook (prog-mode . highlight-numbers-mode))
