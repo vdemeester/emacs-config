@@ -100,12 +100,12 @@
          ("C-c y g" . yas-global-mode)
          ("C-c y m" . yas-minor-mode)
          ("C-c y a" . yas-reload-all)
-         ("C-c y x" . yas-expand))
+         ("C-c y x" . yas-expand)) 
   :bind (:map yas-keymap
               ("C-i" . yas-next-field-or-maybe-expand))
-  :mode ("/\\.emacs\\.d/snippets/" . snippet-mode)
+  :mode ("/\\.emacs\\.d/etc/yasnippet/snippets/" . snippet-mode)
   :config
-  (yas-load-directory (emacs-path "snippets"))
+  (yas-load-directory (emacs-path "etc/yasnippet/snippets"))
   (yas-global-mode 1)
   :init
   (add-hook 'term-mode-hook (lambda ()
