@@ -1,13 +1,3 @@
-;; (use-package mpdel
-;;   :ensure t
-;;   :pin melpa
-;;   :config (mpdel-mode))
-
-;; (use-package ivy-mpdel
-;;   :ensure t
-;;   :pin melpa
-;;   :after mpdel)
-
 (use-package pulseaudio-control
   :defer 5
   :init
