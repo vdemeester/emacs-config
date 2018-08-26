@@ -25,8 +25,10 @@
   (setq org-insert-heading-respect-content t)
   (setq org-ellipsis " …")
   
-  (setq org-tag-alist '(("@cal" . ?c)
-                        ("@home" . ?h)))
+  (setq org-tag-alist (quote ((:startgroup . nil)
+                              ("@home" . ?h) ("@work" . ?w) ("@errand" . ?e)
+                              (:endgroup . nil)
+                              ("laptop" . ?l) ("desktop" . ?d) ("server" . ?s))))
   (setq org-agenda-skip-scheduled-if-done t)
   (setq org-default-notes-file "~/sync/org/notes.org")
   (setq org-default-tasks-file "~/sync/org/tasks.org")
@@ -39,10 +41,12 @@
                                 ("n" "Though or Note" entry
                                  (file org-default-notes-file))
                                 ("l" "Link" entry (file+olp org-default-notes-file "Links")
-                                 "* %a\n %?\n %i")
-                                ("w" "Work log" entry
-                                 (file+datetree "~/sync/docker/worklog.org")
-                                 "* %?\n%U\n"))))
+                                 "* %a\n %?\n %i"))))
+
+(use-package org-journal
+  :init
+  (setq org-journal-dir "~/sync/journal/")
+  (setq org-journal-time-format ""))
 
 (use-package org-projectile
   :defer 3
