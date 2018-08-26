@@ -62,7 +62,8 @@
   "Org-mode hook"
   (setq show-trailing-whitespace t)
   (when (not (eq major-mode 'org-agenda-mode))
-    (setq fill-column 120)
+    (setq fill-column 90)
+    (auto-fill-mode)
     (flyspell-mode)
     (org-indent-mode)
     (smartparens-mode)))
