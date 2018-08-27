@@ -15,6 +15,11 @@
   (setq org-blank-before-new-entry '((heading . t)
                                      (plain-list-item . t)))
   (setq org-directory "~/sync/org/")
+  ;; you can override the document org-agenda-files by setting your
+  ;; org-agenda-files in the variable org-user-agenda-files  
+  (if (boundp 'org-user-agenda-files)
+      (setq org-agenda-files org-user-agenda-files)
+    (setq org-agenda-files (quote ("~/sync/org")))) 
   
   (setq org-log-done (quote time))
   (setq org-log-redeadline (quote time))
