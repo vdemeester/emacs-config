@@ -41,7 +41,59 @@
                                 ("n" "Though or Note" entry
                                  (file org-default-notes-file))
                                 ("l" "Link" entry (file+olp org-default-notes-file "Links")
-                                 "* %a\n %?\n %i"))))
+                                 "* %a\n %?\n %i")))
+
+  ;; org-links
+  ;; from http://endlessparentheses.com/use-org-mode-links-for-absolutely-anything.html
+  (org-add-link-type
+   "tag" 'endless/follow-tag-link)
+
+  (defun endless/follow-tag-link (tag)
+    "Display a list of TODO headlines with tag TAG.
+With prefix argument, also display headlines without a TODO keyword."
+    (org-tags-view (null current-prefix-arg) tag))
+  
+  (org-add-link-type
+   "grep" 'my/follow-grep-link
+   )
+  (defun my/follow-grep-link (regexp)
+    "Run `rgrep' with REGEXP and FOLDER as argument,
+like this : [[grep:REGEXP:FOLDER]]."
+    (setq expressions (split-string regexp ":"))
+    (setq exp (nth 0 expressions))
+    (grep-compute-defaults)
+    (if (= (length expressions) 1)
+        (progn
+          (rgrep exp "*" (expand-file-name "./")))
+      (progn
+        (setq folder (nth 1 expressions))
+        (rgrep exp "*" (expand-file-name folder))))
+    )
+  
+  (org-add-link-type
+   "rg" 'my/follow-rg-link)
+  (defun my/follow-rg-link (regexp)
+    "Run `ripgrep-regexp` with REXEP and FOLDER as argument,
+like this : [[pt:REGEXP:FOLDER]]"
+    (setq expressions (split-string regexp ":"))
+    (setq exp (nth 0 expressions))
+    (if (= (length expressions) 1)
+        (progn
+          (ripgrep-regexp exp (expand-file-name "./")))
+      (progn
+        (setq folder (nth 1 expressions))
+        (ripgrep-regexp exp (file-name-as-directory (expand-file-name folder)))))
+    )
+  
+  (org-add-link-type
+   "gh" 'my/follow-gh-link)
+  (defun my/follow-gh-link (issue)
+    "Browse github issue/pr specified"
+    (setq expressions (split-string issue "#"))
+    (setq project (nth 0 expressions))
+    (setq issue (nth 1 expressions))
+    (browse-url
+     (format "https://github.com/%s/issues/%s" project issue))))
 
 (use-package org-journal
   :init
