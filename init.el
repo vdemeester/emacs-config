@@ -227,37 +227,37 @@
   "File used to store settings from Customization UI.")
 
 (use-package cus-edit                   ; Set up custom.el
-             :defer t
-             :config
-             (setq
-              custom-file vde-custom-file
-              custom-buffer-done-kill nil          ; Kill when existing
-              custom-buffer-verbose-help nil       ; Remove redundant help text
-              custom-unlispify-tag-names nil       ; Show me the real variable name
-              custom-unlispify-menu-entries nil)
-             :init (load vde-custom-file 'no-error 'no-message))
+  :defer t
+  :config
+  (setq
+   custom-file vde-custom-file
+   custom-buffer-done-kill nil          ; Kill when existing
+   custom-buffer-verbose-help nil       ; Remove redundant help text
+   custom-unlispify-tag-names nil       ; Show me the real variable name
+   custom-unlispify-menu-entries nil)
+  :init (load vde-custom-file 'no-error 'no-message))
 
 (use-package no-littering               ; Keep .emacs.d clean
-             :config
-             (require 'recentf)
-             (add-to-list 'recentf-exclude no-littering-var-directory)
-             (add-to-list 'recentf-exclude no-littering-etc-directory)
+  :config
+  (require 'recentf)
+  (add-to-list 'recentf-exclude no-littering-var-directory)
+  (add-to-list 'recentf-exclude no-littering-etc-directory)
 
-             (setq
-              create-lockfiles nil
-              delete-old-versions t
-              kept-new-versions 6
-              kept-old-versions 2
-              version-control t)
+  (setq
+   create-lockfiles nil
+   delete-old-versions t
+   kept-new-versions 6
+   kept-old-versions 2
+   version-control t)
 
-             (setq
-              backup-directory-alist
-              `((".*" . ,(no-littering-expand-var-file-name "backup/")))
-              auto-save-file-name-transforms
-              `((".*" ,(no-littering-expand-var-file-name "auto-save/") t))))
+  (setq
+   backup-directory-alist
+   `((".*" . ,(no-littering-expand-var-file-name "backup/")))
+   auto-save-file-name-transforms
+   `((".*" ,(no-littering-expand-var-file-name "auto-save/") t))))
 
 (use-package server                     ; The server of `emacsclient'
-             :config (or (server-running-p) (server-mode)))
+  :config (or (server-running-p) (server-mode)))
 
 ;; Confirm before quitting Emacs
 (setq confirm-kill-emacs #'y-or-n-p)
@@ -311,8 +311,8 @@ packages.")
 (use-package vde-media)
 
 (use-package command-log-mode
-             :bind (("C-c e M" . command-log-mode)
-                    ("C-c e L" . clm/open-command-log-buffer)))
+  :bind (("C-c e M" . command-log-mode)
+         ("C-c e L" . clm/open-command-log-buffer)))
 
 (eval-and-compile
   (define-inline emacs-path (path)
