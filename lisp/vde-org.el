@@ -14,12 +14,12 @@
           (sequence "IDEA")))
   (setq org-blank-before-new-entry '((heading . t)
                                      (plain-list-item . t)))
-  (setq org-directory "~/sync/org/")
+  (setq org-directory "~/desktop/org/")
   ;; you can override the document org-agenda-files by setting your
   ;; org-agenda-files in the variable org-user-agenda-files  
   (if (boundp 'org-user-agenda-files)
       (setq org-agenda-files org-user-agenda-files)
-    (setq org-agenda-files (quote ("~/sync/org")))) 
+    (setq org-agenda-files (quote ("~/desktop/org")))) 
   
   (setq org-log-done (quote time))
   (setq org-log-redeadline (quote time))
@@ -35,8 +35,8 @@
                               (:endgroup . nil)
                               ("laptop" . ?l) ("desktop" . ?d) ("server" . ?s))))
   (setq org-agenda-skip-scheduled-if-done t)
-  (setq org-default-notes-file "~/sync/org/notes.org")
-  (setq org-default-tasks-file "~/sync/org/tasks.org")
+  (setq org-default-notes-file "~/desktop/org/notes.org")
+  (setq org-default-tasks-file "~/desktop/org/tasks.org")
 
   (setq org-protocol-default-template-key "l")
   
@@ -102,7 +102,7 @@ like this : [[pt:REGEXP:FOLDER]]"
 
 (use-package org-journal
   :init
-  (setq org-journal-dir "~/sync/journal/")
+  (setq org-journal-dir "~/desktop/org/journal/")
   (setq org-journal-time-format ""))
 
 (use-package org-projectile
@@ -111,7 +111,7 @@ like this : [[pt:REGEXP:FOLDER]]"
   :config
   (progn
     (setq org-projectile-projects-file
-          "~/sync/org/projects.org")
+          "~/desktop/org/projects.org")
     (setq org-agenda-files (append org-agenda-files (org-projectile-todo-files)))
     (push (org-projectile-project-todo-entry) org-capture-templates)))
 
