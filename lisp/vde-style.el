@@ -5,14 +5,14 @@
 ;; - Fira Sans (https://github.com/mozilla/Fira/)
 (set-face-attribute 'default nil
 		    :family "Fira Code"
-                    :height 120)
+                    :height 110)
 (set-face-attribute 'variable-pitch nil
                     :family "Fira Sans"
-                    :height 120
+                    :height 110
                     :weight 'regular)
 (set-face-attribute 'variable-pitch nil
                     :family "Source Sans Pro"
-                    :height 120
+                    :height 110
                     :weight 'regular)
 
 ;;; Interface
