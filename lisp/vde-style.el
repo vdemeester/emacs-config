@@ -37,13 +37,11 @@
 ;;; Theme
 (setq custom-safe-themes t)    ; Treat themes as safe
 
-(use-package doom-themes
+(use-package shortbrain-theme
+  ;; :load-path "shortbrain-theme.el"
   :config
-  (setq doom-themes-enable-bolt t)
-  (setq doom-themes-enable-italic t)
-  (load-theme 'doom-one t)
-  ;; Fix theme loading with daemon(ed) emacs
-  (defvar my:theme 'doom-one)
+  (load-theme 'shortbrain t)
+  (defvar my:theme 'shortbrain)
   (defvar my:theme-window-loaded nil)
   (defvar my:theme-terminal-loaded nil)
 
@@ -68,6 +66,37 @@
           (setq my:theme-window-loaded t)
         (setq my:theme-terminal-loaded t)))))
 
+;; (use-package doom-themes
+;;   :config
+;;   (setq doom-themes-enable-bolt t)
+;;   (setq doom-themes-enable-italic t)
+;;   (load-theme 'doom-one t)
+;;   ;; Fix theme loading with daemon(ed) emacs
+;;   (defvar my:theme 'doom-one)
+;;   (defvar my:theme-window-loaded nil)
+;;   (defvar my:theme-terminal-loaded nil)
+
+;;   (if (daemonp)
+;;       (add-hook 'after-make-frame-functions(lambda (frame)
+;;                                              (select-frame frame)
+;;                                              (if (window-system frame)
+;;                                                  (unless my:theme-window-loaded
+;;                                                    (if my:theme-terminal-loaded
+;;                                                        (enable-theme my:theme)
+;;                                                      (load-theme my:theme t))
+;;                                                    (setq my:theme-window-loaded t))
+;;                                                (unless my:theme-terminal-loaded
+;;                                                  (if my:theme-window-loaded
+;;                                                      (enable-theme my:theme)
+;;                                                    (load-theme my:theme t))
+;;                                                  (setq my:theme-terminal-loaded t)))))
+
+;;     (progn
+;;       (load-theme my:theme t)
+;;       (if (display-graphic-p)
+;;           (setq my:theme-window-loaded t)
+;;         (setq my:theme-terminal-loaded t)))))
+
 (use-package solaire-mode
   :config
   (setq solaire-mode-remap-modeline nil)
@@ -79,9 +108,9 @@
 
 ;;; The mode line
 ;; Slightly decrease the font in the mode line
-(set-face-attribute 'mode-line nil
-                    :family "Iosevka"
-		    :height 130)
+;; (set-face-attribute 'mode-line nil
+;;                     :family "Iosevka"
+;; 		    :height 130)
 
 (line-number-mode)
 (column-number-mode)
