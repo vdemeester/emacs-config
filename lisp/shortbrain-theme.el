@@ -26,7 +26,6 @@
 
 ;; Low distraction, minimalistic color theme, with minimal colors, preferring
 ;; other styles of markup (italic, bold).
-;; TODO(vdemeester) handle guide-key faces
 ;; TODO(vdemeester) change some magit faces
 ;; TODO(vdemeester) try a dark version of it (?)
 
@@ -179,7 +178,7 @@
    `(magit-branch-current ((t (:inherit magit-head))))
    `(magit-branch-remote-head ((t (:inherit magit-head))))
    `(magit-tag ((t (:inherit magit-branch-local :underline nil))))
-   `(magit-hash ((t (:inherit default :weight semi-bold))))
+   `(magit-hash ((t (:inherit default :foreground ,fg-dim))))
    `(magit-head ((t (:foreground ,fg-table :underline t :weight bold))))
    `(magit-log-author ((t (:foreground ,fg-dim))))
    `(magit-section-heading ((t (:weight semi-bold
