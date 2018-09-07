@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: t; -*-
 (use-package dockerfile-mode            ; Edit docker's Dockerfiles
   :mode ("Dockerfile\\'" . dockerfile-mode))
 

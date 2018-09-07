@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: t; -*-
 ;;; shortbrain-theme.el --- Shortbrain theme
 
 ;; Copyright (C) 2013-2016 Marian Schubert

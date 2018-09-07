@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: t; -*-
 (use-package org
   :defer t
   :mode (("\\.org$" . org-mode))

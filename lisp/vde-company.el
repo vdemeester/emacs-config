@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: t; -*-
 (use-package company
   :commands global-company-mode
   :init

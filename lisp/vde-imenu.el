@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: t; -*-
 (use-package imenu-list
   :commands (vde/imenu-list-display-toggle)
   :bind (("C-'" . vde/imenu-list-display-toggle))

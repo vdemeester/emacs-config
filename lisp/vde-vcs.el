@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: t; -*-
 (use-package vc-hooks                   ; Simple version control
   :bind (("S-<f5>" . vc-revert)
          ("C-c v r" . vc-refresh-state))

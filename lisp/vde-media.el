@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: t; -*-
 (use-package pulseaudio-control
   :defer 5
   :init

@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: t; -*-
 ;; This file stores my configuration for Ivy and related packages.
 (use-package ivy
   :bind (:map vde-mode-map

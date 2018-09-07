@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: t; -*-
 (use-package files                      ; Core commands for files
   :bind (("<f5>" . revert-buffer)))
 

@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: t; -*-
 (defhydra hydra-projects (:color blue)
   "Open projects"
   ("b" (find-file "~/src/github.com/vdemeester/blog/README.md") "blog")

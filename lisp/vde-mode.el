@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: t; -*-
 ;; My minor mode
 ;; Main use is to have my key bindings have the highest priority
 

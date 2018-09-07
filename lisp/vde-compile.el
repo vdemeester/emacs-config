@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: t; -*-
 (use-package compile
   :defer 2
   :config

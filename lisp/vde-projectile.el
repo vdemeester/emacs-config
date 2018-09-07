@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: t; -*-
 (use-package projectile                 ; Project management
   :init (projectile-mode)
   :chords (("pf" . projectile-find-file)

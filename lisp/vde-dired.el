@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: t; -*-
 (use-package dired
   :defer t
   :bind (("<C-return>" . vde-open-in-external-app)

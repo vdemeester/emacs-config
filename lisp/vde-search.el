@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: t; -*-
 ;; Ignore directories during grep
 (with-eval-after-load 'grep
   '(progn
