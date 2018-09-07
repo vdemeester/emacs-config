@@ -17,3 +17,8 @@ var
 tramp
 elpa
 custom.el
+
+%backup%~
+# wat?
+history
+projectile-bookmarks.eld
