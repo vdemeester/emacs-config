@@ -3,12 +3,16 @@
 ;; Fonts used:
 ;; - Iosevka (https://github.com/be5invis/Iosevka)
 ;; - Fira Sans (https://github.com/mozilla/Fira/)
+(setq font-height 110)
+(when (string= system-name "shikoku")
+  (setq font-height 140))
+
 (set-face-attribute 'default nil
 		    :family "Fira Code"
-                    :height 110)
+                    :height font-height)
 (set-face-attribute 'variable-pitch nil
                     :family "Fira Sans"
-                    :height 110
+                    :height font-height
                     :weight 'regular)
 
 ;;; Utilities and key bindings
@@ -17,10 +21,10 @@
   (interactive)
   (set-face-attribute 'default nil
 		      :family "Fira Code"
-                      :height 110)
+                      :height font-heigh)
   (set-face-attribute 'variable-pitch nil
                       :family "Fira Sans"
-                      :height 110
+                      :height font-height
                       :weight 'regular))
 
 (bind-key "C-c t f" #'mu-reset-fonts)
