@@ -27,6 +27,8 @@
 ;; Low distraction, minimalistic color theme, with minimal colors, preferring
 ;; other styles of markup (italic, bold).
 ;; TODO(vdemeester) handle guide-key faces
+;; TODO(vdemeester) change some magit faces
+;; TODO(vdemeester) try a dark version of it (?)
 
 ;;; Credits:
 
@@ -278,6 +280,11 @@
    `(markdown-pre-face ((t (:inherit markdown-inline-code-face))))
    `(markdown-reference-face ((t (:inherit markdown-link-face))))
 
+   ;; which-key
+   `(which-key-key-face ((t (:foreground ,string))))
+   `(which-key-separator-face ((t (:foreground ,fg-slight-dim))))
+   `(which-key-command-description-face ((t (:foreground ,fg))))
+   
    ;; misc
    `(idle-highlight ((t (:background ,bg-highlight))))
    `(yas-field-highlight-face ((t (:background ,bg-highlight-dim :foreground ,fg))))
