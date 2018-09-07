@@ -10,10 +10,20 @@
                     :family "Fira Sans"
                     :height 110
                     :weight 'regular)
-(set-face-attribute 'variable-pitch nil
-                    :family "Source Sans Pro"
-                    :height 110
-                    :weight 'regular)
+
+;;; Utilities and key bindings
+(defun mu-reset-fonts ()
+  "Reset fonts to my preferences."
+  (interactive)
+  (set-face-attribute 'default nil
+		      :family "Fira Code"
+                      :height 110)
+  (set-face-attribute 'variable-pitch nil
+                      :family "Fira Sans"
+                      :height 110
+                      :weight 'regular))
+
+(bind-key "C-c t f" #'mu-reset-fonts)
 
 ;;; Interface
 (use-package frame                      ; Frames
@@ -173,23 +183,6 @@
 
 (setq-default indicate-buffer-boundaries 'left)
 (setq-default indicate-empty-lines +1)
-
-;;; Utilities and key bindings
-(defun mu-reset-fonts ()
-  "Reset fonts to my preferences."
-  (interactive)
-  (set-face-attribute 'default nil
-		      :family "Fire Code"
-                      :height 130)
-  (set-face-attribute 'variable-pitch nil
-                      :family "Fira Sans"
-                      :height 130
-                      :weight 'regular)
-  (set-face-attribute 'mode-line nil
-                      :family "Iosevka"
-                      :height 130))
-
-(bind-key "C-c t f" #'mu-reset-fonts)
 
 (use-package focus
   :commands focus-mode) ;; TODO bind it to hydra or cmd
