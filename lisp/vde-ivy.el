@@ -67,6 +67,9 @@
     (bind-to-vde-map "s" #'counsel-rg))
   :config
   (progn
+    (setq
+     counsel-describe-function-function 'helpful-function
+     counsel-describe-variable-function 'helpful-variable)
     ;; counsel-find-file
     (setq counsel-find-file-at-point t)
     (setq counsel-find-file-ignore-regexp

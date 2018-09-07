@@ -8,6 +8,13 @@
 ;; Truncate lines during grep
 (add-hook 'grep-mode-hook #'toggle-truncate-lines)
 
+(use-package swiper
+  :after ivy
+  :bind
+  ([remap isearch-forward] . swiper)
+  ([remap isearch-backward] . swiper)
+  ("C-c s s" . swiper-all))
+
 (use-package wgrep                      ; Editable grep buffer
   :defer 2
   :config)
