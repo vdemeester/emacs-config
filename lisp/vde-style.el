@@ -4,8 +4,11 @@
 ;; - Iosevka (https://github.com/be5invis/Iosevka)
 ;; - Fira Sans (https://github.com/mozilla/Fira/)
 (setq font-height 110)
-(when (string= system-name "shikoku")
-  (setq font-height 140))
+(cond
+ ((string= system-name "hokkaido")
+  (setq font-height 100))
+ ((string= system-name "shikoku")
+  (setq font-height 140)))
 
 (set-face-attribute 'default nil
 		    :family "Fira Code"
