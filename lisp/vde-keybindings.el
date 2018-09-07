@@ -13,7 +13,11 @@
   :config
   (setq
    which-key-idle-delay 0.4
-   which-key-sort-order 'which-key-prefix-then-key-order))
+   which-key-sort-order 'which-key-prefix-then-key-order)
+  (add-to-list 'which-key-replacement-alist '(("TAB" . nil) . ("↹" . nil)))
+  (add-to-list 'which-key-replacement-alist '(("RET" . nil) . ("⏎" . nil)))
+  (add-to-list 'which-key-replacement-alist '(("DEL" . nil) . ("⇤" . nil)))
+  (add-to-list 'which-key-replacement-alist '(("SPC" . nil) . ("␣" . nil))))
 
 ;; Disable C-x C-n to avoid the disabled command buffer
 (unbind-key "C-x C-n" global-map)
