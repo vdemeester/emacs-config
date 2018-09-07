@@ -5,9 +5,9 @@
 ;; - Fira Sans (https://github.com/mozilla/Fira/)
 (setq font-height 110)
 (cond
- ((string= system-name "hokkaido")
+ ((string= (system-name) "hokkaido")
   (setq font-height 100))
- ((string= system-name "shikoku")
+ ((string= (system-name) "shikoku")
   (setq font-height 140)))
 
 (set-face-attribute 'default nil
