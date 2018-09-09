@@ -143,7 +143,7 @@
    `(org-scheduled ((t (:foreground ,fg))))
    `(org-sexp-date ((t (:foreground ,fg))))
    `(org-special-keyword ((t (:foreground ,fg))))
-   `(org-todo ((t (:foreground ,fg))))
+   `(org-todo ((t (:foreground ,fg :box (:line-width 1 :color ,fg-slight-dim)))))
    `(org-verse ((t (:inherit org-block :slant italic))))
    `(org-table ((t (:foreground ,fg-table))))
 
