@@ -5,8 +5,11 @@
   ("d" hydra-docker-projects/body "docker")
   ("e" (find-file "~/.emacs.d/init.el") "emacs")
   ("g" hydra-golang-projects/body "go*")
+  ("k" hydra-kubernetes-projects/body "kubernetes")
   ("m" hydra-moby-projects/body "moby")
   ("n" hydra-nix-projects/body "nix")
+  ("o" hydra-openshift-projects/body "openshift")
+  ("r" hydra-redhat-dev-projets/body "redhat")
   ("v" hydra-vdemeester-projects/body "vdemeester"))
 
 (bind-key "C-c SPC" #'hydra-projects/body)
@@ -14,14 +17,16 @@
 (defhydra hydra-vdemeester-projects (:color blue)
   ("a" (find-file "~/src/github.com/vdemeester/ape/README.md") "ape")
   ("b" (find-file "~/src/github.com/vdemeester/bee/README.md") "bee") 
-  ("d" (find-file "~/src/github.com/vdemeester/go-doist/README.md") "go-doist")
+  ("o" (find-file "~/src/github.com/vdemeester/orgist/README.md") "orgist")
   ("f" (find-file "~/src/github.com/vdemeester/fox/README.md") "fox")
   ("y" (find-file "~/src/github.com/vdemeester/yak/README.md") "yak"))
 
 (defhydra hydra-golang-projects (:color blue)
+  "Golang (random) projects"
   ("t" (find-file "~/src/gotest.tools/README.md") "gotest.tools"))
 
-(defhydra hydra-nix-projects (:color blue)  
+(defhydra hydra-nix-projects (:color blue)
+  "Nix-based projects"
   ("h" (find-file "~/.config/nixpkgs/README.md") "home")
   ("m" (find-file "~/src/github.com/rycee/home-manager/README.md") "home-manager")
   ("n" (find-file "~/src/github.com/NixOS/nixpkgs/README.md") "nixpkgs")
@@ -37,6 +42,21 @@
   "Moby projects"
   ("b" (find-file "~/src/github.com/moby/buildkit/README.md") "buildkit")
   ("c" (find-file "~/src/github.com/containerd/containerd/README.md") "containerd"))
+
+(defhydra hydra-redhat-dev-projets (:color blue)
+  "RedHat projects"
+  ("o" (find-file "~/src/github.com/redhat-developer/odo/README.md") "odo"))
+
+(defhydra hydra-openshift-projects (:color blue)
+  "Openshift projects"
+  ("o", (find-file "~/src/github.com/openshift/origin/README.md") "origin"))
+
+(defhydra hydra-kubernetes-projects (:color blue)
+  "Kubernetes projects"
+  ("b" (find-file "~/src/github.com/kubernetes-sigs/kubebuilder/README.md") "kubebuilder")
+  ("c" (find-file "~/src/github.com/kubernetes/kompose/README.md") "kompose")
+  ("k" (find-file "~/src/github.com/kubernetes/kubernetes/README.md") "kubernetes")
+  ("u" (find-file "~/src/github.com/kubernetes-sigs/kustomize/README.md") "kustomize"))
 
 (defhydra hydra-goto-line (goto-map ""
                                     :pre (linum-mode 1)
