@@ -41,7 +41,9 @@
 (defhydra hydra-moby-projects (:color blue)
   "Moby projects"
   ("b" (find-file "~/src/github.com/moby/buildkit/README.md") "buildkit")
-  ("c" (find-file "~/src/github.com/containerd/containerd/README.md") "containerd"))
+  ("c" (find-file "~/src/github.com/containerd/containerd/README.md") "containerd")
+  ("r" (find-file "~/src/github.com/opencontainers/runc/README.md") "runc")
+  ("l" (find-file "~/src/github.com/linuxkit/linuxkit/README.md") "linuxkit"))
 
 (defhydra hydra-redhat-dev-projets (:color blue)
   "RedHat projects"
@@ -49,7 +51,7 @@
 
 (defhydra hydra-openshift-projects (:color blue)
   "Openshift projects"
-  ("o", (find-file "~/src/github.com/openshift/origin/README.md") "origin"))
+  ("o" (find-file "~/src/github.com/openshift/origin/README.md") "origin"))
 
 (defhydra hydra-kubernetes-projects (:color blue)
   "Kubernetes projects"
