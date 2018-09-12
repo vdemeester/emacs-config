@@ -130,7 +130,7 @@
    `(org-block ((t (:foreground ,fg))))
    `(org-block-begin-line ((t (:foreground ,fg-light :height 0.8))))
    `(org-block-end-line ((t (:foreground ,fg-light :height 0.8))))
-   `(org-verbatim ((t (:foreground ,fg :weight semi-bold))))
+   `(org-verbatim ((t (:foreground ,fg :weight semi-bold :background ,bg-highlight-dim))))
    `(org-date ((t (:foreground ,fg) :underline)))
    `(org-done ((t (:foreground ,fg-light))))
    `(org-hide ((t (:foreground ,bg))))
