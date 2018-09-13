@@ -72,6 +72,16 @@
   :defer 2
   :init (global-git-commit-mode)
   :config
+  (defun ar/git-commit-search-message-history ()
+    "Search and insert commit message from history."
+    (interactive)
+    (insert (completing-read "History: "
+                             ;; Remove unnecessary newlines from beginning and end.
+                             (mapcar (lambda (text)
+                                       (string-trim text))
+                                     (ring-elements log-edit-comment-ring)))))
+  (bind-key "M-r" #'ar/git-commit-search-message-history git-commit-mode-map)
+  (add-to-list 'savehist-additional-variables log-edit-comment-ring)
   (remove-hook 'git-commit-finish-query-functions
                #'git-commit-check-style-conventions))
 
