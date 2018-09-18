@@ -4,6 +4,7 @@
   :chords (("pf" . projectile-find-file)
            ("pb" . projectile-switch-to-buffer)
            ("pv" . projectile-vc))
+  :bind-keymap ("C-c p" . projectile-command-map)
   :config
   ;; Remove dead projects when Emacs is idle
   (run-with-idle-timer 10 nil #'projectile-cleanup-known-projects)
