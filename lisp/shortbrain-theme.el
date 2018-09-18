@@ -324,4 +324,8 @@
 (provide-theme 'shortbrain)
 (provide 'shortbrain-theme)
 
-;;; brutalist-theme.el ends here
+;; Local Variables:
+;; rainbow-mode: t
+;; End:
+
+;;; shortbrain-theme.el ends here
