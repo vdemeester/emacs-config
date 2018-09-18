@@ -19,11 +19,7 @@
               ("p" . counsel-projectile-switch-project)
               ("r" . counsel-projectile-rg))
   :chords (("pg" . counsel-projectile-rg))
-  :init (counsel-projectile-mode)
-  :config
-  (ivy-set-display-transformer
-   'counsel-projectile-switch-to-buffer
-   'ivy-rich-switch-buffer-transformer))
+  :init (counsel-projectile-mode))
 
 (provide 'vde-projectile)
 
