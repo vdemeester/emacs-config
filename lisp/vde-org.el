@@ -133,7 +133,9 @@ like this : [[pt:REGEXP:FOLDER]]"
   :after ox
   :commands (org-hugo-slug)
   :bind (:map vde-mode-map
-              ("C-c G" . org-hugo-export-wim-to-md)))
+              ("C-c G" . org-hugo-export-wim-to-md))
+  :config
+  (use-package ox-hugo-auto-export))
 
 (provide 'vde-org)
 
