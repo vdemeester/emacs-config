@@ -212,7 +212,8 @@
   :hook (prog-mode . rainbow-delimiters-mode))
 
 (use-package rainbow-mode
-  :commands rainbow-mode)
+  :commands rainbow-mode
+  :hook (prog-mode . rainbow-mode))
 
 (use-package visual-fill-column
   :commands visual-fill-column-mode)
