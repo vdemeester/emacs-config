@@ -278,6 +278,7 @@
    `(web-mode-current-element-highlight-face ((t (:inherit normal :weight bold :foreground ,fg))))
 
    ;; markdown-mode
+   `(markdown-code-face ((t (:background ,bg-highlight-dim))))
    `(markdown-blockquote-face ((t (:foreground ,fg-table :slant normal))))
    `(markdown-inline-code-face ((t (:slant italic))))
    `(markdown-pre-face ((t (:inherit markdown-inline-code-face))))
