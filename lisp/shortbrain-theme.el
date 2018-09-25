@@ -115,7 +115,7 @@
    `(minibuffer-prompt ((t (:foreground ,fg :weight bold))))
    `(mode-line ((t (:background ,bg-light :foreground ,fg :height 0.8))))
    `(mode-line-buffer ((t (:foreground ,fg :weight bold))))
-   `(mode-line-inactive ((t (:background ,bg-light :foreground ,bg-light :height 0.8))))
+   `(mode-line-inactive ((t (:background ,bg-light :foreground ,fg-slight-dim :height 0.8))))
    `(mode-line-minor-mode ((t (:weight ultra-light))))
    `(modeline ((t (:background ,bg :foreground ,fg :height 0.8))))
    `(region ((t (:background ,bg-highlight :foreground ,fg :inverse-video nil))))
