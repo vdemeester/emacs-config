@@ -179,8 +179,13 @@
 (column-number-mode 1)
 (global-hl-line-mode 1)
 
+(use-package moody
+  :config
+  (setq x-underline-at-descent-line t)
+  (moody-replace-mode-line-buffer-identification)
+  (moody-replace-vc-mode))
+
 (use-package minions                    ; A minor-mode menu for the mode line
-  :ensure t
   :init (minions-mode)
   :config
   (setq
