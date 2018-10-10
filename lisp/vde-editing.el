@@ -112,6 +112,9 @@
   (add-hook 'term-mode-hook (lambda ()
                               (yas-minor-mode -1))))
 
+(use-package hs-minor-mode
+  :hook ((prog-mode . hs-minor-mode)))
+
 (provide 'vde-editing)
 
 ;; Local Variables:
