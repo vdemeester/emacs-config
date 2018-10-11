@@ -108,11 +108,6 @@ like this : [[pt:REGEXP:FOLDER]]"
     (browse-url
      (format "https://github.com/%s/issues/%s" project issue))))
 
-(use-package org-journal
-  :init
-  (setq org-journal-dir "~/desktop/org/journal/")
-  (setq org-journal-time-format ""))
-
 (use-package org-projectile
   :defer 3
   :bind (("C-c n p" . org-projectile-project-todo-completing-read))
