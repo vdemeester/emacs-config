@@ -36,10 +36,6 @@
       ;; serves as hyperlink.
       (sp-local-pair "`" "'" :when '(sp-in-string-p sp-in-comment-p)))))
 
-(use-package super-save                 ; Autosave buffers when they lose focus
-  :init (super-save-mode)
-  :config (setq super-save-auto-save-when-idle t))
-
 (use-package expand-region
   :bind ("C-=" . er/expand-region))
 
