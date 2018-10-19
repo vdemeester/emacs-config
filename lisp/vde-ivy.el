@@ -4,8 +4,9 @@
   :bind (:map vde-mode-map
               ("C-x b" . ivy-switch-buffer)
               ("M-u" . ivy-resume)    ;Override the default binding for `upcase-word'
-              ("C-c w" . ivy-push-view) ;Push window configuration to `ivy-views'
-              ("C-c W" . ivy-pop-view)) ;Remove window configuration from `ivy-views'
+              ("C-c C-w p" . ivy-push-view) ;Push window configuration to `ivy-views'
+              ("C-c C-w P" . ivy-pop-view)  ;Remove window configuration from `ivy-views'
+              ("C-c C-w s" . ivy-switch-view)) ; Switch window configuration to `ivy-views'
   :chords ((",b" . ivy-switch-buffer))
   :init
   (progn
