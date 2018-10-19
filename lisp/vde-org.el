@@ -52,7 +52,7 @@
                                  (file org-default-notes-file))
                                 ("j" "Journal entry" entry
                                  (file+datetree "~/desktop/org/journal.org")
-                                 "* %^{title}\n%U\n%?\n"xo)
+                                 "* %^{title}\n%U\n%?\n")
                                 ("l" "Link" entry (file+olp org-default-notes-file "Links")
                                  "* %a\n %?\n %i")))
 
