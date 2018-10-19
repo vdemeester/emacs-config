@@ -5,9 +5,6 @@
 (use-package docker-compose-mode        ; Edit docker-compose files
   :mode ("docker-compose.yml\\'". docker-compose-mode))
 
-(use-package kubernetes
-  :commands (kubernetes-overview))
-
 (provide 'vde-docker)
 
 ;; Local Variables:
