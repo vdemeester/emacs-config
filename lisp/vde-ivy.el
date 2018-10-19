@@ -45,7 +45,8 @@
 
 (use-package counsel
   :bind (:map vde-mode-map
-	      ("M-i" . counsel-grep-or-swiper)
+              ("M-i" . counsel-semantic-or-imenu)
+              ;;("M-i" . counsel-grep-or-swiper)
 	      ("C-M-y" . counsel-yank-pop)
 	      ("C-h F" . counsel-faces)       ;Overrides `Info-goto-emacs-command-node'
 	      ("C-h S" . counsel-info-lookup-symbol)
