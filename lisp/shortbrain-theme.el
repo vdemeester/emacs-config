@@ -67,6 +67,18 @@
       (diff-removed "#ffecec")
       (diff-removed-highlight "#f9cbca")
 
+      (accent-light       "#8a9899")
+      (accent-shade-1     "#8FBCBB")
+      (accent-shade-2     "#88C0D0")
+      (accent-shade-3     "#81A1C1")
+      (accent-shade-4     "#5E81AC")
+      
+      (colors-red         "#BF616A")
+      (colors-orange      "#D08770")
+      (colors-yellow      "#EBCB8B")
+      (colors-green       "#A3BE8C")
+      (colors-purple      "#B48EAD")
+      
       (powerline1 "grey22")
       (powerline2 "grey40")
 
