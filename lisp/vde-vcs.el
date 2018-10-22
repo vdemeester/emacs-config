@@ -68,6 +68,11 @@
 
   (add-hook 'magit-mode-hook 'turn-on-magit-gitflow))
 
+(use-package magit-todos
+  :after magit
+  :config
+  (magit-todos-mode 1))
+
 (use-package git-commit                 ; Git commit message mode
   :defer 2
   :init (global-git-commit-mode)
