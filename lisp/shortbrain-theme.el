@@ -235,6 +235,9 @@
    `(dired-subtree-depth-3-face ((t (:inherit default))))
    `(dired-subtree-depth-4-face ((t (:inherit default))))
 
+   ;; term
+   `(term-color-white ((t (:inherit default))))
+   
    ;; helm
    `(helm-source-header ((t (:foreground ,fg :background ,bg-light :weight bold))))
    `(helm-header ((t (:foreground ,fg))))
