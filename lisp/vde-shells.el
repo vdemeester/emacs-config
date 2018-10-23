@@ -175,6 +175,9 @@ The EShell is renamed to match that directory to make multiple windows easier."
   :config
   (add-hook 'eshell-mode-hook 'eshell-bookmark-setup))
 
+;; for fish in ansi-term
+(add-hook 'term-mode-hook 'toggle-truncate-lines)
+
 (provide 'vde-shells)
 
 ;; Local Variables:
