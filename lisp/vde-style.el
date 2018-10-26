@@ -139,7 +139,17 @@
 
 (line-number-mode 1)
 (column-number-mode 1)
+
 (global-hl-line-mode 1)
+
+(defun generic-term-init ()
+  (visual-line-mode -1)
+  (setq-local global-hl-line-mode nil)
+  (setq-local scroll-margin 0))
+
+(add-hook 'term-mode-hook #'generic-term-init)
+(add-hook 'shell-mode-hook #'generic-term-init)
+(add-hook 'eshell-mode-hook #'generic-term-init)
 
 (use-package moody
   :config
