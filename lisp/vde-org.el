@@ -128,6 +128,9 @@ like this : [[pt:REGEXP:FOLDER]]"
     (org-indent-mode)
     (smartparens-mode)))
 
+(use-package ob-async
+  :after (org))
+
 (use-package smartparens-org
   :after org-mode)
 
