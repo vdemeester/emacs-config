@@ -56,6 +56,14 @@
                                 ("l" "Link" entry (file+olp org-default-notes-file "Links")
                                  "* %a\n %?\n %i")))
 
+  ;; org-babel
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((emacs-lisp . t)
+     (shell . t)
+     (python . t)
+     (dot . t)))
+
   ;; org-links
   ;; from http://endlessparentheses.com/use-org-mode-links-for-absolutely-anything.html
   (org-add-link-type
