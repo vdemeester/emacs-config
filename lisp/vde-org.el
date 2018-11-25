@@ -139,6 +139,12 @@ like this : [[pt:REGEXP:FOLDER]]"
 (use-package ob-async
   :after (org))
 
+(use-package org-crypt
+  :after (org)
+  :config
+  (org-crypt-use-before-save-magic)
+  (setq org-tags-exclude-from-inheritance (quote ("crypt"))))
+
 (use-package smartparens-org
   :after org-mode)
 
