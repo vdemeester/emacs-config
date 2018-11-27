@@ -80,6 +80,10 @@ _f_: freevars      ^ ^               _s_: callstack    _e_: whicherrs"
               ("C-c t c" . go-test-current-coverage)
               ("C-c t b" . go-test-current-benchmark)))
 
+(use-package flycheck-golangci-lint
+  :hook (go-mode . flycheck-golangci-lint-setup)
+  :config (setq flycheck-golangci-lint-tests t))
+
 ;; (use-package lsp-go
 ;;   :defer 2
 ;;   :after lsp-mode
