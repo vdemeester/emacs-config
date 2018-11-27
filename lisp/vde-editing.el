@@ -92,6 +92,11 @@
 (use-package hs-minor-mode
   :hook ((prog-mode . hs-minor-mode)))
 
+(use-package easy-kill
+  :config
+  (global-set-key [remap kill-ring-save] 'easy-kill)
+  (global-set-key [remap mark-sexp] 'easy-mark))
+
 (provide 'vde-editing)
 
 ;; Local Variables:
