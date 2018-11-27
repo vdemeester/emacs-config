@@ -9,12 +9,6 @@
 
 (use-package nixos-options)
 
-(use-package company-nixos-options
-  :hook
-  (nix-mode . (lambda ()
-                (set (make-local-variable 'company-backends) '(company-nixos-options))
-                (company-mode))))
-
 (use-package nix-update
   :load-path "lisp/nix-update")
 
