@@ -168,9 +168,6 @@
 (setq-default indicate-buffer-boundaries 'left)
 (setq-default indicate-empty-lines +1)
 
-(use-package focus
-  :commands focus-mode) ;; TODO bind it to hydra or cmd
-
 (use-package highlight
   :ensure t
   :pin melpa)

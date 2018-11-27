@@ -84,13 +84,6 @@
 (use-package gitattributes-mode         ; Git attributes mode
   :defer 2)
 
-(use-package diff-hl
-  :commands (diff-hl-mode diff-hl-dired-mode)
-  :hook (magit-post-refresh . diff-hl-magit-post-refresh))
-
-(use-package diffview
-  :commands (diffview-current diffview-region diffview-message))
-
 (provide 'vde-vcs)
 
 ;; Local Variables:

@@ -155,19 +155,15 @@ packages.")
 (use-package vde-company)
 (use-package vde-projectile)
 (use-package vde-shells)
-(use-package vde-imenu)
 (use-package vde-compile)
 (use-package vde-org)
 ;; Programming languages
 (use-package vde-nix)
 (use-package vde-go)
 (use-package vde-rust)
-(use-package vde-groovy)
 (use-package vde-web)
 (use-package vde-docker)
 (use-package vde-hydras)
-;; Fun stuff
-(use-package vde-media)
 
 (use-package command-log-mode
   :bind (("C-c e M" . command-log-mode)
