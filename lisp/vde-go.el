@@ -25,6 +25,7 @@
   (if (not (executable-find "goimports"))
       (warn "go-mode: couldn't find goimports; no code formatting/fixed imports on save")
     (add-hook 'before-save-hook 'gofmt-before-save))
+  (add-hook 'go-mode-hook 'flycheck-mode)
   (if (not (string-match "go" compile-command))   ; set compile command default
       (set (make-local-variable 'compile-command)
            "go build -v && go test -v && go vet")))
