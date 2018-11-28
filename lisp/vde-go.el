@@ -84,6 +84,10 @@ _f_: freevars      ^ ^               _s_: callstack    _e_: whicherrs"
   :hook (go-mode . flycheck-golangci-lint-setup)
   :config (setq flycheck-golangci-lint-tests t))
 
+(use-package godoctor
+  :defer 2
+  :after go-mode)
+
 ;; (use-package lsp-go
 ;;   :defer 2
 ;;   :after lsp-mode
