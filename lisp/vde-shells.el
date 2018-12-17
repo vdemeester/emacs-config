@@ -37,17 +37,6 @@
                         shell-mode-map)))
   )
 
-(use-package goto-addr
-  :hook ((compilation-mode . goto-address-mode)
-         (prog-mode . goto-address-prog-mode)
-         (eshell-mode . goto-address-mode)
-         (shell-mode . goto-address-mode))
-  :bind (:map goto-address-highlight-keymap
-              ("<RET>" . goto-address-at-point)
-              ("M-<RET>" . newline))
-  :commands (goto-address-prog-mode
-             goto-address-mode))
-
 (use-package shx                        ; Enhance comint-mode
   :defer 2
   :init (shx-global-mode 1))
