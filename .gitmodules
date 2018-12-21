@@ -1,3 +1,0 @@
-[submodule "lisp/nix-update"]
-	path = lisp/nix-update
-	url = https://github.com/jwiegley/nix-update-el.git
