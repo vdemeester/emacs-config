@@ -100,6 +100,41 @@
             ))
     (shackle-mode 1)))
 
+(defun mu-find-side-windows (&optional side)
+  "Get all side window if any.
+If SIDE is non-nil only get windows on that side."
+  (let (windows)
+    (walk-window-tree
+     (lambda (window)
+       (let ((window-side (window-parameter window 'window-side)))
+         (when (and window-side (or (not side) (eq window-side side)))
+           (push window windows)))))
+    windows))
+
+;;;###autoload
+(defun mu-quit-side-windows ()
+  "Quit side windows of the current frame."
+  (interactive)
+  (dolist (window (mu-find-side-windows))
+    (when (window-live-p window)
+      (quit-window nil window)
+      ;; When the window is still live, delete it
+      (when (window-live-p window)
+        (delete-window window)))))
+
+(bind-key "C-c w q" #'mu-quit-side-windows)
+
+;;;###autoload
+(defun mu-hide-side-windows ()
+  "Hide side windows of the current frame."
+  (interactive)
+  (dolist (window (mu-find-side-windows))
+    (when (window-live-p window)
+      (delete-window window))))
+
+(bind-key "C-c w h" #'mu-hide-side-windows)
+
+
 (provide 'vde-windows)
 
 ;; Local Variables:

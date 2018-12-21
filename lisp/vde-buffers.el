@@ -56,6 +56,16 @@
     (side . right)
     (reusable-frames . visible)
     (window-width . 0.5))
+   (,(rx bos (or "*cider-repl"     ; CIDER REPL
+                 "*intero"         ; Intero REPL
+                 "*idris-repl"     ; Idris REPL
+                 "*Nix-REPL*"           ; IELM REPL
+                 "*ielm"           ; IELM REPL
+                 "*SQL"))          ; SQL REPL
+    (display-buffer-reuse-window display-buffer-in-side-window)
+    (side . bottom)
+    (reusable-frames . visible)
+    (window-height . 0.30))
    ;; Let `display-buffer' reuse visible frames for all buffers.  This must
    ;; be the last entry in `display-buffer-alist', because it overrides any
    ;; previous entry with more specific actions.
