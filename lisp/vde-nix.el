@@ -12,12 +12,10 @@
   :ensure nix-mode
   :commands (nix-repl))
 
-(use-package nix-format)
-
 (use-package nixos-options)
 
 (use-package nix-update
-  :load-path "lisp/nix-update")
+  :ensure nix-mode)
 
 (provide 'vde-nix)
 
