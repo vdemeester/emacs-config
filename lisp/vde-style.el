@@ -23,7 +23,7 @@
   (interactive)
   (set-face-attribute 'default nil
 		      :family "Fira Code"
-                      :height font-heigh)
+                      :height font-height)
   (set-face-attribute 'variable-pitch nil
                       :family "Fira Sans"
                       :height font-height
