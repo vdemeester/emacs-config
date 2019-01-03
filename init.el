@@ -56,7 +56,7 @@
 (use-package dash) ; A modern list library
 
 (use-package use-package-chords :ensure t :pin melpa)
-(use-package use-package-ensure-system-package :ensure t :pin melpa)
+;;(use-package use-package-ensure-system-package :ensure t :pin melpa)
 
 (require 'subr-x)
 (require 'time-date)
@@ -113,10 +113,10 @@
 (use-package server                     ; The server of `emacsclient'
   :config (or (server-running-p) (server-mode)))
 
-(use-package pinentry
-  :config
-  (setenv "INSIDE_EMACS" (format "%s,comint" emacs-version))
-  (pinentry-start))
+;;(use-package pinentry
+;;  :config
+;;  (setenv "INSIDE_EMACS" (format "%s,comint" emacs-version))
+;;  (pinentry-start))
 
 ;; Confirm before quitting Emacs
 (setq confirm-kill-emacs #'y-or-n-p)
@@ -142,28 +142,28 @@ packages.")
   (require 'vde-mode))
 
 (use-package vde-style)
-(use-package vde-keybindings)
-(use-package vde-ivy)
-(use-package vde-vcs)
-(use-package vde-dired)
-(use-package vde-search)
-(use-package vde-files)
-(use-package vde-editing)
-(use-package vde-navigating)
-(use-package vde-windows)
-(use-package vde-buffers)
-(use-package vde-company)
-(use-package vde-projectile)
-(use-package vde-shells)
-(use-package vde-compile)
-(use-package vde-org)
-;; Programming languages
-(use-package vde-nix)
-(use-package vde-go)
-(use-package vde-rust)
-(use-package vde-web)
-(use-package vde-docker)
-(use-package vde-hydras)
+;; (use-package vde-keybindings)
+;; (use-package vde-ivy)
+;; (use-package vde-vcs)
+;; (use-package vde-dired)
+;; (use-package vde-search)
+;; (use-package vde-files)
+;; (use-package vde-editing)
+;; (use-package vde-navigating)
+;; (use-package vde-windows)
+;; (use-package vde-buffers)
+;; (use-package vde-company)
+;; (use-package vde-projectile)
+;; (use-package vde-shells)
+;; (use-package vde-compile)
+;; (use-package vde-org)
+;; ;; Programming languages
+;; (use-package vde-nix)
+;; (use-package vde-go)
+;; (use-package vde-rust)
+;; (use-package vde-web)
+;; (use-package vde-docker)
+;; (use-package vde-hydras)
 
 (use-package command-log-mode
   :bind (("C-c e M" . command-log-mode)
