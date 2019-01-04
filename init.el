@@ -53,7 +53,9 @@
 
 (eval-when-compile (require 'use-package))
 
-(use-package dash) ; A modern list library
+(use-package dash
+  :ensure t
+  :pin "melpa") ; A modern list library
 
 (use-package use-package-chords :ensure t :pin melpa)
 ;;(use-package use-package-ensure-system-package :ensure t :pin melpa)
@@ -92,6 +94,7 @@
   :init (load vde-custom-file 'no-error 'no-message))
 
 (use-package no-littering               ; Keep .emacs.d clean
+  :ensure t
   :config
   (require 'recentf)
   (add-to-list 'recentf-exclude no-littering-var-directory)
@@ -142,18 +145,18 @@ packages.")
   (require 'vde-mode))
 
 (use-package vde-style)
-;; (use-package vde-keybindings)
-;; (use-package vde-ivy)
-;; (use-package vde-vcs)
-;; (use-package vde-dired)
-;; (use-package vde-search)
+(use-package vde-keybindings)
+(use-package vde-ivy)
+(use-package vde-vcs)
+(use-package vde-dired)
+(use-package vde-search)
 ;; (use-package vde-files)
-;; (use-package vde-editing)
-;; (use-package vde-navigating)
+(use-package vde-editing)
+(use-package vde-navigating)
 ;; (use-package vde-windows)
 ;; (use-package vde-buffers)
 ;; (use-package vde-company)
-;; (use-package vde-projectile)
+(use-package vde-projectile)
 ;; (use-package vde-shells)
 ;; (use-package vde-compile)
 ;; (use-package vde-org)

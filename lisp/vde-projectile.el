@@ -1,5 +1,7 @@
 ;;; -*- lexical-binding: t; -*-
 (use-package projectile                 ; Project management
+  :ensure t
+  :pin "melpa"
   :init (projectile-mode)
   :chords (("pf" . projectile-find-file)
            ("pb" . projectile-switch-to-buffer)
@@ -15,6 +17,8 @@
    projectile-mode-line '(:eval (format " Proj[%s]" (projectile-project-name)))))
 
 (use-package counsel-projectile         ; Ivy integration for Projectile
+  :ensure t
+  :pin "melpa"
   :bind (:map projectile-command-map
               ("p" . counsel-projectile-switch-project)
               ("r" . counsel-projectile-rg))

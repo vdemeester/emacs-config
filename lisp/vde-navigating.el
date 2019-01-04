@@ -1,5 +1,6 @@
 ;;; -*- lexical-binding: t; -*-
 (use-package avy                   ; Jump to characters in buffers
+  :ensure t
   :bind (("C-c j"   . avy-goto-word-1)
          ("C-c n b" . avy-pop-mark)
          ("C-c n j" . avy-goto-char-2)
@@ -10,6 +11,7 @@
            ("jl" . avy-goto-line)))
 
 (use-package bm
+  :ensure t
   :bind (("C-c b b" . bm-toggle)
          ("C-c b n" . bm-next)
          ("C-c b p" . bm-previous))
@@ -29,6 +31,7 @@
                                  (bm-repository-save))))
 
 (use-package helpful
+  :ensure t
   :bind (("C-c h F" . helpful-function)
          ("C-c h C" . helpful-command)
          ("C-c h M" . helpful-macro)
@@ -37,6 +40,8 @@
          ("C-c h V" . helpful-variable)))
 
 (use-package smart-jump
+  :ensure t
+  :pin "melpa"
   :bind ("M-." . smart-jump-go)
   :config
   (smart-jump-setup-default-registers))

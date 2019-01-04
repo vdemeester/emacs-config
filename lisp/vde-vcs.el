@@ -1,5 +1,6 @@
 ;;; -*- lexical-binding: t; -*-
 (use-package vc-hooks                   ; Simple version control
+  ;; :if (not (string-match "android" system-configuration))
   :bind (("S-<f5>" . vc-revert)
          ("C-c v r" . vc-refresh-state))
   :config
@@ -7,6 +8,7 @@
   (setq vc-follow-symlinks t))
 
 (use-package magit                      ; The best Git client out there
+  :ensure t
   :bind (("C-c v c" . magit-clone)
          ("C-c v C" . magit-checkout)
          ("C-c v d" . magit-dispatch-popup)
@@ -35,6 +37,8 @@
                           'replace)
 
   (use-package magit-files
+    :ensure t
+    :pin "melpa"
     :config
     (global-magit-file-mode))
   
@@ -60,6 +64,7 @@
   (bind-key "q" #'mu-magit-kill-buffers magit-status-mode-map))
 
 (use-package magit-gitflow              ; gitflow extension for Magit
+  :if (not (string-match "android" system-configuration))
   :after magit
   :config
   ;; Free C-f and use a more suitable key binding
@@ -69,6 +74,7 @@
   (add-hook 'magit-mode-hook 'turn-on-magit-gitflow))
 
 (use-package git-commit                 ; Git commit message mode
+  :ensure t
   :defer 2
   :init (global-git-commit-mode)
   :config
@@ -76,12 +82,15 @@
                #'git-commit-check-style-conventions))
 
 (use-package gitconfig-mode             ; Git configuration mode
+  :ensure t
   :defer 2)
 
 (use-package gitignore-mode             ; .gitignore mode
+  :ensure t
   :defer 2)
 
 (use-package gitattributes-mode         ; Git attributes mode
+  :ensure t
   :defer 2)
 
 (provide 'vde-vcs)

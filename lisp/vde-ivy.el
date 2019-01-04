@@ -1,6 +1,8 @@
 ;;; -*- lexical-binding: t; -*-
 ;; This file stores my configuration for Ivy and related packages.
 (use-package ivy
+  :pin "melpa"
+  :ensure t
   :bind (:map vde-mode-map
               ("C-x b" . ivy-switch-buffer)
               ("M-u" . ivy-resume)    ;Override the default binding for `upcase-word'
@@ -34,17 +36,12 @@
     ))
 
 (use-package ivy-hydra                  ; Additional bindings for Ivy
-  :after ivy)
-
-(use-package ivy-rich
   :after ivy
-  :custom
-  (ivy-virtual-abbreviate 'full
-                          ivy-rich-switch-buffer-align-virtual-buffer t
-                          ivy-rich-path-style 'abbrev)
-  :config (ivy-rich-mode 1))
+  :ensure t)
 
 (use-package counsel
+  :pin "melpa"
+  :ensure t
   :bind (:map vde-mode-map
               ("M-i" . counsel-semantic-or-imenu)
               ;;("M-i" . counsel-grep-or-swiper)
@@ -104,6 +101,15 @@
                   " %s"            ;This MUST be %s, not %S
                                         ;https://github.com/abo-abo/swiper/issues/427
                   ))))
+
+(use-package ivy-rich
+  :after ivy
+  :ensure t
+  :custom
+  (ivy-virtual-abbreviate 'full
+                          ivy-rich-switch-buffer-align-virtual-buffer t
+                          ivy-rich-path-style 'abbrev)
+  :config (ivy-rich-mode 1))
 
 (provide 'vde-ivy)
 

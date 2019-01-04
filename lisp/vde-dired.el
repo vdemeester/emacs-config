@@ -102,12 +102,15 @@
    dired-isearch-filenames'dwim))
 
 (use-package dired-collapse
+  :ensure t
+  :pin "melpa"
   :defer 1
   :commands (dired-collapse-mode)
   :init
   (add-hook 'dired-mode-hook #'dired-collapse-mode))
 
 (use-package dired-sidebar
+  :if (not (string-match "android" system-configuration))
   :defer 2
   :bind (("C-M-'" . dired-sidebar-toggle-sidebar))
   :commands (dired-sidebar-toggle-sidebar))

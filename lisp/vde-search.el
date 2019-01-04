@@ -9,6 +9,7 @@
 (add-hook 'grep-mode-hook #'toggle-truncate-lines)
 
 (use-package swiper
+  :ensure t
   :after ivy
   :bind
   ([remap isearch-forward] . swiper)
@@ -16,10 +17,12 @@
   ("C-c s s" . swiper-all))
 
 (use-package wgrep                      ; Editable grep buffer
+  :ensure t
   :defer 2
   :config)
 
 (use-package visual-regexp              ; Regexp replace with in-buffer display
+  :ensure t
   :bind (("C-c s r" . vr/query-replace)
          ("C-c s R" . vr/replace)))
 

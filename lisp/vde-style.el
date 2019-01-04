@@ -54,7 +54,6 @@
 (setq custom-safe-themes t)    ; Treat themes as safe
 
 (use-package shortbrain-theme
-  ;; :load-path "shortbrain-theme.el"
   :config
   (load-theme 'shortbrain t)
   (defvar my:theme 'shortbrain)
@@ -83,6 +82,7 @@
         (setq my:theme-terminal-loaded t)))))
 
 (use-package solaire-mode
+  :ensure t
   :config
   (setq solaire-mode-remap-modeline nil)
   (add-hook 'after-change-major-mode-hook #'turn-on-solaire-mode)
@@ -152,12 +152,15 @@
 (add-hook 'eshell-mode-hook #'generic-term-init)
 
 (use-package moody
+  :if (not (string-match "android" system-configuration))
+  :ensure t
   :config
   (setq x-underline-at-descent-line t)
   (moody-replace-mode-line-buffer-identification)
   (moody-replace-vc-mode))
 
 (use-package minions                    ; A minor-mode menu for the mode line
+  :ensure t
   :init (minions-mode)
   :config
   (setq
@@ -173,9 +176,11 @@
   :pin melpa)
 
 (use-package highlight-numbers
+  :ensure t
   :hook (prog-mode . highlight-numbers-mode))
 
 (use-package highlight-symbol
+  :ensure t
   :defer 4
   :hook (prog-mode . highlight-symbol-mode)
   :config
@@ -183,13 +188,16 @@
   (setq highlight-symbol-on-navigation-p t))
 
 (use-package rainbow-delimiters
+  :ensure t
   :hook (prog-mode . rainbow-delimiters-mode))
 
 (use-package rainbow-mode
+  :if (not (string-match "android" system-configuration))
   :commands rainbow-mode
   :hook (prog-mode . rainbow-mode))
 
 (use-package visual-fill-column
+  :ensure t
   :commands visual-fill-column-mode)
 
 (provide 'vde-style)

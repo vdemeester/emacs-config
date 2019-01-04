@@ -1,5 +1,6 @@
 ;;; -*- lexical-binding: t; -*-
 (use-package aggressive-indent          ; Automatically indent code
+  :ensure t
   :bind ("C-c t i" . aggressive-indent-mode)
   :hook ((lisp-mode       . aggressive-indent-mode)
          (emacs-lisp-mode . aggressive-indent-mode)
@@ -11,11 +12,14 @@
   )
 
 (use-package undo-tree                  ; Show buffer changes as a tree
+  :ensure t
+  :pin "melpa"
   :defer 1
   :init (global-undo-tree-mode)
   :config (setq undo-tree-visualizer-timestamps t))
 
 (use-package smartparens
+  :ensure t
   :defer 1
   :init
   (progn
@@ -37,10 +41,12 @@
       (sp-local-pair "`" "'" :when '(sp-in-string-p sp-in-comment-p)))))
 
 (use-package expand-region
+  :ensure t
   :bind ("C-=" . er/expand-region))
 
 (use-package iedit
   :defines hydra-iedit/body
+  :ensure t
   :bind* (:map global-map
 	       ("C-*" . iedit-mode)
 	       :map iedit-mode-keymap
@@ -55,18 +61,22 @@
     ("C-g" iedit-quit "toggle" :color blue)))
 
 (use-package shift-number
+  :ensure t
   :bind (("C-c +" . shift-number-up)
          ("C-c -" . shift-number-down)))
 
 (use-package string-edit
+  :ensure t
   :bind ("C-c C-'" . string-edit-at-point))
 
 (use-package visual-regexp
+  :ensure t
   :bind (("C-c r"   . vr/replace)
          ("C-c %"   . vr/query-replace)
          ("C-c m" . vr/mc-mark)))
 
 (use-package yasnippet
+  :if (not (string-match "android" system-configuration))
   :after (company prog-mode)
   :defer 5
   :bind (("C-c y d" . yas-load-directory)
@@ -90,9 +100,12 @@
                               (yas-minor-mode -1))))
 
 (use-package hs-minor-mode
+  :ensure t
+  :pin "melpa"
   :hook ((prog-mode . hs-minor-mode)))
 
 (use-package easy-kill
+  :ensure t
   :config
   (global-set-key [remap kill-ring-save] 'easy-kill)
   (global-set-key [remap mark-sexp] 'easy-mark))

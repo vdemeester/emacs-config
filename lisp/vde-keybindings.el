@@ -1,5 +1,6 @@
 ;;; -*- lexical-binding: t; -*-
 (use-package key-chord
+  :ensure t
   :chords
   (("''" . "’")
    (",w" . whitespace-mode)
@@ -10,6 +11,7 @@
   (key-chord-mode 1))
 
 (use-package which-key
+  :ensure t
   :init (which-key-mode)
   :config
   (setq
