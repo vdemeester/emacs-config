@@ -43,6 +43,7 @@
                  (bind-key "M-p" #'flycheck-previous-error ,(cdr where)))
               t))
   :config
+  (add-hook 'prog-mode-hook 'flycheck-mode)
   (defalias 'show-error-at-point-soon
     'flycheck-show-error-at-point)
   (setq flycheck-idle-change-delay 1.2))
