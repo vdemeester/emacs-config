@@ -37,8 +37,7 @@
                           'replace)
 
   (use-package magit-files
-    :ensure t
-    :pin "melpa"
+    :unless (string-match "android" system-configuration)
     :config
     (global-magit-file-mode))
   

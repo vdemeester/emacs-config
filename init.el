@@ -150,23 +150,36 @@ packages.")
 (use-package vde-vcs)
 (use-package vde-dired)
 (use-package vde-search)
-;; (use-package vde-files)
+(use-package vde-files
+  :unless (string-match "android" system-configuration))
 (use-package vde-editing)
 (use-package vde-navigating)
-;; (use-package vde-windows)
-;; (use-package vde-buffers)
-;; (use-package vde-company)
+(use-package vde-windows
+  :unless (string-match "android" system-configuration))
+(use-package vde-buffers
+:unless (string-match "android" system-configuration))
+(use-package vde-company
+  :unless (string-match "android" system-configuration))
 (use-package vde-projectile)
-;; (use-package vde-shells)
-;; (use-package vde-compile)
-;; (use-package vde-org)
-;; ;; Programming languages
-;; (use-package vde-nix)
-;; (use-package vde-go)
-;; (use-package vde-rust)
-;; (use-package vde-web)
-;; (use-package vde-docker)
-;; (use-package vde-hydras)
+(use-package vde-shells
+  :unless (string-match "android" system-configuration))
+(use-package vde-compile
+  :unless (string-match "android" system-configuration))
+(use-package vde-org
+  :unless (string-match "android" system-configuration))
+;; Programming languages
+(use-package vde-nix
+  :unless (string-match "android" system-configuration))
+(use-package vde-go
+  :unless (string-match "android" system-configuration))
+(use-package vde-rust
+  :unless (string-match "android" system-configuration))
+(use-package vde-web
+  :unless (string-match "android" system-configuration))
+(use-package vde-docker
+  :unless (string-match "android" system-configuration))
+(use-package vde-hydras
+  :unless (string-match "android" system-configuration))
 
 (use-package command-log-mode
   :bind (("C-c e M" . command-log-mode)

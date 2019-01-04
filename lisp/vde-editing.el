@@ -12,8 +12,7 @@
   )
 
 (use-package undo-tree                  ; Show buffer changes as a tree
-  :ensure t
-  :pin "melpa"
+  :unless (string-match "android" system-configuration)
   :defer 1
   :init (global-undo-tree-mode)
   :config (setq undo-tree-visualizer-timestamps t))
@@ -100,7 +99,7 @@
                               (yas-minor-mode -1))))
 
 (use-package hs-minor-mode
-  :ensure t
+  :unless (string-match "android" system-configuration)
   :pin "melpa"
   :hook ((prog-mode . hs-minor-mode)))
 
