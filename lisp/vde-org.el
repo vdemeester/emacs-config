@@ -30,6 +30,8 @@
   (setq org-pretty-entities t)
   (setq org-insert-heading-respect-content t)
   (setq org-ellipsis " …")
+
+  (setcar (nthcdr 4 org-emphasis-regexp-components) 10)
   
   (setq org-tag-alist (quote ((:startgroup . nil)
                               ("@home" . ?h) ("@work" . ?w) ("@errand" . ?e)
