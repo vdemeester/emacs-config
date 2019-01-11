@@ -50,6 +50,9 @@
   (setq org-capture-templates '(("b" "Blog post" entry
                                  (file+headline "~/src/github.com/vdemeester/blog/content-org/posts.org" "Blog Ideas")
                                  "* %?\n:PROPERTIES:\n:END:\n")
+                                ("bl" "Blog link post" entry
+                                 (file+olp "~/src/github.com/vdemeester/blog/content-org/links.org" "Link")
+                                 "* %a\n%?\n%i")
                                 ("n" "Though or Note" entry
                                  (file org-default-notes-file))
                                 ("j" "Journal entry" entry
