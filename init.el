@@ -157,6 +157,7 @@ packages.")
 (use-package vde-shells)
 (use-package vde-compile)
 (use-package vde-org)
+(use-package vde-deft)
 ;; Programming languages
 (use-package vde-nix)
 (use-package vde-go)
