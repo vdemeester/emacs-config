@@ -42,7 +42,7 @@
                               ("docker" . ?d) ("moby" . ?m)
                               )))
   (setq org-agenda-skip-scheduled-if-done t)
-  (setq org-default-notes-file "~/desktop/org/notes.org")
+  (setq org-default-notes-file "~/desktop/org/inbox.org")
   (setq org-default-tasks-file "~/desktop/org/tasks.org")
 
   (setq org-protocol-default-template-key "l")
