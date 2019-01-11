@@ -10,10 +10,21 @@
   :config
   (setq deft-extensions '("org" "md")
         deft-default-extension "org"
-        deft-directory "~/desktop/org/notes"
+        deft-directory "~/desktop/org"
         deft-recursive t
-        ;; deft-recursive-ignore-dir-regexp
-        ;; deft-ignore-file-regexp
+        deft-recursive-ignore-dir-regexp (concat
+                                          "\\(?:"
+                                          "\\."
+                                          "\\|\\.\\."
+                                          "\\|archive"
+                                          "\\|learn"
+                                          "\\)")
+        deft-ignore-file-regexp (concat
+                                 "\\(?:"
+                                 "inbox.org"
+                                 "\\|todoist.org"
+                                 "\\|journal.org"
+                                 "\\)")
         deft-auto-save-interval 0)
   ;; display filter in mode-line instead of header
   (defun deft-print-header () (deft-set-mode-name))
