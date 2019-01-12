@@ -1,7 +1,6 @@
-;;; vde-keybindings.el --- setup keybindings 👼
+;;; vde-keybindings.el --- setup keybindings 👼 -*- lexical-binding: t; -*-
 ;;; Commentary:
 ;;; Code:
-;;; -*- lexical-binding: t; -*-
 
 (use-package key-chord
   :chords
@@ -23,6 +22,15 @@
   (add-to-list 'which-key-replacement-alist '(("RET" . nil) . ("⏎" . nil)))
   (add-to-list 'which-key-replacement-alist '(("DEL" . nil) . ("⇤" . nil)))
   (add-to-list 'which-key-replacement-alist '(("SPC" . nil) . ("␣" . nil))))
+
+(use-package region-bindings-mode
+  :config
+  ;; Do not activate `region-bindings-mode' in Special modes like `dired' and
+  ;; `ibuffer'. Single-key bindings like 'm' are useful in those modes even
+  ;; when a region is selected.
+  (setq region-bindings-mode-disabled-modes '(dired-mode ibuffer-mode))
+
+  (region-bindings-mode-enable))
 
 ;; Disable C-x C-n to avoid the disabled command buffer
 (unbind-key "C-x C-n" global-map)

@@ -152,6 +152,7 @@ packages.")
 
 (use-package setup-style)
 (use-package setup-keybindings)
+(use-package setup-fold)
 (use-package setup-ivy)
 (use-package setup-vcs)
 (use-package setup-dired)
