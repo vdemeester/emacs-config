@@ -101,6 +101,11 @@
   (global-set-key [remap kill-ring-save] 'easy-kill)
   (global-set-key [remap mark-sexp] 'easy-mark))
 
+(setq display-line-numbers-type 'relative)
+(add-hook 'prog-mode-hook
+          'display-line-numbers-mode)
+(add-hook 'prog-mode-hook 'toggle-truncate-lines)
+
 (provide 'vde-editing)
 
 ;; Local Variables:
