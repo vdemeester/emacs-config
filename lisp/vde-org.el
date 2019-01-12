@@ -130,7 +130,22 @@ like this : [[pt:REGEXP:FOLDER]]"
     (setq project (nth 0 expressions))
     (setq issue (nth 1 expressions))
     (browse-url
-     (format "https://github.com/%s/issues/%s" project issue))))
+     (format "https://github.com/%s/issues/%s" project issue)))
+
+  (org-link-set-parameters
+   "org"
+   :complete (lambda () (+org-link-read-file "org" org-directory))
+   :follow   (lambda (link) (find-file (expand-file-name link org-directory)))
+   :face     (lambda (link)
+               (if (file-exists-p (expand-file-name link org-directory))
+                   'org-link
+                 'error)))
+  (defun +org-link-read-file (key dir)
+    (let ((file (read-file-name (format "%s: " (capitalize key)) dir)))
+      (format "%s:%s"
+              key
+              (file-relative-name file dir))))
+  )
 
 (use-package org-projectile
   :defer 3
