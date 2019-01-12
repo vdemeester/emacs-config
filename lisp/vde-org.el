@@ -9,9 +9,11 @@
   :commands (org-capture org-agenda)
   :ensure org-plus-contrib
   :hook (org-mode . vde/org-mode-hook)
-  :bind (("C-c c" . org-capture))  
+  :bind (("C-c c" . org-capture)
+         ("C-c l" . org-store-link))
   :config
   (require 'org-protocol)
+  (require 'org-man)
   (setq org-modules
         '(org-habit org-info org-docview))
   (setq org-todo-keywords
@@ -21,10 +23,10 @@
                                      (plain-list-item . t)))
   (setq org-directory "~/desktop/org/")
   ;; you can override the document org-agenda-files by setting your
-  ;; org-agenda-files in the variable org-user-agenda-files  
+  ;; org-agenda-files in the variable org-user-agenda-files
   (if (boundp 'org-user-agenda-files)
       (setq org-agenda-files org-user-agenda-files)
-    (setq org-agenda-files (quote ("~/desktop/org")))) 
+    (setq org-agenda-files (quote ("~/desktop/org"))))
   
   (setq org-log-done (quote time))
   (setq org-log-redeadline (quote time))
@@ -50,7 +52,6 @@
   (setq org-default-tasks-file "~/desktop/org/tasks.org")
 
   (setq org-protocol-default-template-key "l")
-  
   (setq org-capture-templates '(("b" "Blog post" entry
                                  (file+headline "~/src/github.com/vdemeester/blog/content-org/posts.org" "Blog Ideas")
                                  "* %?\n:PROPERTIES:\n:END:\n")
@@ -78,17 +79,16 @@
 
   ;; org-links
   ;; from http://endlessparentheses.com/use-org-mode-links-for-absolutely-anything.html
-  (org-add-link-type
-   "tag" 'endless/follow-tag-link)
-
+  (org-link-set-parameters "tag"
+                           :follow #'endless/follow-tag-link)
   (defun endless/follow-tag-link (tag)
     "Display a list of TODO headlines with tag TAG.
 With prefix argument, also display headlines without a TODO keyword."
     (org-tags-view (null current-prefix-arg) tag))
-  
-  (org-add-link-type
-   "grep" 'my/follow-grep-link
-   )
+
+  (org-link-set-parameters "grep"
+                           :follow #'my/follow-grep-link
+                           :face '(:foreground "DarkRed" :underline t))
   (defun my/follow-grep-link (regexp)
     "Run `rgrep' with REGEXP and FOLDER as argument,
 like this : [[grep:REGEXP:FOLDER]]."
@@ -102,9 +102,10 @@ like this : [[grep:REGEXP:FOLDER]]."
         (setq folder (nth 1 expressions))
         (rgrep exp "*" (expand-file-name folder))))
     )
-  
-  (org-add-link-type
-   "rg" 'my/follow-rg-link)
+
+  (org-link-set-parameters "rg"
+                           :follow #'my/follow-rg-link
+                           :face '(:foreground "DarkGreen" :underline t))
   (defun my/follow-rg-link (regexp)
     "Run `ripgrep-regexp` with REXEP and FOLDER as argument,
 like this : [[pt:REGEXP:FOLDER]]"
@@ -117,9 +118,10 @@ like this : [[pt:REGEXP:FOLDER]]"
         (setq folder (nth 1 expressions))
         (ripgrep-regexp exp (file-name-as-directory (expand-file-name folder)))))
     )
-  
-  (org-add-link-type
-   "gh" 'my/follow-gh-link)
+
+  (org-link-set-parameters "gh"
+                           :follow #'my/follow-gh-link
+                           :face '(:foreground "DimGrey" :underline t))
   (defun my/follow-gh-link (issue)
     "Browse github issue/pr specified"
     (setq expressions (split-string issue "#"))
