@@ -33,6 +33,8 @@
   (setq org-log-reschedule (quote time))
   (setq org-log-into-drawer t)
 
+  (setq org-fontify-whole-heading-line t)
+
   (setq org-pretty-entities t)
   (setq org-insert-heading-respect-content t)
   (setq org-ellipsis " …")
@@ -169,6 +171,12 @@ like this : [[pt:REGEXP:FOLDER]]"
               ("C-c G" . org-hugo-export-wim-to-md))
   :config
   (use-package ox-hugo-auto-export))
+
+(use-package org-bullets
+  :after (org)
+  :hook (org-mode . org-bullets-mode)
+  :config
+  (setq org-bullets-bullet-list '("◉" "○" "⚫")))
 
 (provide 'vde-org)
 
