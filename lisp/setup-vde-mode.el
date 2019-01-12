@@ -54,7 +54,7 @@ USAGE: (bind-to-vde-map \"f\" #'full-screen-center)."
   "Unbind a function from the `vde-mode-map'
 USAGE: (unbind-from-vde-map \"C-x m f\")
 "
-  (interactive "kUnset key from vde-mode-map: ")
+  (interactive "Unset key from vde-mode-map: ")
   (define-key vde-mode-map (kbd (key-description key)) nil)
   (message "%s" (format "Unbound %s key from the %s."
                         (propertize (key-description key)
