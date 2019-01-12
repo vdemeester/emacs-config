@@ -178,6 +178,14 @@ like this : [[pt:REGEXP:FOLDER]]"
   :config
   (setq org-bullets-bullet-list '("◉" "○" "⚫")))
 
+;; Use `org-mode' instead of `lisp-interaction-mode' for scratch buffer
+(setq
+ inhibit-startup-message t            ; don't show the startup message
+ inhibit-startup-screen t             ; … or screen
+ initial-scratch-message nil          ; empty scratch buffer
+ initial-major-mode 'org-mode  ; org-mode by default
+ )
+
 (provide 'vde-org)
 
 ;; Local Variables:
