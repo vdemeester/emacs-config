@@ -108,7 +108,7 @@
                                         ;https://github.com/abo-abo/swiper/issues/427
                   ))))
 
-(provide 'vde-ivy)
+(provide 'setup-ivy)
 
 ;; Local Variables:
 ;; coding: utf-8

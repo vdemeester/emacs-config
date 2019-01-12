@@ -27,7 +27,7 @@
 ;; Disable C-x C-n to avoid the disabled command buffer
 (unbind-key "C-x C-n" global-map)
 
-(provide 'vde-keybindings)
+(provide 'setup-keybindings)
 
 ;; Local Variables:
 ;; coding: utf-8

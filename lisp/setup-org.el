@@ -1,7 +1,6 @@
-;;; vde-org.el --- setup org-mode
+;;; vde-org.el --- setup org-mode -*- lexical-binding: t; -*-
 ;;; Commentary:
 ;;; Code:
-;;; -*- lexical-binding: t; -*-
 
 (use-package org
   :defer t
@@ -202,7 +201,7 @@ like this : [[pt:REGEXP:FOLDER]]"
  initial-major-mode 'org-mode  ; org-mode by default
  )
 
-(provide 'vde-org)
+(provide 'setup-org)
 
 ;; Local Variables:
 ;; coding: utf-8

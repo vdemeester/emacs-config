@@ -194,7 +194,7 @@
 (use-package visual-fill-column
   :commands visual-fill-column-mode)
 
-(provide 'vde-style)
+(provide 'setup-style)
 
 ;; Local Variables:
 ;; coding: utf-8

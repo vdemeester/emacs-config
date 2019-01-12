@@ -171,7 +171,7 @@ The EShell is renamed to match that directory to make multiple windows easier."
 ;; for fish in ansi-term
 (add-hook 'term-mode-hook 'toggle-truncate-lines)
 
-(provide 'vde-shells)
+(provide 'setup-shells)
 
 ;; Local Variables:
 ;; coding: utf-8

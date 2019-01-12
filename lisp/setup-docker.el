@@ -6,7 +6,7 @@
 (use-package dockerfile-mode            ; Edit docker's Dockerfiles
   :mode ("Dockerfile\\'" . dockerfile-mode))
 
-(provide 'vde-docker)
+(provide 'setup-docker)
 
 ;; Local Variables:
 ;; coding: utf-8

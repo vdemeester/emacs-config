@@ -116,7 +116,7 @@
   :bind (("C-M-'" . dired-sidebar-toggle-sidebar))
   :commands (dired-sidebar-toggle-sidebar))
 
-(provide 'vde-dired)
+(provide 'setup-dired)
 
 ;; Local Variables:
 ;; coding: utf-8

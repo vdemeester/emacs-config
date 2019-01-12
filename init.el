@@ -1,7 +1,12 @@
-;;; init.el --- emacs configuration entrypoint
+;;; init.el --- emacs configuration entrypoint -*- lexical-binding: t; -*-
+;; Time-stamp: <2018-10-01 12:20:01 vincent>
+;; Author: Vincent Demeester
+
 ;;; Commentary:
+
+;; Initialize the Emacs configuration
+
 ;;; Code:
-;;; -*- lexical-binding: t; -*-
 
 (defconst emacs-start-time (current-time))
 (defvar file-name-handler-alist-old file-name-handler-alist)
@@ -142,33 +147,33 @@ packages.")
 
 ;; Enable `vde-mode' unless `disable-pkg-vde-mode' is set to `t' in
 ;; `setup-var-overrides.el'.
-(when (not (bound-and-true-p disable-pkg-vde-mode))
-  (require 'vde-mode))
+(when (not (bound-and-true-p disable-pkg-setup-mode))
+  (use-package setup-vde-mode))
 
-(use-package vde-style)
-(use-package vde-keybindings)
-(use-package vde-ivy)
-(use-package vde-vcs)
-(use-package vde-dired)
-(use-package vde-search)
-(use-package vde-files)
-(use-package vde-editing)
-(use-package vde-navigating)
-(use-package vde-windows)
-(use-package vde-buffers)
-(use-package vde-company)
-(use-package vde-projectile)
-(use-package vde-shells)
-(use-package vde-compile)
-(use-package vde-org)
-(use-package vde-deft)
+(use-package setup-style)
+(use-package setup-keybindings)
+(use-package setup-ivy)
+(use-package setup-vcs)
+(use-package setup-dired)
+(use-package setup-search)
+(use-package setup-files)
+(use-package setup-editing)
+(use-package setup-navigating)
+(use-package setup-windows)
+(use-package setup-buffers)
+(use-package setup-company)
+(use-package setup-projectile)
+(use-package setup-shells)
+(use-package setup-compile)
+(use-package setup-org)
+(use-package setup-deft)
 ;; Programming languages
-(use-package vde-nix)
-(use-package vde-go)
-(use-package vde-rust)
-(use-package vde-web)
-(use-package vde-docker)
-(use-package vde-hydras)
+(use-package setup-nix)
+(use-package setup-go)
+(use-package setup-rust)
+(use-package setup-web)
+(use-package setup-docker)
+(use-package setup-hydras)
 
 (use-package command-log-mode
   :bind (("C-c e M" . command-log-mode)
@@ -196,6 +201,7 @@ packages.")
                (message "Loading %s...done (%.3fs) [after-init]"
                         ,load-file-name elapsed))) t)
 
-;;; init.el ends here
 (put 'narrow-to-page 'disabled nil)
 (put 'narrow-to-region 'disabled nil)
+
+;;; init.el ends here

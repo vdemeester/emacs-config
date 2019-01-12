@@ -143,7 +143,7 @@
                     (unless (eq ibuffer-sorting-mode 'filename/process)
                       (ibuffer-do-sort-by-filename/process)))))
 
-(provide 'vde-buffers)
+(provide 'setup-buffers)
 
 ;; Local Variables:
 ;; coding: utf-8

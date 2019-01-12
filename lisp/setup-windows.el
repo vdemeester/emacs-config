@@ -139,7 +139,7 @@ If SIDE is non-nil only get windows on that side."
 (bind-key "C-c w h" #'mu-hide-side-windows)
 
 
-(provide 'vde-windows)
+(provide 'setup-windows)
 
 ;; Local Variables:
 ;; coding: utf-8

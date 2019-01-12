@@ -21,7 +21,7 @@
 (use-package nix-update
   :ensure nix-mode)
 
-(provide 'vde-nix)
+(provide 'setup-nix)
 
 ;; Local Variables:
 ;; coding: utf-8

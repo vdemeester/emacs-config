@@ -87,8 +87,8 @@
          (js3-mode . lsp-javascript-typescript-enable)
          (js2-mode . lsp-javascript-typescript-enable)
          (typescript-mode . lsp-javascript-typescript-enable)))
-  
-(provide 'vde-web)
+
+(provide 'setup-web)
 
 ;; Local Variables:
 ;; coding: utf-8

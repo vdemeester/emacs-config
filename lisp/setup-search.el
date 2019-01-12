@@ -27,7 +27,7 @@
   :bind (("C-c s r" . vr/query-replace)
          ("C-c s R" . vr/replace)))
 
-(provide 'vde-search)
+(provide 'setup-search)
 
 ;; Local Variables:
 ;; coding: utf-8

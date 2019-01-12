@@ -51,7 +51,7 @@
   :config
   (winner-mode 1))
 
-(provide 'vde-navigating)
+(provide 'setup-navigating)
 
 ;; Local Variables:
 ;; coding: utf-8

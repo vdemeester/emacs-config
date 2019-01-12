@@ -57,7 +57,7 @@ Number of marked items: %(length (dired-get-marked-files))
 (bind-key "M-y" #'hydra-yank-pop/yank-pop)
 (bind-key "C-y" #'hydra-yank-pop/yank)
 
-(provide 'vde-hydras)
+(provide 'setup-hydras)
 
 ;; Local Variables:
 ;; coding: utf-8

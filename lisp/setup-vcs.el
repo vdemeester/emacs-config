@@ -88,7 +88,7 @@
 (use-package gitattributes-mode         ; Git attributes mode
   :defer 2)
 
-(provide 'vde-vcs)
+(provide 'setup-vcs)
 
 ;; Local Variables:
 ;; coding: utf-8

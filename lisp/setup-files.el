@@ -108,7 +108,7 @@
 (bind-key "C-c f v r" #'vde-reload-dir-locals-for-current-buffer)
 (bind-key "C-c f v r" #'vde-reload-dir-locals-for-all-buffers-in-this-directory)
 
-(provide 'vde-files)
+(provide 'setup-files)
 
 ;; Local Variables:
 ;; coding: utf-8

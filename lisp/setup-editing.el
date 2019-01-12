@@ -110,7 +110,7 @@
           'display-line-numbers-mode)
 (add-hook 'prog-mode-hook 'toggle-truncate-lines)
 
-(provide 'vde-editing)
+(provide 'setup-editing)
 
 ;; Local Variables:
 ;; coding: utf-8

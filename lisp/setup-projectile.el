@@ -25,7 +25,7 @@
   :chords (("pg" . counsel-projectile-rg))
   :init (counsel-projectile-mode))
 
-(provide 'vde-projectile)
+(provide 'setup-projectile)
 
 ;; Local Variables:
 ;; coding: utf-8

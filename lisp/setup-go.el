@@ -97,7 +97,7 @@ _f_: freevars      ^ ^               _s_: callstack    _e_: whicherrs"
 ;;   :after lsp-mode
 ;;   :hook ((go-mode . lsp-go-enable)))
 
-(provide 'vde-go)
+(provide 'setup-go)
 
 ;; Local Variables:
 ;; coding: utf-8

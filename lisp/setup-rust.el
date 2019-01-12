@@ -31,7 +31,7 @@
 ;;   :hook ((rust-mode . lsp-rust-enable)
 ;;          (rust-mode . flycheck-mode)))
 
-(provide 'vde-rust)
+(provide 'setup-rust)
 
 ;; Local Variables:
 ;; coding: utf-8

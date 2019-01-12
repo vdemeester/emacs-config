@@ -45,7 +45,7 @@
                 "\\|^# .*$" ;; md titles
                 "\\)")))
 
-(provide 'vde-deft)
+(provide 'setup-deft)
 
 ;; Local Variables:
 ;; coding: utf-8

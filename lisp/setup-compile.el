@@ -51,7 +51,7 @@
     'flycheck-show-error-at-point)
   (setq flycheck-idle-change-delay 1.2))
 
-(provide 'vde-compile)
+(provide 'setup-compile)
 
 ;; Local Variables:
 ;; coding: utf-8
