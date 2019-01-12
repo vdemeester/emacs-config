@@ -30,7 +30,18 @@
   ;; when a region is selected.
   (setq region-bindings-mode-disabled-modes '(dired-mode ibuffer-mode))
 
-  (region-bindings-mode-enable))
+  (region-bindings-mode-enable)
+
+  (defun vde/disable-rbm-deactivate-mark ()
+    "Disable `region-bindings-mode' and deactivate mark."
+    (interactive)
+    (region-bindings-mode -1)
+    (deactivate-mark)
+    (message "Mark deactivated"))
+
+  (bind-keys
+   :map region-bindings-mode-map
+   ("<C-SPC>" . vde/disable-rbm-deactivate-mark)))
 
 ;; Disable C-x C-n to avoid the disabled command buffer
 (unbind-key "C-x C-n" global-map)
