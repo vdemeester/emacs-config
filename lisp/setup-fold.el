@@ -1,4 +1,4 @@
-;;; vde-fold.el --- setup folding 👼 -*- lexical-binding: t; -*-
+;;; setup-fold.el --- setup folding 👼 -*- lexical-binding: t; -*-
 ;;; Commentary:
 ;;; Code:
 
