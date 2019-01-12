@@ -9,9 +9,7 @@
 (setq font-height 110)
 (cond
  ((string= (system-name) "hokkaido")
-  (setq font-height 100))
- ((string= (system-name) "shikoku")
-  (setq font-height 140)))
+  (setq font-height 100)))
 
 (set-face-attribute 'default nil
 		    :family "Fira Code"
