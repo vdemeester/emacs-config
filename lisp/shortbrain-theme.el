@@ -90,7 +90,7 @@
    'shortbrain
 
    ;; generic stuff
-   `(default ((t (:background ,bg :foreground ,fg))))
+   `(default ((t (:inherit fixed-pitch :background ,bg :foreground ,fg))))
    `(button ((t (:foreground ,fg :underline t))))
    `(cursor ((t (:background ,fg :foreground ,cursor))))
    `(custom-variable-tag ((t (:foreground ,fg :weight bold))))
@@ -137,10 +137,10 @@
    `(org-agenda-date-today ((t (:foreground ,fg :weight bold :height 1.4))))
    `(org-agenda-date-weekend ((t (:foreground ,fg :weight normal))))
    `(org-agenda-structure ((t (:foreground ,fg :weight bold))))
-   `(org-block ((t (:foreground ,fg))))
-   `(org-block-begin-line ((t (:foreground ,fg-light :height 0.8))))
-   `(org-block-end-line ((t (:foreground ,fg-light :height 0.8))))
-   `(org-verbatim ((t (:foreground ,fg :weight semi-bold :background ,bg-highlight-dim))))
+   `(org-block ((t (:inherit fixed-pitch :foreground ,fg))))
+   `(org-block-begin-line ((t (:inherit fixed-pitch :foreground ,fg-light :height 0.9))))
+   `(org-block-end-line ((t (:inherit fixed-pitch :foreground ,fg-light :height 0.9))))
+   `(org-verbatim ((t (:inherit fixed-pitch :foreground ,fg :weight semi-bold :background ,bg-highlight-dim))))
    `(org-date ((t (:foreground ,fg) :underline)))
    `(org-done ((t (:foreground ,fg-light))))
    `(org-hide ((t (:foreground ,bg))))
@@ -157,6 +157,7 @@
    `(org-sexp-date ((t (:foreground ,fg))))
    `(org-special-keyword ((t (:foreground ,fg))))
    `(org-todo ((t (:foreground ,fg :box (:line-width 1 :color ,fg-slight-dim)))))
+   `(org-tag ((t (:inherit fixed-pitch :background ,bg-highlight-dim))))
    `(org-verse ((t (:inherit org-block :slant italic))))
    `(org-table ((t (:foreground ,fg-table))))
 
