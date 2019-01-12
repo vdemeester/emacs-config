@@ -1,4 +1,8 @@
+;;; vde-navigating.el --- setup navigating related modes
+;;; Commentary:
+;;; Code:
 ;;; -*- lexical-binding: t; -*-
+
 (use-package avy                   ; Jump to characters in buffers
   :bind (("C-c j"   . avy-goto-word-1)
          ("C-c n b" . avy-pop-mark)

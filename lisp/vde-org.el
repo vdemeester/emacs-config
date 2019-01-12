@@ -1,4 +1,8 @@
+;;; vde-org.el --- setup org-mode
+;;; Commentary:
+;;; Code:
 ;;; -*- lexical-binding: t; -*-
+
 (use-package org
   :defer t
   :mode (("\\.org$" . org-mode))

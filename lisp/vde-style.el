@@ -1,4 +1,8 @@
+;;; vde-style.el --- setup emacs style 😎
+;;; Commentary:
+;;; Code:
 ;;; -*- lexical-binding: t; -*-
+
 ;;; Fonts used:
 ;;; - Iosevka (https://github.com/be5invis/Iosevka)
 ;;; - Fira Sans (https://github.com/mozilla/Fira/)

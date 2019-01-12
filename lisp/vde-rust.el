@@ -1,4 +1,8 @@
+;;; vde-rust.el --- setup rust related modes
+;;; Commentary:
+;;; Code:
 ;;; -*- lexical-binding: t; -*-
+
 (use-package rust-mode
   :mode "\\.rs\\'"
   :init
@@ -12,7 +16,7 @@
   :config
   (setq racer-cmd (executable-find "racer")))
 
-(use-package company-racer  
+(use-package company-racer
   :after company
   :config
   (push 'company-racer company-backends))

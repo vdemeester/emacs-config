@@ -1,4 +1,8 @@
+;;; vde-web.el --- setup web related modes
+;;; Commentary:
+;;; Code:
 ;;; -*- lexical-binding: t; -*-
+
 (use-package web-mode
   :mode
   ("\\.html\\'" . web-mode)

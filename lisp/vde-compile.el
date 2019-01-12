@@ -1,3 +1,6 @@
+;;; vde-compile.el --- setup compilation modes
+;;; Commentary:
+;;; Code:
 ;;; -*- lexical-binding: t; -*-
 (use-package compile
   :defer 2

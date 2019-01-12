@@ -1,4 +1,8 @@
+;;; init.el --- emacs configuration entrypoint
+;;; Commentary:
+;;; Code:
 ;;; -*- lexical-binding: t; -*-
+
 (defconst emacs-start-time (current-time))
 (defvar file-name-handler-alist-old file-name-handler-alist)
 

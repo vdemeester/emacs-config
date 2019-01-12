@@ -1,4 +1,8 @@
+;;; vde-keybindings.el --- setup keybindings 👼
+;;; Commentary:
+;;; Code:
 ;;; -*- lexical-binding: t; -*-
+
 (use-package key-chord
   :chords
   (("''" . "’")

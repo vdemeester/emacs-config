@@ -1,4 +1,3 @@
-;;; -*- lexical-binding: t; -*-
 ;;; shortbrain-theme.el --- Shortbrain theme
 
 ;; Copyright (C) 2013-2016 Marian Schubert
@@ -27,12 +26,10 @@
 
 ;; Low distraction, minimalistic color theme, with minimal colors, preferring
 ;; other styles of markup (italic, bold).
-;; TODO(vdemeester) change some magit faces
-;; TODO(vdemeester) try a dark version of it (?)
 
 ;;; Credits:
 
-;; Based on: 
+;; Based on:
 ;; https://git.madhouse-project.org/algernon/brutalist-theme.el
 
 ;; Which in turn was inspired by:
@@ -43,6 +40,7 @@
 ;; http://www.daveliepmann.stfi.re/tufte-css/?sf=wklwy
 
 ;;; Code:
+;;; -*- lexical-binding: t; -*-
 
 (deftheme shortbrain
   "Minimal, low-color, low-distraction theme.")

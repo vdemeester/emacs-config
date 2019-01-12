@@ -1,5 +1,8 @@
+;;; vde-ivy.el --- setup ivy and related packages (counsel)
+;;; Commentary:
+;;; Code:
 ;;; -*- lexical-binding: t; -*-
-;; This file stores my configuration for Ivy and related packages.
+
 (use-package ivy
   :bind (:map vde-mode-map
               ("C-x b" . ivy-switch-buffer)

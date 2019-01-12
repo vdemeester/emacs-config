@@ -1,4 +1,8 @@
+;;; vde-vcs.el --- setup vcs related mode (like magit 🌟)
+;;; Commentary:
+;;; Code:
 ;;; -*- lexical-binding: t; -*-
+
 (use-package vc-hooks                   ; Simple version control
   :bind (("S-<f5>" . vc-revert)
          ("C-c v r" . vc-refresh-state))

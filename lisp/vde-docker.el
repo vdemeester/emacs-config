@@ -1,4 +1,8 @@
+;;; vde-docker.el --- setup docker related mode(s)
+;;; Commentary:
+;;; Code:
 ;;; -*- lexical-binding: t; -*-
+
 (use-package dockerfile-mode            ; Edit docker's Dockerfiles
   :mode ("Dockerfile\\'" . dockerfile-mode))
 

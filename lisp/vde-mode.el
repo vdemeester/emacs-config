@@ -1,6 +1,10 @@
+;;; vde-mode.el --- define a personal minor mode
+;;; Commentary:
+;;;
+;;; Main use is to have my key bindings have the highest priority
+;;;
+;;; Code
 ;;; -*- lexical-binding: t; -*-
-;; My minor mode
-;; Main use is to have my key bindings have the highest priority
 
 (defvar vde-special-keymap-prefix (kbd "C-x m")
   "`vde-mode' keymap prefix.

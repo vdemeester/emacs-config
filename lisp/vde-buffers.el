@@ -1,4 +1,8 @@
+;;; vde-buffers.el --- setup buffer related function and mode
+;;; Commentary:
+;;; Code:
 ;;; -*- lexical-binding: t; -*-
+
 ;; Don't let the cursor go into minibuffer prompt
 (let ((default (eval (car (get 'minibuffer-prompt-properties 'standard-value))))
       (dont-touch-prompt-prop '(cursor-intangible t)))

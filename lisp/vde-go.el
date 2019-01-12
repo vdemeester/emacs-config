@@ -1,4 +1,8 @@
+;;; vde-go.el --- setup go mode(s)
+;;; Commentary:
+;;; Code:
 ;;; -*- lexical-binding: t; -*-
+
 (use-package go-mode
   :mode "\\.go$"
   :interpreter "go"

@@ -1,4 +1,8 @@
+;;; vde-windows.el --- window/frame configuration
+;;; Commentary:
+;;; Code:
 ;;; -*- lexical-binding: t; -*-
+
 (setq window-combination-resize t) ; Size new windows proportionally
 
 (use-package fullframe                 ; Generalized execution in a single frame

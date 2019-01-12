@@ -1,4 +1,8 @@
+;;; vde-deft.el -- setup deft
+;;; Commentary:
+;;; Code:
 ;;; -*- lexical-binding: t; -*-
+
 (use-package deft
   :commands (deft)
   :bind (("<f9>" . deft)

@@ -1,3 +1,6 @@
+;;; vde-company.el -- setup company (completions)
+;;; Commentary:
+;;; Code:
 ;;; -*- lexical-binding: t; -*-
 (use-package company
   :commands global-company-mode

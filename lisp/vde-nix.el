@@ -1,4 +1,8 @@
+;;; vde-nix.el --- setup nix modes
+;;; Commentary:
+;;; Code:
 ;;; -*- lexical-binding: t; -*-
+
 (use-package nix-mode
   :mode ("\\.nix\\'" "\\.nix.in\\'"))
 
