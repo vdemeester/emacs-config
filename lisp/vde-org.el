@@ -14,6 +14,7 @@
   :config
   (require 'org-protocol)
   (require 'org-man)
+  (require 'org-git-link)
   (setq org-modules
         '(org-habit org-info org-docview))
   (setq org-todo-keywords
