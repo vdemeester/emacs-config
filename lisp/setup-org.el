@@ -9,7 +9,8 @@
   :ensure org-plus-contrib
   :hook (org-mode . vde/org-mode-hook)
   :bind (("C-c c" . org-capture)
-         ("C-c l" . org-store-link))
+         ("C-c l" . org-store-link)
+         ("C-c a" . org-agenda))
   :config
   (setq org-modules
         '(org-habit org-info org-docview org-protocol org-man org-git-link))

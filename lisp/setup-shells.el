@@ -5,7 +5,6 @@
 
 (use-package shell                 ; Specialized comint.el for running the shell
   :bind (("<f1>"      . vde-shell-open)
-         ("C-c a s s" . vde-shell-open)
          (:map shell-mode-map
                ("<tab>" . completion-at-point)))
   :config
