@@ -1,4 +1,4 @@
-;;; vde-deft.el -- setup deft
+;;; setup-deft.el -- setup deft
 ;;; Commentary:
 ;;; Code:
 ;;; -*- lexical-binding: t; -*-

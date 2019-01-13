@@ -1,4 +1,4 @@
-;;; vde-nix.el --- setup nix modes
+;;; setup-nix.el --- setup nix modes
 ;;; Commentary:
 ;;; Code:
 ;;; -*- lexical-binding: t; -*-

@@ -1,4 +1,4 @@
-;;; vde-org.el --- setup org-mode -*- lexical-binding: t; -*-
+;;; setup-org.el --- setup org-mode -*- lexical-binding: t; -*-
 ;;; Commentary:
 ;;; Code:
 

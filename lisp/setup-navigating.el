@@ -1,4 +1,4 @@
-;;; vde-navigating.el --- setup navigating related modes
+;;; setup-navigating.el --- setup navigating related modes
 ;;; Commentary:
 ;;; Code:
 ;;; -*- lexical-binding: t; -*-

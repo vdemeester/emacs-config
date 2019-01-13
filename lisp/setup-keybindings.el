@@ -1,4 +1,4 @@
-;;; vde-keybindings.el --- setup keybindings 👼 -*- lexical-binding: t; -*-
+;;; setup-keybindings.el --- setup keybindings 👼 -*- lexical-binding: t; -*-
 ;;; Commentary:
 ;;; Code:
 

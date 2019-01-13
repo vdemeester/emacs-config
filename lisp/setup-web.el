@@ -1,4 +1,4 @@
-;;; vde-web.el --- setup web related modes
+;;; setup-web.el --- setup web related modes
 ;;; Commentary:
 ;;; Code:
 ;;; -*- lexical-binding: t; -*-

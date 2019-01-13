@@ -1,4 +1,4 @@
-;;; vde-compile.el --- setup compilation modes
+;;; setup-compile.el --- setup compilation modes
 ;;; Commentary:
 ;;; Code:
 ;;; -*- lexical-binding: t; -*-

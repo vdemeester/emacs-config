@@ -1,4 +1,4 @@
-;;; vde-dired.el --- setup dired mode(s)
+;;; setup-dired.el --- setup dired mode(s)
 ;;; Commentary:
 ;;; Code:
 ;;; -*- lexical-binding: t; -*-

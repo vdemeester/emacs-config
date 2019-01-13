@@ -1,4 +1,4 @@
-;;; vde-docker.el --- setup docker related mode(s)
+;;; setup-docker.el --- setup docker related mode(s)
 ;;; Commentary:
 ;;; Code:
 ;;; -*- lexical-binding: t; -*-

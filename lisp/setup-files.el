@@ -1,4 +1,4 @@
-;;; vde-files.el --- setup files related modes
+;;; setup-files.el --- setup files related modes
 ;;; Commentary:
 ;;; Code:
 ;;; -*- lexical-binding: t; -*-

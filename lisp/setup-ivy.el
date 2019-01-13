@@ -1,4 +1,4 @@
-;;; vde-ivy.el --- setup ivy and related packages (counsel)
+;;; setup-ivy.el --- setup ivy and related packages (counsel)
 ;;; Commentary:
 ;;; Code:
 ;;; -*- lexical-binding: t; -*-

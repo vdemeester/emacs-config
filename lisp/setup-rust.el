@@ -1,4 +1,4 @@
-;;; vde-rust.el --- setup rust related modes
+;;; setup-rust.el --- setup rust related modes
 ;;; Commentary:
 ;;; Code:
 ;;; -*- lexical-binding: t; -*-

@@ -1,4 +1,4 @@
-;;; vde-search.el --- setup search
+;;; setup-search.el --- setup search
 ;;; Commentary:
 ;;; Code:
 ;;; -*- lexical-binding: t; -*-

@@ -1,4 +1,4 @@
-;;; vde-windows.el --- window/frame configuration
+;;; setup-windows.el --- window/frame configuration
 ;;; Commentary:
 ;;; Code:
 ;;; -*- lexical-binding: t; -*-

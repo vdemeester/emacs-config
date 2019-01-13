@@ -1,4 +1,4 @@
-;;; vde-company.el -- setup company (completions)
+;;; setup-company.el -- setup company (completions)
 ;;; Commentary:
 ;;; Code:
 ;;; -*- lexical-binding: t; -*-

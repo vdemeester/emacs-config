@@ -1,4 +1,4 @@
-;;; vde-editing.el --- setup editing related mode(s)
+;;; setup-editing.el --- setup editing related mode(s)
 ;;; Commentary:
 ;;; Code:
 ;;; -*- lexical-binding: t; -*-

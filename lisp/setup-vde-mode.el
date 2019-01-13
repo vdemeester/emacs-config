@@ -1,4 +1,4 @@
-;;; vde-mode.el --- define a personal minor mode
+;;; setup-vde-mode.el --- define a personal minor mode
 ;;; Commentary:
 ;;;
 ;;; Main use is to have my key bindings have the highest priority

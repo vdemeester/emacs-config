@@ -1,4 +1,4 @@
-;;; vde-style.el --- setup emacs style 😎
+;;; setup-style.el --- setup emacs style 😎
 ;;; Commentary:
 ;;; Code:
 ;;; -*- lexical-binding: t; -*-

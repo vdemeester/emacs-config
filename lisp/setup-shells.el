@@ -1,4 +1,4 @@
-;;; vde-shells.el --- setup shells related mode
+;;; setup-shells.el --- setup shells related mode
 ;;; Commentary:
 ;;; Code:
 ;;; -*- lexical-binding: t; -*-

@@ -1,4 +1,4 @@
-;;; vde-vcs.el --- setup vcs related mode (like magit 🌟)
+;;; setup-vcs.el --- setup vcs related mode (like magit 🌟)
 ;;; Commentary:
 ;;; Code:
 ;;; -*- lexical-binding: t; -*-

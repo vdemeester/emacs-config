@@ -1,4 +1,4 @@
-;;; vde-buffers.el --- setup buffer related function and mode
+;;; setup-buffers.el --- setup buffer related function and mode
 ;;; Commentary:
 ;;; Code:
 ;;; -*- lexical-binding: t; -*-

@@ -1,4 +1,4 @@
-;;; vde-go.el --- setup go mode(s)
+;;; setup-go.el --- setup go mode(s)
 ;;; Commentary:
 ;;; Code:
 ;;; -*- lexical-binding: t; -*-

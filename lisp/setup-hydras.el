@@ -1,4 +1,4 @@
-;;; vde-hydras.el --- setup hydras
+;;; setup-hydras.el --- setup hydras
 ;;; Commentary:
 ;;; Code:
 ;;; -*- lexical-binding: t; -*-
