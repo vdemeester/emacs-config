@@ -21,7 +21,7 @@
           (sequence "WAITING(w)" "SOMEDAY(s)" "|" "CANCELED(c)")
           (sequence "IDEA(i)" "|" "CANCELED(c)")))
   (setq org-blank-before-new-entry '((heading . t)
-                                     (plain-list-item . t)))
+                                     (plain-list-item . nil)))
   (setq org-directory "~/desktop/org/")
   ;; you can override the document org-agenda-files by setting your
   ;; org-agenda-files in the variable org-user-agenda-files
