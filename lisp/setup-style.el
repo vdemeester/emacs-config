@@ -12,7 +12,7 @@
   (setq font-height 100)))
 
 (set-face-attribute 'default nil
-		    :family "Fira Code"
+		    :family "Fira Code" ; "Overpass Mono" to try someday
                     :height font-height)
 (set-face-attribute 'variable-pitch nil
                     :family "Fira Sans"
