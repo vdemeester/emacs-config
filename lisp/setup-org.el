@@ -17,8 +17,9 @@
   (setq org-modules
         '(org-habit org-info org-docview))
   (setq org-todo-keywords
-        '((sequence "TODO" "WAITING(!)" "SOMEDAY(!)" "|" "DONE(!)" "CANCELED(!)")
-          (sequence "IDEA")))
+        '((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d!)" "CANCELED(c)")
+          (sequence "WAITING(w)" "SOMEDAY(s)" "|" "CANCELED(c)")
+          (sequence "IDEA(i)" "|" "CANCELED(c)")))
   (setq org-blank-before-new-entry '((heading . t)
                                      (plain-list-item . t)))
   (setq org-directory "~/desktop/org/")
