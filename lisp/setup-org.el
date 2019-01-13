@@ -11,11 +11,8 @@
   :bind (("C-c c" . org-capture)
          ("C-c l" . org-store-link))
   :config
-  (require 'org-protocol)
-  (require 'org-man)
-  (require 'org-git-link)
   (setq org-modules
-        '(org-habit org-info org-docview))
+        '(org-habit org-info org-docview org-protocol org-man org-git-link))
   (setq org-todo-keywords
         '((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d!)" "CANCELED(c)")
           (sequence "WAITING(w)" "SOMEDAY(s)" "|" "CANCELED(c)")
