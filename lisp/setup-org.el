@@ -65,7 +65,7 @@
                                  (file+datetree "~/desktop/org/journal.org")
                                  "* worklog\n%U\n** Yesterday\n%?\n** Today\n** Next (later today, tomorrow)\n")
                                 ("l" "Link" entry (file+olp org-default-notes-file "Links")
-                                 "* %a\n %?\n %i")))
+                                 "* %a\n%U\n%?\n%i")))
 
   (add-to-list 'org-structure-template-alist
                (list "p" (concat ":PROPERTIES:\n"
