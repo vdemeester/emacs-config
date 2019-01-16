@@ -67,6 +67,14 @@
                                 ("l" "Link" entry (file+olp org-default-notes-file "Links")
                                  "* %a\n %?\n %i")))
 
+  (add-to-list 'org-structure-template-alist
+               (list "p" (concat ":PROPERTIES:\n"
+                                 "?\n"
+                                 ":END:")))
+  (add-to-list 'org-structure-template-alist
+               (list "t" (concat "#+TITLE: ?\n")))
+
+  
   ;; org-babel
   (org-babel-do-load-languages
    'org-babel-load-languages
