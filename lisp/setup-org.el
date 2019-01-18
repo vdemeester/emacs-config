@@ -69,13 +69,19 @@
                                 ("l" "Link" entry (file+olp org-default-notes-file "Links")
                                  "* %a\n%U\n%?\n%i")))
 
-  (add-to-list 'org-structure-template-alist
-               (list "p" (concat ":PROPERTIES:\n"
-                                 "?\n"
-                                 ":END:")))
-  (add-to-list 'org-structure-template-alist
-               (list "t" (concat "#+TITLE: ?\n")))
-
+  (setq org-structure-template-alist '(("t" . "#+TITLE: ?\n")
+                                       ("p" . ":PROPERTIES:\n?\n:END:")
+                                       ;; initial
+                                       ("a" . "export ascii")
+                                       ("c" . "center")
+                                       ("C" . "comment")
+                                       ("e" . "example")
+                                       ("E" . "export")
+                                       ("h" . "export html")
+                                       ("l" . "export latex")
+                                       ("q" . "quote")
+                                       ("s" . "src")
+                                       ("v" . "verse")))
   
   ;; org-babel
   (org-babel-do-load-languages
