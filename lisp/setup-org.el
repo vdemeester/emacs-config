@@ -23,6 +23,8 @@
   (setq org-directory "~/desktop/org/")
   (setq org-agenda-files (quote ("~/desktop/org")))
   (setq org-agenda-include-diary t)
+
+  (setq org-use-speed-commands t)
   
   (setq org-log-done (quote time))
   (setq org-log-redeadline (quote time))
