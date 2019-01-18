@@ -206,7 +206,9 @@ like this : [[pt:REGEXP:FOLDER]]"
  )
 
 (use-package org-notify
-  :after org)
+  :after org
+  :init
+  (org-notify-start))
 
 (use-package org-timer
   :after org)
