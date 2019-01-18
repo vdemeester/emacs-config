@@ -51,6 +51,14 @@
   :config
   (winner-mode 1))
 
+(use-package hideshow
+  :defer 5
+  :bind (("C-c @ a" . hs-show-all)
+         ("C-c @ c" . hs-toggle-hiding)
+         ("C-c @ t" . hs-hide-all)
+         ("C-c @ d" . hs-hide-block)
+         ("C-c @ l" . hs-hide-level)))
+
 (provide 'setup-navigating)
 
 ;; Local Variables:
