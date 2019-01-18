@@ -205,6 +205,11 @@ like this : [[pt:REGEXP:FOLDER]]"
  initial-major-mode 'org-mode  ; org-mode by default
  )
 
+(use-package org-todoist
+  :after (org)
+  :config
+  (setq org-todoist-file "~/desktop/org/todoist.org"))
+
 (provide 'setup-org)
 
 ;; Local Variables:
