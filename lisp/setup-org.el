@@ -24,6 +24,8 @@
   (setq org-agenda-files (quote ("~/desktop/org")))
   (setq org-agenda-include-diary t)
 
+  (setq org-refile-targets '((org-agenda-files :maxlevel . 3)))
+
   (setq org-use-speed-commands t)
   
   (setq org-log-done (quote time))
@@ -232,3 +234,4 @@ like this : [[pt:REGEXP:FOLDER]]"
 ;; coding: utf-8
 ;; indent-tabs-mode: nil
 ;; End:
+
