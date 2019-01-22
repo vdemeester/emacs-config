@@ -220,6 +220,8 @@ like this : [[pt:REGEXP:FOLDER]]"
   :config
   (setq org-todoist-file "~/desktop/org/todoist.org"))
 
+(use-package org-capture-pop-frame)
+
 (provide 'setup-org)
 
 ;; Local Variables:
