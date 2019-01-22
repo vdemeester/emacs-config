@@ -71,8 +71,15 @@
           (format "\n   :ID: %s" (alist-get 'id project))
           "\n   :END:\n"))
 
-(defun org-todoist--format-task (task)
+(defun org-todoist--format-task (task labels)
   "Given a TASK, return its Org representation."
+  ;; (if (eq (length (alist-get 'labels_id task)) 3)
+  ;;     (message "has labels %s" (alist-get 'labels_id task)))
+  ;; (when (> (length (alist-get 'label_ids task)) 0)
+  ;;   (message "labels %s" labels)
+  ;;   (message "filtered label %s" (seq-filter (true) labels))
+  ;;   (message "labels %s" labels)
+  ;;   (message "fooo"))
   (concat "** "
           (if (eq (alist-get 'completed task) :json-false)
               "TODO "
@@ -183,6 +190,11 @@
          :parser 'json-read))
       (lambda ()
         (request-deferred
+         (concat org-todoist-url "labels")
+         :headers `(("Authorization" . ,(format "Bearer %s" org-todoist-api-token)))
+         :parser 'json-read))
+      (lambda ()
+        (request-deferred
          (concat org-todoist-url "tasks")
          :headers `(("Authorization" . ,(format "Bearer %s" org-todoist-api-token)))
          :parser 'json-read)))
@@ -190,7 +202,8 @@
     (deferred:nextc it
       (lambda (responses)
         (let ((projects (request-response-data (nth 0 responses)))
-              (tasks    (request-response-data (nth 1 responses))))
+	      (labels (request-response-data (nth 1 responses)))
+              (tasks    (request-response-data (nth 2 responses))))
           (with-current-buffer (find-file-noselect org-todoist-file)
             (save-excursion
               (erase-buffer)
@@ -198,7 +211,7 @@
                (mapconcat (lambda (project)
                             (concat (org-todoist--format-project project)
                                     (mapconcat (lambda (task)
-                                                 (org-todoist--format-task task))
+                                                 (org-todoist--format-task task labels))
                                                (org-todoist--project-tasks project tasks)
                                                "")))
                           projects
