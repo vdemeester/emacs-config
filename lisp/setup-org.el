@@ -10,6 +10,8 @@
   :hook (org-mode . vde/org-mode-hook)
   :bind (("C-c c" . org-capture)
          ("C-c l" . org-store-link)
+         ("C-c o r" . org-refile)
+         ("C-c o a" . org-agenda-refile)
          ("C-c a" . org-agenda))
   :config
   (setq org-modules
@@ -225,6 +227,7 @@ like this : [[pt:REGEXP:FOLDER]]"
 
 (use-package org-todoist
   :after (org)
+  :bind (("C-c o s" . org-todoist-sync))
   :config
   (setq org-todoist-file "~/desktop/org/todoist.org"))
 
@@ -234,4 +237,3 @@ like this : [[pt:REGEXP:FOLDER]]"
 ;; coding: utf-8
 ;; indent-tabs-mode: nil
 ;; End:
-
