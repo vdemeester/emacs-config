@@ -14,6 +14,7 @@
          ("C-c o a" . org-agenda-refile)
          ("C-c a" . org-agenda))
   :config
+  (use-package find-lisp)
   (setq org-modules
         '(org-habit org-info org-docview org-protocol org-man org-git-link))
   (setq org-todo-keywords
@@ -23,7 +24,7 @@
   (setq org-blank-before-new-entry '((heading . t)
                                      (plain-list-item . nil)))
   (setq org-directory "~/desktop/org/")
-  (setq org-agenda-files (quote ("~/desktop/org")))
+  (setq org-agenda-files (find-lisp-find-files org-directory "\.org$"))
   (setq org-agenda-include-diary t)
 
   (setq org-refile-targets '((org-agenda-files :maxlevel . 3)))
