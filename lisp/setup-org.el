@@ -8,11 +8,11 @@
   :commands (org-capture org-agenda)
   :ensure org-plus-contrib
   :hook (org-mode . vde/org-mode-hook)
-  :bind (("C-c c" . org-capture)
-         ("C-c l" . org-store-link)
-         ("C-c o r" . org-refile)
-         ("C-c o a" . org-agenda-refile)
-         ("C-c a" . org-agenda))
+  :bind (("C-c o c" . org-capture)
+         ("C-c o l" . org-store-link)
+         ("C-c o r r" . org-refile)
+         ("C-c o r a" . org-agenda-refile)
+         ("C-c o a" . org-agenda))
   :config
   (use-package find-lisp)
   (setq org-modules
@@ -75,20 +75,6 @@
                                  "* worklog\n%U\n** Yesterday\n%?\n** Today\n** Next (later today, tomorrow)\n")
                                 ("l" "Link" entry (file+olp org-default-notes-file "Links")
                                  "* %a\n%U\n%?\n%i")))
-
-  (setq org-structure-template-alist '(("t" . "#+TITLE: ?\n")
-                                       ("p" . ":PROPERTIES:\n?\n:END:")
-                                       ;; initial
-                                       ("a" . "export ascii")
-                                       ("c" . "center")
-                                       ("C" . "comment")
-                                       ("e" . "example")
-                                       ("E" . "export")
-                                       ("h" . "export html")
-                                       ("l" . "export latex")
-                                       ("q" . "quote")
-                                       ("s" . "src")
-                                       ("v" . "verse")))
   
   ;; org-babel
   (org-babel-do-load-languages
@@ -222,7 +208,7 @@ like this : [[pt:REGEXP:FOLDER]]"
 
 (use-package org-notify
   :after org
-  :init
+  :config
   (org-notify-start))
 
 (use-package org-timer
@@ -230,7 +216,7 @@ like this : [[pt:REGEXP:FOLDER]]"
 
 (use-package org-todoist
   :after (org)
-  :bind (("C-c o s" . org-todoist-sync))
+  :bind (("C-c o t s" . org-todoist-sync))
   :config
   (setq org-todoist-file "~/desktop/org/todoist.org"))
 
