@@ -69,7 +69,7 @@
                                  (file org-default-notes-file))
                                 ("j" "Journal entry" entry
                                  (file+datetree "~/desktop/org/journal.org")
-                                 "* %^{title}\n%U\n%?\n")
+                                 "* %^{title}\n%U\n%?\n%i\n")
                                 ("w" "Worklog (journal) entry" entry
                                  (file+datetree "~/desktop/org/journal.org")
                                  "* worklog\n%U\n** Yesterday\n%?\n** Today\n** Next (later today, tomorrow)\n")
