@@ -78,6 +78,34 @@ The EShell is renamed to match that directory to make multiple windows easier."
       (eshell/clear-scrollback)
       (eshell-emit-prompt)
       (insert input)))
+  
+  (defun eshell/extract (file)
+    "One universal command to extract FILE (for bz2, gz, rar, etc.)"
+    (eshell-command-result (format "%s %s" (cond ((string-match-p ".*\.tar.bz2" file)
+                                                  "tar xzf")
+                                                 ((string-match-p ".*\.tar.gz" file)
+                                                  "tar xzf")
+                                                 ((string-match-p ".*\.bz2" file)
+                                                  "bunzip2")
+                                                 ((string-match-p ".*\.rar" file)
+                                                  "unrar x")
+                                                 ((string-match-p ".*\.gz" file)
+                                                  "gunzip")
+                                                 ((string-match-p ".*\.tar" file)
+                                                  "tar xf")
+                                                 ((string-match-p ".*\.tbz2" file)
+                                                  "tar xjf")
+                                                 ((string-match-p ".*\.tgz" file)
+                                                  "tar xzf")
+                                                 ((string-match-p ".*\.zip" file)
+                                                  "unzip")
+                                                 ((string-match-p ".*\.jar" file)
+                                                  "unzip")
+                                                 ((string-match-p ".*\.Z" file)
+                                                  "uncompress")
+                                                 (t
+                                                  (error "Don't know how to extract %s" file)))
+                                   file)))
 
   (add-hook
    'eshell-mode-hook
