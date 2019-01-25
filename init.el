@@ -119,6 +119,9 @@
    auto-save-file-name-transforms
    `((".*" ,(no-littering-expand-var-file-name "auto-save/") t))))
 
+(setenv "PAGER" "cat")
+(setenv "TERM" "eterm-color")
+
 (use-package server                     ; The server of `emacsclient'
   :config (or (server-running-p) (server-mode)))
 

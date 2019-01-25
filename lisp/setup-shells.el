@@ -82,10 +82,12 @@ The EShell is renamed to match that directory to make multiple windows easier."
   (add-hook
    'eshell-mode-hook
    (lambda ()
+     (eshell-smart-initialize)
+     (eshell-dirs-initialize)
      (bind-keys :map eshell-mode-map
                 ("C-c C-l"                . counsel-esh-history)
                 ([remap eshell-pcomplete] . completion-at-point))))
-
+  
   ;; Use system su/sudo
   (with-eval-after-load "em-unix"
     '(progn
@@ -116,6 +118,11 @@ The EShell is renamed to match that directory to make multiple windows easier."
   :ensure eshell
   :config (setq eshell-scroll-to-bottom-on-input 'all))
 
+(use-package em-smart
+  :ensure eshell)
+(use-package em-dirs
+  :ensure eshell)
+
 (use-package em-cmpl                    ; EShell TAB completion
   :ensure eshell
   :config
@@ -137,7 +144,22 @@ The EShell is renamed to match that directory to make multiple windows easier."
   (add-to-list 'eshell-visual-commands "htop")
   (add-to-list 'eshell-visual-commands "top")
   (add-to-list 'eshell-visual-commands "tail")
-  (add-to-list 'eshell-visual-commands "npm"))
+  (add-to-list 'eshell-visual-commands "npm")
+  (add-to-list 'eshell-visual-commands "ncdu"))
+
+(use-package em-banner
+  :ensure eshell
+  :config
+  (setq eshell-banner-message "
+  Welcome to the Emacs
+
+                         _/                  _/  _/
+      _/_/      _/_/_/  _/_/_/      _/_/    _/  _/
+   _/_/_/_/  _/_/      _/    _/  _/_/_/_/  _/  _/
+  _/            _/_/  _/    _/  _/        _/  _/
+   _/_/_/  _/_/_/    _/    _/    _/_/_/  _/  _/
+
+"))
 
 (use-package fish-completion            ; Add Fish completion to EShell
   :defer 2
