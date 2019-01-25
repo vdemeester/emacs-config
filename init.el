@@ -39,18 +39,35 @@
 (require 'package)
 
 (setq package-archives
-      '(("gnu-elpa" . "http://elpa.gnu.org/packages/")
-	("melpa-stable" . "https://stable.melpa.org/packages/")
-	("melpa" . "https://melpa.org/packages/")
-	("org" . "https://orgmode.org/elpa/")))
+      '(("melpa" . "http://melpa.org/packages/")
+        ("melpa-stable" . "https://stable.melpa.org/packages/")
+        ("org" . "https://orgmode.org/elpa/")
+        ("gnu" . "https://elpa.gnu.org/packages/")))
 
-(package-initialize)
+(setq package-archive-priorities
+      '(("melpa-stable" . 4)
+        ("melpa" .  3)
+        ("org" . 2)
+        ("gnu" . 1)))
+
+(require 'tls)
+
+;; From https://github.com/hlissner/doom-emacs/blob/5dacbb7cb1c6ac246a9ccd15e6c4290def67757c/core/core-packages.el#L102
+(setq gnutls-verify-error (not (getenv "INSECURE")) ; you shouldn't use this
+      tls-checktrust gnutls-verify-error
+      tls-program (list "gnutls-cli --x509cafile %t -p %p %h"
+                        ;; compatibility fallbacks
+                        "gnutls-cli -p %p %h"
+                        "openssl s_client -connect %h:%p -no_ssl2 -no_ssl3 -ign_eof"))
+
+(unless package--initialized
+  (package-initialize))
 
 (setq load-prefer-newer t)              ; Always load newer compiled files
 (setq ad-redefinition-action 'accept)   ; Silence advice redefinition warnings
 
 ;; Bootstrap `use-package'
-(setq use-package-always-pin "melpa-stable")
+(setq use-package-enable-imenu-support t)
 (unless (package-installed-p 'use-package)
   (package-refresh-contents)
   (package-install 'use-package))
