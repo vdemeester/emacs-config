@@ -217,6 +217,33 @@ The EShell is renamed to match that directory to make multiple windows easier."
   :config
   (add-hook 'eshell-mode-hook 'eshell-bookmark-setup))
 
+
+(use-package xterm-color
+  :init
+  (add-hook 'eshell-before-prompt-hook
+            (lambda ()
+              (setenv "TERM" "xterm-256color")
+              (setq xterm-color-preserve-properties t)))
+
+  (add-to-list 'eshell-preoutput-filter-functions 'xterm-color-filter)
+  (setq eshell-output-filter-functions (remove 'eshell-handle-ansi-color eshell-output-filter-functions))
+  
+  (setq compilation-environment '("TERM=xterm-256color"))
+
+  (add-hook 'compilation-start-hook
+            (lambda (proc)
+              ;; We need to differentiate between compilation-mode buffers
+              ;; and running as part of comint (which at this point we assume
+              ;; has been configured separately for xterm-color)
+              (when (eq (process-filter proc) 'compilation-filter)
+                ;; This is a process associated with a compilation-mode buffer.
+                ;; We may call `xterm-color-filter' before its own filter function.
+                (set-process-filter
+                 proc
+                 (lambda (proc string)
+                   (funcall 'compilation-filter proc
+                            (xterm-color-filter string))))))))
+
 ;; for fish in ansi-term
 (add-hook 'term-mode-hook 'toggle-truncate-lines)
 

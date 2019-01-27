@@ -137,7 +137,7 @@
    `((".*" ,(no-littering-expand-var-file-name "auto-save/") t))))
 
 (setenv "PAGER" "cat")
-(setenv "TERM" "eterm-color")
+(setenv "TERM" "xterm-256color")
 
 (use-package server                     ; The server of `emacsclient'
   :config (or (server-running-p) (server-mode)))
