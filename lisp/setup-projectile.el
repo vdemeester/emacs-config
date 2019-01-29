@@ -19,7 +19,15 @@
    
    projectile-completion-system 'ivy
    projectile-find-dir-includes-top-level t
-   projectile-mode-line '(:eval (format " Proj[%s]" (projectile-project-name)))))
+   projectile-switch-project-action #'projectile-commander
+   projectile-create-missing-test-files t
+   projectile-mode-line '(:eval (format " Proj[%s]" (projectile-project-name))))
+  (def-projectile-commander-method ?s
+    "Open a *shell* buffer for the project"
+    (projectile-run-eshell))
+  (def-projectile-commander-method ?c
+    "Run `compile' in the project"
+    (projectile-compile-project nil)))
 
 (use-package counsel-projectile         ; Ivy integration for Projectile
   :bind (:map projectile-command-map
