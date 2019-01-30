@@ -66,6 +66,8 @@
                                  "* %a\n%?\n%i")
                                 ("n" "Though or Note" entry
                                  (file org-default-notes-file))
+                                ("r" "PR Review" entry (file+olp org-default-notes-file "Tasks")
+                                 "* TODO review gh:%^{issue} :review:\n%?")
                                 ("j" "Journal entry" entry
                                  (file+datetree "~/desktop/org/journal.org")
                                  "* %^{title}\n%U\n%?\n%i\n")
@@ -220,6 +222,7 @@ like this : [[pt:REGEXP:FOLDER]]"
   (setq org-todoist-file "~/desktop/org/todoist.org"))
 
 (use-package org-capture-pop-frame)
+(use-package org-gcal )
 
 (provide 'setup-org)
 
