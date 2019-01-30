@@ -105,6 +105,8 @@
   :commands (scratch)
   :bind (("C-c t s" . scratch)))
 
+(use-package define-word)
+
 (setq display-line-numbers-type 'relative)
 (add-hook 'prog-mode-hook
           'display-line-numbers-mode)
