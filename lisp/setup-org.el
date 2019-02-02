@@ -138,12 +138,16 @@
   ;; org-babel
   (org-babel-do-load-languages
    'org-babel-load-languages
-   '((emacs-lisp . t)
-     (shell . t)
-     (python . t)
-     (css . t)
+   '((css . t)
+     (dot . t)
+     (emacs-lisp . t)
+     (go . t)
+     (http . t)
      (js . t)
-     (dot . t)))
+     (python . t)
+     (rust . t)
+     (shell . t)
+     (typescript . t)))
 
   ;; org-links
   ;; from http://endlessparentheses.com/use-org-mode-links-for-absolutely-anything.html
@@ -223,7 +227,15 @@ like this : [[pt:REGEXP:FOLDER]]"
     (org-indent-mode)
     (smartparens-mode)))
 
+(use-package ob-go
+  :after (org))
+(use-package ob-rust
+  :after (org))
 (use-package ob-async
+  :after (org))
+(use-package ob-http
+  :after (org))
+(use-package ob-typescript
   :after (org))
 
 (use-package org-crypt
@@ -235,6 +247,8 @@ like this : [[pt:REGEXP:FOLDER]]"
 (use-package smartparens-org
   :after org-mode)
 
+(use-package ox-slack
+  :after ox)
 (use-package ox-hugo
   :after ox
   :commands (org-hugo-slug)
