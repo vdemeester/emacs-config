@@ -49,7 +49,19 @@
   
   (setq org-agenda-include-diary t)
 
-  (setq org-refile-targets '((org-agenda-files :maxlevel . 3)))
+  (setq org-refile-use-outline-path 'file
+        org-outline-path-complete-in-steps nil)
+
+  (setq org-refile-targets (append '((org-default-media-file :level . 1)
+                                     (org-default-notes-file :level . 0))
+                                   (->>
+                                    (directory-files org-default-projects-dir nil ".org")
+                                    (-remove-item (file-name-base org-default-media-file))
+                                    (--remove (s-starts-with? "." it))
+                                    (--map (format "%s/%s" org-default-projects-dir it))
+                                    (--map `(,it :level . 1)))))
+
+  ;;(setq org-refile-targets '((org-agenda-files :maxlevel . 3)))
 
   (setq org-use-speed-commands t)
   
