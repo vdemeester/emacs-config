@@ -153,16 +153,6 @@ like this : [[pt:REGEXP:FOLDER]]"
               (file-relative-name file dir))))
   )
 
-(use-package org-projectile
-  :defer 3
-  :bind (("C-c n p" . org-projectile-project-todo-completing-read))
-  :config
-  (progn
-    (setq org-projectile-projects-file
-          "~/desktop/org/projects.org")
-    (setq org-agenda-files (append org-agenda-files (org-projectile-todo-files)))
-    (push (org-projectile-project-todo-entry) org-capture-templates)))
-
 (defun vde/org-mode-hook ()
   "Org-mode hook"
   (setq show-trailing-whitespace t)
