@@ -121,6 +121,8 @@
    '((emacs-lisp . t)
      (shell . t)
      (python . t)
+     (css . t)
+     (js . t)
      (dot . t)))
 
   ;; org-links
