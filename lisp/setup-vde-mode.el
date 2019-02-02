@@ -62,7 +62,6 @@ USAGE: (unbind-from-vde-map \"C-x m f\")
                         (propertize "vde-mode-map"
                                     'face 'font-lock-function-name-face))))
 
-
 (provide 'setup-vde-mode)
 
 ;; Minor mode tutorial: http://nullprogram.com/blog/2013/02/06/

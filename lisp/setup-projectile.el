@@ -16,7 +16,6 @@
   (setq
    ;; Custom compilation buffer name function
    compilation-buffer-name-function (lambda (mode) (concat "*" (downcase mode) ": " (projectile-project-name) "*"))
-   
    projectile-completion-system 'ivy
    projectile-find-dir-includes-top-level t
    projectile-switch-project-action #'projectile-commander
