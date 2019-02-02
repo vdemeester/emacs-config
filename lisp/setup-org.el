@@ -2,6 +2,18 @@
 ;;; Commentary:
 ;;; Code:
 
+(setq org-directory "~/desktop/org/")
+
+(defvar org-default-projects-dir (concat org-directory "projects") "Primary tasks directory.")
+(defvar org-default-technical-dir (concat org-directory "technical") "Directory of shareable, technical notes.")
+(defvar org-default-personal-dir (concat org-directory "personal") "Directory of un-shareable, personal notes.")
+(defvar org-default-completed-dir (concat org-directory "projects/completed") "Directory of completed project files.")
+(defvar org-default-inbox-file (concat org-directory "projects/inbox.org") "New stuff collected in this file.")
+(defvar org-default-incubate-file (concat org-directory "projects/incubate.org") "Ideas simmering on back burner.")
+(defvar org-default-notes-file (concat org-directory "personal/notes.org") "Non-actionable, personal notes.")
+(defvar org-default-media-file (concat org-directory "projects/media.org") "Links to other things to check out.")
+(defvar org-default-journal-file (concat org-directory "personal/journal.org") "Journaling stuff.")
+
 (use-package org
   :defer t
   :mode (("\\.org$" . org-mode))
@@ -23,8 +35,10 @@
           (sequence "IDEA(i)" "|" "CANCELED(c)")))
   (setq org-blank-before-new-entry '((heading . t)
                                      (plain-list-item . nil)))
-  (setq org-directory "~/desktop/org/")
-  (setq org-agenda-files (find-lisp-find-files org-directory "\.org$"))
+
+  (setq org-agenda-files (list org-default-projects-dir))
+  (setq org-agenda-file-regexp "^[a-z0-9-_]+.org")
+  
   (setq org-agenda-include-diary t)
 
   (setq org-refile-targets '((org-agenda-files :maxlevel . 3)))
@@ -57,25 +71,47 @@
   (setq org-agenda-skip-scheduled-if-done t)
   (setq org-default-notes-file "~/desktop/org/inbox.org")
 
+  (defvar org-capture-templates (list))
   (setq org-protocol-default-template-key "l")
-  (setq org-capture-templates '(("b" "Blog post" entry
-                                 (file+headline "~/src/github.com/vdemeester/blog/content-org/posts.org" "Blog Ideas")
-                                 "* %?\n:PROPERTIES:\n:END:\n")
-                                ("bl" "Blog link post" entry
-                                 (file+olp "~/src/github.com/vdemeester/blog/content-org/links.org" "Link")
-                                 "* %a\n%?\n%i")
-                                ("n" "Though or Note" entry
-                                 (file org-default-notes-file))
-                                ("r" "PR Review" entry (file+olp org-default-notes-file "Tasks")
-                                 "* TODO review gh:%^{issue} :review:\n%?")
-                                ("j" "Journal entry" entry
-                                 (file+datetree "~/desktop/org/journal.org")
-                                 "* %^{title}\n%U\n%?\n%i\n")
-                                ("w" "Worklog (journal) entry" entry
-                                 (file+datetree "~/desktop/org/journal.org")
-                                 "* worklog\n%U\n** Yesterday\n%?\n** Today\n** Next (later today, tomorrow)\n")
-                                ("l" "Link" entry (file+olp org-default-notes-file "Links")
-                                 "* %a\n%U\n%?\n%i")))
+
+  ;; Tasks (-> inbox)
+  (add-to-list 'org-capture-templates
+               `("t" "Task Entry" entry
+                 (file ,org-default-inbox-file)
+                 "* %?\n:PROPERTIES:\n:CREATED:%U\n:END:\n\n%i\n\nFrom: %a"
+                 :empty-lines 1))
+  (add-to-list 'org-capture-templates
+               `("r" "PR Review" entry
+                 (file ,org-default-inbox-file)
+                 "* TODO review gh:%^{issue} :review:\n:PROPERTIES:\n:CREATED:%U\n:END:\n\n%i\n%?\nFrom: %a"
+                 :empty-lines 1))
+  (add-to-list 'org-capture-templates
+               `("l" "Link" entry
+                 (file ,org-default-inbox-file)
+                 "* %a\n%U\n%?\n%i"
+                 :empty-lines 1))
+  ;; Journal
+  (add-to-list 'org-capture-templates
+               `("j" "Journal entry" entry
+                 (file+datetree ,org-default-journal-file)
+                 "* %^{title}\n%U\n%?\n%i\nFrom%a"
+                 :empty-lines 1))
+  (add-to-list 'org-capture-templates
+               `("w" "Worklog (journal) entry" entry
+                 (file+datetree ,org-default-journal-file)
+                 "* worklog\n%U\n** Yesterday\n%?\n** Today\n** Next (later today, tomorrow)\n"))
+  ;; Olds, most likely to remove
+  (add-to-list 'org-capture-templates
+               `("b" "Blog post" entry
+                 (file+headline "~/src/github.com/vdemeester/blog/content-org/posts.org" "Blog Ideas")
+                 "* %?\n:PROPERTIES:\n:END:\n"))
+  (add-to-list 'org-capture-templates
+               `("bl" "Blog link post" entry
+                 (file+olp "~/src/github.com/vdemeester/blog/content-org/links.org" "Link")
+                 "* %a\n%?\n%i"))
+  (add-to-list 'org-capture-templates
+               `("n" "Though or Note" entry
+                 (file ,org-default-notes-file)))
   
   ;; org-babel
   (org-babel-do-load-languages
@@ -209,7 +245,7 @@ like this : [[pt:REGEXP:FOLDER]]"
   :after (org)
   :bind (("C-c o t s" . org-todoist-sync))
   :config
-  (setq org-todoist-file "~/desktop/org/todoist.org"))
+  (setq org-todoist-file (concat org-directory "projects/todoist.org")))
 
 (use-package org-capture-pop-frame)
 (use-package org-gcal )
