@@ -188,7 +188,6 @@ packages.")
 (use-package setup-shells)
 (use-package setup-compile)
 (use-package setup-org)
-(custom-set-variables '(org-agenda-files (quote ("~/desktop/org"))))
 ;; Programming languages
 (use-package setup-nix)
 (use-package setup-go)
