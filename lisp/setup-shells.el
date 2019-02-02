@@ -4,29 +4,29 @@
 ;;; -*- lexical-binding: t; -*-
 
 (use-package shell                 ; Specialized comint.el for running the shell
-  :bind (("<f1>"      . vde-shell-open)
+  :bind (("<f1>"      . vde/shell-open)
          (:map shell-mode-map
                ("<tab>" . completion-at-point)))
   :config
-  (defun vde-shell-open ()
+  (defun vde/shell-open ()
     "Save window configuration and call `shell'."
     (interactive)
-    (vde-save-wins-then-call 'shell))
+    (vde/save-wins-then-call 'shell))
 
   ;; Use a single full frame for shell
   (with-eval-after-load 'shell
-    (fullframe shell vde-pop-window-configuration))
+    (fullframe shell vde/pop-window-configuration))
 
-  (bind-key "C-c C-q" #'vde-pop-window-configuration shell-mode-map)
+  (bind-key "C-c C-q" #'vde/pop-window-configuration shell-mode-map)
   
   (unbind-key "C-c C-l" shell-mode-map)
   (bind-key "C-c C-l" #'counsel-shell-history shell-mode-map)
 
-  (defun vde-comint-delchar-or-eof-or-kill-buffer (arg)
+  (defun vde/comint-delchar-or-eof-or-kill-buffer (arg)
     "Restore window configuration if process is dead, otherwise delete ARG."
     (interactive "p")
     (if (null (get-buffer-process (current-buffer)))
-        (vde-pop-window-configuration)
+        (vde/pop-window-configuration)
       (comint-delchar-or-maybe-eof arg)))
   
   (setq
@@ -36,7 +36,7 @@
    shell-file-name "bash")
   (add-hook 'shell-mode-hook
             (lambda ()
-              (bind-key "C-d" #'vde-comint-delchar-or-eof-or-kill-buffer
+              (bind-key "C-d" #'vde/comint-delchar-or-eof-or-kill-buffer
                         shell-mode-map)))
   )
 
@@ -127,7 +127,7 @@ The EShell is renamed to match that directory to make multiple windows easier."
 (use-package em-prompt                  ; EShell command prompts
   :defer 2
   :config
-  (defun vde-eshell-quit-or-delete-char (arg)
+  (defun vde/eshell-quit-or-delete-char (arg)
     "Use C-d to either delete forward char or exit EShell."
     (interactive "p")
     (if (and (eolp) (looking-back eshell-prompt-regexp nil nil))
@@ -140,7 +140,7 @@ The EShell is renamed to match that directory to make multiple windows easier."
   (add-hook 'eshell-mode-hook
             (lambda ()
               (bind-key "C-d"
-                        #'vde-eshell-quit-or-delete-char eshell-mode-map))))
+                        #'vde/eshell-quit-or-delete-char eshell-mode-map))))
 
 (use-package esh-mode                   ; EShell UI customizations
   :ensure eshell

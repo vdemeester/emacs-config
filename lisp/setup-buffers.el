@@ -89,23 +89,23 @@
   (setq ibuffer-show-empty-filter-groups nil))
 
 (use-package ibuffer                    ; Buffer management
-  :bind (("C-x C-b" . vde-ibuffer-open)
+  :bind (("C-x C-b" . vde/ibuffer-open)
          ([remap list-buffers] . ibuffer)
          :map ibuffer-mode-map
-         ("q" . vde-pop-window-configuration)) 
+         ("q" . vde/pop-window-configuration)) 
   :config
   (setq
    ibuffer-expert t              ; Do not prompt when on kill buffers operations
    ibuffer-filter-group-name-face 'font-lock-doc-face)
 
-  (defun vde-ibuffer-open ()
+  (defun vde/ibuffer-open ()
     "Save window configuration and call `ibuffer'."
     (interactive)
     (vde-save-wins-then-call 'ibuffer))
 
   ;; Use a single full frame for ibuffer
   (with-eval-after-load 'ibuffer
-    (fullframe ibuffer vde-pop-window-configuration))
+    (fullframe ibuffer vde/pop-window-configuration))
   
   ;; Use human readable Size column instead of original one
   (define-ibuffer-column size-h

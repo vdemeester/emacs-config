@@ -16,7 +16,7 @@
  ("M-S-<right>" . enlarge-window-horizontally))
 
 ;;;###autoload
-(defun vde-window-split-toggle ()
+(defun vde/window-split-toggle ()
   "Toggle between horizontal and vertical split with two windows."
   (interactive)
   (if (> (length (window-list)) 2)
@@ -30,14 +30,14 @@
         (other-window 1)
         (switch-to-buffer (other-buffer))))))
 
-(bind-key "C-c w t" #'vde-window-split-toggle)
+(bind-key "C-c w t" #'vde/window-split-toggle)
 
-(defvar vde-saved-window-configuration nil)
+(defvar vde/saved-window-configuration nil)
 
-(defun vde-save-wins-then-call (func &optional args)
+(defun vde/save-wins-then-call (func &optional args)
   "Save current window configuration, then call FUNC optionally with ARGS."
   (interactive)
-  (push (current-window-configuration) vde-saved-window-configuration)
+  (push (current-window-configuration) vde/saved-window-configuration)
   (cond
    ;; We have arguments for the function
    ((bound-and-true-p args) (funcall func args))
@@ -46,18 +46,18 @@
    ;; The function does not expect arguments
    (t (funcall func))))
 
-(defun vde-restore-window-configuration (config)
+(defun vde/restore-window-configuration (config)
   "Kill current buffer and restore the window configuration in CONFIG."
   (interactive)
   (kill-this-buffer)
   (set-window-configuration config))
 
-(defun vde-pop-window-configuration ()
+(defun vde/pop-window-configuration ()
   "Restore the previous window configuration and clear current window."
   (interactive)
-  (let ((config (pop vde-saved-window-configuration)))
+  (let ((config (pop vde/saved-window-configuration)))
     (if config
-        (vde-restore-window-configuration config)
+        (vde/restore-window-configuration config)
       (if (> (length (window-list)) 1)
           (delete-window)
         (bury-buffer)))))

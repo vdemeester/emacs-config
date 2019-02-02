@@ -103,19 +103,19 @@
   (exec-path-from-shell-initialize))
 
 ;; Set separate custom file for the customize interface
-(defconst vde-custom-file (locate-user-emacs-file "custom.el")
+(defconst vde/custom-file (locate-user-emacs-file "custom.el")
   "File used to store settings from Customization UI.")
 
 (use-package cus-edit                   ; Set up custom.el
   :defer t
   :config
   (setq
-   custom-file vde-custom-file
+   custom-file vde/custom-file
    custom-buffer-done-kill nil          ; Kill when existing
    custom-buffer-verbose-help nil       ; Remove redundant help text
    custom-unlispify-tag-names nil       ; Show me the real variable name
    custom-unlispify-menu-entries nil)
-  :init (load vde-custom-file 'no-error 'no-message))
+  :init (load vde/custom-file 'no-error 'no-message))
 
 (use-package no-littering               ; Keep .emacs.d clean
   :config

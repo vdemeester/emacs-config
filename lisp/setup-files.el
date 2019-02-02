@@ -57,7 +57,7 @@
   :mode "\\.to?ml\\'")
 
 ;;;###autoload
-(defun vde-delete-this-file ()
+(defun vde/delete-this-file ()
   "Delete the current file, and kill the buffer."
   (interactive)
   (or (buffer-file-name) (error "No file is currently being edited"))
@@ -67,7 +67,7 @@
     (kill-this-buffer)))
 
 ;;;###autoload
-(defun vde-rename-this-file-and-buffer (new-name)
+(defun vde/rename-this-file-and-buffer (new-name)
   "Renames both current buffer and file it's visiting to NEW-NAME."
   (interactive "sNew name: ")
   (let ((name (buffer-name))
@@ -82,31 +82,31 @@
         (rename-buffer new-name)
         (set-visited-file-name new-name)))))
 
-(bind-key "C-c f D" #'vde-delete-this-file)
-(bind-key "C-c f R" #'vde-rename-this-file-and-buffer)
+(bind-key "C-c f D" #'vde/delete-this-file)
+(bind-key "C-c f R" #'vde/rename-this-file-and-buffer)
 
 ;; Additional bindings for built-ins
 (bind-key "C-c f v d" #'add-dir-local-variable)
 (bind-key "C-c f v l" #'add-file-local-variable)
 (bind-key "C-c f v p" #'add-file-local-variable-prop-line)
 
-(defun vde-reload-dir-locals-for-current-buffer ()
+(defun vde/reload-dir-locals-for-current-buffer ()
   "Reload dir locals for the current buffer."
   (interactive)
   (let ((enable-local-variables :all))
     (hack-dir-local-variables-non-file-buffer)))
 
-(defun vde-reload-dir-locals-for-all-buffers-in-this-directory ()
+(defun vde/reload-dir-locals-for-all-buffers-in-this-directory ()
   "Reload dir-locals for all buffers in current buffer's `default-directory'."
   (interactive)
   (let ((dir default-directory))
     (dolist (buffer (buffer-list))
       (with-current-buffer buffer
         (when (equal default-directory dir))
-        (vde-reload-dir-locals-for-current-buffer)))))
+        (vde/reload-dir-locals-for-current-buffer)))))
 
-(bind-key "C-c f v r" #'vde-reload-dir-locals-for-current-buffer)
-(bind-key "C-c f v r" #'vde-reload-dir-locals-for-all-buffers-in-this-directory)
+(bind-key "C-c f v r" #'vde/reload-dir-locals-for-current-buffer)
+(bind-key "C-c f v r" #'vde/reload-dir-locals-for-all-buffers-in-this-directory)
 
 (provide 'setup-files)
 

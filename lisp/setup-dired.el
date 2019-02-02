@@ -5,16 +5,16 @@
 
 (use-package dired
   :defer t
-  :bind (("<C-return>" . vde-open-in-external-app)
-         ("C-c f g"    . vde-dired-get-size)
+  :bind (("<C-return>" . vde/open-in-external-app)
+         ("C-c f g"    . vde/dired-get-size)
          ("C-c f f"    . find-name-dired))
   :bind (:map dired-mode-map
-              ("M-p"         . vde-dired-up)
-              ("^"           . vde-dired-up)
-              ("<backspace>" . vde-dired-up)
-              ("M-n"         . vde-dired-down)
+              ("M-p"         . vde/dired-up)
+              ("^"           . vde/dired-up)
+              ("<backspace>" . vde/dired-up)
+              ("M-n"         . vde/dired-down)
               ("RET"         . find-file-reuse-dir-buffer)
-              ("!"           . vde-sudired)
+              ("!"           . vde/sudired)
               ("<prior>"     . beginend-dired-mode-goto-beginning)
               ("<next>"      . beginend-dired-mode-goto-end))
 
@@ -33,17 +33,17 @@
   ;; Handle long file names
   (add-hook 'dired-mode-hook #'toggle-truncate-lines)
 
-  (defun vde-dired-up ()
+  (defun vde/dired-up ()
     "Go to previous directory."
     (interactive)
     (find-alternate-file ".."))
 
-  (defun vde-dired-down ()
+  (defun vde/dired-down ()
     "Enter directory."
     (interactive)
     (dired-find-alternate-file))
 
-  (defun vde-open-in-external-app ()
+  (defun vde/open-in-external-app ()
     "Open the file(s) at point with an external application."
     (interactive)
     (let* ((file-list
@@ -62,7 +62,7 @@
           (find-alternate-file file)
         (find-file file))))
 
-  (defun vde-sudired ()
+  (defun vde/sudired ()
     "Open directory with sudo in Dired."
     (interactive)
     (require 'tramp)
@@ -71,7 +71,7 @@
           (user-error "Already in sudo")
         (dired (concat "/sudo::" dir)))))
 
-  (defun vde-dired-get-size ()
+  (defun vde/dired-get-size ()
     "Quick and easy way to get file size in Dired."
     (interactive)
     (let ((files (dired-get-marked-files)))
