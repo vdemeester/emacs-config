@@ -90,6 +90,11 @@
                  (file ,org-default-inbox-file)
                  "* %a\n%U\n%?\n%i"
                  :empty-lines 1))
+  (add-to-list 'org-capture-templates
+               '("n" "Thought or Note"  entry
+                 (file org-default-notes-file)
+                 "* %?\n\n  %i\n\n  See: %a" :empty-lines 1))
+
   ;; Journal
   (add-to-list 'org-capture-templates
                `("j" "Journal entry" entry
@@ -109,9 +114,6 @@
                `("bl" "Blog link post" entry
                  (file+olp "~/src/github.com/vdemeester/blog/content-org/links.org" "Link")
                  "* %a\n%?\n%i"))
-  (add-to-list 'org-capture-templates
-               `("n" "Though or Note" entry
-                 (file ,org-default-notes-file)))
   
   ;; org-babel
   (org-babel-do-load-languages
