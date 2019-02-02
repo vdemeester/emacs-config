@@ -4,7 +4,7 @@
 ;;; -*- lexical-binding: t; -*-
 
 (use-package aggressive-indent          ; Automatically indent code
-  :bind ("C-c t i" . aggressive-indent-mode)
+  :bind ("C-c e i" . aggressive-indent-mode)
   :hook ((lisp-mode       . aggressive-indent-mode)
          (emacs-lisp-mode . aggressive-indent-mode)
          (clojure-mode    . aggressive-indent-mode))
