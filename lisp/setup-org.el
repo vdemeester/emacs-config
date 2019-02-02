@@ -14,6 +14,14 @@
 (defvar org-default-media-file (concat org-directory "projects/media.org") "Links to other things to check out.")
 (defvar org-default-journal-file (concat org-directory "personal/journal.org") "Journaling stuff.")
 
+;; Use `org-mode' instead of `lisp-interaction-mode' for scratch buffer
+(setq
+ inhibit-startup-message t            ; don't show the startup message
+ inhibit-startup-screen t             ; … or screen
+ initial-scratch-message nil          ; empty scratch buffer
+ initial-major-mode 'org-mode  ; org-mode by default
+ )
+
 (use-package org
   :defer t
   :mode (("\\.org$" . org-mode))
@@ -229,21 +237,10 @@ like this : [[pt:REGEXP:FOLDER]]"
   :config
   (setq org-bullets-bullet-list '("◉" "○" "⚫")))
 
-;; Use `org-mode' instead of `lisp-interaction-mode' for scratch buffer
-(setq
- inhibit-startup-message t            ; don't show the startup message
- inhibit-startup-screen t             ; … or screen
- initial-scratch-message nil          ; empty scratch buffer
- initial-major-mode 'org-mode  ; org-mode by default
- )
-
 (use-package org-notify
   :after org
   :config
   (org-notify-start))
-
-(use-package org-timer
-  :after org)
 
 (use-package org-todoist
   :after (org)
@@ -252,9 +249,9 @@ like this : [[pt:REGEXP:FOLDER]]"
   (setq org-todoist-file (concat org-directory "projects/todoist.org")))
 
 (use-package org-capture-pop-frame)
-(use-package org-gcal )
 
 (provide 'setup-org)
+;;; setup-org.el ends here
 
 ;; Local Variables:
 ;; coding: utf-8
