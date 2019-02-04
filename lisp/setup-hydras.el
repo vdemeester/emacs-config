@@ -32,18 +32,27 @@
 _a_ abbrev-mode:       %`abbrev-mode
 _d_ debug-on-error:    %`debug-on-error
 _f_ auto-fill-mode:    %`auto-fill-function
-_h_ highlight          %`highlight-nonselected-windows
-_t_ truncate-lines:    %`truncate-lines
+_r_ readonly-mode:     %`buffer-read-only
+_t_ truncate-lines     %`truncate-lines
+_v_ visual-line-mode:  %`visual-line-mode
 _w_ whitespace-mode:   %`whitespace-mode
-_l_ org link display:  %`org-descriptive-links
+_y_ flycheck           %`flycheck-display-errors-function
+_V_ visible-mode:      %`visible-mode
 "
-  ("a" abbrev-mode)
-  ("d" toggle-debug-on-error)
-  ("f" auto-fill-mode)
-  ("h" (setq highlight-nonselected-windows (not highlight-nonselected-windows)))
-  ("t" toggle-truncate-lines)
-  ("w" whitespace-mode)
-  ("l" org-toggle-link-display)
+  ("a" abbrev-mode nil)
+  ("d" toggle-debug-on-error  nil)
+  ("f" auto-fill-mode         nil)
+  ("r" dired-toggle-read-only nil)
+  ("t" toggle-truncate-lines  nil)
+  ("v" visual-line-mode       nil)
+  ("V" visible-mode           nil)
+  ("w" whitespace-mode        nil)
+  ("y" (lambda ()
+         (interactive)
+         (if (equal flycheck-display-errors-function #'flycheck-pos-tip-error-messages)
+             (setq flycheck-display-errors-function #'flycheck-display-error-messages)
+           (setq flycheck-display-errors-function #'flycheck-pos-tip-error-messages)))
+   nil)
   ("q" nil "quit"))
 
 (global-set-key (kbd "C-c C-v") 'hydra-toggle/body)
