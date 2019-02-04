@@ -227,6 +227,36 @@ like this : [[pt:REGEXP:FOLDER]]"
     (org-indent-mode)
     (smartparens-mode)))
 
+(use-package orca
+  :after (org)
+  :config
+  (setq orca-handler-list
+        '(;; (orca-handler-match-url "http://stackoverflow.com/" "~/Dropbox/org/wiki/stack.org" "Questions")
+          ;; (orca-handler-match-url "https://www.reddit.com/" "~/Dropbox/org/wiki/emacs.org" "Reddit")
+          ;; (orca-handler-match-url "https://emacs.stackexchange.com/" "~/Dropbox/org/wiki/emacs.org" "\\* Questions")
+          ;; (orca-handler-current-buffer "\\* Tasks")
+          ;; (orca-handler-file "~/Dropbox/org/ent.org" "\\* Articles")
+          ;; (orfu-handle-link-youtube)
+          (vde/handle-link-github))))
+
+(defcustom orfu-github-project-name
+  "https://github\\.com/\\([^/]+\\)"
+  "Regex for Github repository projects."
+  :type 'string)
+
+(defun orfu-handle-link-github ()
+  (let ((link (caar org-stored-links))
+        (title (cl-cadar org-stored-links)))
+    (when (string-match orfu-github-project-name link)
+      (let ((project-name (match-string 1 link))
+            (parts (split-string title "·")))
+        (setf (cl-cadar org-stored-links)
+              (concat (car parts)
+                      (substring (cadr parts) 7)))
+        (find-file (orfu-expand "wiki/github.org"))
+        (goto-char (point-min))
+        (re-search-forward (concat "^\\*+ +" project-name) nil t)))))
+
 (use-package ob-go
   :after (org))
 (use-package ob-rust
