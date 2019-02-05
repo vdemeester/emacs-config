@@ -159,9 +159,9 @@ With prefix argument, also display headlines without a TODO keyword."
     (org-tags-view (null current-prefix-arg) tag))
 
   (org-link-set-parameters "grep"
-                           :follow #'my/follow-grep-link
+                           :follow #'vde/follow-grep-link
                            :face '(:foreground "DarkRed" :underline t))
-  (defun my/follow-grep-link (regexp)
+  (defun vde/follow-grep-link (regexp)
     "Run `rgrep' with REGEXP and FOLDER as argument,
 like this : [[grep:REGEXP:FOLDER]]."
     (setq expressions (split-string regexp ":"))
@@ -176,9 +176,9 @@ like this : [[grep:REGEXP:FOLDER]]."
     )
 
   (org-link-set-parameters "rg"
-                           :follow #'my/follow-rg-link
+                           :follow #'vde/follow-rg-link
                            :face '(:foreground "DarkGreen" :underline t))
-  (defun my/follow-rg-link (regexp)
+  (defun vde/follow-rg-link (regexp)
     "Run `ripgrep-regexp` with REXEP and FOLDER as argument,
 like this : [[pt:REGEXP:FOLDER]]"
     (setq expressions (split-string regexp ":"))
@@ -192,11 +192,11 @@ like this : [[pt:REGEXP:FOLDER]]"
     )
 
   (org-link-set-parameters "gh"
-                           :follow #'my/follow-gh-link
+                           :follow #'vde/follow-gh-link
                            :export (lambda (path desc backend)
                                      (vde/gh-get-url path))
                            :face '(:foreground "DimGrey" :underline t))
-  (defun my/follow-gh-link (issue)
+  (defun vde/follow-gh-link (issue)
     "Browse github issue/pr specified"
     (browse-url (vde/gh-get-url issue)))
 
