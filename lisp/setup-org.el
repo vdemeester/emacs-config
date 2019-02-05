@@ -193,6 +193,11 @@ like this : [[pt:REGEXP:FOLDER]]"
 
   (org-link-set-parameters "gh"
                            :follow #'my/follow-gh-link
+                           :export (lambda (path desc backend)
+                                     (setq expressions (split-string path "#"))
+                                     (setq project (nth 0 expressions))
+                                     (setq issue (nth 1 expressions))
+                                     (format "https://github.com/%s/issues/%s" project issue))
                            :face '(:foreground "DimGrey" :underline t))
   (defun my/follow-gh-link (issue)
     "Browse github issue/pr specified"
