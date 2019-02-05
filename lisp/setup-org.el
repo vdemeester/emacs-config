@@ -22,6 +22,8 @@
  initial-major-mode 'org-mode  ; org-mode by default
  )
 
+(use-package s)
+
 (use-package org
   :defer t
   :mode (("\\.org$" . org-mode))
