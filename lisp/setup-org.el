@@ -63,8 +63,6 @@
                                     (--map (format "%s/%s" org-default-projects-dir it))
                                     (--map `(,it :level . 1)))))
 
-  ;;(setq org-refile-targets '((org-agenda-files :maxlevel . 3)))
-
   (setq org-use-speed-commands t)
   
   (setq org-log-done (quote time))
