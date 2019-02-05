@@ -40,7 +40,7 @@
   (setq org-modules
         '(org-habit org-info org-docview org-protocol org-man org-git-link))
   (setq org-todo-keywords
-        '((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d!)" "CANCELED(c)")
+        '((sequence "TODO(t)" "NEXT(n)" "STARTED(s)" "|" "DONE(d!)" "CANCELED(c)")
           (sequence "WAITING(w)" "SOMEDAY(s)" "|" "CANCELED(c)")
           (sequence "IDEA(i)" "|" "CANCELED(c)")))
   (setq org-blank-before-new-entry '((heading . t)
@@ -80,13 +80,14 @@
 
   (setcar (nthcdr 4 org-emphasis-regexp-components) 10)
   
-  (setq org-tag-alist (quote ((:startgroup . nil)
-                              ("@home" . ?m) ("@work" . ?w) ("@errand" . ?e) ("@health" . ?h)
+  (setq org-tag-alist (quote (("linux") ("nixos") ("emacs") ("org")
+                              ("openshift") ("redhat") ("kubernetes") ("knative" ) ("docker")
+                              (:startgroup . nil)
+                              ("@home" . ?h) ("@work" . ?w) ("@errand" . ?r) ("@health" . ?l)
                               (:endgroup . nil)
-                              ("linux" . ?l) ("nixos" . ?n) ("emacs" . ?e)
-                              ("openshift" . ?o) ("redhat" . ?r)
-                              ("kubernetes" . ?k) ("knative" . ?t)
-                              ("docker" . ?d)
+                              (:startgroup . nil)
+                              ("@easy" . ?e) ("@medium" . ?m) ("@hard" . ?a)
+                              (:endgroup . nil)
                               )))
   (setq org-agenda-skip-scheduled-if-done t)
   (setq org-default-notes-file "~/desktop/org/inbox.org")
