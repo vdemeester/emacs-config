@@ -120,7 +120,7 @@
   (add-to-list 'org-capture-templates
                `("j" "Journal entry" entry
                  (file+datetree ,org-default-journal-file)
-                 "* %^{title}\n%U\n%?\n%i\nFrom%a"
+                 "* %^{title}\n%U\n%?\n%i\nFrom: %a"
                  :empty-lines 1))
   (add-to-list 'org-capture-templates
                `("w" "Worklog (journal) entry" entry
