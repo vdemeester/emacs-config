@@ -14,6 +14,8 @@
 (defvar org-default-media-file (concat org-directory "projects/media.org") "Links to other things to check out.")
 (defvar org-default-journal-file (concat org-directory "personal/journal.org") "Journaling stuff.")
 
+;; (defvar org-default-publish-technical (concat site-directory) "sbr.pm/technical")
+
 ;; Use `org-mode' instead of `lisp-interaction-mode' for scratch buffer
 (setq
  inhibit-startup-message t            ; don't show the startup message
@@ -71,6 +73,8 @@
   (setq org-log-into-drawer t)
 
   (setq org-fontify-whole-heading-line t)
+  (setq org-src-fontify-natively t)
+  (setq org-src-tab-acts-natively t)
 
   (setq org-pretty-entities t)
   (setq org-insert-heading-respect-content t)
@@ -233,17 +237,17 @@ like this : [[pt:REGEXP:FOLDER]]"
     (org-indent-mode)
     (smartparens-mode)))
 
-(use-package orca
-  :after (org)
-  :config
-  (setq orca-handler-list
-        '(;; (orca-handler-match-url "http://stackoverflow.com/" "~/Dropbox/org/wiki/stack.org" "Questions")
-          ;; (orca-handler-match-url "https://www.reddit.com/" "~/Dropbox/org/wiki/emacs.org" "Reddit")
-          ;; (orca-handler-match-url "https://emacs.stackexchange.com/" "~/Dropbox/org/wiki/emacs.org" "\\* Questions")
-          ;; (orca-handler-current-buffer "\\* Tasks")
-          ;; (orca-handler-file "~/Dropbox/org/ent.org" "\\* Articles")
-          ;; (orfu-handle-link-youtube)
-          (vde/handle-link-github))))
+;; (use-package orca
+;;   :after (org)
+;;   :config
+;;   (setq orca-handler-list
+;;         '(;; (orca-handler-match-url "http://stackoverflow.com/" "~/Dropbox/org/wiki/stack.org" "Questions")
+;;           ;; (orca-handler-match-url "https://www.reddit.com/" "~/Dropbox/org/wiki/emacs.org" "Reddit")
+;;           ;; (orca-handler-match-url "https://emacs.stackexchange.com/" "~/Dropbox/org/wiki/emacs.org" "\\* Questions")
+;;           ;; (orca-handler-current-buffer "\\* Tasks")
+;;           ;; (orca-handler-file "~/Dropbox/org/ent.org" "\\* Articles")
+;;           ;; (orfu-handle-link-youtube)
+;;           (vde/handle-link-github))))
 
 (defcustom orfu-github-project-name
   "https://github\\.com/\\([^/]+\\)"
@@ -283,6 +287,9 @@ like this : [[pt:REGEXP:FOLDER]]"
 (use-package smartparens-org
   :after org-mode)
 
+(use-package ox-publish
+  :config
+  (setq org-html-coding-system 'utf-8-unix))
 (use-package ox-slack
   :after ox)
 (use-package ox-hugo
