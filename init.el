@@ -138,6 +138,7 @@
 
 (setenv "PAGER" "cat")
 (setenv "TERM" "xterm-256color")
+(setenv "NOTMUCH_CONFIG" (expand-file-name ".config/notmuch/notmuchrc" (getenv "HOME")))
 
 (use-package server                     ; The server of `emacsclient'
   :config (or (server-running-p) (server-mode)))
