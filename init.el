@@ -189,6 +189,7 @@ packages.")
 (use-package setup-shells)
 (use-package setup-compile)
 (use-package setup-org)
+(use-package setup-notmuch)
 ;; Programming languages
 (use-package setup-nix)
 (use-package setup-go)
