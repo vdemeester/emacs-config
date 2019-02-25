@@ -2,7 +2,8 @@
 ;;; Commentary:
 ;;; Code:
 
-(setq org-directory "~/desktop/org/")
+(defvar org-directory "~/desktop/org/")
+(defvar site-directory "~/desktop/sites/")
 
 (defvar org-default-projects-dir (concat org-directory "projects") "Primary tasks directory.")
 (defvar org-default-technical-dir (concat org-directory "technical") "Directory of shareable, technical notes.")
@@ -14,7 +15,7 @@
 (defvar org-default-media-file (concat org-directory "projects/media.org") "Links to other things to check out.")
 (defvar org-default-journal-file (concat org-directory "personal/journal.org") "Journaling stuff.")
 
-;; (defvar org-default-publish-technical (concat site-directory) "sbr.pm/technical")
+(defvar org-default-publish-technical (concat site-directory "sbr.pm/technical"))
 
 ;; Use `org-mode' instead of `lisp-interaction-mode' for scratch buffer
 (setq
