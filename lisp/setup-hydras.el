@@ -29,24 +29,24 @@
 
 (defhydra hydra-toggle (:color pink :hint nil)
   "
-_a_ abbrev-mode:       %`abbrev-mode
-_d_ debug-on-error:    %`debug-on-error
-_f_ auto-fill-mode:    %`auto-fill-function
-_r_ readonly-mode:     %`buffer-read-only
-_t_ truncate-lines     %`truncate-lines
-_v_ visual-line-mode:  %`visual-line-mode
-_w_ whitespace-mode:   %`whitespace-mode
-_y_ flycheck           %`flycheck-display-errors-function
-_V_ visible-mode:      %`visible-mode
+_a_ abbrev-mode:          %`abbrev-mode
+_d_ debug-on-error:       %`debug-on-error
+_f_ auto-fill-mode:       %`auto-fill-function
+_r_ readonly-mode:        %`buffer-read-only
+_t_ truncate-lines        %`truncate-lines
+_v_ visual-line-mode:     %`visual-line-mode
+_s_ smartparens-strict:   %`smartparens-strict-mode
+_y_ flycheck              %`flycheck-display-errors-function
+_V_ visible-mode:         %`visible-mode
 "
-  ("a" abbrev-mode nil)
-  ("d" toggle-debug-on-error  nil)
-  ("f" auto-fill-mode         nil)
-  ("r" dired-toggle-read-only nil)
-  ("t" toggle-truncate-lines  nil)
-  ("v" visual-line-mode       nil)
-  ("V" visible-mode           nil)
-  ("w" whitespace-mode        nil)
+  ("a" abbrev-mode             nil)
+  ("d" toggle-debug-on-error   nil)
+  ("f" auto-fill-mode          nil)
+  ("r" dired-toggle-read-only  nil)
+  ("t" toggle-truncate-lines   nil)
+  ("v" visual-line-mode        nil)
+  ("V" visible-mode            nil)
+  ("s" smartparens-strict-mode nil)
   ("y" (lambda ()
          (interactive)
          (if (equal flycheck-display-errors-function #'flycheck-pos-tip-error-messages)
