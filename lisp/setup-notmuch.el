@@ -23,8 +23,7 @@
   :defines (send-mail-function)
   :config
   (setq send-mail-function 'sendmail-send-it
-	sendmail-program "/home/vincent/.nix-profile/bin/msmtp"
-	mail-specify-envelope-from t))
+	sendmail-program "/home/vincent/bin/msmtp"))
 
 (use-package message
   :commands (message-mode message-cite-original-without-signature)
