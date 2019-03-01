@@ -26,7 +26,7 @@
   ("0" (text-scale-set 0) :bind nil :exit t)
   ("1" (text-scale-set 0) nil :bind nil :exit t))
 
-
+(defvar whitespace-mode nil)
 (defhydra hydra-toggle (:color pink :hint nil)
   "
 _a_ abbrev-mode:          %`abbrev-mode
@@ -35,6 +35,7 @@ _f_ auto-fill-mode:       %`auto-fill-function
 _r_ readonly-mode:        %`buffer-read-only
 _t_ truncate-lines        %`truncate-lines
 _v_ visual-line-mode:     %`visual-line-mode
+_w_ whitespace-mode:      %`whitespace-mode
 _s_ smartparens-strict:   %`smartparens-strict-mode
 _y_ flycheck              %`flycheck-display-errors-function
 _V_ visible-mode:         %`visible-mode
@@ -46,6 +47,7 @@ _V_ visible-mode:         %`visible-mode
   ("t" toggle-truncate-lines   nil)
   ("v" visual-line-mode        nil)
   ("V" visible-mode            nil)
+  ("w" whitespace-mode         nil)
   ("s" smartparens-strict-mode nil)
   ("y" (lambda ()
          (interactive)
