@@ -53,6 +53,7 @@
   (setq org-agenda-file-regexp "^[a-z0-9-_]+.org")
 
   (setq org-agenda-include-diary t)
+  (setq org-use-property-inheritance t)
 
   (setq org-refile-use-outline-path 'file
         org-outline-path-complete-in-steps nil)
@@ -215,9 +216,18 @@ like this : [[pt:REGEXP:FOLDER]]"
 
   (org-link-set-parameters "gh"
                            :follow #'vde/follow-gh-link
-                           :export (lambda (path desc backend)
-                                     (vde/gh-get-url path))
+                           :export #'vde/org-gh-export
                            :face '(:foreground "DimGrey" :underline t))
+  (defun vde/org-gh-export (link description format)
+    "Export a github page link from Org files."
+    (let ((path (vde/gh-get-url link))
+          (desc (or description link)))
+      (cond
+       ((eq format 'html) (format "<a hrefl=\"_blank\" href=\"%s\">%s</a>" path desc))
+       ((eq format 'latex) (format "\\href{%s}{%s}" path desc))
+       ((eq format 'texinfo) (format "@uref{%s,%s}" path desc))
+       ((eq format 'ascii) (format "%s (%s)" desc path))
+       (t path))))
   (defun vde/follow-gh-link (issue)
     "Browse github issue/pr specified"
     (browse-url (vde/gh-get-url issue)))
