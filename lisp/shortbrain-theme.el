@@ -131,6 +131,8 @@
    `(region ((t (:background ,bg-highlight :foreground ,fg :inverse-video nil))))
    `(slime-repl-inputed-output-face ((t (:foreground ,fg))))
    `(whitespace-line ((t (:background ,bg-highlight-2 :foreground ,fg))))
+   `(whitespace-space ((t (:background ,bg :foreground ,fg-slight-dim))))
+   `(whitespace-tab ((t (:background ,bg :foreground ,fg-slight-dim))))
 
    ;; org
    `(org-agenda-date ((t (:foreground ,fg :height 1.2))))
