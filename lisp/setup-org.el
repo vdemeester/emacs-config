@@ -49,6 +49,7 @@
   (setq org-blank-before-new-entry '((heading . t)
                                      (plain-list-item . nil)))
 
+  (setq org-habit-show-habits-only-for-today nil)
   (setq org-agenda-files (list org-default-projects-dir))
   (setq org-agenda-file-regexp "^[a-z0-9-_]+.org")
 
