@@ -49,10 +49,10 @@
 (use-package iedit
   :defines hydra-iedit/body
   :bind* (:map global-map
-	       ("C-*" . iedit-mode)
-	       :map iedit-mode-keymap
-	       ("M-n" . iedit-next-occurence)
-	       ("M-p" . iedit-prev-occurence))
+               ("C-*" . iedit-mode)
+               :map iedit-mode-keymap
+               ("M-n" . iedit-next-occurence)
+               ("M-p" . iedit-prev-occurence))
   :config
   (defhydra hydra-iedit (:color pink :columns 1)
     "IEDIT"
@@ -81,7 +81,7 @@
          ("C-c y g" . yas-global-mode)
          ("C-c y m" . yas-minor-mode)
          ("C-c y a" . yas-reload-all)
-         ("C-c y x" . yas-expand)) 
+         ("C-c y x" . yas-expand))
   :bind (:map yas-keymap
               ("C-i" . yas-next-field-or-maybe-expand))
   :mode ("/\\.emacs\\.d/etc/yasnippet/snippets/" . snippet-mode)
