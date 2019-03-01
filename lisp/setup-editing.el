@@ -17,6 +17,11 @@
   :init (global-undo-tree-mode)
   :config (setq undo-tree-visualizer-timestamps t))
 
+(use-package whitespace
+  :defer 1
+  :config
+  (setq whitespace-style '(face tabs spaces trailing space-before-tab newline indentation empty space-after-tab space-mark tab-mark newline-mark)))
+
 (use-package smartparens
   :defer 1
   :init
