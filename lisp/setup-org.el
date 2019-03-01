@@ -51,7 +51,7 @@
 
   (setq org-agenda-files (list org-default-projects-dir))
   (setq org-agenda-file-regexp "^[a-z0-9-_]+.org")
-  
+
   (setq org-agenda-include-diary t)
 
   (setq org-refile-use-outline-path 'file
@@ -67,7 +67,7 @@
                                     (--map `(,it :level . 1)))))
 
   (setq org-use-speed-commands t)
-  
+
   (setq org-log-done (quote time))
   (setq org-log-redeadline (quote time))
   (setq org-log-reschedule (quote time))
@@ -84,7 +84,7 @@
   (setq org-agenda-window-setup (quote other-frame))
 
   (setcar (nthcdr 4 org-emphasis-regexp-components) 10)
-  
+
   (setq org-tag-alist (quote (("linux") ("nixos") ("emacs") ("org")
                               ("openshift") ("redhat") ("kubernetes") ("knative" ) ("docker")
                               (:startgroup . nil)
@@ -131,6 +131,22 @@
                `("w" "Worklog (journal) entry" entry
                  (file+datetree ,org-default-journal-file)
                  "* worklog\n%U\n** Yesterday\n%?\n** Today\n** Next (later today, tomorrow)\n"))
+  (add-to-list 'org-capture-templates
+               `("e" "Weekly review" entry
+                 (file+datetree,org-default-journal-file)
+                 "* weekly review\n%U
+
+- [ ] review [[file:incubate.org][~incubate.org~]]
+- [ ] review [[file:inbox.org][~inbox.org~]]
+- [ ] [[https://todoist.com/app][Todoist]]
+  - [ ] review [[https://todoist.com/app?lang=en#project%252F173761779][inbox]]
+  - [ ] review [[https://todoist.com/app?lang=en#project%252F173761780%252Ffull][personal project]]
+  - [ ] review [[https://todoist.com/app?lang=en#project%252F173761782%252Ffull][work project]]
+- [ ] review ~org-mode~ workflow
+  - what works, what doesn't ?
+  - is there task / stuck projects ?
+- [ ] export previous agenda (somewhere)"))
+
   ;; Olds, most likely to remove
   (add-to-list 'org-capture-templates
                `("b" "Blog post" entry
@@ -140,7 +156,7 @@
                `("bl" "Blog link post" entry
                  (file+olp "~/src/github.com/vdemeester/blog/content-org/links.org" "Link")
                  "* %a\n%?\n%i"))
-  
+
   ;; org-babel
   (org-babel-do-load-languages
    'org-babel-load-languages
