@@ -137,15 +137,17 @@
                  (file+datetree,org-default-journal-file)
                  "* weekly review\n%U
 
-- [ ] review [[file:incubate.org][~incubate.org~]]
-- [ ] review [[file:inbox.org][~inbox.org~]]
+- [ ] review [[file:../projects/incubate.org][~incubate.org~]]
+- [ ] review [[file:../projects/inbox.org][~inbox.org~]]
+- [ ] review [[file:../projects/media.org][~media.org~]]
 - [ ] [[https://todoist.com/app][Todoist]]
   - [ ] review [[https://todoist.com/app?lang=en#project%252F173761779][inbox]]
   - [ ] review [[https://todoist.com/app?lang=en#project%252F173761780%252Ffull][personal project]]
   - [ ] review [[https://todoist.com/app?lang=en#project%252F173761782%252Ffull][work project]]
 - [ ] review ~org-mode~ workflow
-  - what works, what doesn't ?
-  - is there task / stuck projects ?
+  - *what works, what doesn't ?*
+  - *is there task / stuck projects ?*
+  - *enhancement possible ?*
 - [ ] export previous agenda (somewhere)"))
 
   ;; Olds, most likely to remove
