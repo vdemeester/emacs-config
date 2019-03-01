@@ -60,7 +60,7 @@
         org-outline-path-complete-in-steps nil)
 
   (setq org-refile-targets (append '((org-default-media-file :level . 1)
-                                     (org-default-notes-file :level . 0))
+                                     (org-default-inbox-file :level . 0))
                                    (->>
                                     (directory-files org-default-projects-dir nil ".org")
                                     (-remove-item (file-name-base org-default-media-file))
@@ -97,8 +97,7 @@
                               (:endgroup . nil)
                               )))
   (setq org-agenda-skip-scheduled-if-done t)
-  (setq org-default-notes-file "~/desktop/org/inbox.org")
-
+  
   (defvar org-capture-templates (list))
   (setq org-protocol-default-template-key "l")
 
