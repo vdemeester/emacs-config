@@ -189,7 +189,6 @@ packages.")
 (use-package setup-shells)
 (use-package setup-compile)
 (use-package setup-org)
-(use-package setup-notmuch)
 ;; Programming languages
 (use-package setup-nix)
 (use-package setup-go)
@@ -197,6 +196,9 @@ packages.")
 (use-package setup-web)
 (use-package setup-docker)
 (use-package setup-hydras)
+;; Other software like (mail, irc, …)
+(use-package setup-notmuch)
+(use-package setup-browser)
 
 (use-package command-log-mode
   :bind (("C-c e M" . command-log-mode)
