@@ -13,7 +13,8 @@
    company-require-match nil
    company-dabbrev-ignore-case nil
    company-dabbrev-downcase nil
-   company-show-numbers t)
+   company-show-numbers t
+   company-tooltip-align-annotations t)
   :config
   (bind-keys :map company-active-map
              ("C-d" . company-show-doc-buffer)
@@ -23,7 +24,6 @@
              ("C-t" . company-select-next)
              ("C-s" . company-select-previous)
              ("TAB" . company-complete))
-  
   (setq company-backends
         '((company-css
            company-clang
