@@ -67,7 +67,7 @@ _f_: freevars      ^ ^               _s_: callstack    _e_: whicherrs"
   (add-hook 'go-mode-hook 'go-eldoc-setup))
 
 (use-package company-go
-  :defer 2
+  :after (go-mode company-mode)
   :config
   (setq company-go-show-annotation t)
   (add-hook 'go-mode-hook
