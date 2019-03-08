@@ -90,10 +90,10 @@
   (setq org-tag-alist (quote (("linux") ("nixos") ("emacs") ("org")
                               ("openshift") ("redhat") ("kubernetes") ("knative" ) ("docker")
                               (:startgroup . nil)
-                              ("@home" . ?h) ("@work" . ?w) ("@errand" . ?r) ("@health" . ?l)
+                              ("@home" . ?h) ("@work" . ?w) ("@errand" . ?e) ("@health" . ?l)
                               (:endgroup . nil)
                               (:startgroup . nil)
-                              ("@easy" . ?e) ("@medium" . ?m) ("@hard" . ?a)
+                              ("@link" . ?i) ("@read" . ?r) ("@project" . ?p)
                               (:endgroup . nil)
                               )))
   (setq org-agenda-skip-scheduled-if-done t)
@@ -131,15 +131,21 @@
   (add-to-list 'org-capture-templates
                `("w" "Worklog (journal) entry" entry
                  (file+datetree ,org-default-journal-file)
-                 "* worklog\n%U\n** Yesterday\n%?\n** Today\n** Next (later today, tomorrow)\n"))
+                 "* worklog :@work:log:\n%U\n** Yesterday\n%?\n** Today\n** Next (later today, tomorrow)\n"))
   (add-to-list 'org-capture-templates
-               `("e" "Weekly review" entry
+               `("e" "Weekly review :weekly:review:" entry
                  (file+datetree,org-default-journal-file)
                  "* weekly review\n%U
 
 - [ ] review [[file:../projects/incubate.org][~incubate.org~]]
+  - Is something worth becoming a project
+  - Is something not worth thinking about anymore ?
 - [ ] review [[file:../projects/inbox.org][~inbox.org~]]
+  Clean the file by either
+  - refiling it to ~incubate.org~
+  - removing it / archiving it
 - [ ] review [[file:../projects/media.org][~media.org~]]
+  - Decide what to do with them : share, read, …, using tags (?)
 - [ ] [[https://todoist.com/app][Todoist]]
   - [ ] review [[https://todoist.com/app?lang=en#project%252F173761779][inbox]]
   - [ ] review [[https://todoist.com/app?lang=en#project%252F173761780%252Ffull][personal project]]
