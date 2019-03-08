@@ -177,12 +177,15 @@
 (use-package highlight-numbers
   :hook (prog-mode . highlight-numbers-mode))
 
-(use-package highlight-symbol
+(use-package symbol-overlay
   :defer 4
-  :hook (prog-mode . highlight-symbol-mode)
+  :bind
+  ("M-s h ." . symbol-overlay-put)
+  ("M-s h n" . symbol-overlay-jump-next)
+  ("M-s h p" . symbol-overlay-jump-prev)
+  :hook (prog-mode . symbol-overlay-mode)
   :config
-  (setq highlight-symbole-idle-delay .5)
-  (setq highlight-symbol-on-navigation-p t))
+  (setq symbol-overlay-idle-time 0.2))
 
 (use-package rainbow-delimiters
   :hook (prog-mode . rainbow-delimiters-mode))
