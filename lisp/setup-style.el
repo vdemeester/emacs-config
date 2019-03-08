@@ -129,7 +129,9 @@
                 mode-line-buffer-identification " " mode-line-position
                 (vc-mode vc-mode)
                 (multiple-cursors-mode mc/mode-line)
-                " " mode-line-modes mode-line-end-spaces))
+                " " mode-line-modes
+                (org-mode-line-string org-mode-line-string)
+                mode-line-end-spaces))
 
 (defmacro rename-modeline (package-name mode new-name)
   "Rename PACKAGE-NAME with MODE into NEW-NAME in the mode line."
@@ -157,7 +159,22 @@
   :config
   (setq x-underline-at-descent-line t)
   (moody-replace-mode-line-buffer-identification)
-  (moody-replace-vc-mode))
+  (moody-replace-vc-mode)
+  (moody-replace-org-clock-mode))
+
+;;;; org-mode
+
+(defvar moody-org-clock-mode
+  ;;'(:eval (moody-ribbon (substring vc-mode 1) nil 'up))
+  '(:eval (moody-tab (substring org-mode-line-string 1) nil 'up)))
+(put 'moody-org-clock-mode 'risky-local-variable t)
+(make-variable-buffer-local 'moody-org-clock-mode)
+
+(defun moody-replace-org-clock-mode (&optional reverse)
+  (interactive "P")
+  (moody-replace-element '(org-mode-line-string org-mode-line-string)
+                         '(org-mode-line-string moody-org-clock-mode)
+                         reverse))
 
 (use-package minions                    ; A minor-mode menu for the mode line
   :init (minions-mode)
