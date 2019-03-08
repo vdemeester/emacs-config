@@ -133,6 +133,7 @@
    `(whitespace-line ((t (:background ,bg-highlight-2 :foreground ,fg))))
    `(whitespace-space ((t (:background ,bg :foreground ,fg-slight-dim))))
    `(whitespace-tab ((t (:background ,bg :foreground ,fg-slight-dim))))
+   `(whitespace-indentation ((t (:background ,bg :foreground ,fg-dim))))
 
    ;; org
    `(org-agenda-date ((t (:foreground ,fg :height 1.2))))
