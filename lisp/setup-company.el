@@ -53,11 +53,11 @@
 ;;     :config
 ;;     (push 'company-lsp company-backends)))
 
-(with-eval-after-load "projectile"
-  (defun my-set-projectile-root ()
-    (when lsp--cur-workspace
-      (setq projectile-project-root (lsp--workspace-root lsp--cur-workspace))))
-  (add-hook 'lsp-before-open-hook #'my-set-projectile-root))
+;; (with-eval-after-load "projectile"
+;;   (defun my-set-projectile-root ()
+;;     (when lsp--cur-workspace
+;;       (setq projectile-project-root (lsp--workspace-root lsp--cur-workspace))))
+;;   (add-hook 'lsp-before-open-hook #'my-set-projectile-root))
 
 ;; (use-package lsp-ui
 ;;   :after lsp-mode
