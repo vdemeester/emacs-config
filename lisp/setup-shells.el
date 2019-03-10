@@ -18,7 +18,7 @@
     (fullframe shell vde/pop-window-configuration))
 
   (bind-key "C-c C-q" #'vde/pop-window-configuration shell-mode-map)
-  
+
   (unbind-key "C-c C-l" shell-mode-map)
   (bind-key "C-c C-l" #'counsel-shell-history shell-mode-map)
 
@@ -28,7 +28,7 @@
     (if (null (get-buffer-process (current-buffer)))
         (vde/pop-window-configuration)
       (comint-delchar-or-maybe-eof arg)))
-  
+
   (setq
    ;; Prefer Bash to Fish for compatibility reasons
    explicit-shell-file-name "bash"
@@ -60,8 +60,6 @@ The EShell is renamed to match that directory to make multiple windows easier."
 
   ;; Handy aliases
   (defalias 'ff 'find-file)
-  (defun eshell/l (&rest args) "Same as `ls -lah'"
-         (apply #'eshell/ls "-lah" args))
 
   (defun eshell/d ()
     "Open a dired instance of the current working directory."
@@ -78,7 +76,7 @@ The EShell is renamed to match that directory to make multiple windows easier."
       (eshell/clear-scrollback)
       (eshell-emit-prompt)
       (insert input)))
-  
+
   (defun eshell/extract (file)
     "One universal command to extract FILE (for bz2, gz, rar, etc.)"
     (eshell-command-result (format "%s %s" (cond ((string-match-p ".*\.tar.bz2" file)
@@ -110,12 +108,16 @@ The EShell is renamed to match that directory to make multiple windows easier."
   (add-hook
    'eshell-mode-hook
    (lambda ()
+     (let ((ls (if (executable-find "exa") "exa" "ls")))
+       (eshell/alias "ls" (concat ls " --color=always $*"))
+       (eshell/alias "ll" (concat ls " --color=always -l $*"))
+       (eshell/alias "l" (concat ls " --color=always -lah $*")))
      (eshell-smart-initialize)
      (eshell-dirs-initialize)
      (bind-keys :map eshell-mode-map
                 ("C-c C-l"                . counsel-esh-history)
                 ([remap eshell-pcomplete] . completion-at-point))))
-  
+
   ;; Use system su/sudo
   (with-eval-after-load "em-unix"
     '(progn
