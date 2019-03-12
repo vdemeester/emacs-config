@@ -45,7 +45,8 @@
       (sp-local-pair "`" "'" :when '(sp-in-string-p sp-in-comment-p)))))
 
 (use-package expand-region
-  :bind ("C-=" . er/expand-region))
+  :bind (("C-=" . er/expand-region)
+         ("C--". er/contract-region)))
 
 (use-package iedit
   :defines hydra-iedit/body
