@@ -26,11 +26,13 @@
   ("0" (text-scale-set 0) :bind nil :exit t)
   ("1" (text-scale-set 0) nil :bind nil :exit t))
 
+(defvar hide-mode-line-mode nil)
 (defvar whitespace-mode nil)
 (defhydra hydra-toggle (:color pink :hint nil)
   "
 _a_ abbrev-mode:          %`abbrev-mode
 _d_ debug-on-error:       %`debug-on-error
+_h_ hide-mode-line-mode   %`hide-mode-line-mode
 _f_ auto-fill-mode:       %`auto-fill-function
 _r_ readonly-mode:        %`buffer-read-only
 _t_ truncate-lines        %`truncate-lines
@@ -43,6 +45,7 @@ _V_ visible-mode:         %`visible-mode
   ("a" abbrev-mode             nil)
   ("d" toggle-debug-on-error   nil)
   ("f" auto-fill-mode          nil)
+  ("h" hide-mode-line-mode     nil)
   ("r" dired-toggle-read-only  nil)
   ("t" toggle-truncate-lines   nil)
   ("v" visual-line-mode        nil)

@@ -214,6 +214,9 @@
 (use-package visual-fill-column
   :commands visual-fill-column-mode)
 
+(use-package hide-mode-line-mode
+  :commands hide-mode-line-mode)
+
 (provide 'setup-style)
 
 ;; Local Variables:
