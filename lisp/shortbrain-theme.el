@@ -117,6 +117,7 @@
    `(highlight ((t nil)))
    `(lazy-highlight ((t (:background ,bg-highlight-3 :slant italic))))
    `(hl-line ((t (:inverse-video t))))
+   `(line-number-current-line ((t (:foreground ,fg))))
    `(ido-first-match ((t (:foreground ,fg))))
    `(ido-only-match ((t (:foreground ,fg))))
    `(ido-subdir ((t (:foreground ,fg))))
