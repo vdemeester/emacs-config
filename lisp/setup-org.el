@@ -101,6 +101,10 @@
   (defvar org-capture-templates (list))
   (setq org-protocol-default-template-key "l")
 
+  ;; images
+  (setq org-image-actual-width nil
+        org-startup-with-inline-images t)
+
   ;; Tasks (-> inbox)
   (add-to-list 'org-capture-templates
                `("t" "Task Entry" entry
