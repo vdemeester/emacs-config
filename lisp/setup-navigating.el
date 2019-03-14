@@ -59,6 +59,11 @@
          ("C-c @ d" . hs-hide-block)
          ("C-c @ l" . hs-hide-level)))
 
+(use-package mwim
+  :bind (:map prog-mode-map
+              ("C-a" . mwim-beginning-of-code-or-line)
+              ("C-e" . mwim-end-of-code-or-line)))
+
 (provide 'setup-navigating)
 
 ;; Local Variables:
