@@ -6,7 +6,7 @@
   :chords
   (("''" . "’")
    (",w" . whitespace-mode)
-   (",l" . linum-mode))
+   (",l" . display-line-numbers-mode))
   :custom
   (key-chord-two-keys-delay 0.05)
   :config

@@ -3,9 +3,7 @@
 ;;; Code:
 ;;; -*- lexical-binding: t; -*-
 
-(defhydra hydra-goto-line (goto-map ""
-                                    :pre (linum-mode 1)
-                                    :post (linum-mode -1))
+(defhydra hydra-goto-line (goto-map "")
   "goto-line"
   ("g" goto-line "go")
   ("m" set-mark-command "mark" :bind nil)
