@@ -186,6 +186,11 @@
 
   (setq org-list-demote-modify-bullet
         '(("+" . "-") ("-" . "+")))
+
+  (add-to-list 'ispell-skip-region-alist '(":\\(PROPERTIES\\|LOGBOOK\\):" ":END:"))
+  (add-to-list 'ispell-skip-region-alist '("#\\+BEGIN_SRC" "#\\+END_SRC"))
+  (add-to-list 'ispell-skip-region-alist '("#\\+BEGIN_EXAMPLE" "#\\+END_EXAMPLE"))
+
   ;; org-links
   ;; from http://endlessparentheses.com/use-org-mode-links-for-absolutely-anything.html
   (org-link-set-parameters "tag"
