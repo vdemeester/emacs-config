@@ -46,6 +46,13 @@
         '((sequence "TODO(t)" "NEXT(n)" "STARTED(s)" "|" "DONE(d!)" "CANCELED(c)")
           (sequence "WAITING(w)" "SOMEDAY(s)" "|" "CANCELED(c)")
           (sequence "IDEA(i)" "|" "CANCELED(c)")))
+  (setq org-todo-state-tags-triggers '(
+                                       ("CANCELLED" ("CANCELLED" . t))
+                                       ("WAITING" ("WAITING" . t))
+                                       (done ("WAITING"))
+                                       ("TODO" ("WAITING") ("CANCELLED"))
+                                       ("NEXT" ("WAITING") ("CANCELLED"))
+                                       ("DONE" ("WAITING") ("CANCELLED"))))
   (setq org-blank-before-new-entry '((heading . t)
                                      (plain-list-item . nil)))
 
