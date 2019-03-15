@@ -184,6 +184,8 @@
      (shell . t)
      (typescript . t)))
 
+  (setq org-list-demote-modify-bullet
+        '(("+" . "-") ("-" . "+")))
   ;; org-links
   ;; from http://endlessparentheses.com/use-org-mode-links-for-absolutely-anything.html
   (org-link-set-parameters "tag"
