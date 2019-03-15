@@ -115,7 +115,11 @@
         org-super-agenda-header-separator "")
   (setq org-agenda-custom-commands
         `(("n" "Personal agenda"
-	   ((agenda ""))
+	   ((agenda "")
+            (tags-todo "+TODO=\"NEXT\""
+                       ((org-agenda-overriding-header "Next items")))
+            (tags-todo "oss"
+                       ((org-agenda-overriding-header "Open-source"))))
 	   ((org-super-agenda-groups
 	     '((:name "Important" :priority "A")
 	       (:name "scheduled" :time-grid t)
