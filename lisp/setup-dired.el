@@ -111,10 +111,11 @@
   :init
   (add-hook 'dired-mode-hook #'dired-collapse-mode))
 
-(use-package dired-sidebar
-  :defer 2
-  :bind (("C-M-'" . dired-sidebar-toggle-sidebar))
-  :commands (dired-sidebar-toggle-sidebar))
+(use-package dired-quick-sort
+  :defer 1
+  :after dired
+  :config
+  (dired-quick-sort-setup))
 
 (provide 'setup-dired)
 
