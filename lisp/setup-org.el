@@ -76,6 +76,7 @@
                                     (--map (format "%s/%s" org-default-projects-dir it))
                                     (--map `(,it :level . 1)))))
 
+  (setq org-indirect-buffer-display 'dedicated-frame)
   (setq org-use-speed-commands t)
 
   (setq org-log-done (quote time))
