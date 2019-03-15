@@ -64,7 +64,8 @@
   (setq org-use-property-inheritance t)
 
   (setq org-refile-use-outline-path 'file
-        org-outline-path-complete-in-steps nil)
+        org-outline-path-complete-in-steps nil
+        org-refile-allow-creating-parent-nodes 'confirm)
 
   (setq org-refile-targets (append '((org-default-media-file :level . 1)
                                      (org-default-inbox-file :level . 0))
