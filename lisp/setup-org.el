@@ -105,8 +105,27 @@
                               ("@link" . ?i) ("@read" . ?r) ("@project" . ?p)
                               (:endgroup . nil)
                               )))
-  (setq org-agenda-skip-scheduled-if-done t)
-  
+  (setq org-agenda-skip-scheduled-if-done nil)
+
+  (use-package org-super-agenda
+    :config (org-super-agenda-mode))
+
+  (setq org-agenda-span 'day
+        org-agenda-compact-blocks t
+        org-super-agenda-header-separator "")
+  (setq org-agenda-custom-commands
+        `(("n" "Personal agenda"
+	   ((agenda ""))
+	   ((org-super-agenda-groups
+	     '((:name "Important" :priority "A")
+	       (:name "scheduled" :time-grid t)
+	       (:habit t)
+	       (:name "Work" :tag "@work")
+	       (:name "Perso" :tag "@home")
+	       (:name "Today" :time-grid t))))
+	   (org-agenda-list))))
+
+
   (defvar org-capture-templates (list))
   (setq org-protocol-default-template-key "l")
 
