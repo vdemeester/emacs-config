@@ -10,6 +10,8 @@
           ;; Github goes to firefox, but not gist
           ("http.*\/\/github.com" . browse-url-generic)
           ("http.*\/\/github.io" . browse-url-generic)
+          ("http.*\/\/gitlab.com" . browse-url-generic)
+          ("http.*\/\/gitlab.io" . browse-url-generic)
           ("groups.google.com" . browse-url-generic)
           ("docs.google.com" . browse-url-generic)
           ("melpa.org" . browse-url-generic)
