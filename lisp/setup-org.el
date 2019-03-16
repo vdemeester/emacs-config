@@ -304,6 +304,7 @@ Switch projects and subprojects from STARTED back to TODO"
                  (file+olp "~/src/github.com/vdemeester/blog/content-org/links.org" "Link")
                  "* %a\n%?\n%i"))
 
+  (setq org-ditaa-jar-path "/home/vincent/.nix-profile/lib/ditaa.jar") ;; FIXME(vdemeester) remove /home/vincent
   ;; org-babel
   (org-babel-do-load-languages
    'org-babel-load-languages
