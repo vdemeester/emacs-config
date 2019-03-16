@@ -195,6 +195,9 @@ Callers of this function already widen the buffer view."
             (setq is-subproject t))))
       (and is-a-task is-subproject)))
 
+  ;; Set default column view headings: Task Effort Clock_Summary
+  (setq org-columns-default-format "%80ITEM(Task) %TODO %3PRIORITY %10Effort(Effort){:} %10CLOCKSUM")
+
   (org-clock-persistence-insinuate)
   ;; Show lot of clocking history so it's easy to pick items off the C-F11 list
   (setq org-clock-history-length 23)
