@@ -286,6 +286,7 @@ Switch projects and subprojects from STARTED back to TODO"
   - [ ] review [[https://todoist.com/app?lang=en#project%252F173761779][inbox]]
   - [ ] review [[https://todoist.com/app?lang=en#project%252F173761780%252Ffull][personal project]]
   - [ ] review [[https://todoist.com/app?lang=en#project%252F173761782%252Ffull][work project]]
+- [ ] Review next week ~F12 n w f~
 - [ ] review ~org-mode~ workflow
   - *what works, what doesn't ?*
   - *is there task / stuck projects ?*
