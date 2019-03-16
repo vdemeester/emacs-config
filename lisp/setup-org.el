@@ -122,11 +122,11 @@
                        ((org-agenda-overriding-header "Open-source"))))
 	   ((org-super-agenda-groups
 	     '((:name "Important" :priority "A")
-	       (:name "scheduled" :time-grid t)
-	       (:habit t)
+               (:habit t)
+               (:name "Done" :log closed)
+               (:name "Scheduled" :time-grid t)
 	       (:name "Work" :tag "@work")
-	       (:name "Perso" :tag "@home")
-	       (:name "Today" :time-grid t))))
+	       (:name "Perso" :tag "@home"))))
 	   (org-agenda-list))))
 
 
