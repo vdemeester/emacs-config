@@ -65,6 +65,8 @@
   (setq org-agenda-include-diary t)
   (setq org-use-property-inheritance t)
 
+  (setq org-enforce-todo-dependencies t)
+
   (setq org-refile-use-outline-path 'file
         org-outline-path-complete-in-steps nil
         org-refile-allow-creating-parent-nodes 'confirm)
@@ -95,6 +97,9 @@
   (setq org-ellipsis " …")
 
   (setq org-agenda-window-setup (quote other-frame))
+  (setq org-special-ctrl-a/e t)
+  (setq org-special-ctrl-k t)
+  (setq org-yank-adjusted-subtrees t)
 
   (setcar (nthcdr 4 org-emphasis-regexp-components) 10)
 
@@ -115,6 +120,7 @@
   (setq org-agenda-span 'day
         org-agenda-compact-blocks t
         org-super-agenda-header-separator "")
+  (setq org-agenda-sticky t)
   (setq org-agenda-custom-commands
         `(("n" "Personal agenda"
 	   ((agenda "")
@@ -197,6 +203,9 @@ Callers of this function already widen the buffer view."
 
   ;; Set default column view headings: Task Effort Clock_Summary
   (setq org-columns-default-format "%80ITEM(Task) %TODO %3PRIORITY %10Effort(Effort){:} %10CLOCKSUM")
+
+  (setq org-global-properties (quote (("Effort_ALL" . "0:15 0:30 0:45 1:00 2:00 3:00 4:00 5:00 6:00 0:00")
+                                      ("STYLE_ALL" . "habit"))))
 
   (org-clock-persistence-insinuate)
   ;; Show lot of clocking history so it's easy to pick items off the C-F11 list
@@ -299,14 +308,20 @@ Switch projects and subprojects from STARTED back to TODO"
    'org-babel-load-languages
    '((css . t)
      (dot . t)
+     (ditaa . t)
      (emacs-lisp . t)
      (go . t)
+     (gnuplot . t)
      (http . t)
      (js . t)
+     (ledger . t)
+     (latex . t)
      (python . t)
      (rust . t)
      (shell . t)
      (typescript . t)))
+
+  (setq org-latex-listings t)
 
   (setq org-list-demote-modify-bullet
         '(("+" . "-") ("-" . "+")))
