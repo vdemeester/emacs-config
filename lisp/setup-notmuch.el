@@ -4,7 +4,7 @@
 
 (use-package notmuch
   :defer t
-  :bind ("<f10>" . notmuch)
+  :bind ("<f6>" . notmuch)
   :config
   (setq notmuch-search-oldest-first nil
 	mail-user-agent 'message-user-agent
