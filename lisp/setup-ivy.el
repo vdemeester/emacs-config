@@ -5,7 +5,8 @@
 
 (use-package ivy
   :bind (:map vde-mode-map
-              ("C-x b" . ivy-switch-buffer)
+              ("C-x b" . vde/switch-buffer)
+              ("C-x B" . ivy-switch-buffer)
               ("M-u" . ivy-resume)    ;Override the default binding for `upcase-word'
               ("C-c C-w p" . ivy-push-view) ;Push window configuration to `ivy-views'
               ("C-c C-w P" . ivy-pop-view)  ;Remove window configuration from `ivy-views'
@@ -16,6 +17,16 @@
     (bind-to-vde-map "v" #'counsel-set-variable))
   :config
   (progn
+    (defun vde/switch-buffer (arg)
+      "Custom switch to buffer.
+With universal argument ARG or when not in project, rely on
+`ivy-switch-buffer'.
+Otherwise, use `counsel-projectile-switch-project'."
+      (interactive "P")
+      (if (or arg
+              (not (projectile-project-p)))
+          (ivy-switch-buffer)
+        (counsel-projectile-switch-to-buffer)))
     ;; Disable ido
     (with-eval-after-load 'ido
       (ido-mode -1)
