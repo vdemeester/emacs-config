@@ -45,9 +45,9 @@
   (setq org-modules
         '(org-habit org-info org-docview org-protocol org-man org-git-link org-notmuch))
   (setq org-todo-keywords
-        '((sequence "TODO(t)" "NEXT(n)" "STARTED(s)" "|" "DONE(d!)" "CANCELED(c)")
-          (sequence "WAITING(w)" "SOMEDAY(s)" "|" "CANCELED(c)")
-          (sequence "IDEA(i)" "|" "CANCELED(c)")))
+        '((sequence "TODO(t)" "NEXT(n)" "STARTED(s)" "|" "DONE(d!)" "CANCELED(c@/!)")
+          (sequence "WAITING(w@/!)" "SOMEDAY(s)" "|" "CANCELED(c@/!)")
+          (sequence "IDEA(i)" "|" "CANCELED(c@/!)")))
   (setq org-todo-state-tags-triggers '(
                                        ("CANCELLED" ("CANCELLED" . t))
                                        ("WAITING" ("WAITING" . t))
