@@ -428,6 +428,7 @@ like this : [[pt:REGEXP:FOLDER]]"
   (setq show-trailing-whitespace t)
   (when (not (eq major-mode 'org-agenda-mode))
     (setq fill-column 90)
+    (auto-revert-mode)
     (auto-fill-mode)
     (flyspell-mode)
     (org-indent-mode)
