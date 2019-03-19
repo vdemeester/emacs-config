@@ -24,6 +24,7 @@
           ("apache\.org\/jira" . browse-url-generic)
           ("thepoachedegg\.net" . browse-url-generic)
           ("zoom.us" . browse-url-generic)
+          ("blujeans.com" . browse-url-generic)
           ("t.co" . browse-url-generic)
           ("twitter.com" . browse-url-generic)
           ("\/\/a.co" . browse-url-generic)
