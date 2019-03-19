@@ -157,7 +157,6 @@
   `("--no-ignore-vcs"                   ;Ignore files/dirs ONLY from `.ignore'
     "--line-number"                     ;Line numbers
     "--smart-case"
-    "--follow"                 ;Follow symlinks
     "--max-columns" "150"      ;Emacs doesn't handle long line lengths very well
     "--ignore-file" ,(expand-file-name ".ignore" (getenv "HOME")))
   "Default rg arguments used in the functions in `counsel' and `projectile'
