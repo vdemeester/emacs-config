@@ -29,6 +29,7 @@
 (defhydra hydra-toggle (:color pink :hint nil)
   "
 _a_ abbrev-mode:          %`abbrev-mode
+_b_ subword-mode:         %`subword-mode
 _d_ debug-on-error:       %`debug-on-error
 _h_ hide-mode-line-mode   %`hide-mode-line-mode
 _f_ auto-fill-mode:       %`auto-fill-function
@@ -41,6 +42,7 @@ _y_ flycheck              %`flycheck-display-errors-function
 _V_ visible-mode:         %`visible-mode
 "
   ("a" abbrev-mode             nil)
+  ("b" subword-mode            nil)
   ("d" toggle-debug-on-error   nil)
   ("f" auto-fill-mode          nil)
   ("h" hide-mode-line-mode     nil)
