@@ -24,6 +24,14 @@
   ("0" (text-scale-set 0) :bind nil :exit t)
   ("1" (text-scale-set 0) nil :bind nil :exit t))
 
+;; Better shrink/enlarge windows
+(defhydra hydra-resize (global-map "<f2>")
+  "resize windows"
+  ("<up>" enlarge-window "enlarge")
+  ("<down>" shrink-window "shrink")
+  ("<left>" shrink-window-horizontally "shrink horizontaly")
+  ("<right>" enlarge-window-horizontally "enlarge horizontaly"))
+
 (defvar hide-mode-line-mode nil)
 (defvar whitespace-mode nil)
 (defhydra hydra-toggle (:color pink :hint nil)

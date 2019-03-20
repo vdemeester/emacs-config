@@ -8,13 +8,6 @@
 (use-package fullframe                 ; Generalized execution in a single frame
   :defer 2)
 
-;; Better shrink/enlarge windows
-(bind-keys*
- ("M-S-<up>"    . enlarge-window)
- ("M-S-<down>"  . shrink-window)
- ("M-S-<left>"  . shrink-window-horizontally)
- ("M-S-<right>" . enlarge-window-horizontally))
-
 ;;;###autoload
 (defun vde/window-split-toggle ()
   "Toggle between horizontal and vertical split with two windows."
