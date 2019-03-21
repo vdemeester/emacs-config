@@ -34,6 +34,7 @@
 
 (defvar hide-mode-line-mode nil)
 (defvar whitespace-mode nil)
+(defvar subword-mode nil)
 (defhydra hydra-toggle (:color pink :hint nil)
   "
 _a_ abbrev-mode:          %`abbrev-mode
