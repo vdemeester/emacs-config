@@ -3,6 +3,8 @@
 ;;; Code:
 ;;; -*- lexical-binding: t; -*-
 
+;;; ¯\_(ツ)_/¯
+
 ;;; Fonts used:
 ;;; - Iosevka (https://github.com/be5invis/Iosevka)
 ;;; - Fira Sans (https://github.com/mozilla/Fira/)
@@ -10,6 +12,16 @@
 (cond
  ((string= (system-name) "hokkaido")
   (setq font-height 100)))
+
+;; Middle/Near East: שלום, السّلام عليكم
+(when (member "Noto Sans Arabic" (font-family-list))
+  (set-fontset-font t 'arabic "Noto Sans Arabic"))
+(when (member "Noto Sans Hebrew" (font-family-list))
+  (set-fontset-font t 'arabic "Noto Sans Hebrew"))
+
+;; Africa: ሠላም
+(when (member "Noto Sans Ethiopic" (font-family-list))
+  (set-fontset-font t 'ethiopic "Noto Sans Ethiopic"))
 
 (set-face-attribute 'default nil
 		    :family "Fira Code" ; "Overpass Mono" to try someday
