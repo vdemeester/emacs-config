@@ -135,8 +135,12 @@
 	   ((agenda "")
             (tags-todo "+TODO=\"NEXT\""
                        ((org-agenda-overriding-header "Next items")))
-            (tags-todo "oss"
-                       ((org-agenda-overriding-header "Open-source"))))
+            (tags-todo "@work-goals"
+                       ((org-agenda-skip-function '(org-agenda-skip-if nil '(scheduled deadline)))
+                        (org-agenda-overriding-header "Work")))
+            (tags-todo "@home-goals"
+                       ((org-agenda-skip-function '(org-agenda-skip-if nil '(scheduled deadline)))
+                        (org-agenda-overriding-header "Home"))))
 	   ((org-super-agenda-groups
 	     '((:name "Important" :priority "A")
                (:habit t)
