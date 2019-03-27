@@ -15,6 +15,7 @@
   :init
   (progn
     (bind-to-vde-map "v" #'counsel-set-variable))
+  (ivy-mode 1)
   :config
   (progn
     (defun vde/switch-buffer (arg)
