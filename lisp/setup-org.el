@@ -282,9 +282,9 @@ Switch projects and subprojects from STARTED back to TODO"
                  (file+datetree ,org-default-journal-file)
                  "* worklog :@work:log:\n%U\n** Yesterday\n%?\n** Today\n** Next (later today, tomorrow)\n"))
   (add-to-list 'org-capture-templates
-               `("e" "Weekly review :weekly:review:" entry
+               `("e" "Weekly review" entry
                  (file+datetree,org-default-journal-file)
-                 "* weekly review\n%U
+                 "* weekly review :weekly:review:\n%U
 
 - [ ] review [[file:../projects/incubate.org][~incubate.org~]]
   - Is something worth becoming a project
