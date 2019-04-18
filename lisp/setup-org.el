@@ -15,6 +15,11 @@
 (defvar org-default-media-file (concat org-directory "projects/media.org") "Links to other things to check out.")
 (defvar org-default-journal-file (concat org-directory "personal/journal.org") "Journaling stuff.")
 
+(set-register ?i `(file . ,org-default-inbox-file))
+(set-register ?I `(file . ,org-default-incubate-file))
+(set-register ?j `(file . ,org-default-journal-file))
+(set-register ?m `(file . ,org-default-media-file))
+
 (defvar org-default-publish-technical (concat site-directory "sbr.pm/technical"))
 
 ;; Use `org-mode' instead of `lisp-interaction-mode' for scratch buffer
