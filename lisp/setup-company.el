@@ -25,47 +25,55 @@
              ("C-s" . company-select-previous)
              ("TAB" . company-complete))
   (setq company-backends
-        '((company-css
-           company-clang
-           company-capf
-           company-semantic
-           company-xcode
-           company-cmake
-           company-files
-           company-gtags
-           company-etags
-           company-keywords))))
+        '(company-css
+          company-clang
+          company-capf
+          company-semantic
+          company-xcode
+          company-cmake
+          company-files
+          company-gtags
+          company-etags
+          company-keywords)))
 
 (use-package company-emoji
   :ensure company
   :config
   (add-to-list 'company-backends 'company-emoji))
 
-;; (use-package lsp-mode
-;;   :config
-;;   (with-eval-after-load "flycheck"
-;;     (require 'lsp-flycheck)
-;;     (add-to-list 'flycheck-checkers 'lsp)))
+(use-package lsp-mode
+  :config (require 'lsp-clients)
+  ;; (with-eval-after-load "flycheck"
+  ;;   (require 'lsp-flycheck)
+  ;;   (add-to-list 'flycheck-checkers 'lsp))
+  )
 
-;; (with-eval-after-load "company"
-;;   (use-package company-lsp
-;;     :after lsp-mode
-;;     :config
-;;     (push 'company-lsp company-backends)))
+(with-eval-after-load "company"
+  (use-package company-lsp
+    :after lsp-mode
+    :config
+    (push 'company-lsp company-backends)))
 
-;; (with-eval-after-load "projectile"
-;;   (defun my-set-projectile-root ()
-;;     (when lsp--cur-workspace
-;;       (setq projectile-project-root (lsp--workspace-root lsp--cur-workspace))))
-;;   (add-hook 'lsp-before-open-hook #'my-set-projectile-root))
+(with-eval-after-load "projectile"
+  (defun my-set-projectile-root ()
+    (when lsp--cur-workspace
+      (setq projectile-project-root (lsp--workspace-root lsp--cur-workspace))))
+  (add-hook 'lsp-before-open-hook #'my-set-projectile-root))
 
-;; (use-package lsp-ui
-;;   :after lsp-mode
-;;   :hook ((lsp-mode . lsp-ui-mode) 
-;;          (lsp-ui-mode . lsp-ui-peek-mode))
-;;   :config
-;;   (define-key lsp-ui-mode-map [remap xref-find-definitions] #'lsp-ui-peek-find-definitions)
-;;   (define-key lsp-ui-mode-map [remap xref-find-references] #'lsp-ui-peek-find-references))
+;; lsp-ui: This contains all the higher level UI modules of lsp-mode, like flycheck support and code lenses.
+;; https://github.com/emacs-lsp/lsp-ui
+(use-package lsp-ui
+  :after lsp-mode
+  :hook ((lsp-mode . lsp-ui-mode) 
+         (lsp-ui-mode . lsp-ui-peek-mode))
+  :config
+  (define-key lsp-ui-mode-map [remap xref-find-definitions] #'lsp-ui-peek-find-definitions)
+  (define-key lsp-ui-mode-map [remap xref-find-references] #'lsp-ui-peek-find-references)
+  (setq lsp-ui-sideline-enable nil
+        lsp-ui-doc-enable nil
+        lsp-ui-flycheck-enable t
+        lsp-ui-imenu-enable t
+        lsp-ui-sideline-ignore-duplicate t))
 
 (provide 'setup-company)
 

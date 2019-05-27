@@ -25,6 +25,10 @@
     ("ir" go-remove-unused-imports)
     ("q" nil "quit" :color blue))
   :config
+  (use-package company-go
+    :config
+    (setq company-go-show-annotation t)
+    (push 'company-go company-backends))
   (setq gofmt-command "goimports")
   (if (not (executable-find "goimports"))
       (warn "go-mode: couldn't find goimports; no code formatting/fixed imports on save")
@@ -65,15 +69,6 @@ _f_: freevars      ^ ^               _s_: callstack    _e_: whicherrs"
   :defer 2
   :config
   (add-hook 'go-mode-hook 'go-eldoc-setup))
-
-(use-package company-go
-  :after (go-mode company-mode)
-  :config
-  (setq company-go-show-annotation t)
-  (add-hook 'go-mode-hook
-	    (lambda ()
-	      (set (make-local-variable 'company-backends) '(company-go))
-	      (company-mode))))
 
 (use-package gotest
   :defer 2
