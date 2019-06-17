@@ -222,16 +222,23 @@ The EShell is renamed to match that directory to make multiple windows easier."
 
 (use-package xterm-color
   :init
+  (setq comint-output-filter-functions
+        (remove 'ansi-color-process-output comint-output-filter-functions))
+  (add-hook 'shell-mode-hook
+            (lambda ()
+              ;; Disable font-locking in this buffer to improve performance
+              (font-lock-mode -1)
+              ;; Prevent font-locking from being re-enabled in this buffer
+              (make-local-variable 'font-lock-function)
+              (setq font-lock-function (lambda (_) nil))
+              (add-hook 'comint-preoutput-filter-functions 'xterm-color-filter nil t)))
   (add-hook 'eshell-before-prompt-hook
             (lambda ()
               (setenv "TERM" "xterm-256color")
               (setq xterm-color-preserve-properties t)))
-
   (add-to-list 'eshell-preoutput-filter-functions 'xterm-color-filter)
   (setq eshell-output-filter-functions (remove 'eshell-handle-ansi-color eshell-output-filter-functions))
-  
   (setq compilation-environment '("TERM=xterm-256color"))
-
   (add-hook 'compilation-start-hook
             (lambda (proc)
               ;; We need to differentiate between compilation-mode buffers
