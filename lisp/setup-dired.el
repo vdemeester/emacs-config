@@ -19,6 +19,9 @@
               ("<next>"      . beginend-dired-mode-goto-end))
 
   :config
+  (when (string= system-type "darwin")
+    (setq dired-use-ls-dired t
+          insert-directory-program "/usr/local/bin/gls"))
   (setq
    dired-auto-revert-buffer t           ; Revert buffers on revisiting
    dired-listing-switches "-lFaGh1v --group-directories-first"
