@@ -50,8 +50,15 @@
                      " ")))
   (add-hook 'markdown-mode-hook #'auto-fill-mode))
 
+(use-package highlight-indentation
+  :config
+  (set-face-background 'highlight-indentation-face "#e3e3d3")
+  (set-face-background 'highlight-indentation-current-column-face "#c3b3b3"))
+
 (use-package yaml-mode
-  :mode "\\.ya?ml\\'")
+  :mode "\\.ya?ml\\'"
+  :hook ((yaml-mode . highlight-indentation-mode)
+         (yaml-mode . highlight-indentation-current-column-mode)))
 
 (use-package toml-mode
   :mode "\\.to?ml\\'")
