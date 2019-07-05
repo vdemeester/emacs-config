@@ -291,13 +291,13 @@ Switch projects and subprojects from STARTED back to TODO"
                  (file+datetree,org-default-journal-file)
                  "* weekly review :weekly:review:\n%U
 
-- [ ] review [[file:../projects/incubate.org][~incubate.org~]]
-  - Is something worth becoming a project
-  - Is something not worth thinking about anymore ?
 - [ ] review [[file:../projects/inbox.org][~inbox.org~]]
   Clean the file by either
   - refiling it to ~incubate.org~
   - removing it / archiving it
+- [ ] review [[file:../projects/incubate.org][~incubate.org~]]
+  - Is something worth becoming a project
+  - Is something not worth thinking about anymore ?
 - [ ] review [[file:../projects/media.org][~media.org~]]
   - Decide what to do with them : share, read, …, using tags (?)
 - [ ] [[https://todoist.com/app][Todoist]]
