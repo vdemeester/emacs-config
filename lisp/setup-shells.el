@@ -31,9 +31,9 @@
 
   (setq
    ;; Prefer Bash to Fish for compatibility reasons
-   explicit-shell-file-name "bash"
+   explicit-shell-file-name "zsh"
    ;; Fix find-dired
-   shell-file-name "bash")
+   shell-file-name "zsh")
   (add-hook 'shell-mode-hook
             (lambda ()
               (bind-key "C-d" #'vde/comint-delchar-or-eof-or-kill-buffer
