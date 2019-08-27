@@ -3,6 +3,7 @@
 ;;; Code:
 ;;; -*- lexical-binding: t; -*-
 
+(setq enable-remote-dir-locals t)
 (use-package aggressive-indent          ; Automatically indent code
   :bind ("C-c e i" . aggressive-indent-mode)
   :hook ((lisp-mode       . aggressive-indent-mode)
