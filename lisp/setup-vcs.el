@@ -54,16 +54,10 @@
   (add-hook 'after-save-hook #'magit-after-save-refresh-status)
 
   ;; Free C-c C-w for Eyebrowse
-  (unbind-key "C-c C-w" git-commit-mode-map)
+  (unbind-key "C-c C-w" git-commit-mode-map)  )
 
-  (defun mu-magit-kill-buffers ()
-    "Restore window configuration and kill all Magit buffers."
-    (interactive)
-    (let ((buffers (magit-mode-get-buffers)))
-      (magit-restore-window-configuration)
-      (mapc #'kill-buffer buffers)))
-
-  (bind-key "q" #'mu-magit-kill-buffers magit-status-mode-map))
+(use-package forge
+  :after magit)
 
 (use-package magit-gitflow              ; gitflow extension for Magit
   :after magit
