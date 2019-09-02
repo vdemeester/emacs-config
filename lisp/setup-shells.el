@@ -4,21 +4,10 @@
 ;;; -*- lexical-binding: t; -*-
 
 (use-package shell                 ; Specialized comint.el for running the shell
-  :bind (("<f1>"      . vde/shell-open)
+  :bind (("<f1>"      . shell)
          (:map shell-mode-map
                ("<tab>" . completion-at-point)))
   :config
-  (defun vde/shell-open ()
-    "Save window configuration and call `shell'."
-    (interactive)
-    (vde/save-wins-then-call 'shell))
-
-  ;; Use a single full frame for shell
-  (with-eval-after-load 'shell
-    (fullframe shell vde/pop-window-configuration))
-
-  (bind-key "C-c C-q" #'vde/pop-window-configuration shell-mode-map)
-
   (unbind-key "C-c C-l" shell-mode-map)
   (bind-key "C-c C-l" #'counsel-shell-history shell-mode-map)
 
