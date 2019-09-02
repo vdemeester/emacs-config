@@ -300,6 +300,9 @@ Switch projects and subprojects from STARTED back to TODO"
   - Is something not worth thinking about anymore ?
 - [ ] review [[file:../projects/media.org][~media.org~]]
   - Decide what to do with them : share, read, …, using tags (?)
+- [ ] empty mail inbox (and create task if needed)
+  - [ ] work
+  - [ ] perso
 - [ ] [[https://todoist.com/app][Todoist]]
   - [ ] review [[https://todoist.com/app?lang=en#project%252F173761779][inbox]]
   - [ ] review [[https://todoist.com/app?lang=en#project%252F173761780%252Ffull][personal project]]
