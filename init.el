@@ -196,8 +196,8 @@ packages.")
 (use-package setup-docker)
 (use-package setup-hydras)
 ;; Other software like (mail, irc, …)
-(use-package setup-notmuch)
-(use-package setup-elfeed)
+;; (use-package setup-notmuch)
+;; (use-package setup-elfeed)
 (use-package setup-browser)
 
 (use-package command-log-mode
