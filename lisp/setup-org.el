@@ -514,12 +514,6 @@ like this : [[pt:REGEXP:FOLDER]]"
   :config
   (org-notify-start))
 
-(use-package org-todoist
-  :after (org)
-  :bind (("C-c o t s" . org-todoist-sync))
-  :config
-  (setq org-todoist-file (concat org-directory "projects/todoist.org")))
-
 (use-package org-capture-pop-frame)
 
 (provide 'setup-org)
