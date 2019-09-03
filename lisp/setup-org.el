@@ -509,12 +509,6 @@ like this : [[pt:REGEXP:FOLDER]]"
   :config
   (use-package ox-hugo-auto-export))
 
-(use-package org-bullets
-  :after (org)
-  :hook (org-mode . org-bullets-mode)
-  :config
-  (setq org-bullets-bullet-list '("◉" "○" "⚫")))
-
 (use-package org-notify
   :after org
   :config
