@@ -84,6 +84,12 @@
 (use-package gitattributes-mode         ; Git attributes mode
   :defer 2)
 
+(use-package dired-git-info
+  :bind (:map dired-mode-map
+              (")" . dired-git-info-mode))
+  :defer 2)
+
+
 (provide 'setup-vcs)
 
 ;; Local Variables:
