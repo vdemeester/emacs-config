@@ -3,6 +3,13 @@
 ;;; Code:
 ;;; -*- lexical-binding: t; -*-
 
+(use-package swiper
+  :after ivy
+  :bind (:map swiper-map
+              ("M-y" . yank)
+              ("C-." . swiper-avy)
+              ("M-c" . swiper-mc)))
+
 (use-package ivy
   :bind (:map vde-mode-map
               ("C-x b" . vde/switch-buffer)
