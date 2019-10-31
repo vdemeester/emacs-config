@@ -67,34 +67,11 @@
 ;;; Theme
 (setq custom-safe-themes t)    ; Treat themes as safe
 
-(use-package shortbrain-theme
-  ;; :load-path "shortbrain-theme.el"
+(use-package doom-themes
   :config
-  (load-theme 'shortbrain t)
-  (defvar my:theme 'shortbrain)
-  (defvar my:theme-window-loaded nil)
-  (defvar my:theme-terminal-loaded nil)
-
-  (if (daemonp)
-      (add-hook 'after-make-frame-functions(lambda (frame)
-                                             (select-frame frame)
-                                             (if (window-system frame)
-                                                 (unless my:theme-window-loaded
-                                                   (if my:theme-terminal-loaded
-                                                       (enable-theme my:theme)
-                                                     (load-theme my:theme t))
-                                                   (setq my:theme-window-loaded t))
-                                               (unless my:theme-terminal-loaded
-                                                 (if my:theme-window-loaded
-                                                     (enable-theme my:theme)
-                                                   (load-theme my:theme t))
-                                                 (setq my:theme-terminal-loaded t)))))
-
-    (progn
-      (load-theme my:theme t)
-      (if (display-graphic-p)
-          (setq my:theme-window-loaded t)
-        (setq my:theme-terminal-loaded t)))))
+  (load-theme 'doom-one t)
+  (doom-themes-visual-bell-config)
+  (doom-themes-org-config))
 
 (use-package solaire-mode
   :config
