@@ -26,7 +26,19 @@
       (unless (or (derived-mode-p 'grep-mode) ;Don't mess up colors in Grep/Ag results buffers
                   (derived-mode-p 'ag-mode))
         (ansi-color-apply-on-region compilation-filter-start (point))))
-    (add-hook 'compilation-filter-hook #'vde/colorize-compilation-buffer)))
+    (add-hook 'compilation-filter-hook #'vde/colorize-compilation-buffer)
+    
+    (defun vde/mark-compilation-window-as-dedicated ()
+      "Setup the *compilation* window with custom settings."
+      (when (string-prefix-p "*compilation: " (buffer-name))
+        (save-selected-window
+          (save-excursion
+            (let* ((w (get-buffer-window (buffer-name))))
+              (when w
+                (select-window w)
+                (switch-to-buffer (buffer-name))
+                (set-window-dedicated-p w t)))))))
+    (add-hook 'compilation-mode-hook 'vde/mark-compilation-window-as-dedicated)))
 
 (use-package flycheck
   :if (not (eq system-type 'windows-nt))
