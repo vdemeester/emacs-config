@@ -118,7 +118,8 @@
   (setcar (nthcdr 4 org-emphasis-regexp-components) 10)
 
   (setq org-tag-alist (quote (("linux") ("nixos") ("emacs") ("org")
-                              ("openshift") ("redhat") ("kubernetes") ("knative" ) ("docker")
+                              ("openshift") ("redhat") ("tektoncd") ("kubernetes") ("knative" ) ("docker")
+                              ("docs") ("code") ("review")
                               (:startgroup . nil)
                               ("@home" . ?h) ("@work" . ?w) ("@errand" . ?e) ("@health" . ?l)
                               (:endgroup . nil)
@@ -298,15 +299,9 @@ Switch projects and subprojects from STARTED back to TODO"
 - [ ] review [[file:../projects/incubate.org][~incubate.org~]]
   - Is something worth becoming a project
   - Is something not worth thinking about anymore ?
-- [ ] review [[file:../projects/media.org][~media.org~]]
-  - Decide what to do with them : share, read, …, using tags (?)
 - [ ] empty mail inbox (and create task if needed)
   - [ ] work
   - [ ] perso
-- [ ] [[https://todoist.com/app][Todoist]]
-  - [ ] review [[https://todoist.com/app?lang=en#project%252F173761779][inbox]]
-  - [ ] review [[https://todoist.com/app?lang=en#project%252F173761780%252Ffull][personal project]]
-  - [ ] review [[https://todoist.com/app?lang=en#project%252F173761782%252Ffull][work project]]
 - [ ] Review next week ~F12 n w f~
 - [ ] review ~org-mode~ workflow
   - *what works, what doesn't ?*
