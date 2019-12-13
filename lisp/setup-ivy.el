@@ -65,7 +65,6 @@ Otherwise, use `counsel-projectile-switch-project'."
                           ivy-rich-switch-buffer-align-virtual-buffer t
                           ivy-rich-path-style 'abbrev)
   :config (ivy-rich-mode 1))
-
 (use-package counsel
   :bind (:map vde-mode-map
               ("M-i" . counsel-semantic-or-imenu)
@@ -116,6 +115,7 @@ Otherwise, use `counsel-projectile-switch-project'."
     ;; Show parent directory in the prompt
     (ivy-set-prompt 'counsel-ag #'counsel-prompt-function-dir)
 
+    (push '(counsel-rg . "--glob '**' -- ") ivy-initial-inputs-alist)
     ;; counsel-rg
     ;; Redefine `counsel-rg-base-command' with my required options, especially
     ;; the `--follow' option to allow search through symbolic links (part of
@@ -137,3 +137,4 @@ Otherwise, use `counsel-projectile-switch-project'."
 ;; coding: utf-8
 ;; indent-tabs-mode: nil
 ;; End:
+
