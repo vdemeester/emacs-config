@@ -57,15 +57,6 @@
 (use-package forge
   :after magit)
 
-(use-package magit-gitflow              ; gitflow extension for Magit
-  :after magit
-  :config
-  ;; Free C-f and use a more suitable key binding
-  (unbind-key "C-f" magit-gitflow-mode-map)
-  (bind-key "C-c v f" #'magit-gitflow-popup magit-gitflow-mode-map)
-
-  (add-hook 'magit-mode-hook 'turn-on-magit-gitflow))
-
 (use-package git-commit                 ; Git commit message mode
   :defer 2
   :init (global-git-commit-mode)
