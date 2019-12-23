@@ -13,25 +13,6 @@
            ("jk" . avy-goto-word-or-subword-1)
            ("jl" . avy-goto-line)))
 
-(use-package bm
-  :bind (("C-c b b" . bm-toggle)
-         ("C-c b n" . bm-next)
-         ("C-c b p" . bm-previous))
-  :commands (bm-repository-load
-             bm-buffer-save
-             bm-buffer-save-all
-             bm-buffer-restore)
-  :init
-  (add-hook 'after-init-hook 'bm-repository-load)
-  (add-hook 'find-file-hooks 'bm-buffer-restore)
-  (add-hook 'after-revert-hook #'bm-buffer-restore)
-  (add-hook 'kill-buffer-hook #'bm-buffer-save)
-  (add-hook 'after-save-hook #'bm-buffer-save)
-  (add-hook 'vc-before-checkin-hook #'bm-buffer-save)
-  (add-hook 'kill-emacs-hook #'(lambda nil
-                                 (bm-buffer-save-all)
-                                 (bm-repository-save))))
-
 (use-package helpful
   :bind (("C-c h F" . helpful-function)
          ("C-c h C" . helpful-command)
