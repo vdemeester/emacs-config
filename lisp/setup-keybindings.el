@@ -2,16 +2,6 @@
 ;;; Commentary:
 ;;; Code:
 
-(use-package key-chord
-  :chords
-  (("''" . "’")
-   (",w" . whitespace-mode)
-   (",l" . display-line-numbers-mode))
-  :custom
-  (key-chord-two-keys-delay 0.05)
-  :config
-  (key-chord-mode 1))
-
 (use-package which-key
   :init (which-key-mode)
   :config

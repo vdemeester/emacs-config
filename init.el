@@ -81,7 +81,6 @@
 
 (use-package dash) ; A modern list library
 
-(use-package use-package-chords :ensure t :pin melpa)
 (use-package use-package-ensure-system-package :ensure t :pin melpa)
 
 (require 'subr-x)

@@ -18,7 +18,6 @@
               ("C-c C-w p" . ivy-push-view) ;Push window configuration to `ivy-views'
               ("C-c C-w P" . ivy-pop-view)  ;Remove window configuration from `ivy-views'
               ("C-c C-w s" . ivy-switch-view)) ; Switch window configuration to `ivy-views'
-  :chords ((",b" . ivy-switch-buffer))
   :init
   (progn
     (bind-to-vde-map "v" #'counsel-set-variable))
@@ -82,7 +81,6 @@ Otherwise, use `counsel-projectile-switch-project'."
 	      ([remap finder-by-keyword] . counsel-package) ;C-h p
 	      ([remap describe-variable] . counsel-describe-variable)
 	      ([remap describe-function] . counsel-describe-function))
-  :chords ((",f" . counsel-find-file))
   :init
   (progn
     (bind-to-vde-map "s" #'counsel-rg))

@@ -5,9 +5,6 @@
 
 (use-package projectile                 ; Project management
   :init (projectile-mode)
-  :chords (("pf" . projectile-find-file)
-           ("pb" . projectile-switch-to-buffer)
-           ("pv" . projectile-vc))
   :bind-keymap ("C-c p" . projectile-command-map)
   :config
   ;; Remove dead projects when Emacs is idle
@@ -32,7 +29,6 @@
   :bind (:map projectile-command-map
               ("p" . counsel-projectile-switch-project)
               ("r" . counsel-projectile-rg))
-  :chords (("pg" . counsel-projectile-rg))
   :init (counsel-projectile-mode))
 
 (provide 'setup-projectile)

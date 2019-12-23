@@ -8,10 +8,7 @@
          ("C-c n b" . avy-pop-mark)
          ("C-c n j" . avy-goto-char-2)
          ("C-c n t" . avy-goto-char-timer)
-         ("C-c n w" . avy-goto-word-1)) 
-  :chords (("jj" . avy-goto-char-timer)
-           ("jk" . avy-goto-word-or-subword-1)
-           ("jl" . avy-goto-line)))
+         ("C-c n w" . avy-goto-word-1)))
 
 (use-package helpful
   :bind (("C-c h F" . helpful-function)
@@ -21,10 +18,10 @@
          ("C-c h S" . helpful-at-point)
          ("C-c h V" . helpful-variable)))
 
-(use-package smart-jump
-  :bind ("M-." . smart-jump-go)
-  :config
-  (smart-jump-setup-default-registers))
+;; (use-package smart-jump
+;;   :bind ("M-." . smart-jump-go)
+;;   :config
+;;   (smart-jump-setup-default-registers))
 
 (use-package winner
   :unless noninteractive
