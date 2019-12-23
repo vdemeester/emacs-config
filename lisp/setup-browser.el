@@ -40,11 +40,6 @@
   (define-key eww-mode-map "o" 'eww)
   (define-key eww-mode-map "O" 'eww-browse-with-external-browser))
 
-(use-package ace-link
-  :defer t
-  :config
-  (ace-link-setup-default))
-
 (provide 'setup-browser)
 ;;; setup-browser.el ends here
 
