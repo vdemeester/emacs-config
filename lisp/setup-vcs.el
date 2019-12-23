@@ -23,8 +23,6 @@
    magit-save-repository-buffers 'dontask
    magit-refs-show-commit-count 'all
    magit-branch-prefer-remote-upstream '("master")
-   ;; magit-branch-adjust-remote-upstream-alist '(("origin/master" "master"))
-   ;; magit-display-buffer-function #'magit-display-buffer-fullframe-status-v1
    magit-display-buffer-function #'magit-display-buffer-traditional
    magit-completing-read-function 'ivy-completing-read
    )

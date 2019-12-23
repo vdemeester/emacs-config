@@ -103,10 +103,6 @@
     (interactive)
     (vde/save-wins-then-call 'ibuffer))
 
-  ;; Use a single full frame for ibuffer
-  (with-eval-after-load 'ibuffer
-    (fullframe ibuffer vde/pop-window-configuration))
-  
   ;; Use human readable Size column instead of original one
   (define-ibuffer-column size-h
     (:name "Size" :inline t)

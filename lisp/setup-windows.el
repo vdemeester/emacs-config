@@ -5,9 +5,6 @@
 
 (setq window-combination-resize t) ; Size new windows proportionally
 
-(use-package fullframe                 ; Generalized execution in a single frame
-  :defer 2)
-
 ;;;###autoload
 (defun vde/window-split-toggle ()
   "Toggle between horizontal and vertical split with two windows."
