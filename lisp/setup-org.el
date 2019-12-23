@@ -332,7 +332,7 @@ Switch projects and subprojects from STARTED back to TODO"
      (gnuplot . t)
      (http . t)
      (js . t)
-     (ledger . t)
+     ;;(ledger . t)
      (latex . t)
      (python . t)
      (rust . t)
@@ -441,18 +441,6 @@ like this : [[pt:REGEXP:FOLDER]]"
     (org-indent-mode)
     (smartparens-mode)))
 
-;; (use-package orca
-;;   :after (org)
-;;   :config
-;;   (setq orca-handler-list
-;;         '(;; (orca-handler-match-url "http://stackoverflow.com/" "~/Dropbox/org/wiki/stack.org" "Questions")
-;;           ;; (orca-handler-match-url "https://www.reddit.com/" "~/Dropbox/org/wiki/emacs.org" "Reddit")
-;;           ;; (orca-handler-match-url "https://emacs.stackexchange.com/" "~/Dropbox/org/wiki/emacs.org" "\\* Questions")
-;;           ;; (orca-handler-current-buffer "\\* Tasks")
-;;           ;; (orca-handler-file "~/Dropbox/org/ent.org" "\\* Articles")
-;;           ;; (orfu-handle-link-youtube)
-;;           (vde/handle-link-github))))
-
 (defcustom orfu-github-project-name
   "https://github\\.com/\\([^/]+\\)"
   "Regex for Github repository projects."
@@ -473,13 +461,9 @@ like this : [[pt:REGEXP:FOLDER]]"
 
 (use-package ob-go
   :after (org))
-(use-package ob-rust
-  :after (org))
 (use-package ob-async
   :after (org))
 (use-package ob-http
-  :after (org))
-(use-package ob-typescript
   :after (org))
 
 (use-package org-crypt
