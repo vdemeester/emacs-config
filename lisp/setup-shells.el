@@ -185,14 +185,6 @@ The EShell is renamed to match that directory to make multiple windows easier."
   :when (executable-find "fish")
   :config (add-hook 'eshell-mode-hook #'fish-completion-mode))
 
-(use-package fish-mode                  ; Handle Fish shell scripts
-  :mode ("\\.fish\\'" . fish-mode)
-  :config
-  ;; Run fish_indent before save
-  (add-hook 'fish-mode-hook
-            (lambda ()
-              (add-hook 'before-save-hook 'fish_indent-before-save))))
-
 (use-package eshell-prompt-extras
   :defer 1
   :init
@@ -203,11 +195,6 @@ The EShell is renamed to match that directory to make multiple windows easier."
 (use-package esh-autosuggest
   :defer 1
   :hook (eshell-mode . esh-autosuggest-mode))
-
-(use-package eshell-bookmark
-  :config
-  (add-hook 'eshell-mode-hook 'eshell-bookmark-setup))
-
 
 (use-package xterm-color
   :init
