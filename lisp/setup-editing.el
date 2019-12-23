@@ -64,9 +64,6 @@
     ("C-n" iedit-next-occurrence "next")
     ("C-g" iedit-quit "toggle" :color blue)))
 
-(use-package string-edit
-  :bind ("C-c C-'" . string-edit-at-point))
-
 (use-package visual-regexp
   :bind (("C-c r"   . vr/replace)
          ("C-c %"   . vr/query-replace)
