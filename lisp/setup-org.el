@@ -335,9 +335,10 @@ Switch projects and subprojects from STARTED back to TODO"
      ;;(ledger . t)
      (latex . t)
      (python . t)
-     (rust . t)
+     ;;(rust . t)
      (shell . t)
-     (typescript . t)))
+     ;;(typescript . t)
+     ))
 
   (setq org-latex-listings t)
 

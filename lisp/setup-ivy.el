@@ -86,10 +86,6 @@ Otherwise, use `counsel-projectile-switch-project'."
     (bind-to-vde-map "s" #'counsel-rg))
   :config
   (progn
-    (define-key minibuffer-local-map
-      (kbd "C-r") 'counsel-minibuffer-history)
-    (define-key shell-mode-map
-      (kbd "C-r") 'counsel-shell-history)
     (setq
      counsel-describe-function-function 'helpful-function
      counsel-describe-variable-function 'helpful-variable)

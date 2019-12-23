@@ -29,10 +29,6 @@
                         shell-mode-map)))
   )
 
-(use-package shx                        ; Enhance comint-mode
-  :defer 2
-  :init (shx-global-mode 1))
-
 (use-package eshell                     ; Emacs command shell
   :bind* ("C-x m t" . eshell-here)
   :config

@@ -171,7 +171,6 @@ packages.")
 
 (use-package setup-style)
 (use-package setup-keybindings)
-(use-package setup-fold)
 (use-package setup-ivy)
 (use-package setup-vcs)
 (use-package setup-dired)
@@ -190,13 +189,9 @@ packages.")
 ;; Programming languages
 (use-package setup-nix)
 (use-package setup-go)
-(use-package setup-rust)
 (use-package setup-web)
 (use-package setup-docker)
 (use-package setup-hydras)
-;; Other software like (mail, irc, …)
-;; (use-package setup-notmuch)
-;; (use-package setup-elfeed)
 (use-package setup-browser)
 
 (use-package command-log-mode
