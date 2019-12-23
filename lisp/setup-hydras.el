@@ -61,12 +61,6 @@ _V_ visible-mode:         %`visible-mode
   ("V" visible-mode            nil)
   ("w" whitespace-mode         nil)
   ("s" smartparens-strict-mode nil)
-  ("y" (lambda ()
-         (interactive)
-         (if (equal flycheck-display-errors-function #'flycheck-pos-tip-error-messages)
-             (setq flycheck-display-errors-function #'flycheck-display-error-messages)
-           (setq flycheck-display-errors-function #'flycheck-pos-tip-error-messages)))
-   nil)
   ("q" nil "quit"))
 
 (global-set-key (kbd "C-c C-v") 'hydra-toggle/body)
