@@ -85,12 +85,12 @@
   :bind (:map yas-keymap
               ("C-i" . yas-next-field-or-maybe-expand))
   :mode ("/\\.emacs\\.d/etc/yasnippet/snippets/" . snippet-mode)
+  :hook (go-mode . yas-minor-mode)
   :config
-  (yas-load-directory (emacs-path "etc/yasnippet/snippets"))
+  (yas-load-directory (concat user-emacs-directory "etc/yasnippet/snippets"))
   (yas-global-mode 1)
   :init
-  (add-hook 'term-mode-hook (lambda ()
-                              (yas-minor-mode -1))))
+  (add-hook 'term-mode-hook (lambda () (yas-minor-mode -1))))
 
 (use-package hs-minor-mode
   :hook ((prog-mode . hs-minor-mode)))

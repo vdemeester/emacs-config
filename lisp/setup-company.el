@@ -42,11 +42,16 @@
   (add-to-list 'company-backends 'company-emoji))
 
 (use-package lsp-mode
-  :config (require 'lsp-clients)
-  ;; (with-eval-after-load "flycheck"
-  ;;   (require 'lsp-flycheck)
-  ;;   (add-to-list 'flycheck-checkers 'lsp))
-  )
+  :ensure t
+  :commands (lsp lsp-deferred)
+  :hook (go-mode . lsp-deferred))
+
+;;Set up before-save hooks to format buffer and add/delete imports.
+;;Make sure you don't have other gofmt/goimports hooks enabled.
+(defun lsp-go-install-save-hooks ()
+  (add-hook 'before-save-hook #'lsp-format-buffer t t)
+  (add-hook 'before-save-hook #'lsp-organize-imports t t))
+(add-hook 'go-mode-hook #'lsp-go-install-save-hooks)
 
 (with-eval-after-load "company"
   (use-package company-lsp
@@ -69,7 +74,7 @@
   :config
   (define-key lsp-ui-mode-map [remap xref-find-definitions] #'lsp-ui-peek-find-definitions)
   (define-key lsp-ui-mode-map [remap xref-find-references] #'lsp-ui-peek-find-references)
-  (setq lsp-ui-sideline-enable nil
+  (setq lsp-ui-sideline-enable t
         lsp-ui-doc-enable nil
         lsp-ui-flycheck-enable t
         lsp-ui-imenu-enable t

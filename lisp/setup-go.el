@@ -6,24 +6,6 @@
 (use-package go-mode
   :mode "\\.go$"
   :interpreter "go"
-  :bind (:map go-mode-map
-	      ("C-," . 'hydra-go/body))
-  :init
-  (defhydra hydra-go (:hint nil :color teal)
-    "
-         ^Command^      ^Imports^       ^Doc^
-         ^-------^      ^-------^       ^---^
-      _r_: run      _ig_: goto       _d_: doc at point
-    [_g_]: guru     _ia_: add
-    ^  ^            _ir_: remove
-    "
-    ("g" 'hydra-go-guru/body :color blue)
-    ("r" go-run-main)
-    ("d" godoc-at-point)
-    ("ig" go-goto-imports )
-    ("ia" go-import-add)
-    ("ir" go-remove-unused-imports)
-    ("q" nil "quit" :color blue))
   :config
   (use-package company-go
     :config
