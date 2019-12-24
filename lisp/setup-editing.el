@@ -134,6 +134,32 @@ Else toggle the comment status of the line at point."
          ("M-;" . comment-indent)
          ("C-x C-;" . comment-box)))
 
+(use-package flyspell
+  :init
+  (setq flyspell-issue-message-flag nil)
+  (setq flyspell-issue-welcome-flag nil)
+  (setq ispell-program-name "hunspell")
+  (setq ispell-local-dictionary "en_GB")
+  (setq ispell-local-dictionary-alist
+        '(("en_GB"
+           "[[:alpha:]]"
+           "[^[:alpha:]]"
+           "[']"
+           nil
+           ("-d" "en_GB,fr_FR")
+           nil
+           utf-8)))
+  :config
+  (define-key flyspell-mode-map (kbd "C-;") nil)
+  :hook
+  (text-mode . turn-on-flyspell)
+  (prog-mode . turn-off-flyspell))
+
+(use-package flyspell-correct-ivy
+  :after flyspell
+  :bind (:map flyspell-mode-map
+              ([remap flyspell-correct-word-before-point] . flyspell-correct-previous-word-generic)))
+
 (provide 'setup-editing)
 
 ;; Local Variables:
