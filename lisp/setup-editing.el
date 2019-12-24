@@ -107,6 +107,33 @@
           'display-line-numbers-mode)
 (add-hook 'prog-mode-hook 'toggle-truncate-lines)
 
+(use-package newcomment
+  :custom
+  (comment-empty-lines t)
+  (comment-fill-column nil)
+  (comment-multi-line t)
+  (comment-style 'multi-line)
+  :config
+  (defun prot/comment-dwim (&optional arg)
+    "Alternative to `comment-dwim': offers a simple wrapper
+around `comment-line' and `comment-dwim'.
+
+If the region is active, then toggle the comment status of the
+region or, if the major mode defines as much, of all the lines
+implied by the region boundaries.
+
+Else toggle the comment status of the line at point."
+    (interactive "*P")
+    (if (use-region-p)
+        (comment-dwim arg)
+      (save-excursion
+        (comment-line arg))))
+
+  :bind (("C-;" . prot/comment-dwim)
+         ("C-:" . comment-kill)
+         ("M-;" . comment-indent)
+         ("C-x C-;" . comment-box)))
+
 (provide 'setup-editing)
 
 ;; Local Variables:
