@@ -4,6 +4,10 @@
 ;;; -*- lexical-binding: t; -*-
 
 (use-package shell                 ; Specialized comint.el for running the shell
+  :custom
+                                        ;(ansi-color-for-comint-mode 'filter)
+  (explicit-shell-file-name "zsh")
+  (shell-file-name "zsh")
   :bind (("<f1>"      . shell)
          (:map shell-mode-map
                ("<tab>" . completion-at-point)))
@@ -18,11 +22,6 @@
         (vde/pop-window-configuration)
       (comint-delchar-or-maybe-eof arg)))
 
-  (setq
-   ;; Prefer Bash to Fish for compatibility reasons
-   explicit-shell-file-name "zsh"
-   ;; Fix find-dired
-   shell-file-name "zsh")
   (add-hook 'shell-mode-hook
             (lambda ()
               (bind-key "C-d" #'vde/comint-delchar-or-eof-or-kill-buffer
@@ -53,14 +52,6 @@ The EShell is renamed to match that directory to make multiple windows easier."
   (defun eshell/gs (&rest args)
     (magit-status (pop args) nil)
     (eshell/echo))                      ; The echo command suppresses output
-
-  (defun eshell/clear ()
-    "Clear `eshell' buffer, comint-style."
-    (interactive)
-    (let ((input (eshell-get-old-input)))
-      (eshell/clear-scrollback)
-      (eshell-emit-prompt)
-      (insert input)))
 
   (defun eshell/extract (file)
     "One universal command to extract FILE (for bz2, gz, rar, etc.)"
@@ -119,9 +110,7 @@ The EShell is renamed to match that directory to make multiple windows easier."
     (interactive "p")
     (if (and (eolp) (looking-back eshell-prompt-regexp nil nil))
         (progn
-          (eshell-life-is-too-much)
-          (ignore-errors
-            (delete-window)))
+          (eshell-life-is-too-much))
       (delete-char arg)))
 
   (add-hook 'eshell-mode-hook
