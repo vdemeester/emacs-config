@@ -59,10 +59,22 @@
 (setq line-number-display-limit-width 10000)
 
 ;; Turn off mouse interface early in startup to avoid momentary display
-(when (fboundp 'menu-bar-mode) (menu-bar-mode -1))
-(when (fboundp 'tool-bar-mode) (tool-bar-mode -1))
-(when (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
-(when (fboundp 'horizontal-scroll-bar-mode) (horizontal-scroll-bar-mode -1))
+(use-package emacs
+  :custom
+  (use-file-dialog nil)
+  (use-dialog-box nil)
+  (inhibit-splash-screen t)
+  :config
+  (menu-bar-mode -1)
+  (tool-bar-mode -1)
+  (scroll-bar-mode -1)
+  (horizontal-scroll-bar-mode -1)
+  (line-number-mode 1)
+  (column-number-mode 1)
+  (global-hl-line-mode 1)
+  (global-unset-key (kbd "C-z"))
+  (global-unset-key (kbd "C-x C-z"))
+  (global-unset-key (kbd "C-h h")))
 
 ;;; Theme
 (setq custom-safe-themes t)    ; Treat themes as safe
@@ -81,9 +93,6 @@
   (add-hook 'minibuffer-setup-hook #'solaire-mode-in-minibuffer)
   (add-hook 'ediff-prepare-buffer-hook #'solaire-mode)
   (advice-add #'persp-load-state-from-file :after #'solaire-mode-restore-persp-mode-buffers))
-
-(line-number-mode)
-(column-number-mode)
 
 ;; Show buffer position percentage starting from top
 (setq mode-line-percent-position '(-3 "%o"))
@@ -128,13 +137,6 @@
      '(defadvice ,mode (after rename-modeline activate)
         (setq mode-name ,new-name))))
 
-(rename-modeline "js2-mode" js2-mode "JS2")
-
-(line-number-mode 1)
-(column-number-mode 1)
-
-(global-hl-line-mode 1)
-
 (defun generic-term-init ()
   (visual-line-mode -1)
   (setq-local global-hl-line-mode nil)
@@ -157,8 +159,7 @@
   :config
   (setq
    minions-mode-line-lighter "λ="
-   minions-direct '(flycheck-mode
-                    cider-mode)))
+   minions-direct '(flycheck-mode)))
 
 (setq-default indicate-buffer-boundaries 'left)
 (setq-default indicate-empty-lines +1)
