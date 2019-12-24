@@ -2,6 +2,26 @@
 ;;; Commentary:
 ;;; Code:
 
+(use-package shr
+  :commands (eww
+             eww-browse-url)
+  :custom
+  (browse-url-browser-function 'eww-browse-url)
+  (shr-use-fonts nil)
+  (shr-use-colors nil)
+  (shr-max-image-proportion 0.2)
+  (shr-width (current-fill-column)))
+
+(use-package shr-tag-pre-highlight
+  :after shr
+  :config
+  (add-to-list 'shr-external-rendering-functions
+               '(pre . shr-tag-pre-highlight))
+  (when (version< emacs-version "26")
+    (with-eval-after-load 'eww
+      (advice-add 'eww-display-html :around
+                  'eww-display-html--override-shr-external-rendering-functions))))
+
 (use-package eww
   :defer t
   :init
