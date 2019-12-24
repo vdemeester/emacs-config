@@ -277,13 +277,18 @@ repository, then the corresponding root is used instead."
           company-etags
           company-keywords)))
 
+(use-package company-prescient
+  :ensure company
+  :after (company prescient)
+  :config
+  (company-prescient-mode 1))
+
 (use-package company-emoji
   :ensure company
   :config
   (add-to-list 'company-backends 'company-emoji))
 
 (use-package lsp-mode
-  :ensure t
   :commands (lsp lsp-deferred)
   :custom
   (lsp-gopls-staticcheck t)
