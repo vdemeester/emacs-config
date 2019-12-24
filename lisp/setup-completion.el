@@ -238,9 +238,8 @@ repository, then the corresponding root is used instead."
      (t . 10)))
   (ivy-posframe-display-functions-alist
    '((complete-symbol . ivy-posframe-display-at-point)
-     (swiper . nil)
-     (swiper-isearch . nil)
-     (t . ivy-posframe-display-at-frame-center)))
+     ;;(t . ivy-posframe-display-at-frame-center)
+     (counsel-M-x . ivy-posframe-display-at-frame-bottom-left)))
   :config
   (ivy-posframe-mode 1))
 
