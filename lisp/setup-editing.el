@@ -100,10 +100,6 @@
   (global-set-key [remap kill-ring-save] 'easy-kill)
   (global-set-key [remap mark-sexp] 'easy-mark))
 
-(use-package scratch
-  :commands (scratch)
-  :bind (("C-c t s" . scratch)))
-
 (use-package define-word)
 
 (setq display-line-numbers-type 'relative)
