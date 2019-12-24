@@ -194,20 +194,6 @@ packages.")
 (use-package setup-hydras)
 (use-package setup-browser)
 
-(use-package command-log-mode
-  :bind (("C-c e M" . command-log-mode)
-         ("C-c e L" . clm/open-command-log-buffer)))
-
-(eval-and-compile
-  (define-inline emacs-path (path)
-    (expand-file-name path user-emacs-directory)))
-
-;; Local Variables:
-;; coding: utf-8
-;; indent-tabs-mode: nil
-;; End:
-;;; Finalization
-
 (let ((elapsed (float-time (time-subtract (current-time)
                                           emacs-start-time))))
   (message "Loading %s...done (%.3fs)" load-file-name elapsed))
@@ -223,4 +209,9 @@ packages.")
 (put 'narrow-to-page 'disabled nil)
 (put 'narrow-to-region 'disabled nil)
 
+;; Local Variables:
+;; coding: utf-8
+;; indent-tabs-mode: nil
+;; End:
+;;; Finalization
 ;;; init.el ends here
