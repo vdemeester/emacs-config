@@ -72,12 +72,11 @@
    ("." nil (reusable-frames . visible))))
 
 (use-package uniquify                   ; Unique buffer names
-  :config
-  (setq
-   uniquify-buffer-name-style 'post-forward
-   uniquify-separator ":"
-   ;; Ignore special buffers
-   uniquify-ignore-buffers-re "^\\*"))
+  :custom
+  (uniquify-buffer-name-style 'post-forward)
+  (uniquify-separator ":")
+  (uniquify-ignore-buffers-re "^\\*")
+  (uniquify-after-kill-buffer-p t))
 
 (use-package ibuf-ext                   ; Extensions for Ibuffer
   :config
@@ -85,20 +84,14 @@
   (setq ibuffer-show-empty-filter-groups nil))
 
 (use-package ibuffer                    ; Buffer management
-  :bind (("C-x C-b" . vde/ibuffer-open)
-         ([remap list-buffers] . ibuffer)
-         :map ibuffer-mode-map
-         ("q" . vde/pop-window-configuration)) 
+  :custom
+  (ibuffer-expert t)
+  (ibuffer-filter-group-name-face 'font-lock-doc-face)
+  (ibuffer-default-sorting-mode 'filename/process)
+  (ibuffer-use-header-line t)
+  :bind (("C-x C-b" . ibuffer)
+         ([remap list-buffers] . ibuffer))
   :config
-  (setq
-   ibuffer-expert t              ; Do not prompt when on kill buffers operations
-   ibuffer-filter-group-name-face 'font-lock-doc-face)
-
-  (defun vde/ibuffer-open ()
-    "Save window configuration and call `ibuffer'."
-    (interactive)
-    (vde/save-wins-then-call 'ibuffer))
-
   ;; Use human readable Size column instead of original one
   (define-ibuffer-column size-h
     (:name "Size" :inline t)
