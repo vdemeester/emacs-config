@@ -16,18 +16,14 @@
 ;; Show the minibuffer depth (when larger than 1)
 (minibuffer-depth-indicate-mode 1)
 
-(setq
- ;; Never use dialogs for minibuffer input
- use-dialog-box nil
- ;; Store more history
- history-length 1000)
-
 (use-package savehist                   ; Save minibuffer history
   :init (savehist-mode t)
+  :custom
+  (history-length 1000)
+  (savehist-save-minibuffer-history t)
+  (savehist-autosave-interval 180)
   :config
-  (setq
-   savehist-save-minibuffer-history t
-   savehist-autosave-interval 180))
+  (savehist-mode 1))
 
 ;; Configure `display-buffer' behaviour for some special buffers
 (setq
