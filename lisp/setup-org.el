@@ -442,23 +442,36 @@ like this : [[pt:REGEXP:FOLDER]]"
     (org-indent-mode)
     (smartparens-mode)))
 
-(defcustom orfu-github-project-name
-  "https://github\\.com/\\([^/]+\\)"
-  "Regex for Github repository projects."
-  :type 'string)
+(use-package org-id
+  :after org
+  :custom
+  (org-id-link-to-org-use-id 'create-if-interactive-and-no-custom-id)
+  :config
+  (defun eos/org-custom-id-get (&optional pom create prefix)
+    "Get the CUSTOM_ID property of the entry at point-or-marker POM.
+   If POM is nil, refer to the entry at point. If the entry does
+   not have an CUSTOM_ID, the function returns nil. However, when
+   CREATE is non nil, create a CUSTOM_ID if none is present
+   already. PREFIX will be passed through to `org-id-new'. In any
+   case, the CUSTOM_ID of the entry is returned."
+    (interactive)
+    (org-with-point-at pom
+      (let ((id (org-entry-get nil "CUSTOM_ID")))
+        (cond
+         ((and id (stringp id) (string-match "\\S-" id))
+          id)
+         (create
+          (setq id (org-id-new (concat prefix "h")))
+          (org-entry-put pom "CUSTOM_ID" id)
+          (org-id-add-location id (buffer-file-name (buffer-base-buffer)))
+          id)))))
 
-(defun orfu-handle-link-github ()
-  (let ((link (caar org-stored-links))
-        (title (cl-cadar org-stored-links)))
-    (when (string-match orfu-github-project-name link)
-      (let ((project-name (match-string 1 link))
-            (parts (split-string title "·")))
-        (setf (cl-cadar org-stored-links)
-              (concat (car parts)
-                      (substring (cadr parts) 7)))
-        (find-file (orfu-expand "wiki/github.org"))
-        (goto-char (point-min))
-        (re-search-forward (concat "^\\*+ +" project-name) nil t)))))
+  (defun eos/org-add-ids-to-headlines-in-file ()
+    "Add CUSTOM_ID properties to all headlines in the
+   current file which do not already have one."
+    (interactive)
+    (org-map-entries (lambda ()
+                       (eos/org-custom-id-get (point) 'create)))))
 
 (use-package ob-go
   :after (org))
