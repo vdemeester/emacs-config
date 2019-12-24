@@ -110,11 +110,11 @@
   (setq org-insert-heading-respect-content t)
   (setq org-ellipsis " …")
 
-  (setq org-agenda-window-setup (quote other-frame))
+  (setq org-agenda-window-setup (quote current-window))
   (setq org-special-ctrl-a/e t)
   (setq org-special-ctrl-k t)
   (setq org-yank-adjusted-subtrees t)
-
+  
   (setcar (nthcdr 4 org-emphasis-regexp-components) 10)
 
   (setq org-tag-alist (quote (("linux") ("nixos") ("emacs") ("org")
