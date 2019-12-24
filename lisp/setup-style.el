@@ -53,17 +53,13 @@
   (unbind-key "C-x C-z")
   :config (add-to-list 'initial-frame-alist '(fullscreen . maximized)))
 
-(setq echo-keystrokes 0.1)     ; Faster echo keystrokes
-
-;; Avoid showing ?? in the mode line when we have long lines.
-(setq line-number-display-limit-width 10000)
-
-;; Turn off mouse interface early in startup to avoid momentary display
 (use-package emacs
   :custom
   (use-file-dialog nil)
   (use-dialog-box nil)
   (inhibit-splash-screen t)
+  (echo-keystrokes 0.1) ; Faster echo keystrokes
+  (line-number-display-limit-width 10000) ;; Avoid showing ?? in the mode line when we have long lines.
   :config
   (menu-bar-mode -1)
   (tool-bar-mode -1)
@@ -151,8 +147,6 @@
   (setq x-underline-at-descent-line t)
   (moody-replace-mode-line-buffer-identification)
   (moody-replace-vc-mode))
-
-;;;; org-mode
 
 (use-package minions                    ; A minor-mode menu for the mode line
   :init (minions-mode)
