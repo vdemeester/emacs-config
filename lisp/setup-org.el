@@ -509,6 +509,45 @@ like this : [[pt:REGEXP:FOLDER]]"
 
 (use-package org-capture-pop-frame)
 
+(use-package darkroom
+  :custom
+  (darkroom-text-scale-increase 2))
+(use-package org-tree-slide
+  :after (org darkroom)
+  :custom
+  (org-tree-slide-breadcrumbs nil)
+  (org-tree-slide-header nil)
+  (org-tree-slide-slide-in-effect nil)
+  (org-tree-slide-heading-emphasis nil)
+  (org-tree-slide-cursor-init t)
+  (org-tree-slide-modeline-display nil)
+  (org-tree-slide-skip-done nil)
+  (org-tree-slide-skip-comments t)
+  (org-tree-slide-fold-subtrees-skipped t)
+  (org-tree-slide-skip-outline-level 8)
+  (org-tree-slide-never-touch-face t)
+  :config
+  (defun prot/org-presentation ()
+    "Specifies conditions that should apply locally upon
+activation of `org-tree-slide-mode'."
+    (if (eq darkroom-tentative-mode nil)
+        (progn
+          (darkroom-tentative-mode 1)
+          (org-bullets-mode 1)
+          (org-indent-mode 1)
+          (set-frame-font "Hack-14" t t)
+          (setq cursor-type '(bar . 1)))
+      (darkroom-tentative-mode -1)
+      (org-bullets-mode -1)
+      (org-indent-mode -1)
+      (prot/fonts-per-monitor)
+      (setq cursor-type 'box)))
+  :bind (("<f9>" . org-tree-slide-mode)
+         :map org-tree-slide-mode-map
+         ("<C-right>" . org-tree-slide-move-next-tree)
+         ("<C-left>" . org-tree-slide-move-previous-tree))
+  :hook (org-tree-slide-mode . prot/org-presentation))
+
 (provide 'setup-org)
 ;;; setup-org.el ends here
 
