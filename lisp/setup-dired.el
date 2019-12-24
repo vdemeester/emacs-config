@@ -5,30 +5,31 @@
 
 (use-package dired
   :defer t
+  :custom
+  (dired-auto-revert-buffer t)
+  (dired-recursive-copies 'always)
+  (dired-recursive-deletes 'always)
+  (dired-isearch-filenames 'dwim)
+  (delete-by-moving-to-trash t)
+  (dired-listing-switches "-lFaGh1v --group-directories-first")
+  (dired-ls-F-marks-symlinks t)
+  (dired-dwim-target t)
   :bind (("<C-return>" . vde/open-in-external-app)
          ("C-c f g"    . vde/dired-get-size)
-         ("C-c f f"    . find-name-dired))
-  :bind (:map dired-mode-map
-              ("M-p"         . vde/dired-up)
-              ("^"           . vde/dired-up)
-              ("<backspace>" . vde/dired-up)
-              ("M-n"         . vde/dired-down)
-              ("RET"         . find-file-reuse-dir-buffer)
-              ("!"           . vde/sudired)
-              ("<prior>"     . beginend-dired-mode-goto-beginning)
-              ("<next>"      . beginend-dired-mode-goto-end))
-
+         ("C-c f f"    . find-name-dired)
+         (:map dired-mode-map
+               ("M-p"         . vde/dired-up)
+               ("^"           . vde/dired-up)
+               ("<backspace>" . vde/dired-up)
+               ("M-n"         . vde/dired-down)
+               ("RET"         . find-file-reuse-dir-buffer)
+               ("!"           . vde/sudired)
+               ("<prior>"     . beginend-dired-mode-goto-beginning)
+               ("<next>"      . beginend-dired-mode-goto-end)))
   :config
   (when (string= system-type "darwin")
     (setq dired-use-ls-dired t
           insert-directory-program "/usr/local/bin/gls"))
-  (setq
-   dired-auto-revert-buffer t           ; Revert buffers on revisiting
-   dired-listing-switches "-lFaGh1v --group-directories-first"
-   dired-dwim-target t                  ; Use other pane as target
-   dired-recursive-copies 'always       ; Copy dirs recursively
-   dired-recursive-deletes ' always     ; Delete dirs recursively
-   dired-ls-F-marks-symlinks t)         ; -F marks links with @
 
   ;; Enable dired-find-alternate-file
   (put 'dired-find-alternate-file 'disabled nil)
@@ -86,18 +87,22 @@
            (re-search-backward "\\(^[0-9.,]+[A-Za-z]+\\).*total$")
            (match-string 1)))))))
 
+(use-package find-dired
+  :after dired
+  :custom
+  (find-ls-option ;; applies to `find-name-dired'
+   '("-ls" . "-AFhlv --group-directories-first"))
+  (find-name-arg "-iname"))
+
 (use-package dired-x                    ; Enable some nice Dired features
   :bind ("C-x C-j" . dired-jump)
+  :custom
+  (dired-omit-verbose nil)
+  (dired-clean-confirm-killing-deleted-buffers nil)
+  :hook
+  (dired-mode . dired-omit-mode)
   :config
-  (setq
-   ;; Be less verbose, Dired
-   dired-omit-verbose nil
-   ;; Do not ask for confirmation when killing deleted buffers
-   dired-clean-confirm-killing-deleted-buffers nil
-   ;; Omit dotfiles with C-x M-o
-   dired-omit-files (concat dired-omit-files "\\|^\\.+$\\|^\\..+$"))
-
-  (add-hook 'dired-mode-hook #'dired-omit-mode))
+  (setq dired-omit-files (concat dired-omit-files "\\|^\\.+$\\|^\\..+$")))
 
 (use-package dired-aux                  ; Other Dired customizations
   :after dired
@@ -119,6 +124,35 @@
   :after dired
   :config
   (dired-quick-sort-setup))
+
+(use-package async)
+
+(use-package dired-async
+  :after (dired async)
+  :config
+  (dired-async-mode 1))
+
+(use-package dired-narrow
+  :after dired
+  :custom
+  (dired-narrow-exit-when-one-left t)
+  (dired-narrow-enable-blinking t)
+  (dired-narrow-blink-time 0.3)
+  :bind (:map dired-mode-map
+              ("M-s n" . dired-narrow)))
+
+(use-package wdired
+  :after dired
+  :commands (wdired-mode
+             wdired-change-to-wdired-mode)
+  :custom
+  (wdired-allow-to-change-permissions t)
+  (wdired-create-parent-directories t))
+
+(use-package dired-rsync
+  :ensure t
+  :bind (:map dired-mode-map
+              ("r" . dired-rsync)))
 
 (provide 'setup-dired)
 
