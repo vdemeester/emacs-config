@@ -160,6 +160,34 @@ Else toggle the comment status of the line at point."
   :bind (:map flyspell-mode-map
               ([remap flyspell-correct-word-before-point] . flyspell-correct-previous-word-generic)))
 
+(use-package electric
+  :custom
+  (electric-pair-inhibit-predicate 'electric-pair-default-inhibit)
+  (electric-pair-pairs '((8216 . 8217)
+                         (8220 . 8221)
+                         (171 . 187)))
+  (electric-pair-skip-self 'electric-pair-default-skip-self)
+  (electric-quote-context-sensitive t)
+  (electric-quote-paragraph t)
+  (electric-quote-string nil)
+  :config
+  (electric-indent-mode 1)
+  (electric-pair-mode 1)
+  (electric-quote-mode -1))
+
+(use-package emacs
+  :init
+  (setq-default tab-always-indent 'complete)
+  (setq-default tab-width 4)
+  (setq-default indent-tabs-mode nil))
+
+(use-package emacs
+  :hook (before-save . delete-trailing-whitespace))
+
+(use-package delsel
+  :config
+  (delete-selection-mode 1))
+
 (provide 'setup-editing)
 
 ;; Local Variables:
