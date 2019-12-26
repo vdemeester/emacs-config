@@ -248,6 +248,16 @@ instead.  This command can then be followed by the standard
   :commands goto-last-change
   :bind ("C-z" . goto-last-change))
 
+(use-package pdf-tools
+  :pin manual
+  :mode  ("\\.pdf\\'" . pdf-view-mode)
+  :config
+  (setq-default pdf-view-display-size 'fit-page)
+  (setq pdf-annot-activate-created-annotations t)
+  (setq pdf-view-midnight-colors '("#ffffff" . "#000000"))
+  (pdf-tools-install :no-query)
+  (require 'pdf-occur))
+
 (provide 'setup-editing)
 
 ;; Local Variables:
