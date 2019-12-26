@@ -243,6 +243,11 @@ instead.  This command can then be followed by the standard
          ("<C-f2>" . crux-rename-file-and-buffer)
          :map dired-mode-map
          ("<M-return>" . crux-open-with)))
+
+(use-package goto-last-change
+  :commands goto-last-change
+  :bind ("C-z" . goto-last-change))
+
 (provide 'setup-editing)
 
 ;; Local Variables:
