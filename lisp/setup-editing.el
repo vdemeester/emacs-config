@@ -194,6 +194,55 @@ Else toggle the comment status of the line at point."
   (set-mark-command-repeat-pop t)
   :bind ("M-z" . zap-up-to-char))
 
+(use-package emacs
+  :config
+  (defun prot/new-line-below ()
+    "Create a new line below the current one.  Move the point to
+the absolute beginning.  Also see `prot/new-line-above'."
+    (interactive)
+    (end-of-line)
+    (newline))
+
+  (defun prot/new-line-above ()
+    "Create a new line above the current one.  Move the point to
+the absolute beginning.  Also see `prot/new-line-below'."
+    (interactive)
+    (beginning-of-line)
+    (newline)
+    (forward-line -1))
+
+  (defun prot/yank-replace-line-or-region ()
+    "Replace the line at point with the contents of the last
+stretch of killed text.  If the region is active, operate over it
+instead.  This command can then be followed by the standard
+`yank-pop' (default is bound to M-y)."
+    (interactive)
+    (if (use-region-p)
+        (progn
+          (delete-region (region-beginning) (region-end))
+          (yank))
+      (progn
+        (delete-region (point-at-bol) (point-at-eol))
+        (yank))))
+
+  :bind (("C-S-SPC" . contrib/mark-whole-word)
+         ("<C-return>" . prot/new-line-below)
+         ("<C-S-return>" . prot/new-line-above)
+         ("M-SPC" . cycle-spacing)
+         ("M-o" . delete-blank-lines)
+         ("<f6>" . tear-off-window)
+         ("C-S-y" . prot/yank-replace-line-or-region)))
+
+(use-package crux
+  :commands (crux-transpose-windows
+             crux-duplicate-current-line-or-region
+             crux-rename-file-and-buffer
+             crux-open-with)
+  :bind (("C-c w S" . crux-transpose-windows)
+         ("C-c d" . crux-duplicate-current-line-or-region)
+         ("<C-f2>" . crux-rename-file-and-buffer)
+         :map dired-mode-map
+         ("<M-return>" . crux-open-with)))
 (provide 'setup-editing)
 
 ;; Local Variables:
