@@ -4,10 +4,16 @@
 
 (use-package which-key
   :init (which-key-mode)
+  :custom
+  (which-key-idle-delay 2)
+  (which-key-idle-secondary-delay 0.05)
+  (which-key-show-early-on-C-h t)
+  (which-key-sort-order 'which-key-prefix-then-key-order)
+  (which-key-popup-type 'side-window)
+  (which-key-show-prefix 'echo)
+  (which-key-max-display-columns 6)
+  (which-key-separator " → ")
   :config
-  (setq
-   which-key-idle-delay 0.4
-   which-key-sort-order 'which-key-prefix-then-key-order)
   (add-to-list 'which-key-replacement-alist '(("TAB" . nil) . ("↹" . nil)))
   (add-to-list 'which-key-replacement-alist '(("RET" . nil) . ("⏎" . nil)))
   (add-to-list 'which-key-replacement-alist '(("DEL" . nil) . ("⇤" . nil)))
