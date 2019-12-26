@@ -188,6 +188,12 @@ Else toggle the comment status of the line at point."
   :config
   (delete-selection-mode 1))
 
+(use-package emacs
+  :custom
+  (repeat-on-final-keystroke t)
+  (set-mark-command-repeat-pop t)
+  :bind ("M-z" . zap-up-to-char))
+
 (provide 'setup-editing)
 
 ;; Local Variables:
