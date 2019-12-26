@@ -47,7 +47,6 @@ _t_ truncate-lines        %`truncate-lines
 _v_ visual-line-mode:     %`visual-line-mode
 _w_ whitespace-mode:      %`whitespace-mode
 _s_ smartparens-strict:   %`smartparens-strict-mode
-_y_ flycheck              %`flycheck-display-errors-function
 _V_ visible-mode:         %`visible-mode
 "
   ("a" abbrev-mode             nil)
