@@ -11,6 +11,7 @@
 ;; This allow me to set the KUBECONFIG variable between those easily
 ;; TODO: add the current profile in modeline
 (defun my-switch-kubeconfig-env (&optional kubeconfig)
+  "Set KUBECONFIG environment variable for the current session"
   (interactive
    (list
     (completing-read
