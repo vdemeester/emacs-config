@@ -172,10 +172,57 @@ The EShell is renamed to match that directory to make multiple windows easier."
 
 (use-package eshell-prompt-extras
   :defer 1
-  :init
-  (progn
-    (setq eshell-highlight-prompt nil
-	  eshell-prompt-function 'epe-theme-lambda)))
+  :custom
+  (eshell-highlight-prompt nil)
+  (eshell-prompt-function 'vde-theme-lambda)
+  :config
+  (defun vde-kubernetes-current-context ()
+    "Return the current context"
+    (if (not (string-empty-p (getenv "KUBECONFIG")))
+        (epe-trim-newline (shell-command-to-string (concat
+                                                    "env KUBECONFIG="
+                                                    (getenv "KUBECONFIG")
+                                                    " kubectl config current-context")))
+      (epe-trim-newline (shell-command-to-string "kubectl config current-context"))))
+  (defun vde-kubernetes-p ()
+    "If you have kubectl install and a config set,
+using either KUBECONFIG or ~/.kube/config"
+    (and (eshell-search-path "kubectl")
+         (not (string-empty-p (vde-kubernetes-current-context)))
+         (not (string-match-p "error: current-context is not set" (vde-kubernetes-current-context)))))
+  ;; From epe-theme-lambda
+  (defun vde-theme-lambda ()
+    "A eshell-prompt lambda theme."
+    (setq eshell-prompt-regexp "^[^#\nλ]*[#λ] ")
+    (concat
+     (when (epe-remote-p)
+       (epe-colorize-with-face
+        (concat (epe-remote-user) "@" (epe-remote-host) " ")
+        'epe-remote-face))
+     (when (and epe-show-python-info (bound-and-true-p venv-current-name))
+       (epe-colorize-with-face (concat "(" venv-current-name ") ") 'epe-venv-face))
+     (let ((f (cond ((eq epe-path-style 'fish) 'epe-fish-path)
+                    ((eq epe-path-style 'single) 'epe-abbrev-dir-name)
+                    ((eq epe-path-style 'full) 'abbreviate-file-name))))
+       (epe-colorize-with-face (funcall f (eshell/pwd)) 'epe-dir-face))
+     (when (epe-git-p)
+       (concat
+        (epe-colorize-with-face ":" 'epe-dir-face)
+        (epe-colorize-with-face
+         (concat (epe-git-branch)
+                 (epe-git-dirty)
+                 (epe-git-untracked)
+                 (let ((unpushed (epe-git-unpushed-number)))
+                   (unless (= unpushed 0)
+                     (concat ":" (number-to-string unpushed)))))
+         'epe-git-face)))
+     (when (vde-kubernetes-p)
+       (concat (epe-colorize-with-face " (" 'epe-dir-face)
+               (epe-colorize-with-face (vde-kubernetes-current-context) 'epe-dir-face)
+               (epe-colorize-with-face ")" 'epe-dir-face)))
+     (epe-colorize-with-face " λ" 'epe-symbol-face)
+     (epe-colorize-with-face (if (= (user-uid) 0) "#" "") 'epe-sudo-symbol-face)
+     " ")))
 
 (use-package esh-autosuggest
   :defer 1
