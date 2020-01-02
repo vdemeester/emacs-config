@@ -313,7 +313,7 @@ repository, then the corresponding root is used instead."
 ;; https://github.com/emacs-lsp/lsp-ui
 (use-package lsp-ui
   :after lsp-mode
-  :hook ((lsp-mode . lsp-ui-mode) 
+  :hook ((lsp-mode . lsp-ui-mode)
          (lsp-ui-mode . lsp-ui-peek-mode))
   :config
   (define-key lsp-ui-mode-map [remap xref-find-definitions] #'lsp-ui-peek-find-definitions)
@@ -337,6 +337,37 @@ repository, then the corresponding root is used instead."
     (when lsp--cur-workspace
       (setq projectile-project-root (lsp--workspace-root lsp--cur-workspace))))
   (add-hook 'lsp-before-open-hook #'my-set-projectile-root))
+
+(use-package dap-mode
+  :after lsp-mode
+  ;; :bind (:map dap-server-log-mode-map
+  ;;             ("g" . recompile)
+  ;;             :map dap-mode-map
+  ;;             ([f9] . dap-continue)
+  ;;             ([S-f9] . dap-disconnect)
+  ;;             ([f10] . dap-next)
+  ;;             ([f11] . dap-step-in)
+  ;;             ([S-f11] . dap-step-out)
+  ;;             ([f12] . dap-hide/show-ui))
+  :hook (dap-stopped-hook . (lambda (arg) (call-interactively #'dap-hydra)))
+  :config
+  ;; FIXME: Create nice solution instead of a hack
+  (defvar dap-hide/show-ui-hidden? t)
+  (defun dap-hide/show-ui ()
+    "Hide/show dap ui. FIXME"
+    (interactive)
+    (if dap-hide/show-ui-hidden?
+        (progn
+          (setq dap-hide/show-ui-hidden? nil)
+          (dap-ui-locals)
+          (dap-ui-repl))
+      (dolist (buf '("*dap-ui-inspect*" "*dap-ui-locals*" "*dap-ui-repl*" "*dap-ui-sessions*"))
+        (when (get-buffer buf)
+          (kill-buffer buf)))
+      (setq dap-hide/show-ui-hidden? t)))
+
+  (dap-mode)
+  (dap-ui-mode))
 
 (provide 'setup-completion)
 

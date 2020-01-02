@@ -23,10 +23,8 @@
   :hook (go-mode . flycheck-golangci-lint-setup)
   :config (setq flycheck-golangci-lint-tests t))
 
-;; (use-package lsp-go
-;;   :defer 2
-;;   :after lsp-mode
-;;   :hook ((go-mode . lsp-go-enable)))
+(use-package dap-go
+  :after dap-mode)
 
 (provide 'setup-go)
 
