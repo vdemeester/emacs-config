@@ -114,7 +114,7 @@
   (setq org-special-ctrl-a/e t)
   (setq org-special-ctrl-k t)
   (setq org-yank-adjusted-subtrees t)
-  
+
   (setcar (nthcdr 4 org-emphasis-regexp-components) 10)
 
   (setq org-tag-alist (quote (("linux") ("nixos") ("emacs") ("org")
@@ -138,7 +138,7 @@
   (setq org-agenda-sticky t)
   (setq org-agenda-custom-commands
         `(("n" "Personal agenda"
-	   ((agenda "")
+           ((agenda "")
             (tags-todo "+TODO=\"NEXT\""
                        ((org-agenda-overriding-header "Next items")))
             (tags-todo "@work-goals"
@@ -147,14 +147,14 @@
             (tags-todo "@home-goals"
                        ((org-agenda-skip-function '(org-agenda-skip-if nil '(scheduled deadline)))
                         (org-agenda-overriding-header "Home"))))
-	   ((org-super-agenda-groups
-	     '((:name "Important" :priority "A")
+           ((org-super-agenda-groups
+             '((:name "Important" :priority "A")
                (:habit t)
                (:name "Done" :log closed)
                (:name "Scheduled" :time-grid t)
-	       (:name "Work" :tag "@work")
-	       (:name "Perso" :tag "@home"))))
-	   (org-agenda-list))))
+               (:name "Work" :tag "@work")
+               (:name "Perso" :tag "@home"))))
+           (org-agenda-list))))
 
   (defun vde/is-project-p ()
     "Any task with a todo keyword subtask"
@@ -193,7 +193,7 @@ Callers of this function already widen the buffer view."
             (setq parent-task (point))))
         (goto-char parent-task)
         parent-task)))
-  
+
   (defun vde/is-task-p ()
     "Any task with a todo keyword and no subtask"
     (save-restriction
@@ -533,16 +533,14 @@ activation of `org-tree-slide-mode'."
     (if (eq darkroom-tentative-mode nil)
         (progn
           (darkroom-tentative-mode 1)
-          (org-bullets-mode 1)
           (org-indent-mode 1)
           (set-frame-font "Hack-14" t t)
           (setq cursor-type '(bar . 1)))
       (darkroom-tentative-mode -1)
-      (org-bullets-mode -1)
       (org-indent-mode -1)
       (prot/fonts-per-monitor)
       (setq cursor-type 'box)))
-  :bind (("<f9>" . org-tree-slide-mode)
+  :bind (("<f8>" . org-tree-slide-mode)
          :map org-tree-slide-mode-map
          ("<C-right>" . org-tree-slide-move-next-tree)
          ("<C-left>" . org-tree-slide-move-previous-tree))
