@@ -340,15 +340,14 @@ repository, then the corresponding root is used instead."
 
 (use-package dap-mode
   :after lsp-mode
-  ;; :bind (:map dap-server-log-mode-map
-  ;;             ("g" . recompile)
-  ;;             :map dap-mode-map
-  ;;             ([f9] . dap-continue)
-  ;;             ([S-f9] . dap-disconnect)
-  ;;             ([f10] . dap-next)
-  ;;             ([f11] . dap-step-in)
-  ;;             ([S-f11] . dap-step-out)
-  ;;             ([f12] . dap-hide/show-ui))
+  :bind (:map dap-mode-map
+              ([f9] . dap-debug)
+              ;; ([f9] . dap-continue)
+              ;; ([S-f9] . dap-disconnect)
+              ;; ([f10] . dap-next)
+              ;; ([f11] . dap-step-in)
+              ;; ([S-f11] . dap-step-out)
+              ([C-f9] . dap-hide/show-ui))
   :hook (dap-stopped-hook . (lambda (arg) (call-interactively #'dap-hydra)))
   :config
   ;; FIXME: Create nice solution instead of a hack
@@ -367,7 +366,8 @@ repository, then the corresponding root is used instead."
       (setq dap-hide/show-ui-hidden? t)))
 
   (dap-mode)
-  (dap-ui-mode))
+  (dap-ui-mode)
+  (dap-tooltip-mode))
 
 (provide 'setup-completion)
 
