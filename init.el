@@ -192,6 +192,7 @@ packages.")
 (use-package setup-docker)
 (use-package setup-hydras)
 (use-package setup-browser)
+(use-package setup-notmuch)
 
 (let ((elapsed (float-time (time-subtract (current-time)
                                           emacs-start-time))))
