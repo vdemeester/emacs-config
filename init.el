@@ -60,24 +60,33 @@
                         "gnutls-cli -p %p %h"
                         "openssl s_client -connect %h:%p -no_ssl2 -no_ssl3 -ign_eof"))
 
-(unless package--initialized
+;; Initialise the packages, avoiding a re-initialisation.
+(unless (bound-and-true-p package--initialized)
+  (setq package-enable-at-startup nil)
   (package-initialize))
 
 (setq load-prefer-newer t)              ; Always load newer compiled files
 (setq ad-redefinition-action 'accept)   ; Silence advice redefinition warnings
-
-;; Bootstrap `use-package'
-(setq use-package-enable-imenu-support t)
-(unless (package-installed-p 'use-package)
-  (package-refresh-contents)
-  (package-install 'use-package))
 
 ;; Init `delight'
 (unless (package-installed-p 'delight)
   (package-refresh-contents)
   (package-install 'delight))
 
-(eval-when-compile (require 'use-package))
+;; Configure `use-package' prior to loading it.
+(eval-and-compile
+  (setq use-package-always-ensure nil)
+  (setq use-package-always-defer nil)
+  (setq use-package-always-demand nil)
+  (setq use-package-expand-minimally nil)
+  (setq use-package-enable-imenu-support t))
+
+(unless (package-installed-p 'use-package)
+  (package-refresh-contents)
+  (package-install 'use-package))
+
+(eval-when-compile
+  (require 'use-package))
 
 (use-package dash) ; A modern list library
 
@@ -150,17 +159,6 @@
 ;; Confirm before quitting Emacs
 (setq confirm-kill-emacs #'y-or-n-p)
 
-;;; Default rg arguments
-;; https://github.com/BurntSushi/ripgrep
-(defconst vde/rg-arguments
-  `("--no-ignore-vcs"                   ;Ignore files/dirs ONLY from `.ignore'
-    "--line-number"                     ;Line numbers
-    "--smart-case"
-    "--max-columns" "150"      ;Emacs doesn't handle long line lengths very well
-    "--ignore-file" ,(expand-file-name ".ignore" (getenv "HOME")))
-  "Default rg arguments used in the functions in `counsel' and `projectile'
-packages.")
-
 ;;; Require files under ~/.emacs.d/lisp
 (add-to-list 'load-path (expand-file-name "lisp" user-emacs-directory))
 
@@ -215,3 +213,4 @@ packages.")
 ;; End:
 ;;; Finalization
 ;;; init.el ends here
+(put 'magit-diff-edit-hunk-commit 'disabled nil)
