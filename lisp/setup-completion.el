@@ -78,6 +78,16 @@ Otherwise, use `counsel-projectile-switch-project'."
   :config
   (prescient-persist-mode 1))
 
+;;; Default rg arguments
+;; https://github.com/BurntSushi/ripgrep
+(defconst vde/rg-arguments
+  `("--no-ignore-vcs"                   ;Ignore files/dirs ONLY from `.ignore'
+    "--line-number"                     ;Line numbers
+    "--smart-case"
+    "--max-columns" "150"      ;Emacs doesn't handle long line lengths very well
+    "--ignore-file" ,(expand-file-name ".ignore" (getenv "HOME")))
+  "Default rg arguments used in the functions in `counsel' and `projectile' packages.")
+
 (use-package ivy-prescient
   :after (prescient ivy)
   :custom
