@@ -17,7 +17,7 @@
          ("C-c v g" . magit-blame)
          ("C-c v l" . magit-log-buffer-file)
          ("C-c v p" . magit-pull)
-         ("C-c v v" . magit-status)) 
+         ("C-c v v" . magit-status))
   :config
   (setq
    magit-save-repository-buffers 'dontask
@@ -28,10 +28,10 @@
    )
 
   (magit-define-popup-option 'magit-rebase-popup
-    ?S "Sign using gpg" "--gpg-sign=" #'magit-read-gpg-secret-key) 
+    ?S "Sign using gpg" "--gpg-sign=" #'magit-read-gpg-secret-key)
   (magit-define-popup-switch 'magit-log-popup
     ?m "Omit merge commits" "--no-merges")
-  
+
   ;; Hide "Recent Commits"
   (magit-add-section-hook 'magit-status-sections-hook
                           'magit-insert-unpushed-to-upstream
@@ -41,7 +41,7 @@
   (use-package magit-files
     :config
     (global-magit-file-mode))
-  
+
   ;; Show refined hunks during diffs
   (set-default 'magit-diff-refine-hunk t)
 
@@ -57,10 +57,30 @@
 (use-package forge
   :after magit)
 
+(use-package magit-repos
+  :after magit
+  :commands magit-list-repositories
+  :config
+  (setq magit-repository-directories
+        '(("~/src" . 3))))
+
 (use-package git-commit                 ; Git commit message mode
   :defer 2
   :init (global-git-commit-mode)
   :config
+  (setq git-commit-summary-max-length 50)
+  (setq git-commit-known-pseudo-headers
+        '("Signed-off-by"
+          "Acked-by"
+          "Modified-by"
+          "Cc"
+          "Suggested-by"
+          "Reported-by"
+          "Tested-by"
+          "Reviewed-by"))
+  (setq git-commit-style-convention-checks
+        '(non-empty-second-line
+          overlong-summary-line))
   (remove-hook 'git-commit-finish-query-functions
                #'git-commit-check-style-conventions))
 
@@ -87,13 +107,13 @@
                         (+ 1 (count-lines 1 (point)))))
          (line-arg (format "%d,%d" line-number line-number))
          (commit-buf (generate-new-buffer "*git-blame-line-commit*")))
-    (call-process "git" nil commit-buf nil 
+    (call-process "git" nil commit-buf nil
                   "blame" (buffer-file-name) "-L" line-arg)
     (let* ((commit-id (with-current-buffer commit-buf
                         (buffer-substring 1 9)))
            (log-buf (generate-new-buffer "*git-blame-line-log*")))
       (kill-new commit-id)
-      (call-process "git" nil log-buf nil 
+      (call-process "git" nil log-buf nil
                     "log" "-1" "--pretty=%h   %an   %s" commit-id)
       (with-current-buffer log-buf
         (message "Line %d: %s" line-number (buffer-string)))
