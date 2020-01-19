@@ -25,51 +25,49 @@
   :config
   (savehist-mode 1))
 
-;; Configure `display-buffer' behaviour for some special buffers
-(setq
- display-buffer-alist
- `(
-   ;; Messages, errors, processes, Calendar and REPLs in the bottom side window
-   (,(rx bos (or "*Apropos"             ; Apropos buffers
-                 "*Man"                 ; Man buffers
-                 "*Help"                ; Help buffers
-                 "*Warnings*"           ; Emacs warnings
-                 "*Process List*"       ; Processes
-                 "*Proced"              ; Proced processes list
-                 "*Compile-Log*"        ; Emacs byte compiler log
-                 "*compilation"         ; Compilation buffers
-                 "*Flycheck errors*"    ; Flycheck error list
-                 "*Calendar"            ; Calendar window
-                 "*SQL"                 ; SQL REPL
-		 ))
-    (display-buffer-reuse-window display-buffer-in-side-window)
-    (side . bottom)
-    (reusable-frames . visible)
-    (window-height . 0.25))
-   ;; Open shell in a single window
-   (,(rx bos "*shell")
-    (display-buffer-same-window)
-    (reusable-frames . nil))
-   ;; Open PDFs in the right side window
-   (,(rx bos "*pdf")
-    (display-buffer-reuse-window display-buffer-in-side-window)
-    (side . right)
-    (reusable-frames . visible)
-    (window-width . 0.5))
-   (,(rx bos (or "*cider-repl"     ; CIDER REPL
-                 "*intero"         ; Intero REPL
-                 "*idris-repl"     ; Idris REPL
-                 "*Nix-REPL*"           ; IELM REPL
-                 "*ielm"           ; IELM REPL
-                 "*SQL"))          ; SQL REPL
-    (display-buffer-reuse-window display-buffer-in-side-window)
-    (side . bottom)
-    (reusable-frames . visible)
-    (window-height . 0.30))
-   ;; Let `display-buffer' reuse visible frames for all buffers.  This must
-   ;; be the last entry in `display-buffer-alist', because it overrides any
-   ;; previous entry with more specific actions.
-   ("." nil (reusable-frames . visible))))
+(use-package emacs
+  :init
+  ;; Configure `display-buffer' behaviour for some special buffers
+  (setq display-buffer-alist
+        '(;; bottom side window
+          ("\\*e?shell.*"
+           (display-buffer-in-side-window)
+           (window-height . 0.25)
+           (side . bottom)
+           (slot . -1))
+          ("\\*\\(Backtrace\\|Warnings\\|Compile-Log\\|[Hh]elp\\|Messages\\)\\*"
+           (display-buffer-in-side-window)
+           (window-height . 0.25)
+           (side . bottom)
+           (slot . 0))
+          ("\\*\\(compilation\\).*"
+           (display-buffer-in-side-window)
+           (window-height . 0.25)
+           (side . bottom)
+           (slot . 0))
+          ;; right side window
+          ("\\*\\(Flycheck\\|Package-Lint\\).*"
+           (display-buffer-in-side-window)
+           (window-width . 0.333)
+           (side . right)
+           (slot . 0)
+           (window-parameters . ((no-other-window . t)
+                                 (mode-line-format . (" "
+                                                      mode-line-buffer-identification)))))
+          ("\\*Faces\\*"
+           (display-buffer-in-side-window)
+           (window-width . 0.333)
+           (side . right)
+           (slot . 1)
+           (window-parameters . ((no-other-window . t)
+                                 (mode-line-format . (" "
+                                                      mode-line-buffer-identification)))))
+          ("\\*Custom.*"
+           (display-buffer-in-side-window)
+           (window-width . 0.333)
+           (side . right)
+           (slot . 2))))
+  :bind (("<f7>" . window-toggle-side-windows)))
 
 (use-package uniquify                   ; Unique buffer names
   :custom
