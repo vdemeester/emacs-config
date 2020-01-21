@@ -546,6 +546,9 @@ activation of `org-tree-slide-mode'."
          ("<C-left>" . org-tree-slide-move-previous-tree))
   :hook (org-tree-slide-mode . prot/org-presentation))
 
+(use-package orgit
+  :after magit)
+
 (provide 'setup-org)
 ;;; setup-org.el ends here
 
