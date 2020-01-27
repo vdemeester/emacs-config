@@ -1,0 +1,40 @@
+#+TITLE: Vincent Demeester's .emacs.d
+
+* Overview
+:PROPERTIES:
+:CUSTOM_ID: h:958fee2e-86db-4d34-bef6-d5b4f4f73000
+:END:
+** Canonical links to this document
+:PROPERTIES:
+:CUSTOM_ID: h:11f5b93f-6dd7-483c-aa44-e10471f17c22
+:END:
+
++ HTML version :: [[https://sbr.pm/dotemacs][sbr.pm/dotemacs]]
++ Git repo :: [[https://github.com/vdemeester/emacs-config.git][github.com/vdemeester/emacs-config]]
+
+** What is this
+:PROPERTIES:
+:CUSTOM_ID: h:e9d0ae1c-244c-4ad9-b0dc-c5e53b8d49ea
+:END:
+
+The present document, referred to in the source code version as =emacs.org=, contains the
+bulk of my configurations for GNU Emacs. It is designed using principles of "literate
+programming": a combination of ordinary language and inline code blocks. Emacs knows how
+to parse this file properly so as to evaluate only the elisp ("Emacs Lisp") included
+herein. The rest is for humans to make sense of my additions and their underlying
+rationale.
+
+#+BEGIN_QUOTE
+Literate programming allows us to be more expressive and deliberate. Not only we can use
+typography to its maximum potential, but can also employ techniques such as internal links
+between sections. This makes the end product much better for end users, than a terse
+script.
+#+END_QUOTE
+
+I switched back and forth on using =org-mode= and literate programming, so why re-using
+it. First, I think I went for it the wrong way the first time. I copied part of the
+configuration from elsewhere, sometimes without really needing what I was copying. for
+some reason I think this is a common pattern when configuring Emacs. You start by using a
+distribution (Doom Emacs, Spacemacs, …) or by copying configuration from all over the
+place. Slowly but surely you realize this was a mistake as you didn't learn anything, so
+you *reboot* your configuration.
