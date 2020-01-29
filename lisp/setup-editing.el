@@ -16,7 +16,8 @@
 (use-package undo-tree                  ; Show buffer changes as a tree
   :defer 1
   :init (global-undo-tree-mode)
-  :config (setq undo-tree-visualizer-timestamps t))
+  :config (setq undo-tree-visualizer-timestamps t
+                undo-tree-enable-undo-in-region t))
 
 (use-package whitespace
   :defer 1
