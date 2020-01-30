@@ -149,11 +149,11 @@
                         (org-agenda-overriding-header "Home"))))
            ((org-super-agenda-groups
              '((:name "Important" :priority "A")
-               (:habit t)
                (:name "Done" :log closed)
                (:name "Scheduled" :time-grid t)
                (:name "Work" :tag "@work")
-               (:name "Perso" :tag "@home"))))
+               (:name "Perso" :tag "@home")
+               (:habit t))))
            (org-agenda-list))))
 
   (defun vde/is-project-p ()
