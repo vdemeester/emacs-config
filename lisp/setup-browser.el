@@ -1,7 +1,4 @@
-;;; setup-browser.el --- setup eww and other browser -*- lexical-binding: t; -*-
-;;; Commentary:
-;;; Code:
-
+;;; -*- lexical-binding: t; -*-
 (use-package shr
   :commands (eww
              eww-browse-url)
@@ -61,9 +58,3 @@
   (define-key eww-mode-map "O" 'eww-browse-with-external-browser))
 
 (provide 'setup-browser)
-;;; setup-browser.el ends here
-
-;; Local Variables:
-;; coding: utf-8
-;; indent-tabs-mode: nil
-;; End:
