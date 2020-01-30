@@ -1,13 +1,4 @@
-;;; init.el --- emacs configuration entrypoint -*- lexical-binding: t; -*-
-;; Time-stamp: <2018-10-01 12:20:01 vincent>
-;; Author: Vincent Demeester
-
-;;; Commentary:
-
-;; Initialize the Emacs configuration
-
-;;; Code:
-
+;;; -*- lexical-binding: t; -*-
 (defconst emacs-start-time (current-time))
 (defvar file-name-handler-alist-old file-name-handler-alist)
 
@@ -192,6 +183,14 @@
 (use-package setup-browser)
 (use-package setup-notmuch)
 
+;; C-up/down onn console
+(when (not window-system)
+  (define-key function-key-map "\eO1;5A"    [C-up])
+  (define-key function-key-map "\eO1;5B"  [C-down])
+  (define-key function-key-map "\eO1;5C" [C-right])
+  (define-key function-key-map "\eO1;5D"  [C-left])
+  )
+
 (let ((elapsed (float-time (time-subtract (current-time)
                                           emacs-start-time))))
   (message "Loading %s...done (%.3fs)" load-file-name elapsed))
@@ -207,10 +206,10 @@
 (put 'narrow-to-page 'disabled nil)
 (put 'narrow-to-region 'disabled nil)
 
+(put 'magit-diff-edit-hunk-commit 'disabled nil)
 ;; Local Variables:
 ;; coding: utf-8
 ;; indent-tabs-mode: nil
 ;; End:
 ;;; Finalization
 ;;; init.el ends here
-(put 'magit-diff-edit-hunk-commit 'disabled nil)
