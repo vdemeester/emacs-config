@@ -40,11 +40,16 @@
            (window-height . 0.25)
            (side . bottom)
            (slot . 0))
-          ("\\*\\(compilation\\).*"
+          ("\\*\\(compilation\\|go test\\).*"
            (display-buffer-in-side-window)
            (window-height . 0.25)
            (side . bottom)
            (slot . 0))
+          ("\\*\\(ielm\\).*"
+           (display-buffer-in-side-window)
+           (window-height . 0.25)
+           (side . bottom)
+           (slot . 1))
           ;; right side window
           ("\\*\\(Flycheck\\|Package-Lint\\).*"
            (display-buffer-in-side-window)
