@@ -124,7 +124,6 @@
                 (vc-mode vc-mode)
                 (multiple-cursors-mode mc/mode-line)
                 " " mode-line-modes
-                (org-mode-line-string org-mode-line-string)
                 mode-line-end-spaces))
 
 (defmacro rename-modeline (package-name mode new-name)
