@@ -56,6 +56,11 @@
            (side . bottom)
            (slot . 1))
           ;; right side window
+          ("\\*wclock*"
+           (display-buffer-in-side-window)
+           (window-width . 0.333)
+           (side . right)
+           (slot . -1))
           ("\\*undo-tree*"
            (display-buffer-in-side-window)
            (window-width . 0.333)

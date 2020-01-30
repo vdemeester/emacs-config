@@ -60,6 +60,12 @@
   (inhibit-splash-screen t)
   (echo-keystrokes 0.1) ; Faster echo keystrokes
   (line-number-display-limit-width 10000) ;; Avoid showing ?? in the mode line when we have long lines.
+  (display-time-world-list '(("Europe/London" "London")
+                             ("Europe/Paris" "Paris")
+                             ("America/New_York" "Boston")
+                             ("America/Los_Angeles" "San-Francisco")
+                             ("Asia/Calcutta" "Bangalore")
+                             ("Australia/Brisbane" "Brisbane")))
   :config
   (menu-bar-mode -1)
   (tool-bar-mode -1)
