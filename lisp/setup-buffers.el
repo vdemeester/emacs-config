@@ -35,6 +35,11 @@
            (window-height . 0.25)
            (side . bottom)
            (slot . -1))
+          ("\\*v?term.*"
+           (display-buffer-in-side-window)
+           (window-height . 0.25)
+           (side . bottom)
+           (slot . -1))
           ("\\*\\(Backtrace\\|Warnings\\|Compile-Log\\|[Hh]elp\\|Messages\\)\\*"
            (display-buffer-in-side-window)
            (window-height . 0.25)
