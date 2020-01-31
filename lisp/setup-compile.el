@@ -1,6 +1,3 @@
-;;; setup-compile.el --- setup compilation modes
-;;; Commentary:
-;;; Code:
 ;;; -*- lexical-binding: t; -*-
 (use-package compile
   :defer 2
@@ -27,7 +24,7 @@
                   (derived-mode-p 'ag-mode))
         (ansi-color-apply-on-region compilation-filter-start (point))))
     (add-hook 'compilation-filter-hook #'vde/colorize-compilation-buffer)
-    
+
     (defun vde/mark-compilation-window-as-dedicated ()
       "Setup the *compilation* window with custom settings."
       (when (string-prefix-p "*compilation: " (buffer-name))
@@ -64,8 +61,3 @@
   (setq flycheck-idle-change-delay 1.2))
 
 (provide 'setup-compile)
-
-;; Local Variables:
-;; coding: utf-8
-;; indent-tabs-mode: nil
-;; End:
