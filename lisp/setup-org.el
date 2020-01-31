@@ -1,7 +1,4 @@
-;;; setup-org.el --- setup org-mode -*- lexical-binding: t; -*-
-;;; Commentary:
-;;; Code:
-
+;;; -*- lexical-binding: t; -*-
 (defvar org-directory "~/desktop/org/")
 (defvar site-directory "~/desktop/sites/")
 
@@ -550,9 +547,3 @@ activation of `org-tree-slide-mode'."
   :after magit)
 
 (provide 'setup-org)
-;;; setup-org.el ends here
-
-;; Local Variables:
-;; coding: utf-8
-;; indent-tabs-mode: nil
-;; End:
