@@ -1,8 +1,4 @@
-;;; setup-nix.el --- setup nix modes
-;;; Commentary:
-;;; Code:
 ;;; -*- lexical-binding: t; -*-
-
 (use-package nix-mode
   :mode ("\\.nix\\'" "\\.nix.in\\'"))
 
@@ -15,8 +11,3 @@
   :commands (nix-shell-unpack nix-shell-configure nix-shell-build))
 
 (provide 'setup-nix)
-
-;; Local Variables:
-;; coding: utf-8
-;; indent-tabs-mode: nil
-;; End:

@@ -371,6 +371,24 @@ slowly but surely move into an org-mode header and or disappear.
   (provide 'setup-go)
 #+end_src
 
+** ~setup-nix.el~
+
+#+begin_src emacs-lisp :tangle lisp/setup-nix.el
+  ;;; -*- lexical-binding: t; -*-
+  (use-package nix-mode
+    :mode ("\\.nix\\'" "\\.nix.in\\'"))
+
+  (use-package nix-drv-mode
+    :ensure nix-mode
+    :mode "\\.drv\\'")
+
+  (use-package nix-shell
+    :ensure nix-mode
+    :commands (nix-shell-unpack nix-shell-configure nix-shell-build))
+
+  (provide 'setup-nix)
+#+end_src
+
 
 ** ~setup-org.el~
 
