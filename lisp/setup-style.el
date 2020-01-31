@@ -1,18 +1,11 @@
-;;; setup-style.el --- setup emacs style 😎
-;;; Commentary:
-;;; Code:
 ;;; -*- lexical-binding: t; -*-
-
 ;;; ¯\_(ツ)_/¯
-
-;;; Fonts used:
 ;;; - Iosevka (https://github.com/be5invis/Iosevka)
 ;;; - Fira Sans (https://github.com/mozilla/Fira/)
 (setq font-height 110)
 (cond
  ((string= (system-name) "hokkaido")
   (setq font-height 100)))
-
 ;; Middle/Near East: שלום, السّلام عليكم
 (when (member "Noto Sans Arabic" (font-family-list))
   (set-fontset-font t 'arabic "Noto Sans Arabic"))
@@ -24,7 +17,7 @@
   (set-fontset-font t 'ethiopic "Noto Sans Ethiopic"))
 
 (set-face-attribute 'default nil
-		    :family "Fira Code" ; "Overpass Mono" to try someday
+                    :family "Fira Code" ; "Overpass Mono" to try someday
                     :height font-height)
 (set-face-attribute 'variable-pitch nil
                     :family "Fira Sans"
@@ -36,7 +29,7 @@
   "Reset fonts to my preferences."
   (interactive)
   (set-face-attribute 'default nil
-		      :family "Fira Code"
+                      :family "Fira Code"
                       :height font-height)
   (set-face-attribute 'variable-pitch nil
                       :family "Fira Sans"
@@ -214,8 +207,3 @@
 (run-with-timer 0 3600 'theme-switcher)
 
 (provide 'setup-style)
-
-;; Local Variables:
-;; coding: utf-8
-;; indent-tabs-mode: nil
-;; End:
