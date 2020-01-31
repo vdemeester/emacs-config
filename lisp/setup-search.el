@@ -1,8 +1,4 @@
-;;; setup-search.el --- setup search
-;;; Commentary:
-;;; Code:
 ;;; -*- lexical-binding: t; -*-
-
 ;; Ignore directories during grep
 (with-eval-after-load 'grep
   '(progn
@@ -106,8 +102,3 @@ confines of word boundaries (e.g. multiple words)."
          ("C-c s R" . vr/replace)))
 
 (provide 'setup-search)
-
-;; Local Variables:
-;; coding: utf-8
-;; indent-tabs-mode: nil
-;; End:
