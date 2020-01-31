@@ -1,15 +1,10 @@
-;;; setup-projectile.el --- setup projectile
-;;; Commentary:
-;;; Code:
 ;;; -*- lexical-binding: t; -*-
-
 (use-package projectile                 ; Project management
   :init (projectile-mode)
   :bind-keymap ("C-c p" . projectile-command-map)
   :config
   ;; Remove dead projects when Emacs is idle
   (run-with-idle-timer 10 nil #'projectile-cleanup-known-projects)
-  
   (setq
    ;; Custom compilation buffer name function
    compilation-buffer-name-function (lambda (mode) (concat "*" (downcase mode) ": " (projectile-project-name) "*"))
@@ -32,8 +27,3 @@
   :init (counsel-projectile-mode))
 
 (provide 'setup-projectile)
-
-;; Local Variables:
-;; coding: utf-8
-;; indent-tabs-mode: nil
-;; End:
