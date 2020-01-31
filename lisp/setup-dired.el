@@ -1,8 +1,4 @@
-;;; setup-dired.el --- setup dired mode(s)
-;;; Commentary:
-;;; Code:
 ;;; -*- lexical-binding: t; -*-
-
 (use-package dired
   :defer t
   :custom
@@ -155,8 +151,3 @@
               ("r" . dired-rsync)))
 
 (provide 'setup-dired)
-
-;; Local Variables:
-;; coding: utf-8
-;; indent-tabs-mode: nil
-;; End:
