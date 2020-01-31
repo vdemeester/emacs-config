@@ -1,8 +1,4 @@
-;;; setup-go.el --- setup go mode(s)
-;;; Commentary:
-;;; Code:
 ;;; -*- lexical-binding: t; -*-
-
 (use-package go-mode
   :mode "\\.go$"
   :interpreter "go"
@@ -27,8 +23,3 @@
   :after dap-mode)
 
 (provide 'setup-go)
-
-;; Local Variables:
-;; coding: utf-8
-;; indent-tabs-mode: nil
-;; End:
