@@ -68,6 +68,9 @@ You should have received a copy of the GNU General Public License
 along with this file.  If not, see <http://www.gnu.org/licenses/>.
 
 * TODO Base settings
+:PROPERTIES:
+:CUSTOM_ID: h:b5ee7306-620f-4ab8-9da5-a6c8781a93b5
+:END:
 
 This section contains configurations that are needed prior to the setup of everything
 else. Anything that needs to be configured first should be in there, this includes the
@@ -141,12 +144,24 @@ One thing though, I am currently not necessarily running Emacs 27, so I am going
 to have the same configuration in ~init.el~ for a little bit of time.
 
 * TODO Selection candidates and search methods
+:PROPERTIES:
+:CUSTOM_ID: h:571cf8bc-a359-4d75-9d56-b35c22126cf2
+:END:
 
 * TODO Directory, buffer and window management
+:PROPERTIES:
+:CUSTOM_ID: h:d93bf4bc-62c9-4873-a80e-4ddd874d64c4
+:END:
 
 * TODO Applications and utilities
+:PROPERTIES:
+:CUSTOM_ID: h:9bb3e4bd-c13a-4311-8af7-588fb0386a03
+:END:
 
 * TODO Programming
+:PROPERTIES:
+:CUSTOM_ID: h:a6c9891a-6195-4987-b98f-fd06e1147b47
+:END:
 * Legacy
 :PROPERTIES:
 :CUSTOM_ID: h:66d47486-8c74-4028-a9c7-8cfe75c07e1a
