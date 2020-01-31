@@ -2185,6 +2185,97 @@ These are the initial configuration files to be imported in this file slowly but
   (provide 'setup-web)
 #+end_src
 
+*** ~setup-windows.el~
+:PROPERTIES:
+:CUSTOM_ID: h:f00c62a0-5aed-4192-bfe8-c04f5e7e9cbe
+:END:
+
+#+begin_src emacs-lisp :tangle lisp/setup-windows.el
+  ;;; -*- lexical-binding: t; -*-
+  (setq window-combination-resize t) ; Size new windows proportionally
+
+  ;;;###autoload
+  (defun vde/window-split-toggle ()
+    "Toggle between horizontal and vertical split with two windows."
+    (interactive)
+    (if (> (length (window-list)) 2)
+        (error "Can't toggle with more than 2 windows!")
+      (let ((func (if (window-full-height-p)
+                      #'split-window-vertically
+                    #'split-window-horizontally)))
+        (delete-other-windows)
+        (funcall func)
+        (save-selected-window
+          (other-window 1)
+          (switch-to-buffer (other-buffer))))))
+
+  (bind-key "C-c w t" #'vde/window-split-toggle)
+
+  (defvar vde/saved-window-configuration nil)
+
+  (defun vde/save-wins-then-call (func &optional args)
+    "Save current window configuration, then call FUNC optionally with ARGS."
+    (interactive)
+    (push (current-window-configuration) vde/saved-window-configuration)
+    (cond
+     ;; We have arguments for the function
+     ((bound-and-true-p args) (funcall func args))
+     ;; The function expects exactly one argument, and we want it to be nil
+     ((equal args "nil") (funcall func nil))
+     ;; The function does not expect arguments
+     (t (funcall func))))
+
+  (defun vde/restore-window-configuration (config)
+    "Kill current buffer and restore the window configuration in CONFIG."
+    (interactive)
+    (kill-this-buffer)
+    (set-window-configuration config))
+
+  (defun vde/pop-window-configuration ()
+    "Restore the previous window configuration and clear current window."
+    (interactive)
+    (let ((config (pop vde/saved-window-configuration)))
+      (if config
+          (vde/restore-window-configuration config)
+        (if (> (length (window-list)) 1)
+            (delete-window)
+          (bury-buffer)))))
+
+  (use-package eyebrowse                  ; Easy workspaces creation and switching
+    :init (eyebrowse-mode t)
+    :config
+    (setq
+     eyebrowse-mode-line-separator " "
+     eyebrowse-mode-line-style 'always
+     eyebrowse-new-workspace t
+     eyebrowse-wrap-around t))
+
+  (use-package ace-window                 ; Better movements between windows
+    :custom
+    (aw-keys '(?a ?u ?i ?e ?, ?c ?t ?r ?m))
+    (aw-scope 'frame)
+    (aw-dispatch-always t)
+    (aw-dispatch-alist
+     '((?s aw-swap-window "Swap Windows")
+       (?2 aw-split-window-vert "Split Window Vertically")
+       (?3 aw-split-window-horz "Split Window Horizontally")
+       (?? aw-show-dispatch-help)))
+    (aw-minibuffer-flag t)
+    (aw-ignore-current nil)
+    (aw-display-mode-overlay t)
+    (aw-background t)
+    :bind (("C-x o"   . ace-window)
+           ("C-c w w" . ace-window)
+           ("C-c w s" . ace-swap-window)))
+
+  (use-package windmove
+    :bind (("M-<left>" . windmove-left)
+           ("M-<down>" . windmove-down)
+           ("M-<up>" . windmove-up)
+           ("M-<right>" . windmove-right)))
+
+  (provide 'setup-windows)
+#+end_src
 
 ** External libraries
 :PROPERTIES:
