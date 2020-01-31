@@ -1717,6 +1717,48 @@ These are the initial configuration files to be imported in this file slowly but
   (provide 'setup-hydras)
 #+end_src
 
+*** ~setup-navigating.el~
+:PROPERTIES:
+:CUSTOM_ID: h:c5ec18c7-1153-451c-b472-33b55f1bba77
+:END:
+
+#+begin_src emacs-lisp :tangle lisp/setup-navigating.el
+  (use-package avy                   ; Jump to characters in buffers
+    :bind (("C-c j"   . avy-goto-word-1)
+           ("C-c n b" . avy-pop-mark)
+           ("C-c n j" . avy-goto-char-2)
+           ("C-c n t" . avy-goto-char-timer)
+           ("C-c n w" . avy-goto-word-1)))
+
+  (use-package helpful
+    :bind (("C-c h F" . helpful-function)
+           ("C-c h C" . helpful-command)
+           ("C-c h M" . helpful-macro)
+           ("C-c h L" . helpful-callable)
+           ("C-c h S" . helpful-at-point)
+           ("C-c h V" . helpful-variable)))
+  (use-package winner
+    :unless noninteractive
+    :defer 5
+    :config
+    (winner-mode 1))
+
+  (use-package hideshow
+    :defer 5
+    :bind (("C-c @ a" . hs-show-all)
+           ("C-c @ c" . hs-toggle-hiding)
+           ("C-c @ t" . hs-hide-all)
+           ("C-c @ d" . hs-hide-block)
+           ("C-c @ l" . hs-hide-level)))
+
+  (use-package mwim
+    :bind (:map prog-mode-map
+                ("C-a" . mwim-beginning-of-code-or-line)
+                ("C-e" . mwim-end-of-code-or-line)))
+
+  (provide 'setup-navigating)
+#+end_src
+
 *** ~setup-nix.el~
 :PROPERTIES:
 :CUSTOM_ID: h:f82d7d6f-55bf-495d-b71f-dd4719ece06e
