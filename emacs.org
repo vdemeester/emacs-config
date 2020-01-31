@@ -858,6 +858,46 @@ These are the initial configuration files to be imported in this file slowly but
   (provide 'setup-nix)
 #+end_src
 
+*** ~setup-notmuch.el~
+:PROPERTIES:
+:CUSTOM_ID: h:3505ad73-785d-4849-98a6-9081c6d8e93d
+:END:
+
+#+begin_src emacs-lisp :tangle lisp/setup-notmuch.el
+  (use-package notmuch
+    :defer t
+    :bind ("<f6>" . notmuch)
+    :config
+    (setq notmuch-search-oldest-first nil
+          mail-user-agent 'message-user-agent
+          notmuch-tree-show-out t)
+    (setq notmuch-saved-searches
+          '((:key "i" :name "inbox" :query "tag:Inbox")
+            (:key "r" :name "redhat inbox folder" :query "folder:redhat/Inbox")
+            (:key "p" :name "perso inbox folder" :query "folder:perso/Inbox")
+            (:key "u" :name "unread" :query "tag:unread")
+            (:key "F" :name "flagged" :query "tag:flagged")
+            (:key "S" :name "sent" :query "tag:Sent Mail"))))
+
+  (use-package sendmail
+    :defer t
+    :commands (mail-mode mail-text)
+    :defines (send-mail-function)
+    :config
+    (setq send-mail-function 'sendmail-send-it
+          sendmail-program "/home/vincent/bin/msmtp"))
+
+  (use-package message
+    :commands (message-mode message-cite-original-without-signature)
+    :config
+    (add-hook 'message-mode-hook 'turn-on-auto-fill)
+    (setq  message-default-mail-headers "Cc: \nBcc: \n"
+           message-kill-buffer-on-exit t
+           message-generate-headers-first t))
+
+  (provide 'setup-notmuch)
+#+end_src
+
 *** ~setup-org.el~
 :PROPERTIES:
 :CUSTOM_ID: h:b004ecf8-04cf-4671-bd41-6ecdff14887f
