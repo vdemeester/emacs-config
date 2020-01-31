@@ -1,8 +1,4 @@
-;;; setup-shells.el --- setup shells related mode
-;;; Commentary:
-;;; Code:
 ;;; -*- lexical-binding: t; -*-
-
 (use-package shell                 ; Specialized comint.el for running the shell
   :custom
                                         ;(ansi-color-for-comint-mode 'filter)
@@ -265,8 +261,3 @@ using either KUBECONFIG or ~/.kube/config"
 (add-hook 'term-mode-hook 'toggle-truncate-lines)
 
 (provide 'setup-shells)
-
-;; Local Variables:
-;; coding: utf-8
-;; indent-tabs-mode: nil
-;; End:
