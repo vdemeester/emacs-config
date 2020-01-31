@@ -1,7 +1,3 @@
-;;; setup-keybindings.el --- setup keybindings 👼 -*- lexical-binding: t; -*-
-;;; Commentary:
-;;; Code:
-
 (use-package which-key
   :init (which-key-mode)
   :custom
@@ -43,8 +39,3 @@
 (unbind-key "C-x C-n" global-map)
 
 (provide 'setup-keybindings)
-
-;; Local Variables:
-;; coding: utf-8
-;; indent-tabs-mode: nil
-;; End:
