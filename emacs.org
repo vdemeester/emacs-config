@@ -527,6 +527,41 @@ These are the initial configuration files to be imported in this file slowly but
   (provide 'setup-dired)
 #+end_src
 
+*** ~setup-docker.el~
+:PROPERTIES:
+:CUSTOM_ID: h:1b476ae7-21a6-4dd3-b668-221fa2e38681
+:END:
+
+#+begin_src emacs-lisp :tangle lisp/setup-docker.el
+  ;;; -*- lexical-binding: t; -*-
+  (use-package dockerfile-mode            ; Edit docker's Dockerfiles
+    :mode ("Dockerfile\\'" . dockerfile-mode))
+
+  ;; I have a bunch of different 'profiles' for kubernetes by different cluster so
+  ;; i don't mess between things
+  ;; This allow me to set the KUBECONFIG variable between those easily
+  ;; TODO: add the current profile in modeline
+  (defun my-switch-kubeconfig-env (&optional kubeconfig)
+    "Set KUBECONFIG environment variable for the current session"
+    (interactive
+     (list
+      (completing-read
+       "Kubeconfig: "
+       (mapcar
+        (lambda (x)
+          (replace-regexp-in-string
+           "^config\." ""
+           (file-name-nondirectory(directory-file-name x))))
+        (directory-files-recursively
+         (expand-file-name "~/.kube") "^config\.")) nil t )))
+    (setq kubeconfig (expand-file-name (format "~/.kube/config.%s" kubeconfig)))
+    (if (file-exists-p kubeconfig)
+        (setenv "KUBECONFIG" kubeconfig)
+      (error "Cannot find kubeconfig: %s" kubeconfig)))
+
+  (provide 'setup-docker)
+#+end_src
+
 *** ~setup-files.el~
 :PROPERTIES:
 :CUSTOM_ID: h:f7b54e8c-f10e-4fd8-9c54-bc3c31b36915
