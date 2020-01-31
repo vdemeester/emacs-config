@@ -1,8 +1,4 @@
-;;; setup-files.el --- setup files related modes
-;;; Commentary:
-;;; Code:
 ;;; -*- lexical-binding: t; -*-
-
 (use-package files                      ; Core commands for files
   :bind (("<f5>" . revert-buffer)))
 
@@ -156,8 +152,3 @@ buffers."
 (bind-key "C-c f v r" #'vde/reload-dir-locals-for-all-buffers-in-this-directory)
 
 (provide 'setup-files)
-
-;; Local Variables:
-;; coding: utf-8
-;; indent-tabs-mode: nil
-;; End:
