@@ -1,8 +1,4 @@
-;;; setup-hydras.el --- setup hydras
-;;; Commentary:
-;;; Code:
 ;;; -*- lexical-binding: t; -*-
-
 (defhydra hydra-goto-line (goto-map "")
   "goto-line"
   ("g" goto-line "go")
@@ -74,8 +70,3 @@ Number of marked items: %(length (dired-get-marked-files))
 (bind-key "C-y" #'hydra-yank-pop/yank)
 
 (provide 'setup-hydras)
-
-;; Local Variables:
-;; coding: utf-8
-;; indent-tabs-mode: nil
-;; End:
