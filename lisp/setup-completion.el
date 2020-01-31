@@ -1,8 +1,4 @@
-;;; setup-completion.el -- setup completions
-;;; Commentary:
-;;; Code:
 ;;; -*- lexical-binding: t; -*-
-
 (use-package ivy
   :delight
   :custom
@@ -25,12 +21,12 @@
               ("C-c C-w p" . ivy-push-view) ;Push window configuration to `ivy-views'
               ("C-c C-w P" . ivy-pop-view)  ;Remove window configuration from `ivy-views'
               ("C-c C-w s" . ivy-switch-view) ; Switch window configuration to `ivy-views'
-	      :map ivy-occur-mode-map
-	      ("f" . forward-char)
-	      ("b" . backward-char)
-	      ("n" . ivy-occur-next-line)
-	      ("p" . ivy-occur-previous-line)
-	      ("<C-return>" . ivy-occur-press))
+              :map ivy-occur-mode-map
+              ("f" . forward-char)
+              ("b" . backward-char)
+              ("n" . ivy-occur-next-line)
+              ("p" . ivy-occur-previous-line)
+              ("<C-return>" . ivy-occur-press))
   :init
   (progn
     (bind-to-vde-map "v" #'counsel-set-variable))
@@ -135,26 +131,26 @@ Ivy-powered commands, using `ivy-prescient-re-builder'."
   :bind (:map vde-mode-map
               ("M-i" . counsel-semantic-or-imenu)
               ;;("M-i" . counsel-grep-or-swiper)
-	      ("C-x C-r" . counsel-recentf)
-	      ("C-M-y" . counsel-yank-pop)
-	      ("C-h F" . counsel-faces)       ;Overrides `Info-goto-emacs-command-node'
-	      ("C-h S" . counsel-info-lookup-symbol)
-	      ("C-c u" . counsel-unicode-char)
-	      ("C-c C" . counsel-colors-emacs) ;Alternative to `list-colors-display'
-	      ([remap execute-extended-command] . counsel-M-x)
-	      ([remap bookmark-jump] . counsel-bookmark) ;Jump to book or set it if it doesn't exist, C-x r b
-	      ([remap bookmark-set] . counsel-bookmark)  ;C-x r m
-	      ([remap find-file]  . counsel-find-file)
-	      ([remap describe-bindings] . counsel-descbinds)
-	      ([remap finder-by-keyword] . counsel-package) ;C-h p
-	      ([remap describe-variable] . counsel-describe-variable)
-	      ([remap describe-function] . counsel-describe-function)
-	      ("M-s r" . counsel-rg)
-	      ("M-s g" . counsel-git-grep)
-	      ("M-s z" . prot/counsel-fzf-rg-files)
-	      :map ivy-minibuffer-map
-	      ("C-r" . counsel-minibuffer-history)
-	      ("C-SPC" . ivy-restrict-to-matches))
+              ("C-x C-r" . counsel-recentf)
+              ("C-M-y" . counsel-yank-pop)
+              ("C-h F" . counsel-faces)       ;Overrides `Info-goto-emacs-command-node'
+              ("C-h S" . counsel-info-lookup-symbol)
+              ("C-c u" . counsel-unicode-char)
+              ("C-c C" . counsel-colors-emacs) ;Alternative to `list-colors-display'
+              ([remap execute-extended-command] . counsel-M-x)
+              ([remap bookmark-jump] . counsel-bookmark) ;Jump to book or set it if it doesn't exist, C-x r b
+              ([remap bookmark-set] . counsel-bookmark)  ;C-x r m
+              ([remap find-file]  . counsel-find-file)
+              ([remap describe-bindings] . counsel-descbinds)
+              ([remap finder-by-keyword] . counsel-package) ;C-h p
+              ([remap describe-variable] . counsel-describe-variable)
+              ([remap describe-function] . counsel-describe-function)
+              ("M-s r" . counsel-rg)
+              ("M-s g" . counsel-git-grep)
+              ("M-s z" . prot/counsel-fzf-rg-files)
+              :map ivy-minibuffer-map
+              ("C-r" . counsel-minibuffer-history)
+              ("C-SPC" . ivy-restrict-to-matches))
   :init
   (progn
     (bind-to-vde-map "s" #'counsel-rg))
@@ -166,39 +162,39 @@ present directory.  If invoked from inside a version-controlled
 repository, then the corresponding root is used instead."
       (interactive)
       (let* ((process-environment
-	      (cons (concat "FZF_DEFAULT_COMMAND=rg -Sn --color never --files --no-follow --hidden")
-		    process-environment))
-	     (vc (vc-root-dir)))
-	(if dir
-	    (counsel-fzf input dir)
-	  (if (eq vc nil)
-	      (counsel-fzf input default-directory)
-	    (counsel-fzf input vc)))))
+              (cons (concat "FZF_DEFAULT_COMMAND=rg -Sn --color never --files --no-follow --hidden")
+                    process-environment))
+             (vc (vc-root-dir)))
+        (if dir
+            (counsel-fzf input dir)
+          (if (eq vc nil)
+              (counsel-fzf input default-directory)
+            (counsel-fzf input vc)))))
 
     (defun prot/counsel-fzf-dir (arg)
       "Specify root directory for `counsel-fzf'."
       (prot/counsel-fzf-rg-files ivy-text
-				 (read-directory-name
-				  (concat (car (split-string counsel-fzf-cmd))
-					  " in directory: "))))
+                                 (read-directory-name
+                                  (concat (car (split-string counsel-fzf-cmd))
+                                          " in directory: "))))
 
     (defun prot/counsel-rg-dir (arg)
       "Specify root directory for `counsel-rg'."
       (let ((current-prefix-arg '(4)))
-	(counsel-rg ivy-text nil "")))
+        (counsel-rg ivy-text nil "")))
 
     ;; TODO generalise for all relevant file/buffer counsel-*?
     (defun prot/counsel-fzf-ace-window (arg)
       "Use `ace-window' on `prot/counsel-fzf-rg-files' candidate."
       (ace-window t)
       (let ((default-directory (if (eq (vc-root-dir) nil)
-				   counsel--fzf-dir
-				 (vc-root-dir))))
-	(if (> (length (aw-window-list)) 1)
-	    (progn
-	      (find-file arg))
-	  (find-file-other-window arg))
-	(balance-windows)))
+                                   counsel--fzf-dir
+                                 (vc-root-dir))))
+        (if (> (length (aw-window-list)) 1)
+            (progn
+              (find-file arg))
+          (find-file-other-window arg))
+        (balance-windows)))
 
     ;; Pass functions as appropriate Ivy actions (accessed via M-o)
     (ivy-add-actions
@@ -380,8 +376,3 @@ repository, then the corresponding root is used instead."
   (dap-tooltip-mode))
 
 (provide 'setup-completion)
-
-;; Local Variables:
-;; coding: utf-8
-;; indent-tabs-mode: nil
-;; End:
