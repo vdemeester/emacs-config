@@ -1,8 +1,4 @@
-;;; setup-editing.el --- setup editing related mode(s)
-;;; Commentary:
-;;; Code:
 ;;; -*- lexical-binding: t; -*-
-
 (setq enable-remote-dir-locals t)
 (use-package aggressive-indent          ; Automatically indent code
   :bind ("C-c e i" . aggressive-indent-mode)
@@ -260,8 +256,3 @@ instead.  This command can then be followed by the standard
   (require 'pdf-occur))
 
 (provide 'setup-editing)
-
-;; Local Variables:
-;; coding: utf-8
-;; indent-tabs-mode: nil
-;; End:
