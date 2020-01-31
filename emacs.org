@@ -38,16 +38,31 @@ some reason I think this is a common pattern when configuring Emacs. You start b
 distribution (Doom Emacs, Spacemacs, …) or by copying configuration from all over the
 place. Slowly but surely you realize this was a mistake as you didn't learn anything, so
 you *reboot* your configuration.
+
+I'm taking [[https://protesilaos.com/][Protesilaos Stavrou]] approach on writing and configuring this file (see [[https://protesilaos.com/dotemacs/][his
+dotemacs]]), although I am not loading it directly. I prefer using the [[https://orgmode.org/manual/tangle.html][tangle]] feature of
+=org-mode=, allowing me to document my configuration but generating final ~.el~ files that
+I can then load and/or pre-compile, without the need to load =org= first.
+
 * Legacy
+:PROPERTIES:
+:CUSTOM_ID: h:66d47486-8c74-4028-a9c7-8cfe75c07e1a
+:END:
 
 This holds legacy code from the previous configuration (without org-mode). This will
 slowly but surely move into an org-mode header and or disappear.
 
 ** Configurations
+:PROPERTIES:
+:CUSTOM_ID: h:2080e917-9414-4a08-8fb8-f3cdbedf8642
+:END:
 
 These are the initial configuration files to be imported in this file slowly but surely.
 
 *** ~early-init.el~
+:PROPERTIES:
+:CUSTOM_ID: h:260398ce-c7cd-418e-9eb2-f296fd054c30
+:END:
 
 #+begin_src emacs-lisp :tangle early-init.el
   ;;; -*- lexical-binding: t; -*-
@@ -61,6 +76,9 @@ These are the initial configuration files to be imported in this file slowly but
 #+end_src
 
 *** ~init.el~
+:PROPERTIES:
+:CUSTOM_ID: h:7a634a4a-7d15-4c66-b65d-8b5a682fe029
+:END:
 
 #+begin_src emacs-lisp :tangle init.el
   ;;; -*- lexical-binding: t; -*-
@@ -281,6 +299,9 @@ These are the initial configuration files to be imported in this file slowly but
 #+end_src
 
 *** ~setup-browser.el~
+:PROPERTIES:
+:CUSTOM_ID: h:79089a4f-0e9c-428c-9269-9819c139f988
+:END:
 
 #+begin_src emacs-lisp :tangle lisp/setup-browser.el
   ;;; -*- lexical-binding: t; -*-
@@ -346,6 +367,9 @@ These are the initial configuration files to be imported in this file slowly but
 #+end_src
 
 *** ~setup-go.el~
+:PROPERTIES:
+:CUSTOM_ID: h:64e5b918-3d56-40ba-a07f-e56294f1575a
+:END:
 
 #+begin_src emacs-lisp :tangle lisp/setup-go.el
   ;;; -*- lexical-binding: t; -*-
@@ -376,6 +400,9 @@ These are the initial configuration files to be imported in this file slowly but
 #+end_src
 
 *** ~setup-nix.el~
+:PROPERTIES:
+:CUSTOM_ID: h:f82d7d6f-55bf-495d-b71f-dd4719ece06e
+:END:
 
 #+begin_src emacs-lisp :tangle lisp/setup-nix.el
   ;;; -*- lexical-binding: t; -*-
@@ -394,6 +421,9 @@ These are the initial configuration files to be imported in this file slowly but
 #+end_src
 
 *** ~setup-org.el~
+:PROPERTIES:
+:CUSTOM_ID: h:b004ecf8-04cf-4671-bd41-6ecdff14887f
+:END:
 
 #+begin_src emacs-lisp :tangle lisp/setup-org.el
   ;;; -*- lexical-binding: t; -*-
@@ -948,6 +978,9 @@ These are the initial configuration files to be imported in this file slowly but
 #+end_src
 
 *** ~setup-style.el~
+:PROPERTIES:
+:CUSTOM_ID: h:3261211e-0ffb-44de-8a35-f3612d333c68
+:END:
 
 #+begin_src emacs-lisp :tangle lisp/setup-style.el
   ;;; -*- lexical-binding: t; -*-
@@ -1162,6 +1195,9 @@ These are the initial configuration files to be imported in this file slowly but
 #+end_src
 
 *** ~setup-vcs.el~
+:PROPERTIES:
+:CUSTOM_ID: h:90edb897-d72a-4433-86c7-f6f446e9ed97
+:END:
 
 #+begin_src emacs-lisp :tangle lisp/setup-vcs.el
   ;;; -*- lexical-binding: t; -*-
@@ -1286,6 +1322,9 @@ These are the initial configuration files to be imported in this file slowly but
 #+end_src
 
 *** ~setup-web.el~
+:PROPERTIES:
+:CUSTOM_ID: h:7b53ca52-4212-4b40-bb15-d320ecfcf2d5
+:END:
 
 #+begin_src emacs-lisp :tangle lisp/setup-web.el
   ;;; -*- lexical-binding: t; -*-
@@ -1327,8 +1366,14 @@ These are the initial configuration files to be imported in this file slowly but
 
 
 ** External libraries
+:PROPERTIES:
+:CUSTOM_ID: h:ce167134-1188-4ffb-9d94-61ea13440551
+:END:
 
 *** ~gotest-ui.el~
+:PROPERTIES:
+:CUSTOM_ID: h:0166b379-751d-4d9d-8f7e-ac33fde2b80b
+:END:
 
 From [[https://github.com/antifuchs/gotest-ui-mode/][antifuchs/gotest-ui-mode]].
 
