@@ -1,11 +1,4 @@
-;;; setup-vde-mode.el --- define a personal minor mode
-;;; Commentary:
-;;;
-;;; Main use is to have my key bindings have the highest priority
-;;;
-;;; Code
 ;;; -*- lexical-binding: t; -*-
-
 (defvar vde-special-keymap-prefix (kbd "C-x m")
   "`vde-mode' keymap prefix.
 Overrides the default binding for `compose-mail'.")
@@ -16,8 +9,8 @@ Overrides the default binding for `compose-mail'.")
 (fset 'vde-mode-special-map vde-mode-special-map)
 
 (defvar vde-mode-map (let ((map (make-sparse-keymap)))
-                        (define-key map vde-special-keymap-prefix 'vde-mode-special-map)
-                        map)
+                       (define-key map vde-special-keymap-prefix 'vde-mode-special-map)
+                       map)
   "Keymap for `vde-mode'.")
 
 ;;;###autoload
@@ -63,5 +56,4 @@ USAGE: (unbind-from-vde-map \"C-x m f\")
                                     'face 'font-lock-function-name-face))))
 
 (provide 'setup-vde-mode)
-
 ;; Minor mode tutorial: http://nullprogram.com/blog/2013/02/06/
