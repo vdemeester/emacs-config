@@ -22,3 +22,7 @@ custom.el
 # wat?
 history
 projectile-bookmarks.eld
+
+# dap-mode
+.dap-breakpoints
+.extension
