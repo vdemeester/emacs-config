@@ -41,8 +41,12 @@ you *reboot* your configuration.
 
 I'm taking [[https://protesilaos.com/][Protesilaos Stavrou]] approach on writing and configuring this file (see [[https://protesilaos.com/dotemacs/][his
 dotemacs]]), although I am not loading it directly. I prefer using the [[https://orgmode.org/manual/tangle.html][tangle]] feature of
-=org-mode=, allowing me to document my configuration but generating final ~.el~ files that
-I can then load and/or pre-compile, without the need to load =org= first.
+=org-mode= instead of loading it using ~org-babel~ function. This allows me to document my
+configuration and generating final(s) ~.el~ files. Those files can then load and/or
+pre-compile, without the need to load =org= first. It also means that I can add code
+pieces in there that won't be /tangle/, like usage example ; and I also can use this to
+generate any additional file I need, whatever the programming language they are written
+in.
 
 * Legacy
 :PROPERTIES:
