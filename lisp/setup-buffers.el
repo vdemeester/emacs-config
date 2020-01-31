@@ -1,8 +1,4 @@
-;;; setup-buffers.el --- setup buffer related function and mode
-;;; Commentary:
-;;; Code:
 ;;; -*- lexical-binding: t; -*-
-
 ;; Don't let the cursor go into minibuffer prompt
 (let ((default (eval (car (get 'minibuffer-prompt-properties 'standard-value))))
       (dont-touch-prompt-prop '(cursor-intangible t)))
@@ -147,8 +143,3 @@
                       (ibuffer-do-sort-by-filename/process)))))
 
 (provide 'setup-buffers)
-
-;; Local Variables:
-;; coding: utf-8
-;; indent-tabs-mode: nil
-;; End:

@@ -366,6 +366,159 @@ These are the initial configuration files to be imported in this file slowly but
   (provide 'setup-browser)
 #+end_src
 
+*** ~setup-buffers.el~
+:PROPERTIES:
+:CUSTOM_ID: h:3acb943f-4a00-432a-8f94-7da51a5c757c
+:END:
+
+#+begin_src emacs-lisp :tangle lisp/setup-buffers.el
+  ;;; -*- lexical-binding: t; -*-
+  ;; Don't let the cursor go into minibuffer prompt
+  (let ((default (eval (car (get 'minibuffer-prompt-properties 'standard-value))))
+        (dont-touch-prompt-prop '(cursor-intangible t)))
+    (setq minibuffer-prompt-properties
+          (append default dont-touch-prompt-prop))
+    (add-hook 'minibuffer-setup-hook #'cursor-intangible-mode))
+
+  ;; Allow to read from minibuffer while in minibuffer.
+  (setq enable-recursive-minibuffers t)
+
+  ;; Show the minibuffer depth (when larger than 1)
+  (minibuffer-depth-indicate-mode 1)
+
+  (use-package savehist                   ; Save minibuffer history
+    :init (savehist-mode t)
+    :custom
+    (history-length 1000)
+    (savehist-save-minibuffer-history t)
+    (savehist-autosave-interval 180)
+    :config
+    (savehist-mode 1))
+
+  (use-package emacs
+    :init
+    ;; Configure `display-buffer' behaviour for some special buffers
+    (setq display-buffer-alist
+          '(;; bottom side window
+            ("\\*e?shell.*"
+             (display-buffer-in-side-window)
+             (window-height . 0.25)
+             (side . bottom)
+             (slot . -1))
+            ("\\*v?term.*"
+             (display-buffer-in-side-window)
+             (window-height . 0.25)
+             (side . bottom)
+             (slot . -1))
+            ("\\*\\(Backtrace\\|Warnings\\|Compile-Log\\|[Hh]elp\\|Messages\\)\\*"
+             (display-buffer-in-side-window)
+             (window-height . 0.25)
+             (side . bottom)
+             (slot . 0))
+            ("\\*\\(compilation\\|go test\\).*"
+             (display-buffer-in-side-window)
+             (window-height . 0.25)
+             (side . bottom)
+             (slot . 0))
+            ("\\*\\(ielm\\).*"
+             (display-buffer-in-side-window)
+             (window-height . 0.25)
+             (side . bottom)
+             (slot . 1))
+            ;; right side window
+            ("\\*wclock*"
+             (display-buffer-in-side-window)
+             (window-width . 0.333)
+             (side . right)
+             (slot . -1))
+            ("\\*undo-tree*"
+             (display-buffer-in-side-window)
+             (window-width . 0.333)
+             (side . right)
+             (slot . -1))
+            ("\\*\\(Flycheck\\|Package-Lint\\).*"
+             (display-buffer-in-side-window)
+             (window-width . 0.333)
+             (side . right)
+             (slot . 0)
+             (window-parameters . ((no-other-window . t)
+                                   (mode-line-format . (" "
+                                                        mode-line-buffer-identification)))))
+            ("\\*Faces\\*"
+             (display-buffer-in-side-window)
+             (window-width . 0.333)
+             (side . right)
+             (slot . 1)
+             (window-parameters . ((no-other-window . t)
+                                   (mode-line-format . (" "
+                                                        mode-line-buffer-identification)))))
+            ("\\*Custom.*"
+             (display-buffer-in-side-window)
+             (window-width . 0.333)
+             (side . right)
+             (slot . 2))))
+    :bind (("<f7>" . window-toggle-side-windows)))
+
+  (use-package uniquify                   ; Unique buffer names
+    :custom
+    (uniquify-buffer-name-style 'post-forward)
+    (uniquify-separator ":")
+    (uniquify-ignore-buffers-re "^\\*")
+    (uniquify-after-kill-buffer-p t))
+
+  (use-package ibuf-ext                   ; Extensions for Ibuffer
+    :config
+    ;; Do not show empty groups
+    (setq ibuffer-show-empty-filter-groups nil))
+
+  (use-package ibuffer                    ; Buffer management
+    :custom
+    (ibuffer-expert t)
+    (ibuffer-filter-group-name-face 'font-lock-doc-face)
+    (ibuffer-default-sorting-mode 'filename/process)
+    (ibuffer-use-header-line t)
+    :bind (("C-x C-b" . ibuffer)
+           ([remap list-buffers] . ibuffer))
+    :config
+    ;; Use human readable Size column instead of original one
+    (define-ibuffer-column size-h
+      (:name "Size" :inline t)
+      (cond
+       ((> (buffer-size) 1000000) (format "%7.1fM" (/ (buffer-size) 1000000.0)))
+       ((> (buffer-size) 1000) (format "%7.1fk" (/ (buffer-size) 1000.0)))
+       (t (format "%8d" (buffer-size)))))
+
+    (setq ibuffer-formats
+          '((mark modified read-only " "
+                  (name 18 18 :left :elide)
+                  " "
+                  (size-h 9 -1 :right)
+                  " "
+                  (mode 16 16 :left :elide)
+                  " "
+                  filename-and-process)
+            (mark modified read-only " "
+                  (name 18 18 :left :elide)
+                  " "
+                  (size 9 -1 :right)
+                  " "
+                  (mode 16 16 :left :elide)
+                  " "
+                  (vc-status 16 16 :left)
+                  " "
+                  filename-and-process))))
+
+  (use-package ibuffer-vc                 ; Group buffers by VC project and status
+    :defer 2
+    :init (add-hook 'ibuffer-hook
+                    (lambda ()
+                      (ibuffer-vc-set-filter-groups-by-vc-root)
+                      (unless (eq ibuffer-sorting-mode 'filename/process)
+                        (ibuffer-do-sort-by-filename/process)))))
+
+  (provide 'setup-buffers)
+#+end_src
+
 *** ~setup-dired.el~
 :PROPERTIES:
 :CUSTOM_ID: h:66b435e6-b66c-4d39-9414-d13ce9ae5dd9
