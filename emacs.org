@@ -67,6 +67,86 @@ General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this file.  If not, see <http://www.gnu.org/licenses/>.
 
+* TODO Base settings
+
+This section contains configurations that are needed prior to the setup of everything
+else. Anything that needs to be configured first should be in there, this includes the
+~init.el~ and ~early-init.el~ files content.
+
+Starting with Emacs 27, an =early-init.el= file can be used to do early configuration
+and optimization.
+
+#+begin_quote
+Emacs can now be configured using an early init file. The file is called ~early-init.el~,
+in ~user-emacs-directory~. It is loaded very early in the startup process: before
+graphical elements such as the tool bar are initialized, and before the package manager is
+initialized. The primary purpose is to allow customizing how the package system is
+initialized given that initialization now happens before loading the regular init file
+(see below).
+
+We recommend against putting any customizations in this file that don't need to be set up
+before initializing installed add-on packages, because the early init file is read too
+early into the startup process, and some important parts of the Emacs session, such as
+'window-system' and other GUI features, are not yet set up, which could make some
+customization fail to work.
+#+end_quote
+
+We can use this to our advantage and optimize the initial loading of emacs.
+
+- Before Emacs 27, the init file was responsible for initializing the package manager by
+  calling `package-initialize'.  Emacs 27 changed the default behavior: It now calls
+  `package-initialize' before loading the init file.
+
+  #+begin_src emacs-lisp :tangle early-init.el
+    (setq package-enable-at-startup nil)
+  #+end_src
+
+- Let's inhibit resizing the frame at early stage.
+
+  #+begin_src emacs-lisp :tangle early-init.el
+    (setq frame-inhibit-implied-resize)
+  #+end_src
+
+- I never use the /menu-bar/, or the /tool-bar/ or even the /scroll-bar/, so we can safely
+  disable those very very early.
+
+  #+begin_src emacs-lisp :tangle early-init.el
+    (menu-bar-mode -1)
+    (tool-bar-mode -1)
+    (scroll-bar-mode -1)
+  #+end_src
+
+- Finally we can try to avoid garbage collection at startup. The garbage collector can
+  easily double startup time, so we suppress it at startup by turning up ~gc-cons-threshold~
+  (and perhaps ~gc-cons-percentage~) temporarily.
+
+  #+begin_src emacs-lisp :tangle early-init.el
+    (setq gc-cons-threshold 402653184
+          gc-cons-percentage 0.6)
+  #+end_src
+
+  However, it is important to reset it eventually. Not doing so will cause garbage
+  collection freezes during long-term interactive use. Conversely, a ~gc-cons-threshold~
+  that is too small will cause stuttering.
+
+  #+begin_src emacs-lisp :tangle early-init.el
+    (add-hook 'after-init-hook
+              `(lambda ()
+                 (setq gc-cons-threshold 16777216 ; 16mb
+                       gc-cons-percentage 0.1)
+                 (garbage-collect)) t)
+  #+end_src
+
+One thing though, I am currently not necessarily running Emacs 27, so I am going to need
+to have the same configuration in ~init.el~ for a little bit of time.
+
+* TODO Selection candidates and search methods
+
+* TODO Directory, buffer and window management
+
+* TODO Applications and utilities
+
+* TODO Programming
 * Legacy
 :PROPERTIES:
 :CUSTOM_ID: h:66d47486-8c74-4028-a9c7-8cfe75c07e1a
@@ -81,22 +161,6 @@ slowly but surely move into an org-mode header and or disappear.
 :END:
 
 These are the initial configuration files to be imported in this file slowly but surely.
-
-*** ~early-init.el~
-:PROPERTIES:
-:CUSTOM_ID: h:260398ce-c7cd-418e-9eb2-f296fd054c30
-:END:
-
-#+begin_src emacs-lisp :tangle early-init.el
-  ;;; -*- lexical-binding: t; -*-
-  ;; Do not initialise the package manager.  This is done in `init.el'.
-  (setq package-enable-at-startup nil)
-
-  ;; Do not resize the frame at this early stage.
-  (setq frame-inhibit-implied-resize)
-
-  (provide 'early-init)
-#+end_src
 
 *** ~init.el~
 :PROPERTIES:
