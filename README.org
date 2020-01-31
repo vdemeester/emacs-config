@@ -5,8 +5,7 @@ My emacs setup is tested to work only with emacs 26.1 and newer versions. If you
 older versions, I would recommend that you upgrade to the [[https://www.gnu.org/software/emacs/download.html][latest available stable version]].
 #+END_QUOTE
 
-**Warning: this repository is being /transformed/ a bit: slowly migrating to literate
-programming ([[./emacs.org][emacs.org]]) and most likely moving into [[https://github.com/vdemeester/home][=home=]] at some point**
+*Warning: this repository is being /transformed/ a bit: slowly migrating to literate programming ([[./emacs.org][emacs.org]]) and most likely moving into [[https://github.com/vdemeester/home][=home=]] at some point*
 
 * Few notes
 
