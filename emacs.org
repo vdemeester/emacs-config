@@ -107,7 +107,7 @@ We can use this to our advantage and optimize the initial loading of emacs.
 - Let's inhibit resizing the frame at early stage.
 
   #+begin_src emacs-lisp :tangle early-init.el
-    (setq frame-inhibit-implied-resize)
+    (setq frame-inhibit-implied-resize t)
   #+end_src
 
 - I never use the /menu-bar/, or the /tool-bar/ or even the /scroll-bar/, so we can safely
