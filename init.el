@@ -1,3 +1,6 @@
+;;; -*- lexical-binding: t; -*-
+(defconst emacs-start-time (current-time))
+
 (when (< emacs-major-version 27)
   (setq package-enable-at-startup nil)
 
@@ -17,8 +20,6 @@
                      gc-cons-percentage 0.1)
                (garbage-collect)) t))
 
-;;; -*- lexical-binding: t; -*-
-(defconst emacs-start-time (current-time))
 (defvar file-name-handler-alist-old file-name-handler-alist)
 
 (setq file-name-handler-alist nil

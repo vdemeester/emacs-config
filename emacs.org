@@ -145,6 +145,9 @@ One thing though, I am currently not necessarily running Emacs 27, so I am going
 to have the same configuration in ~init.el~ for a little bit of time.
 
 #+begin_src emacs-lisp :tangle init.el
+  ;;; -*- lexical-binding: t; -*-
+  (defconst emacs-start-time (current-time))
+
   (when (< emacs-major-version 27)
     (setq package-enable-at-startup nil)
 
@@ -206,8 +209,6 @@ These are the initial configuration files to be imported in this file slowly but
 :END:
 
 #+begin_src emacs-lisp :tangle init.el
-  ;;; -*- lexical-binding: t; -*-
-  (defconst emacs-start-time (current-time))
   (defvar file-name-handler-alist-old file-name-handler-alist)
 
   (setq file-name-handler-alist nil
