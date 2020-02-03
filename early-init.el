@@ -5,6 +5,7 @@
 (menu-bar-mode -1)
 (tool-bar-mode -1)
 (scroll-bar-mode -1)
+(horizontal-scroll-bar-mode -1)
 
 (setq gc-cons-threshold 402653184
       gc-cons-percentage 0.6)
@@ -14,5 +15,3 @@
              (setq gc-cons-threshold 16777216 ; 16mb
                    gc-cons-percentage 0.1)
              (garbage-collect)) t)
-
-(provide 'early-init)

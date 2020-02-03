@@ -1,20 +1,29 @@
+(when (< emacs-major-version 27)
+  (setq package-enable-at-startup nil)
+
+  (setq frame-inhibit-implied-resize)
+
+  (menu-bar-mode -1)
+  (tool-bar-mode -1)
+  (scroll-bar-mode -1)
+  (horizontal-scroll-bar-mode -1)
+
+  (setq gc-cons-threshold 402653184
+        gc-cons-percentage 0.6)
+
+  (add-hook 'after-init-hook
+            `(lambda ()
+               (setq gc-cons-threshold 16777216 ; 16mb
+                     gc-cons-percentage 0.1)
+               (garbage-collect)) t))
+
 ;;; -*- lexical-binding: t; -*-
 (defconst emacs-start-time (current-time))
 (defvar file-name-handler-alist-old file-name-handler-alist)
 
-(setq package-enable-at-startup nil
-      file-name-handler-alist nil
+(setq file-name-handler-alist nil
       message-log-max 16384
-      gc-cons-threshold 402653184
-      gc-cons-percentage 0.6
       auto-window-vscroll nil)
-
-(add-hook 'after-init-hook
-          `(lambda ()
-             (setq file-name-handler-alist file-name-handler-alist-old
-                   gc-cons-threshold 800000
-                   gc-cons-percentage 0.1)
-             (garbage-collect)) t)
 
 (let ((minver 25))
   (unless (>= emacs-major-version minver)
