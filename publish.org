@@ -1,0 +1,236 @@
+#+SETUPFILE: ./_setup.org
+#+TITLE: Publish dotemacs notes using Emacs org-mode
+
+This document is a literate version of my publishing /script/ on publishing my dotemacs
+notes (that uses [[https://orgmode.org][=org-mode=]]).
+
+First let's import required libraries, which are =org= related.
+
+#+begin_src emacs-lisp :tangle yes
+  (require 'org)
+  (require 'ox)
+  (require 'ox-publish)
+  (require 'ol-man)
+  (require 'ol-git-link)
+#+end_src
+
+To get syntax coloring on other mode than ~emacs-lisp~, we need to load them too[fn:1].
+
+#+begin_src emacs-lisp :tangle yes
+  (require 'go-mode)
+  (require 'css-mode)
+  (require 'python-mode)
+  (require 'nix-mode)
+  (require 'ob-http)
+  (require 'yaml-mode)
+#+end_src
+
+Now let's define variables to use later on. Those variables are where to find the project
+we want to publish and where to publish theme.
+
+#+begin_src emacs-lisp :tangle yes
+  (setq site-directory "~/desktop/sites/")
+
+  (setq org-default-publish-sbr (expand-file-name "sbr.pm" site-directory))
+  (setq org-default-publish-dotemacs (expand-file-name "dotemacs" org-default-publish-sbr))
+#+end_src
+
+We want to republish everything every time — mainly to be used on CI. So we're telling
+=org-mode= to disable the timestamp-based cache.
+
+#+begin_src emacs-lisp :tangle yes
+  (setq org-publish-use-timestamps-flag nil)
+#+end_src
+
+Let's also customize a bit the /style/ of what =org-mode= will generate.
+
+- Set the default html coding system 👼
+  #+begin_src emacs-lisp :tangle yes
+    (setq org-html-coding-system 'utf-8-unix)
+  #+end_src
+- Let's disable the default script and style "includes".
+  #+begin_src emacs-lisp :tangle yes
+  (setq org-export-html-style-include-scripts nil
+        org-export-html-style-include-default nil)
+  #+end_src
+- Let's also make sure the =#+begin_src= blocks are colorized, *but* using the css instead
+  of inlude style.
+  #+begin_src emacs-lisp :tangle yes
+  (setq org-src-fontify-natively t)
+  ;; (setq org-html-htmlize-output-type 'inline-css) ;; default
+  (setq org-html-htmlize-output-type 'css)
+  ;; (setq org-html-htmlize-font-prefix "") ;; default
+  (setq org-html-htmlize-font-prefix "org-")
+  #+end_src
+- Customize how we export ~org-mode~ drawers
+  #+begin_src emacs-lisp :tangle yes
+    (defun my-org-export-format-drawer (name content)
+      (concat "<div class=\"drawer " (downcase name) "\">\n"
+              "<h6>" (capitalize name) "</h6>\n"
+              content
+              "\n</div>"))
+    (setq org-html-format-drawer-function 'my-org-export-format-drawer)
+  #+end_src
+- And disable ~org-babel~ from trying to evaluate on export
+  #+begin_src emacs-lisp :tangle yes
+    (setq org-export-use-babel nil)
+  #+end_src
+
+I want [[https://writepermission.com/org-blogging-clickable-headlines.html][clickable headlines]], so let's define a ~html-format-headline-function~ for the
+exporter to use. Not tangle currently as it doesn't work 😓.
+
+#+begin_src emacs-lisp :tangle no
+  (defun my-org-html-format-headline-function (todo todo-type priority text tags info)
+    "Format a headline with a link to itself."
+    (let* ((headline (get-text-property 0 :parent text))
+           (id (or (org-element-property :CUSTOM_ID headline)
+                   (org-export-get-reference headline info)
+                   (org-element-property :ID headline)))
+           (link (if id
+                     (format "<a href=\"#%s\">%s</a>" id text)
+                   text)))
+      (org-html-format-headline-default-function todo todo-type priority link tags info)))
+  (setq org-html-format-headline-function 'my-org-html-format-headline-function)
+#+end_src
+
+I also use some custom links… They are define in my [[https://github.com/vdemeester/emacs-config][emacs configuration]] repository :
+[[https://github.com/vdemeester/emacs-config/blob/master/lisp/setup-org.el][~setup-org.el~]].
+
+#+begin_src emacs-lisp :tangle yes
+  (org-link-set-parameters "tag"
+                           :follow #'endless/follow-tag-link)
+  (defun endless/follow-tag-link (tag)
+    "Display a list of TODO headlines with tag TAG.
+  With prefix argument, also display headlines without a TODO keyword."
+    (org-tags-view (null current-prefix-arg) tag))
+
+  (org-link-set-parameters "grep"
+                           :follow #'vde/follow-grep-link
+                           :face '(:foreground "DarkRed" :underline t))
+  (defun vde/follow-grep-link (regexp)
+    "Run `rgrep' with REGEXP and FOLDER as argument,
+  like this : [[grep:REGEXP:FOLDER]]."
+    (setq expressions (split-string regexp ":"))
+    (setq exp (nth 0 expressions))
+    (grep-compute-defaults)
+    (if (= (length expressions) 1)
+        (progn
+          (rgrep exp "*" (expand-file-name "./")))
+      (progn
+        (setq folder (nth 1 expressions))
+        (rgrep exp "*" (expand-file-name folder))))
+    )
+
+  (org-link-set-parameters "rg"
+                           :follow #'vde/follow-rg-link
+                           :face '(:foreground "DarkGreen" :underline t))
+  (defun vde/follow-rg-link (regexp)
+    "Run `ripgrep-regexp` with REXEP and FOLDER as argument,
+  like this : [[pt:REGEXP:FOLDER]]"
+    (setq expressions (split-string regexp ":"))
+    (setq exp (nth 0 expressions))
+    (if (= (length expressions) 1)
+        (progn
+          (ripgrep-regexp exp (expand-file-name "./")))
+      (progn
+        (setq folder (nth 1 expressions))
+        (ripgrep-regexp exp (file-name-as-directory (expand-file-name folder)))))
+    )
+
+  (org-link-set-parameters "gh"
+                           :follow #'vde/follow-gh-link
+                           :export #'vde/org-gh-export
+                           :face '(:foreground "DimGrey" :underline t))
+  (defun vde/org-gh-export (link description format)
+    "Export a github page link from Org files."
+    (let ((path (vde/gh-get-url link))
+          (desc (or description link)))
+      (cond
+       ((eq format 'html) (format "<a hrefl=\"_blank\" href=\"%s\">%s</a>" path desc))
+       ((eq format 'latex) (format "\\href{%s}{%s}" path desc))
+       ((eq format 'texinfo) (format "@uref{%s,%s}" path desc))
+       ((eq format 'ascii) (format "%s (%s)" desc path))
+       (t path))))
+  (defun vde/follow-gh-link (issue)
+    "Browse github issue/pr specified"
+    (browse-url (vde/gh-get-url issue)))
+
+  (defun vde/gh-get-url (path)
+    "Translate org-mode link `gh:foo/bar#1' to github url."
+    (setq expressions (split-string path "#"))
+    (setq project (nth 0 expressions))
+    (setq issue (nth 1 expressions))
+    (format "https://github.com/%s/issues/%s" project issue))
+
+  (org-link-set-parameters
+   "org"
+   :complete (lambda () (+org-link-read-file "org" org-directory))
+   :follow   (lambda (link) (find-file (expand-file-name link org-directory)))
+   :face     (lambda (link)
+               (if (file-exists-p (expand-file-name link org-directory))
+                   'org-link
+                 'error)))
+  (defun +org-link-read-file (key dir)
+    (let ((file (read-file-name (format "%s: " (capitalize key)) dir)))
+      (format "%s:%s"
+              key
+              (file-relative-name file dir))))
+#+end_src
+
+Now, let's define projects.
+
+#+begin_src emacs-lisp :tangle yes
+  (setq org-publish-project-alist
+        `(("dotemacs-org"
+           :base-directory "."
+           :base-extension "org\\|txt"
+           :publishing-directory ,org-default-publish-dotemacs
+           :recursive t
+           :publishing-function org-html-publish-to-html
+           :headline-levels 4
+           :auto-preamble t
+           :auto-sitemap t
+           :with-footnotes t
+           :with-toc nil
+           :with-drawers t
+           :exclude "_setup.org\\|sbr.pm\\|.extension\\|elpa"
+           :html-checkbox-type 'html
+           :html-preamble "<div id=\"nav\">
+  <ul>
+  <li><a href=\"/\" class=\"home\">Home</a></li>
+  <li><a href=\"./\" class=\"index\">Index</a></li>
+  <li><a href=\"../\" class=\"up\">Up</a></li>
+  </ul>
+  </div>"
+           :html-postamble "<p class=\"creator\">%c</p><p class=\"postamble\">%a. Last Updated %C (exported %T).</p>")
+          ("dotemacs-static"
+           :base-directory "."
+           :base-extension "html\\|xml\\|css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg\\|swf\\|md\\|tar\\|gz\\|xz\\|zip\\|csv"
+           :exclude ".extension\\|elpa"
+           :publishing-directory ,org-default-publish-dotemacs
+           :recursive t
+           :publishing-function org-publish-attachment
+           )
+          ("dotemacs" :components ("dotemacs-org" "dotemacs-static"))
+          ))
+#+end_src
+
+I want the ~sites~ folder to be cleaned too, so let's define a function to be called that
+will clean a folder and publish.
+
+#+begin_src emacs-lisp :tangle yes
+  (defun clean-and-publish ()
+    "Clean the site folder and publish all projects"
+    (delete-directory org-default-publish-dotemacs t)
+    (org-publish-all))
+#+end_src
+
+Let's now create a ~Makefile~ so that I can just run ~make publish~ to automate that.
+
+#+INCLUDE: "Makefile" src makefile
+
+The rest is just /automation/ 👼. The ~~/desktop/sites/~ folder is synced across a bunch
+of my machines, including my servers (using [[https://syncthing.net/][syncthing]]). This means almost as soon as I run
+this publish script, it will be available.
+
+[fn:1] Otherwise, emacs doesn't apply any syntax coloring.

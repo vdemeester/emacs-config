@@ -1,3 +1,4 @@
+#+SETUPFILE: ./_setup.org
 #+TITLE: Vincent Demeester's .emacs.d
 
 * Overview

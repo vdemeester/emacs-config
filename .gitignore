@@ -26,3 +26,7 @@ projectile-bookmarks.eld
 # dap-mode
 .dap-breakpoints
 .extension
+
+# publishing
+publish.el
+sitemap.org
