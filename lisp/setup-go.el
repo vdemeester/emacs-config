@@ -22,4 +22,11 @@
 (use-package dap-go
   :after dap-mode)
 
+(use-package gotest-ui
+  :after go-mode
+  :bind (:map go-mode-map
+              ("C-c t t" . gotest-ui-current-test)
+              ("C-c t f" . gotest-ui-current-file)
+              ("C-c t p" . gotest-ui-current-project)))
+
 (provide 'setup-go)
