@@ -102,6 +102,7 @@
   (setq org-fontify-whole-heading-line t)
   (setq org-src-fontify-natively t)
   (setq org-src-tab-acts-natively t)
+  (setq org-edit-src-content-indentation 0)
 
   (setq org-pretty-entities t)
   (setq org-insert-heading-respect-content t)
