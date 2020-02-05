@@ -4,7 +4,7 @@
 (when (< emacs-major-version 27)
   (setq package-enable-at-startup nil)
 
-  (setq frame-inhibit-implied-resize t)
+  (setq frame-inhibit-implied-resize)
 
   (menu-bar-mode -1)
   (tool-bar-mode -1)

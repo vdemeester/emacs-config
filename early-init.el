@@ -1,6 +1,6 @@
 (setq package-enable-at-startup nil)
 
-(setq frame-inhibit-implied-resize)
+(setq frame-inhibit-implied-resize t)
 
 (menu-bar-mode -1)
 (tool-bar-mode -1)
