@@ -4,7 +4,7 @@
 (when (< emacs-major-version 27)
   (setq package-enable-at-startup nil)
 
-  (setq frame-inhibit-implied-resize)
+  (setq frame-inhibit-implied-resize t)
 
   (menu-bar-mode -1)
   (tool-bar-mode -1)
@@ -184,6 +184,7 @@
 (use-package setup-shells)
 (use-package setup-compile)
 (use-package setup-org)
+(use-package setup-gnus)
 ;; Programming languages
 (use-package setup-nix)
 (use-package setup-go)

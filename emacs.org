@@ -152,7 +152,7 @@ to have the same configuration in ~init.el~ for a little bit of time.
 (when (< emacs-major-version 27)
   (setq package-enable-at-startup nil)
 
-  (setq frame-inhibit-implied-resize)
+  (setq frame-inhibit-implied-resize t)
 
   (menu-bar-mode -1)
   (tool-bar-mode -1)
@@ -183,6 +183,186 @@ to have the same configuration in ~init.el~ for a little bit of time.
 * TODO Applications and utilities
 :PROPERTIES:
 :CUSTOM_ID: h:9bb3e4bd-c13a-4311-8af7-588fb0386a03
+:END:
+
+This section includes configurations for programs like email clients, messages, knowledge
+database and other /applications/ that runs in Emacs. Most of those should be the "killer
+apps" of the Emacs ecosystem.
+
+** TODO Org-mode (personal information manager)
+:PROPERTIES:
+:CUSTOM_ID: h:e369ccf4-2d99-418d-97a2-f9aa263f26d6
+:END:
+
+** TODO Email and newsgroup
+:PROPERTIES:
+:CUSTOM_ID: h:89b8f7f7-5eeb-410d-8f0d-babad1b28a7c
+:END:
+
+I have been back and forth on using email inside Emacs, from ~mu4e~ to ~notmuch~. In the
+past I have used Thunderbird, and for a while now, I have been only using webmail UI for
+emails (and mobile apps of course). I recently re-discover [[https://www.gnus.org/][Gnus]] as a mail reader, so my
+current setup is the following:
+
+- [[https://www.gnus.org/][Gnus]], the Emacs built-in newsreader and email client.
+- ~notmuch~ to be able to browse my mail backups (using ~isync~, …), see [[https://sbr.pm/technical/mail-setup.html][here]] for the
+  current setup.
+
+One of the main reason to rely on [[https://www.gnus.org/][Gnus]] instead of ~notmuch~ for the mails, is that I don't
+need to worry about some complex mechanism for syncing, storing and indexing email. I
+still use ~notmuch~ with ~isync~ to backup my mails somewhere, with the possibility to
+search them.
+
+*** TODO Base email settings
+:PROPERTIES:
+:CUSTOM_ID: h:8d499f24-24f4-415c-a5fd-62332a68544f
+:END:
+
+Before configuring any email client, we need to establish some essentials: who we are,
+where our credentials are stored and whether encryption is supported.
+
+#+begin_src emacs-lisp :tangle lisp/setup-gnus.el
+(use-package auth-source
+  :config
+  (setq auth-sources '("~/.authinfo.gpg" "~/.authinfo"))
+  (setq user-full-name "Vincent Demeester")
+  (setq user-mail-address "vincent@sbr.pm"))
+
+(use-package epa-file
+  :config
+  (setq epa-file-cache-passphrase-for-symmetric-encryption t)
+  :init
+  (epa-file-enable))
+#+end_src
+
+
+*** TODO Gnus
+:PROPERTIES:
+:CUSTOM_ID: h:ec3104a8-af27-43a0-a74c-21e76cda465b
+:END:
+
+The documentation describes Gnus as the /"coffee-brewing, all singing, all dancing,
+kitchen sink newsreader"/. It is massive, which means the learning curve is more or less
+similar to =org-mode=. You need to go slowly, starting simple and enhance your workflow
+and configuration along the way.
+
+Now some basic information on the abstractions that Gnus relies on:
+
+1. The default Gnus buffer is called "Group".  It will present you with a list of all the
+   news sources you have subscribed to.  By default, Gnus only displays messages that have
+   not been read.  The same applies for groups.  The "Group" buffer will be empty the very
+   first time you log in because you have not subscribed to anything yet.  Use =g= to
+   fetch new messages from the sources.  If you only want to refresh the group at point,
+   do it with =M-g=.
+2. The "Server" buffer contains a list with all the sources you have specified for
+   discovering news.  In my case, these are my email accounts and a Usenet server where
+   mailing lists are hosted.  To access the "Server" buffer from inside the "Group"
+   buffer, just hit the caret sign =^=.  To subscribe to an item, place the point over it
+   and hit =u=.  Do that for your email's inbox and for whatever mailing lists you intend
+   to follow.
+3. The "Summary" buffer contains all the messages of a group.  Hitting the return key over
+   a message will split the view in two, with the list above and the message below.  Use
+   =n= or =p= to move to the next or previous unread message (or =N= and =P= to just the
+   next/prev).  You access the "Summary" buffer both from the "Group" and the "Server" by
+   entering a group.
+
+**** TODO Account settings
+:PROPERTIES:
+:CUSTOM_ID: h:03ed1cad-027b-4290-895a-7b98b6406221
+:END:
+
+Let's first configure the essentials of Gnus.
+
+The =gnus-select-method= sets the default method for fetching news items. As I want to
+read mail from several accounts in addition to following Usenet sources, I choose to set
+it to nil.
+
+The =gnus-secondary-select-methods= is where my accounts are specified. Each =nnimap= list
+points to a specific line in my =authinfo.gpg= file. My emails all use the same server so
+this method allows me to specify the username (email) and password combination for each of
+them /without/ making this information public.  I am not sure whether the =nnimap-stream=
+and =nnimap-authinfo-file= are needed, but I keep them for the sake of completeness.
+
+- [[http://www.cataclysmicmutation.com/2010/11/multiple-gmail-accounts-in-gnus/][Multiple GMail Accounts in Gnus - Cataclysmic Mutation]]
+
+#+begin_src emacs-lisp :tangle lisp/setup-gnus.el
+(use-package gnus
+  :hook
+  (gnus-group-mode-hook . gnus-topic-mode)
+  :config
+  (setq nnml-directory "~/desktop/gnus/mail/")
+  (setq nnfolder-directory "~/desktop/gnus/archive/")
+  (setq nndraft-directory "~/desktop/gnus/drafts/")
+  (setq nnmh-directory "~/desktop/gnus/drafts/")
+  (setq gnus-select-method '(nnnil))
+  (setq nntp-authinfo-file "~/.authinfo.gpg")
+  (setq gnus-secondary-select-methods
+        '((nntp "news.gwene.org")
+          (nnimap "prv"
+                  (nnimap-address "mail.gandi.net")
+                  (nnimap-stream ssl)
+                  (nnimap-authinfo-file "~/.authinfo.gpg"))
+          (nnimap "redhat"
+                  (nnimap-address "imap.gmail.com")
+                  (nnimap-stream ssl)
+                  (nnimap-authinfo-file "~/.authinfo.gpg"))
+          (nnimap "vde"
+                  (nnimap-address "imap.gmail.com")
+                  (nnimap-stream ssl)
+                  (nnimap-authinfo-file "~/.authinfo.gpg"))
+          ))
+  (setq gnus-parameters
+        '(("prv"
+           (posting-style
+            (gcc "nnimap+prv:Sent")))
+          ("redhat"
+           (posting-style
+            (gcc "nnimap+redhat:Sent")))
+          ("nnimap redhat:INBOX"
+           (display . all))
+          ("vde"
+           (posting-style
+            (gcc "nnimap+vinc.demeester:Sent")))))
+  (setq gnus-agent t)
+  (setq mail-user-agent 'gnus-user-agent) ; also works with `sendmail-user-agent'
+  (setq gnus-check-new-newsgroups 'ask-server)
+  (setq gnus-read-active-file 'some)
+  (setq gnus-use-dribble-file t)
+  (setq gnus-always-read-dribble-file t)
+  (setq gnus-extra-headers
+        '(To Newsgroups X-GM-LABELS)))
+#+end_src
+
+Gnus has something call the "agent", which represent the bridge between Gnus and the
+server it connects to. Gnus is said to be "plugged" when a connection is established,
+otherwise it is "unplugged".
+
+Technicalities aside, we basically use this to save a local copy of the items we have
+already fetched from the server.  We can also use the agent to configure the handling of
+local messages.  For example, we can set an expiry date, after which the message is
+deleted, or we can create a queue of outgoing messages when Gnus is in an unplugged state.
+
+#+begin_src emacs-lisp :tangle lisp/setup-gnus.el
+(use-package gnus-agent
+  :after gnus
+  :config
+  (setq gnus-agent-article-alist-save-format 1)  ; uncompressed
+  (setq gnus-agent-cache t)
+  (setq gnus-agent-confirmation-function 'y-or-n-p)
+  (setq gnus-agent-consider-all-articles nil)
+  (setq gnus-agent-directory "~/desktop/gnus/agent/")
+  (setq gnus-agent-enable-expiration 'ENABLE)
+  (setq gnus-agent-expire-all nil)
+  (setq gnus-agent-expire-days 30)
+  (setq gnus-agent-mark-unread-after-downloaded t)
+  (setq gnus-agent-queue-mail t)        ; queue if unplugged
+  (setq gnus-agent-synchronize-flags nil))
+#+end_src
+
+
+*** TODO ~notmuch~
+:PROPERTIES:
+:CUSTOM_ID: h:5073fce5-1110-40f0-969c-74249383470b
 :END:
 
 * TODO Programming
@@ -374,6 +554,7 @@ These are the initial configuration files to be imported in this file slowly but
 (use-package setup-shells)
 (use-package setup-compile)
 (use-package setup-org)
+(use-package setup-gnus)
 ;; Programming languages
 (use-package setup-nix)
 (use-package setup-go)
@@ -528,6 +709,11 @@ These are the initial configuration files to be imported in this file slowly but
            (side . bottom)
            (slot . -1))
           ("\\*\\(Backtrace\\|Warnings\\|Compile-Log\\|[Hh]elp\\|Messages\\)\\*"
+           (display-buffer-in-side-window)
+           (window-height . 0.25)
+           (side . bottom)
+           (slot . 0))
+          ("\\*\\(helpful\\).*"
            (display-buffer-in-side-window)
            (window-height . 0.25)
            (side . bottom)
@@ -1723,16 +1909,6 @@ buffers."
 :END:
 
 #+begin_src emacs-lisp :tangle lisp/setup-gnus.el
-;;; -*- lexical-binding: t; -*-
-(setq user-mail-address "vincent@demeester.fr"
-      user-full-name "Vincent Demeester")
-
-(setq gnus-select-method
-      '(nnimap "vincent@demeester.fr"
-               (nnimap-address "mail.gandi.net")  ; it could also be imap.googlemail.com if that's your server.
-               (nnimap-server-port "imaps")
-               (nnimap-stream ssl)))
-
 (setq smtpmail-smtp-server "mail.gandi.net"
       smtpmail-smtp-service 587
       gnus-ignored-newsgroups "^to\\.\\|^[0-9. ]+\\( \\|$\\)\\|^[\"]\"[#'()]")
@@ -1740,7 +1916,7 @@ buffers."
 ;; (require 'nnrss)
 ;; (nnrss-opml-import "~/desktop/downloads/feedly.opml")
 
-(provide setup-gnus)
+(provide 'setup-gnus)
 #+end_src
 
 *** ~setup-go.el~
@@ -3100,7 +3276,7 @@ using either KUBECONFIG or ~/.kube/config"
 
 (use-package doom-themes
   :config
-  (load-theme 'doom-one t)
+  (load-theme 'doom-one-light t)
   (doom-themes-visual-bell-config)
   (doom-themes-org-config))
 
@@ -3228,7 +3404,7 @@ using either KUBECONFIG or ~/.kube/config"
       (set-dark-theme))))
 
 ;; Run at every 3600 seconds, after 0s delay
-(run-with-timer 0 3600 'theme-switcher)
+;; (run-with-timer 0 3600 'theme-switcher)
 
 (provide 'setup-style)
 #+end_src

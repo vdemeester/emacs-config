@@ -72,7 +72,7 @@
 
 (use-package doom-themes
   :config
-  (load-theme 'doom-one t)
+  (load-theme 'doom-one-light t)
   (doom-themes-visual-bell-config)
   (doom-themes-org-config))
 
@@ -200,6 +200,6 @@
       (set-dark-theme))))
 
 ;; Run at every 3600 seconds, after 0s delay
-(run-with-timer 0 3600 'theme-switcher)
+;; (run-with-timer 0 3600 'theme-switcher)
 
 (provide 'setup-style)

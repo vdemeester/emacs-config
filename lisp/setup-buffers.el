@@ -41,6 +41,11 @@
            (window-height . 0.25)
            (side . bottom)
            (slot . 0))
+          ("\\*\\(helpful\\).*"
+           (display-buffer-in-side-window)
+           (window-height . 0.25)
+           (side . bottom)
+           (slot . 0))
           ("\\*\\(compilation\\|go test\\).*"
            (display-buffer-in-side-window)
            (window-height . 0.25)
