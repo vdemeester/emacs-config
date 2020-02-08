@@ -11,8 +11,6 @@
   (epa-file-enable))
 
 (use-package gnus
-  :hook
-  (gnus-group-mode-hook . gnus-topic-mode)
   :config
   (setq nnml-directory "~/desktop/gnus/mail/")
   (setq nnfolder-directory "~/desktop/gnus/archive/")
@@ -42,11 +40,13 @@
           ("redhat"
            (posting-style
             (gcc "nnimap+redhat:Sent")))
-          ("nnimap redhat:INBOX"
+          ("nnimap+redhat:INBOX"
            (display . all))
           ("vde"
            (posting-style
-            (gcc "nnimap+vinc.demeester:Sent")))))
+            (gcc "nnimap+vinc.demeester:Sent")))
+          ("nnimap+vde:INBOX"
+           (display . all))))
   (setq gnus-agent t)
   (setq mail-user-agent 'gnus-user-agent) ; also works with `sendmail-user-agent'
   (setq gnus-check-new-newsgroups 'ask-server)
@@ -70,6 +70,80 @@
   (setq gnus-agent-mark-unread-after-downloaded t)
   (setq gnus-agent-queue-mail t)        ; queue if unplugged
   (setq gnus-agent-synchronize-flags nil))
+
+(use-package gnus-async
+  :after gnus
+  :config
+  (setq gnus-asynchronous t)
+  (setq gnus-use-article-prefetch 30))
+
+(use-package gnus-group
+  :after gnus
+  :config
+  (setq gnus-level-subscribed 6)
+  (setq gnus-level-unsubscribed 7)
+  (setq gnus-level-zombie 8)
+  (setq gnus-group-sort-function
+        '((gnus-group-sort-by-unread)
+          (gnus-group-sort-by-alphabet)
+          (gnus-group-sort-by-rank)))
+  (setq gnus-group-mode-line-format "Gnus: %%b")
+  :hook
+  (gnus-select-group-hook . gnus-group-set-timestamp)
+  :bind (:map gnus-agent-group-mode-map
+              ("M-n" . gnus-topic-goto-next-topic)
+              ("M-p" . gnus-topic-goto-previous-topic)))
+
+(use-package gnus-topic
+  :after (gnus gnus-group)
+  :config
+  (setq gnus-topic-display-empty-topics t)
+  :hook
+  (gnus-group-mode . gnus-topic-mode))
+
+(use-package gnus-sum
+  :after (gnus gnus-group)
+  :demand
+  :config
+  (setq gnus-auto-select-first nil)
+  (setq gnus-summary-ignore-duplicates t)
+  (setq gnus-suppress-duplicates t)
+  (setq gnus-summary-goto-unread nil)
+  (setq gnus-summary-make-false-root 'adopt)
+  (setq gnus-summary-thread-gathering-function 'gnus-gather-threads-by-subject)
+  (setq gnus-thread-sort-functions
+        '((not gnus-thread-sort-by-number)
+          (not gnus-thread-sort-by-date)))
+  (setq gnus-subthread-sort-functions
+        'gnus-thread-sort-by-date)
+  (setq gnus-thread-hide-subtree nil)
+  (setq gnus-thread-ignore-subject t)
+  (setq gnus-user-date-format-alist
+        '(((gnus-seconds-today) . "Today at %R")
+          ((+ 86400 (gnus-seconds-today)) . "Yesterday, %R")
+          (t . "%Y-%m-%d %R")))
+  (setq gnus-summary-line-format "%U%R%z %-16,16&user-date;  %4L:%-30,30f  %B%S\n")
+  (setq gnus-summary-mode-line-format "Gnus: %p (%U)")
+  (setq gnus-sum-thread-tree-false-root "")
+  (setq gnus-sum-thread-tree-indent " ")
+  (setq gnus-sum-thread-tree-leaf-with-other "├─➤ ")
+  (setq gnus-sum-thread-tree-root "")
+  (setq gnus-sum-thread-tree-single-leaf "└─➤ ")
+  (setq gnus-sum-thread-tree-vertical "│")
+  :hook
+  (gnus-summary-exit-hook . gnus-topic-sort-groups-by-alphabet)
+  (gnus-summary-exit-hook . gnus-group-sort-groups-by-rank)
+  :bind (:map gnus-agent-summary-mode-map
+              ("<delete>" . gnus-summary-delete-article)
+              ("n" . gnus-summary-next-article)
+              ("p" . gnus-summary-prev-article)
+              ("N" . gnus-summary-next-unread-article)
+              ("P" . gnus-summary-prev-unread-article)
+              ("M-n" . gnus-summary-next-thread)
+              ("M-p" . gnus-summary-prev-thread)
+              ("C-M-n" . gnus-summary-next-group)
+              ("C-M-p" . gnus-summary-prev-group)
+              ("C-M-^" . gnus-summary-refer-thread)))
 
 (setq smtpmail-smtp-server "mail.gandi.net"
       smtpmail-smtp-service 587

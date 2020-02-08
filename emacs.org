@@ -266,6 +266,13 @@ Now some basic information on the abstractions that Gnus relies on:
    next/prev).  You access the "Summary" buffer both from the "Group" and the "Server" by
    entering a group.
 
+As noted, Gnus will only show you a list of unread items. To view all your groups, hit
+=L=. Use the lower case version =l= to view only the unread ones. To produce a Summary
+buffer with read items, hit =C-u RET= over a group and specify the number of messages you
+want to list (the other option is =C-u M-g= from inside the Summary). Another useful trick
+for the Summary buffer is the use of the caret sign (=^=) to show you the previous message
+that the current item is a reply to.
+
 **** TODO Account settings
 :PROPERTIES:
 :CUSTOM_ID: h:03ed1cad-027b-4290-895a-7b98b6406221
@@ -287,8 +294,6 @@ and =nnimap-authinfo-file= are needed, but I keep them for the sake of completen
 
 #+begin_src emacs-lisp :tangle lisp/setup-gnus.el
 (use-package gnus
-  :hook
-  (gnus-group-mode-hook . gnus-topic-mode)
   :config
   (setq nnml-directory "~/desktop/gnus/mail/")
   (setq nnfolder-directory "~/desktop/gnus/archive/")
@@ -318,11 +323,13 @@ and =nnimap-authinfo-file= are needed, but I keep them for the sake of completen
           ("redhat"
            (posting-style
             (gcc "nnimap+redhat:Sent")))
-          ("nnimap redhat:INBOX"
+          ("nnimap+redhat:INBOX"
            (display . all))
           ("vde"
            (posting-style
-            (gcc "nnimap+vinc.demeester:Sent")))))
+            (gcc "nnimap+vinc.demeester:Sent")))
+          ("nnimap+vde:INBOX"
+           (display . all))))
   (setq gnus-agent t)
   (setq mail-user-agent 'gnus-user-agent) ; also works with `sendmail-user-agent'
   (setq gnus-check-new-newsgroups 'ask-server)
@@ -332,6 +339,11 @@ and =nnimap-authinfo-file= are needed, but I keep them for the sake of completen
   (setq gnus-extra-headers
         '(To Newsgroups X-GM-LABELS)))
 #+end_src
+
+**** Gnus agent
+:PROPERTIES:
+:CUSTOM_ID: h:05937693-38fd-4be4-a09b-46c3e05560be
+:END:
 
 Gnus has something call the "agent", which represent the bridge between Gnus and the
 server it connects to. Gnus is said to be "plugged" when a connection is established,
@@ -357,6 +369,136 @@ deleted, or we can create a queue of outgoing messages when Gnus is in an unplug
   (setq gnus-agent-mark-unread-after-downloaded t)
   (setq gnus-agent-queue-mail t)        ; queue if unplugged
   (setq gnus-agent-synchronize-flags nil))
+#+end_src
+
+**** Gnus asynchronous operations
+:PROPERTIES:
+:CUSTOM_ID: h:7a3cac5e-aef5-4a57-8d98-07267089192e
+:END:
+
+By default, Gnus performs all its actions in a synchronous fashion. This means that Emacs
+is blocked until Gnus has finished. By enabling this library, we can use certain functions
+in a non-blocking way. I do this for [[#h:2d793cf8-83f5-4830-b73d-78385d9b96dd][sending email]].
+
+#+begin_src emacs-lisp :tangle lisp/setup-gnus.el
+(use-package gnus-async
+  :after gnus
+  :config
+  (setq gnus-asynchronous t)
+  (setq gnus-use-article-prefetch 30))
+#+end_src
+
+**** Gnus group
+:PROPERTIES:
+:CUSTOM_ID: h:b6d66b19-01fe-4ed0-902c-96b96757027b
+:END:
+
+Let's dig a bit more into groups :
+
++ A group can be assigned a level of importance.  This is a grade whose highest score is 1
+  and the lowest is 6 (customisable though). Each level has a different colour. To assign
+  a new value to the group at point, do it with =S l= and then give it a number.  Once you
+  have graded your groups, you can perform various actions on a per-level basis.  For
+  example, to refresh all levels from 1 up to 3 but not higher, pass a numeric argument to
+  the standard =g= command. So =C-3 g= (this is the same as =C-u 3 g=).
++ Groups can be organised by topic. Create a new one with =T n= and give it a name.  Move
+  a group to a topic with =T m=. To toggle the view of topics use =t= (I have a hook that
+  does this automatically at startup). The level of indentation tells us whether a topic
+  is a sub-set of another.  Use =TAB= or =C-u TAB= to adjust it accordingly. As with
+  levels, you can operate on a per-topic basis. For example, to catch up on all the news
+  of a given topic (mark all as read), you place the point over it, hit =c= and then
+  confirm your choice.
+
+Note that =gnus-group-sort-functions= requires the most important function to be declared
+last.
+
+#+begin_src emacs-lisp :tangle lisp/setup-gnus.el
+(use-package gnus-group
+  :after gnus
+  :config
+  (setq gnus-level-subscribed 6)
+  (setq gnus-level-unsubscribed 7)
+  (setq gnus-level-zombie 8)
+  (setq gnus-group-sort-function
+        '((gnus-group-sort-by-unread)
+          (gnus-group-sort-by-alphabet)
+          (gnus-group-sort-by-rank)))
+  (setq gnus-group-mode-line-format "Gnus: %%b")
+  :hook
+  (gnus-select-group-hook . gnus-group-set-timestamp)
+  :bind (:map gnus-agent-group-mode-map
+              ("M-n" . gnus-topic-goto-next-topic)
+              ("M-p" . gnus-topic-goto-previous-topic)))
+
+(use-package gnus-topic
+  :after (gnus gnus-group)
+  :config
+  (setq gnus-topic-display-empty-topics t)
+  :hook
+  (gnus-group-mode . gnus-topic-mode))
+#+end_src
+
+**** Gnus Summary
+:PROPERTIES:
+:CUSTOM_ID: h:418a3d8c-a644-4978-8e8d-df921bd674b6
+:END:
+
+Threads should not be hidden, while messages whose root has been removed should be grouped
+together in some meaningful way. Furthermore, when moving up or down in the list of
+messages using just =n= or =p=, I want to go to the next message, regardless of whether it
+has been read or not.  I can otherwise rely on standard Emacs motions.
+
+The formatting of the threads using Unicode characters was taken from the [[https://www.emacswiki.org/emacs/GnusFormatting][relevant Emacs
+wiki entry]] plus some minor tweaks by me.
+
+The =gnus-user-date-format-alist=, this basically adapts the date to whether the message
+was within the day or the one before, else falls back to a default value. It is then
+called with =%&user-date;=.
+
+#+begin_src emacs-lisp :tangle lisp/setup-gnus.el
+(use-package gnus-sum
+  :after (gnus gnus-group)
+  :demand
+  :config
+  (setq gnus-auto-select-first nil)
+  (setq gnus-summary-ignore-duplicates t)
+  (setq gnus-suppress-duplicates t)
+  (setq gnus-summary-goto-unread nil)
+  (setq gnus-summary-make-false-root 'adopt)
+  (setq gnus-summary-thread-gathering-function 'gnus-gather-threads-by-subject)
+  (setq gnus-thread-sort-functions
+        '((not gnus-thread-sort-by-number)
+          (not gnus-thread-sort-by-date)))
+  (setq gnus-subthread-sort-functions
+        'gnus-thread-sort-by-date)
+  (setq gnus-thread-hide-subtree nil)
+  (setq gnus-thread-ignore-subject t)
+  (setq gnus-user-date-format-alist
+        '(((gnus-seconds-today) . "Today at %R")
+          ((+ 86400 (gnus-seconds-today)) . "Yesterday, %R")
+          (t . "%Y-%m-%d %R")))
+  (setq gnus-summary-line-format "%U%R%z %-16,16&user-date;  %4L:%-30,30f  %B%S\n")
+  (setq gnus-summary-mode-line-format "Gnus: %p (%U)")
+  (setq gnus-sum-thread-tree-false-root "")
+  (setq gnus-sum-thread-tree-indent " ")
+  (setq gnus-sum-thread-tree-leaf-with-other "├─➤ ")
+  (setq gnus-sum-thread-tree-root "")
+  (setq gnus-sum-thread-tree-single-leaf "└─➤ ")
+  (setq gnus-sum-thread-tree-vertical "│")
+  :hook
+  (gnus-summary-exit-hook . gnus-topic-sort-groups-by-alphabet)
+  (gnus-summary-exit-hook . gnus-group-sort-groups-by-rank)
+  :bind (:map gnus-agent-summary-mode-map
+              ("<delete>" . gnus-summary-delete-article)
+              ("n" . gnus-summary-next-article)
+              ("p" . gnus-summary-prev-article)
+              ("N" . gnus-summary-next-unread-article)
+              ("P" . gnus-summary-prev-unread-article)
+              ("M-n" . gnus-summary-next-thread)
+              ("M-p" . gnus-summary-prev-thread)
+              ("C-M-n" . gnus-summary-next-group)
+              ("C-M-p" . gnus-summary-prev-group)
+              ("C-M-^" . gnus-summary-refer-thread)))
 #+end_src
 
 
