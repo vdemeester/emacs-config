@@ -291,6 +291,7 @@ them /without/ making this information public.  I am not sure whether the =nnima
 and =nnimap-authinfo-file= are needed, but I keep them for the sake of completeness.
 
 - [[http://www.cataclysmicmutation.com/2010/11/multiple-gmail-accounts-in-gnus/][Multiple GMail Accounts in Gnus - Cataclysmic Mutation]]
+- [[https://github.com/redguardtoo/mastering-emacs-in-one-year-guide/blob/master/gnus-guide-en.org][mastering-emacs-in-one-year-guide/gnus-guide-en.org at master · redguardtoo/mastering-emacs-in-one-year-guide]]
 
 #+begin_src emacs-lisp :tangle lisp/setup-gnus.el
 (use-package gnus
