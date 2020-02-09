@@ -213,7 +213,7 @@ need to worry about some complex mechanism for syncing, storing and indexing ema
 still use ~notmuch~ with ~isync~ to backup my mails somewhere, with the possibility to
 search them.
 
-*** TODO Base email settings
+*** Base email settings
 :PROPERTIES:
 :CUSTOM_ID: h:8d499f24-24f4-415c-a5fd-62332a68544f
 :END:
@@ -236,7 +236,7 @@ where our credentials are stored and whether encryption is supported.
 #+end_src
 
 
-*** TODO Gnus
+*** Gnus
 :PROPERTIES:
 :CUSTOM_ID: h:ec3104a8-af27-43a0-a74c-21e76cda465b
 :END:
@@ -273,7 +273,7 @@ want to list (the other option is =C-u M-g= from inside the Summary). Another us
 for the Summary buffer is the use of the caret sign (=^=) to show you the previous message
 that the current item is a reply to.
 
-**** TODO Account settings
+**** Account settings
 :PROPERTIES:
 :CUSTOM_ID: h:03ed1cad-027b-4290-895a-7b98b6406221
 :END:
@@ -502,10 +502,54 @@ called with =%&user-date;=.
               ("C-M-^" . gnus-summary-refer-thread)))
 #+end_src
 
+**** Gnus intersection with Dired
+:PROPERTIES:
+:CUSTOM_ID: h:2d9681af-5c8e-48ba-b69a-94d58be5fcde
+:END:
 
-*** TODO ~notmuch~
+We can use the built-in directory editor (file manager) as a more convenient way of
+performing certain tasks that relate to emails, such as attaching all the marked items of
+the =dired= buffer to an email we are currently composing or wish to initiate the
+composition of.
+
+Run =C-h m= inside of a Dired buffer that has =gnus-dired-mode= enabled and search for
+"gnus" to see all the relevant key bindings and the functions they call. I only ever use
+=C-c C-m C-a= (=C-m= is the same as =RET=).
+
+#+begin_src emacs-lisp :tangle lisp/setup-gnus.el
+(use-package gnus-dired
+  :after (gnus dired)
+  :hook (dired-mode . gnus-dired-mode))
+#+end_src
+
+**** TODO Searching mails
+:PROPERTIES:
+:CUSTOM_ID: h:b19a4e06-22d7-4fcb-90bb-0f601f01ddbf
+:END:
+
+**** TODO Subscribing to RSS
+:PROPERTIES:
+:CUSTOM_ID: h:3b82499c-2e44-4b55-b6b1-8e91c7528080
+:END:
+
+**** Finishing touch
+:PROPERTIES:
+:CUSTOM_ID: h:9a194c1c-c7b5-4509-845d-84ee64325d32
+:END:
+
+#+begin_src emacs-lisp :tangle lisp/setup-gnus.el
+(provide 'setup-gnus)
+#+end_src
+
+
+*** TODO ~notmuch~ configuration
 :PROPERTIES:
 :CUSTOM_ID: h:5073fce5-1110-40f0-969c-74249383470b
+:END:
+
+*** TODO Sending mails
+:PROPERTIES:
+:CUSTOM_ID: h:6ece193a-1ae8-43eb-8760-2d7c08518c28
 :END:
 
 * TODO Programming
@@ -2050,17 +2094,6 @@ buffers."
 :PROPERTIES:
 :CUSTOM_ID: h:6325713e-e541-43a7-adb7-e98b5478593c
 :END:
-
-#+begin_src emacs-lisp :tangle lisp/setup-gnus.el
-(setq smtpmail-smtp-server "mail.gandi.net"
-      smtpmail-smtp-service 587
-      gnus-ignored-newsgroups "^to\\.\\|^[0-9. ]+\\( \\|$\\)\\|^[\"]\"[#'()]")
-
-;; (require 'nnrss)
-;; (nnrss-opml-import "~/desktop/downloads/feedly.opml")
-
-(provide 'setup-gnus)
-#+end_src
 
 *** ~setup-go.el~
 :PROPERTIES:
