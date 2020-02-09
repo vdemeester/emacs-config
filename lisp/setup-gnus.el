@@ -145,11 +145,8 @@
               ("C-M-p" . gnus-summary-prev-group)
               ("C-M-^" . gnus-summary-refer-thread)))
 
-(setq smtpmail-smtp-server "mail.gandi.net"
-      smtpmail-smtp-service 587
-      gnus-ignored-newsgroups "^to\\.\\|^[0-9. ]+\\( \\|$\\)\\|^[\"]\"[#'()]")
-
-;; (require 'nnrss)
-;; (nnrss-opml-import "~/desktop/downloads/feedly.opml")
+(use-package gnus-dired
+  :after (gnus dired)
+  :hook (dired-mode . gnus-dired-mode))
 
 (provide 'setup-gnus)
