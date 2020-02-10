@@ -2125,8 +2125,11 @@ buffers."
 (use-package dap-go
   :after dap-mode)
 
+(use-package gotest
+  :after go-mode)
+
 (use-package gotest-ui
-  :after go-mode
+  :after (go-mode gotest)
   :bind (:map go-mode-map
               ("C-c t t" . gotest-ui-current-test)
               ("C-c t f" . gotest-ui-current-file)
