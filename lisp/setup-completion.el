@@ -306,7 +306,7 @@ repository, then the corresponding root is used instead."
   (lsp-ui-sideline-enable nil)
   (lsp-ui-sideline-show-hover nil)
   (lsp-ui-sideline-delay 2.0)
-  (lsp-ui-doc-enable t)
+  (lsp-ui-doc-enable nil)
   (lsp-ui-doc-max-width 30)
   (lsp-ui-doc-max-height 15)
   (lsp-document-highlight-delay 2.0)
@@ -320,8 +320,8 @@ repository, then the corresponding root is used instead."
 ;; https://github.com/emacs-lsp/lsp-ui
 (use-package lsp-ui
   :after lsp-mode
-  :hook ((lsp-mode . lsp-ui-mode)
-         (lsp-ui-mode . lsp-ui-peek-mode))
+  ;;:hook ((lsp-mode . lsp-ui-mode)
+  ;;       (lsp-ui-mode . lsp-ui-peek-mode))
   :config
   (define-key lsp-ui-mode-map [remap xref-find-definitions] #'lsp-ui-peek-find-definitions)
   (define-key lsp-ui-mode-map [remap xref-find-references] #'lsp-ui-peek-find-references))

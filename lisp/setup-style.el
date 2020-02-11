@@ -36,7 +36,7 @@
                       :height font-height
                       :weight 'regular))
 
-(bind-key "C-c t f" #'mu-reset-fonts)
+(bind-key "C-c f r" #'mu-reset-fonts)
 
 ;;; Interface
 (use-package frame                      ; Frames
