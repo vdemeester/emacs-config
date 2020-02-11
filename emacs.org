@@ -1375,6 +1375,7 @@ repository, then the corresponding root is used instead."
 (use-package lsp-mode
   :commands (lsp lsp-deferred)
   :custom
+  (lsp-enable-file-watchers nil)
   (lsp-gopls-staticcheck t)
   (lsp-gopls-complete-unimported t)
   (lsp-eldoc-render-all nil)
