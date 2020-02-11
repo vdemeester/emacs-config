@@ -532,16 +532,6 @@ Run =C-h m= inside of a Dired buffer that has =gnus-dired-mode= enabled and sear
 :CUSTOM_ID: h:3b82499c-2e44-4b55-b6b1-8e91c7528080
 :END:
 
-**** Finishing touch
-:PROPERTIES:
-:CUSTOM_ID: h:9a194c1c-c7b5-4509-845d-84ee64325d32
-:END:
-
-#+begin_src emacs-lisp :tangle lisp/setup-gnus.el
-(provide 'setup-gnus)
-#+end_src
-
-
 *** TODO ~notmuch~ configuration
 :PROPERTIES:
 :CUSTOM_ID: h:5073fce5-1110-40f0-969c-74249383470b
@@ -741,7 +731,7 @@ These are the initial configuration files to be imported in this file slowly but
 (use-package setup-shells)
 (use-package setup-compile)
 (use-package setup-org)
-(use-package setup-gnus)
+(load-file "lisp/setup-gnus.el")
 ;; Programming languages
 (use-package setup-nix)
 (use-package setup-go)
@@ -2089,11 +2079,6 @@ buffers."
 
 (provide 'setup-files)
 #+end_src
-
-*** ~setup-gnus.el~
-:PROPERTIES:
-:CUSTOM_ID: h:6325713e-e541-43a7-adb7-e98b5478593c
-:END:
 
 *** ~setup-go.el~
 :PROPERTIES:

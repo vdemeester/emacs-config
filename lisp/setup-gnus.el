@@ -148,5 +148,3 @@
 (use-package gnus-dired
   :after (gnus dired)
   :hook (dired-mode . gnus-dired-mode))
-
-(provide 'setup-gnus)

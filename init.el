@@ -184,7 +184,7 @@
 (use-package setup-shells)
 (use-package setup-compile)
 (use-package setup-org)
-(use-package setup-gnus)
+(load-file "lisp/setup-gnus.el")
 ;; Programming languages
 (use-package setup-nix)
 (use-package setup-go)
