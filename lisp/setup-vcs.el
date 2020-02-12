@@ -50,9 +50,6 @@
   ;; Free C-c C-w for Eyebrowse
   (unbind-key "C-c C-w" git-commit-mode-map)  )
 
-(use-package forge
-  :after magit)
-
 (use-package magit-repos
   :after magit
   :commands magit-list-repositories

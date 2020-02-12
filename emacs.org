@@ -731,7 +731,7 @@ These are the initial configuration files to be imported in this file slowly but
 (use-package setup-shells)
 (use-package setup-compile)
 (use-package setup-org)
-(load-file "lisp/setup-gnus.el")
+(load-file (expand-file-name "lisp/setup-gnus.el" user-emacs-directory))
 ;; Programming languages
 (use-package setup-nix)
 (use-package setup-go)
@@ -3632,9 +3632,6 @@ using either KUBECONFIG or ~/.kube/config"
 
   ;; Free C-c C-w for Eyebrowse
   (unbind-key "C-c C-w" git-commit-mode-map)  )
-
-(use-package forge
-  :after magit)
 
 (use-package magit-repos
   :after magit

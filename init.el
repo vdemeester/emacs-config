@@ -184,7 +184,7 @@
 (use-package setup-shells)
 (use-package setup-compile)
 (use-package setup-org)
-(load-file "lisp/setup-gnus.el")
+(load-file (expand-file-name "lisp/setup-gnus.el" user-emacs-directory))
 ;; Programming languages
 (use-package setup-nix)
 (use-package setup-go)
