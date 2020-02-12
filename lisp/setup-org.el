@@ -51,9 +51,10 @@
                       org-info
                       org-irc
                       org-protocol
-                      org-man
-                      org-git-link
-                      org-notmuch))
+                      ol-gnus
+                      ol-man
+                      ol-git-link
+                      ol-notmuch))
   (setq org-todo-keywords
         '((sequence "TODO(t)" "NEXT(n)" "STARTED(s)" "|" "DONE(d!)" "CANCELED(c@/!)")
           (sequence "WAITING(w@/!)" "SOMEDAY(s)" "|" "CANCELED(c@/!)")
