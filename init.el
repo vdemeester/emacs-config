@@ -1,4 +1,8 @@
 ;;; -*- lexical-binding: t; -*-
+(let ((minver 26))
+  (unless (>= emacs-major-version minver)
+    (error "Your Emacs is too old -- this configuration requires v%s or higher" minver)))
+
 (defconst emacs-start-time (current-time))
 
 (when (< emacs-major-version 27)
@@ -25,10 +29,6 @@
 (setq file-name-handler-alist nil
       message-log-max 16384
       auto-window-vscroll nil)
-
-(let ((minver 25))
-  (unless (>= emacs-major-version minver)
-    (error "Your Emacs is too old -- this configuration requrise v%s or higher" minver)))
 
 (prefer-coding-system 'utf-8)
 (set-default-coding-systems 'utf-8)
