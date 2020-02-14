@@ -46,8 +46,7 @@
         ("gnu" . "https://elpa.gnu.org/packages/")))
 
 (setq package-archive-priorities
-      '(("melpa-stable" . 4)
-        ("melpa" .  3)
+      '(("melpa" .  3)
         ("org" . 2)
         ("gnu" . 1)))
 
