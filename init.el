@@ -3,6 +3,12 @@
   (unless (>= emacs-major-version minver)
     (error "Your Emacs is too old -- this configuration requires v%s or higher" minver)))
 
+(defvar file-name-handler-alist-original file-name-handler-alist)
+
+(setq file-name-handler-alist nil
+      message-log-max 16384
+      auto-window-vscroll nil)
+
 (defconst emacs-start-time (current-time))
 
 (when (< emacs-major-version 27)
@@ -21,14 +27,11 @@
   (add-hook 'after-init-hook
             `(lambda ()
                (setq gc-cons-threshold 16777216 ; 16mb
-                     gc-cons-percentage 0.1)
+                     gc-cons-percentage 0.1
+                     file-name-handler-alist file-name-handler-alist-original)
                (garbage-collect)) t))
 
-(defvar file-name-handler-alist-old file-name-handler-alist)
-
-(setq file-name-handler-alist nil
-      message-log-max 16384
-      auto-window-vscroll nil)
+(setq inhibit-default-init t)           ; Disable the site default settings
 
 (prefer-coding-system 'utf-8)
 (set-default-coding-systems 'utf-8)
@@ -41,7 +44,6 @@
 
 (setq package-archives
       '(("melpa" . "http://melpa.org/packages/")
-        ("melpa-stable" . "https://stable.melpa.org/packages/")
         ("org" . "https://orgmode.org/elpa/")
         ("gnu" . "https://elpa.gnu.org/packages/")))
 
@@ -88,15 +90,12 @@
 (eval-when-compile
   (require 'use-package))
 
-(use-package dash) ; A modern list library
+;;(use-package dash) ; A modern list library
 
-(use-package use-package-ensure-system-package :ensure t :pin melpa)
-
-(require 'subr-x)
-(require 'time-date)
+;;(require 'subr-x)
+;;(require 'time-date)
 
 ;;; Initialization
-(setq inhibit-default-init t)           ; Disable the site default settings
 
 (use-package exec-path-from-shell       ; Set up environment variables
   :if (display-graphic-p)
@@ -109,21 +108,6 @@
           ))
 
   (exec-path-from-shell-initialize))
-
-;; Set separate custom file for the customize interface
-(defconst vde/custom-file (locate-user-emacs-file "custom.el")
-  "File used to store settings from Customization UI.")
-
-(use-package cus-edit                   ; Set up custom.el
-  :defer t
-  :config
-  (setq
-   custom-file vde/custom-file
-   custom-buffer-done-kill nil          ; Kill when existing
-   custom-buffer-verbose-help nil       ; Remove redundant help text
-   custom-unlispify-tag-names nil       ; Show me the real variable name
-   custom-unlispify-menu-entries nil)
-  :init (load vde/custom-file 'no-error 'no-message))
 
 (use-package no-littering               ; Keep .emacs.d clean
   :config

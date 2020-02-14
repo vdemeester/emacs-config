@@ -48,6 +48,23 @@ pre-compile, without the need to load =org= first. It also means that I can add 
 pieces in there that won't be /tangle/, like usage example ; and I also can use this to
 generate any additional file I need, whatever the programming language they are written
 in.
+
+** Assumptions
+:PROPERTIES:
+:CUSTOM_ID: h:751e2708-4a84-49c4-9b1c-04439beed96d
+:END:
+
+I'll make a few assumption in the following document (that may or may not be true):
+
+- [[https://nixos.org/nix/][~nix~]] is available, either from [[https://nixos.org][NixOS]] or via an install of nix. I'll try my best to
+  support non-nix environment, but it's definitely not my current focus.
+  + As I am making the assumption that ~nix~ is available, I am also making the assumption
+    that all the library required are already present (in my [[https://github.com/vdemeester/home][~home~]], there is a file
+    called [[https://github.com/vdemeester/home/blob/master/modules/profiles/emacs.nix][~emacs.nix~]] that encapsulate those dependencies). This is why, by default
+    *use-package* doesn't use the =ensure= option in 99% of the configuration.
+- Any function I wrote is going to be prefixed by ~vde/~ so that it doesn't conflicts with
+  function that would have been defined elsewhere.
+
 ** COPYING
 :PROPERTIES:
 :CUSTOM_ID: h:13ded0f2-230e-406f-85e1-979aca3b4cd6
@@ -150,13 +167,23 @@ We can use this to our advantage and optimize the initial loading of emacs.
 One thing though, I am currently not necessarily running Emacs 27, so I am going to need
 to have the same configuration in ~init.el~ for a little bit of time.
 
-/Note: the lowest emacs version I wanna support is 26 (as of today, might evolve)/
+- /Note: the lowest emacs version I wanna support is 26 (as of today, might evolve)/
+- Another small optimization concerns on =file-name-handler-alist= : on every .el and .elc
+  file loaded during start up, it has to runs those regexps against the filename ; setting
+  it to ~nil~ and after initialization finished put the value back make the initialization
+  process quicker.
 
 #+begin_src emacs-lisp :tangle init.el
 ;;; -*- lexical-binding: t; -*-
 (let ((minver 26))
   (unless (>= emacs-major-version minver)
     (error "Your Emacs is too old -- this configuration requires v%s or higher" minver)))
+
+(defvar file-name-handler-alist-original file-name-handler-alist)
+
+(setq file-name-handler-alist nil
+      message-log-max 16384
+      auto-window-vscroll nil)
 
 (defconst emacs-start-time (current-time))
 
@@ -176,8 +203,139 @@ to have the same configuration in ~init.el~ for a little bit of time.
   (add-hook 'after-init-hook
             `(lambda ()
                (setq gc-cons-threshold 16777216 ; 16mb
-                     gc-cons-percentage 0.1)
+                     gc-cons-percentage 0.1
+                     file-name-handler-alist file-name-handler-alist-original)
                (garbage-collect)) t))
+#+end_src
+
+We also want our configuration to be working the same on any computer, this means we want
+to define every option by ourselves, not relying on default files (~default.el~) that
+would be set by our distribution. This is where =inhibit-default-init= comes into play,
+setting it to non-nil inhibit loading the ~default~ library.
+
+#+begin_src emacs-lisp :tangle init.el
+(setq inhibit-default-init t)           ; Disable the site default settings
+#+end_src
+
+** Unicode all the way
+:PROPERTIES:
+:CUSTOM_ID: h:43f6ecee-a687-4514-98da-4ff01d9ed97a
+:END:
+
+By default, all my systems are configured and support =utf-8=, so let's just make it a
+default in Emacs ; and handle special case on demand.
+
+#+begin_src emacs-lisp :tangle init.el
+(prefer-coding-system 'utf-8)
+(set-default-coding-systems 'utf-8)
+(set-language-environment 'utf-8)
+(set-selection-coding-system 'utf-8)
+(set-terminal-coding-system 'utf-8)
+#+end_src
+
+
+** Package management with =use-package=
+:PROPERTIES:
+:CUSTOM_ID: h:b9643912-2545-4b11-a91e-3be38b116a8c
+:END:
+
+=use-package= is a tool that streamlines the configuration of packages. It handles
+everything from assigning key bindings, setting the value of customisation options,
+writing hooks, declaring a package as a dependency for another, and so on.
+
+#+begin_quote
+The =use-package= macro allows you to isolate package configuration in your =.emacs= file
+in a way that is both performance-oriented and, well, tidy.  I created it because I have
+over 80 packages that I use in Emacs, and things were getting difficult to manage.  Yet
+with this utility my total load time is around 2 seconds, with no loss of functionality!
+#+end_quote
+
+With =use-package= we can improve the start-up performance of Emacs in a few fairly simple
+ways. Whenever a command is bound to a key it is configured to be loaded only once
+invoked. Otherwise we can specify which functions should be autoloaded by means of the
+=:commands= keyword.
+
+We need to setup the emacs package system and install =use-package= if not present
+already.
+
+#+begin_src emacs-lisp :tangle init.el
+;;; package setup
+(require 'package)
+
+(setq package-archives
+      '(("melpa" . "http://melpa.org/packages/")
+        ("org" . "https://orgmode.org/elpa/")
+        ("gnu" . "https://elpa.gnu.org/packages/")))
+
+(setq package-archive-priorities
+      '(("melpa" .  3)
+        ("org" . 2)
+        ("gnu" . 1)))
+
+(require 'tls)
+
+;; From https://github.com/hlissner/doom-emacs/blob/5dacbb7cb1c6ac246a9ccd15e6c4290def67757c/core/core-packages.el#L102
+(setq gnutls-verify-error (not (getenv "INSECURE")) ; you shouldn't use this
+      tls-checktrust gnutls-verify-error
+      tls-program (list "gnutls-cli --x509cafile %t -p %p %h"
+                        ;; compatibility fallbacks
+                        "gnutls-cli -p %p %h"
+                        "openssl s_client -connect %h:%p -no_ssl2 -no_ssl3 -ign_eof"))
+
+;; Initialise the packages, avoiding a re-initialisation.
+(unless (bound-and-true-p package--initialized)
+  (setq package-enable-at-startup nil)
+  (package-initialize))
+
+(setq load-prefer-newer t)              ; Always load newer compiled files
+(setq ad-redefinition-action 'accept)   ; Silence advice redefinition warnings
+
+;; Init `delight'
+(unless (package-installed-p 'delight)
+  (package-refresh-contents)
+  (package-install 'delight))
+
+;; Configure `use-package' prior to loading it.
+(eval-and-compile
+  (setq use-package-always-ensure nil)
+  (setq use-package-always-defer nil)
+  (setq use-package-always-demand nil)
+  (setq use-package-expand-minimally nil)
+  (setq use-package-enable-imenu-support t))
+
+(unless (package-installed-p 'use-package)
+  (package-refresh-contents)
+  (package-install 'use-package))
+
+(eval-when-compile
+  (require 'use-package))
+#+end_src
+
+** =custom.el=
+:PROPERTIES:
+:CUSTOM_ID: h:e54a289a-3c43-4dae-8740-912d8e92d28a
+:END:
+
+When you install a package or use the various customisation interfaces to tweak things to
+your liking, Emacs will append a piece of elisp to your init file. I prefer to have that
+stored in a separate file.
+
+#+begin_src emacs-lisp : tangle init.el
+(defconst vde/custom-file (locate-user-emacs-file "custom.el")
+  "File used to store settings from Customization UI.")
+
+(use-package cus-edit
+  :config
+  (setq
+   custom-file vde/custom-file
+   custom-buffer-done-kill nil          ; Kill when existing
+   custom-buffer-verbose-help nil       ; Remove redundant help text
+   custom-unlispify-tag-names nil       ; Show me the real variable name
+   custom-unlispify-menu-entries nil)
+  (unless (file-exists-p custom-file)
+    (write-region "" nil custom-file))
+
+  (load vde/custom-file 'no-error 'no-message))
 #+end_src
 
 
@@ -578,79 +736,13 @@ These are the initial configuration files to be imported in this file slowly but
 :END:
 
 #+begin_src emacs-lisp :tangle init.el
-(defvar file-name-handler-alist-old file-name-handler-alist)
 
-(setq file-name-handler-alist nil
-      message-log-max 16384
-      auto-window-vscroll nil)
+;;(use-package dash) ; A modern list library
 
-(prefer-coding-system 'utf-8)
-(set-default-coding-systems 'utf-8)
-(set-language-environment 'utf-8)
-(set-selection-coding-system 'utf-8)
-(set-terminal-coding-system 'utf-8)
-
-;;; package setup
-(require 'package)
-
-(setq package-archives
-      '(("melpa" . "http://melpa.org/packages/")
-        ("melpa-stable" . "https://stable.melpa.org/packages/")
-        ("org" . "https://orgmode.org/elpa/")
-        ("gnu" . "https://elpa.gnu.org/packages/")))
-
-(setq package-archive-priorities
-      '(("melpa" .  3)
-        ("org" . 2)
-        ("gnu" . 1)))
-
-(require 'tls)
-
-;; From https://github.com/hlissner/doom-emacs/blob/5dacbb7cb1c6ac246a9ccd15e6c4290def67757c/core/core-packages.el#L102
-(setq gnutls-verify-error (not (getenv "INSECURE")) ; you shouldn't use this
-      tls-checktrust gnutls-verify-error
-      tls-program (list "gnutls-cli --x509cafile %t -p %p %h"
-                        ;; compatibility fallbacks
-                        "gnutls-cli -p %p %h"
-                        "openssl s_client -connect %h:%p -no_ssl2 -no_ssl3 -ign_eof"))
-
-;; Initialise the packages, avoiding a re-initialisation.
-(unless (bound-and-true-p package--initialized)
-  (setq package-enable-at-startup nil)
-  (package-initialize))
-
-(setq load-prefer-newer t)              ; Always load newer compiled files
-(setq ad-redefinition-action 'accept)   ; Silence advice redefinition warnings
-
-;; Init `delight'
-(unless (package-installed-p 'delight)
-  (package-refresh-contents)
-  (package-install 'delight))
-
-;; Configure `use-package' prior to loading it.
-(eval-and-compile
-  (setq use-package-always-ensure nil)
-  (setq use-package-always-defer nil)
-  (setq use-package-always-demand nil)
-  (setq use-package-expand-minimally nil)
-  (setq use-package-enable-imenu-support t))
-
-(unless (package-installed-p 'use-package)
-  (package-refresh-contents)
-  (package-install 'use-package))
-
-(eval-when-compile
-  (require 'use-package))
-
-(use-package dash) ; A modern list library
-
-(use-package use-package-ensure-system-package :ensure t :pin melpa)
-
-(require 'subr-x)
-(require 'time-date)
+;;(require 'subr-x)
+;;(require 'time-date)
 
 ;;; Initialization
-(setq inhibit-default-init t)           ; Disable the site default settings
 
 (use-package exec-path-from-shell       ; Set up environment variables
   :if (display-graphic-p)
@@ -663,21 +755,6 @@ These are the initial configuration files to be imported in this file slowly but
           ))
 
   (exec-path-from-shell-initialize))
-
-;; Set separate custom file for the customize interface
-(defconst vde/custom-file (locate-user-emacs-file "custom.el")
-  "File used to store settings from Customization UI.")
-
-(use-package cus-edit                   ; Set up custom.el
-  :defer t
-  :config
-  (setq
-   custom-file vde/custom-file
-   custom-buffer-done-kill nil          ; Kill when existing
-   custom-buffer-verbose-help nil       ; Remove redundant help text
-   custom-unlispify-tag-names nil       ; Show me the real variable name
-   custom-unlispify-menu-entries nil)
-  :init (load vde/custom-file 'no-error 'no-message))
 
 (use-package no-littering               ; Keep .emacs.d clean
   :config
