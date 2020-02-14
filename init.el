@@ -99,6 +99,14 @@
 (vde/el-load-dir (concat user-emacs-directory "/lisp/"))
 (vde/el-load-dir (concat user-emacs-directory "/config/"))
 
+(defun vde/short-hostname ()
+  "Return hostname in short (aka wakasu.local -> wakasu)"
+  (string-match "[0-9A-Za-z-]+" system-name)
+  (substring system-name (match-beginning 0) (match-end 0)))
+
+(if (file-exists-p (downcase (concat my-init-directory "/hosts/" (my-short-hostname) ".el")))
+    (load-file (downcase (concat my-init-directory "/hosts/" (my-short-hostname) ".el"))))
+
 (use-package exec-path-from-shell       ; Set up environment variables
   :if (display-graphic-p)
   :unless (eq system-type 'windows-nt)

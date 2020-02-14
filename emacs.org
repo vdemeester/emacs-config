@@ -369,6 +369,19 @@ function with the right argument.
 (vde/el-load-dir (concat user-emacs-directory "/config/"))
 #+end_src
 
+Finally, I want to be able to load files for a specific machine, in case I need it (not
+entirely sure why yet but…)
+
+#+begin_src emacs-lisp :tangle init.el
+(defun vde/short-hostname ()
+  "Return hostname in short (aka wakasu.local -> wakasu)"
+  (string-match "[0-9A-Za-z-]+" system-name)
+  (substring system-name (match-beginning 0) (match-end 0)))
+
+(if (file-exists-p (downcase (concat my-init-directory "/hosts/" (my-short-hostname) ".el")))
+    (load-file (downcase (concat my-init-directory "/hosts/" (my-short-hostname) ".el"))))
+#+end_src
+
 
 * TODO Selection candidates and search methods
 :PROPERTIES:
