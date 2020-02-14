@@ -338,6 +338,37 @@ stored in a separate file.
   (load vde/custom-file 'no-error 'no-message))
 #+end_src
 
+** Loading configuration files
+:PROPERTIES:
+:CUSTOM_ID: h:76547b3f-a78b-45ca-902f-1e4cd72e3ce6
+:END:
+
+This =org-mode= document /tangles/ into several files in different folders :
+- ~config~ for my configuration
+- ~lisp~ for imported code or library I've written and not yet published
+
+I used to load them by hand in the ~init.el~ file, which is very cumbersome, so let's try
+to automatically load them. I want to first load the file in the ~lisp~ folder as they are
+potentially used by my configuration (in ~config~).
+
+Let's define some functions that would do the job.
+
+#+begin_src emacs-lisp :tangle init.el
+(defun vde/el-load-dir (dir)
+    "Load el files from the given folder"
+    (let ((files (directory-files dir nil "\.el$")))
+      (while files
+        (load-file (concat dir (pop files))))))
+#+end_src
+
+Now, in order to load ~lisp~ and ~config~ files, it's just a matter of calling this
+function with the right argument.
+
+#+begin_src emacs-lisp :tangle init.el
+(vde/el-load-dir (concat user-emacs-directory "/lisp/"))
+(vde/el-load-dir (concat user-emacs-directory "/config/"))
+#+end_src
+
 
 * TODO Selection candidates and search methods
 :PROPERTIES:
@@ -743,14 +774,6 @@ These are the initial configuration files to be imported in this file slowly but
 :END:
 
 #+begin_src emacs-lisp :tangle init.el
-
-;;(use-package dash) ; A modern list library
-
-;;(require 'subr-x)
-;;(require 'time-date)
-
-;;; Initialization
-
 (use-package exec-path-from-shell       ; Set up environment variables
   :if (display-graphic-p)
   :unless (eq system-type 'windows-nt)
@@ -796,40 +819,6 @@ These are the initial configuration files to be imported in this file slowly but
 
 ;; Confirm before quitting Emacs
 (setq confirm-kill-emacs #'y-or-n-p)
-
-;;; Require files under ~/.emacs.d/lisp
-(add-to-list 'load-path (expand-file-name "lisp" user-emacs-directory))
-
-;; Enable `vde-mode' unless `disable-pkg-vde-mode' is set to `t' in
-;; `setup-var-overrides.el'.
-(when (not (bound-and-true-p disable-pkg-setup-mode))
-  (use-package setup-vde-mode))
-
-(use-package setup-style)
-(use-package setup-keybindings)
-(use-package setup-completion)
-(use-package setup-vcs)
-(use-package setup-dired)
-(use-package setup-search)
-(use-package setup-files)
-(use-package setup-editing)
-(use-package setup-multiple-cursors)
-(use-package setup-navigating)
-(use-package setup-windows)
-(use-package setup-buffers)
-(use-package setup-projectile)
-(use-package setup-shells)
-(use-package setup-compile)
-(use-package setup-org)
-(load-file (expand-file-name "lisp/setup-gnus.el" user-emacs-directory))
-;; Programming languages
-(use-package setup-nix)
-(use-package setup-go)
-(use-package setup-web)
-(use-package setup-docker)
-(use-package setup-hydras)
-(use-package setup-browser)
-(use-package setup-notmuch)
 
 ;; C-up/down onn console
 (when (not window-system)
@@ -3794,7 +3783,7 @@ using either KUBECONFIG or ~/.kube/config"
 :CUSTOM_ID: h:d61614e2-7b13-43f3-aec8-a854bcaaeb0c
 :END:
 
-#+begin_src emacs-lisp :tangle lisp/setup-vde-mode.el
+#+begin_src emacs-lisp :tangle lisp/00-vde-mode.el
 ;;; -*- lexical-binding: t; -*-
 (defvar vde-special-keymap-prefix (kbd "C-x m")
   "`vde-mode' keymap prefix.

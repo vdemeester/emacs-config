@@ -90,12 +90,14 @@
 (eval-when-compile
   (require 'use-package))
 
-;;(use-package dash) ; A modern list library
+(defun vde/el-load-dir (dir)
+    "Load el files from the given folder"
+    (let ((files (directory-files dir nil "\.el$")))
+      (while files
+        (load-file (concat dir (pop files))))))
 
-;;(require 'subr-x)
-;;(require 'time-date)
-
-;;; Initialization
+(vde/el-load-dir (concat user-emacs-directory "/lisp/"))
+(vde/el-load-dir (concat user-emacs-directory "/config/"))
 
 (use-package exec-path-from-shell       ; Set up environment variables
   :if (display-graphic-p)
@@ -142,40 +144,6 @@
 
 ;; Confirm before quitting Emacs
 (setq confirm-kill-emacs #'y-or-n-p)
-
-;;; Require files under ~/.emacs.d/lisp
-(add-to-list 'load-path (expand-file-name "lisp" user-emacs-directory))
-
-;; Enable `vde-mode' unless `disable-pkg-vde-mode' is set to `t' in
-;; `setup-var-overrides.el'.
-(when (not (bound-and-true-p disable-pkg-setup-mode))
-  (use-package setup-vde-mode))
-
-(use-package setup-style)
-(use-package setup-keybindings)
-(use-package setup-completion)
-(use-package setup-vcs)
-(use-package setup-dired)
-(use-package setup-search)
-(use-package setup-files)
-(use-package setup-editing)
-(use-package setup-multiple-cursors)
-(use-package setup-navigating)
-(use-package setup-windows)
-(use-package setup-buffers)
-(use-package setup-projectile)
-(use-package setup-shells)
-(use-package setup-compile)
-(use-package setup-org)
-(load-file (expand-file-name "lisp/setup-gnus.el" user-emacs-directory))
-;; Programming languages
-(use-package setup-nix)
-(use-package setup-go)
-(use-package setup-web)
-(use-package setup-docker)
-(use-package setup-hydras)
-(use-package setup-browser)
-(use-package setup-notmuch)
 
 ;; C-up/down onn console
 (when (not window-system)
