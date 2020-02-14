@@ -12,10 +12,17 @@
 
 (use-package gnus
   :config
-  (setq nnml-directory "~/desktop/gnus/mail/")
-  (setq nnfolder-directory "~/desktop/gnus/archive/")
-  (setq nndraft-directory "~/desktop/gnus/drafts/")
-  (setq nnmh-directory "~/desktop/gnus/drafts/")
+  (setq nnml-directory "~/desktop/gnus/mail")
+  (setq nnfolder-directory "~/desktop/gnus/archive")
+  (setq nndraft-directory "~/desktop/gnus/drafts")
+  (setq nnmh-directory "~/desktop/gnus/drafts")
+  (setq gnus-article-save-directory "~/desktop/gnus/news")
+  (setq gnus-home-directory "~/desktop/gnus")
+  (setq gnus-kill-files-directory "~/desktop/gnus/news")
+  (setq gnus-cache-directory "~/desktop/gnus/news/cache")
+  (setq gnus-startup-file "~/desktop/gnus/newsrc")
+  (setq mail-source-directory "~/desktop/gnus/mail")
+  (setq gnus-registry-cache-file "~/desktop/gnus/gnus.registry.eld")
   (setq gnus-select-method '(nnnil))
   (setq nntp-authinfo-file "~/.authinfo.gpg")
   (setq gnus-secondary-select-methods
