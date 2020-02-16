@@ -285,7 +285,8 @@ Switch projects and subprojects from STARTED back to TODO"
   (add-to-list 'org-capture-templates
                `("w" "Worklog (journal) entry" entry
                  (file+datetree ,org-default-journal-file)
-                 "* worklog :@work:log:\n%U\n** Today\n%?\n** Next (later today, tomorrow)\n"))
+                 "* worklog :@work:log:\n%U\n** Today\n%?\n** Next (later today, tomorrow)\n"
+                 :unnarrowed t))
   (add-to-list 'org-capture-templates
                `("e" "Weekly review" entry
                  (file+datetree,org-default-journal-file)
@@ -307,7 +308,7 @@ Switch projects and subprojects from STARTED back to TODO"
   - *is there task / stuck projects ?*
   - *enhancement possible ?*
 - [ ] export previous agenda (somewhere)"
-                 :clock-in t :clock-resume t))
+                 :clock-in t :clock-resume t :unnarrowed t))
 
   ;; Olds, most likely to remove
   (add-to-list 'org-capture-templates
