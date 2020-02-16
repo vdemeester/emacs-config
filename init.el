@@ -104,8 +104,8 @@
   (string-match "[0-9A-Za-z-]+" system-name)
   (substring system-name (match-beginning 0) (match-end 0)))
 
-(if (file-exists-p (downcase (concat user-emacs-directory "/hosts/" (my-short-hostname) ".el")))
-    (load-file (downcase (concat user-emacs-directory "/hosts/" (my-short-hostname) ".el"))))
+(if (file-exists-p (downcase (concat user-emacs-directory "/hosts/" (vde/short-hostname) ".el")))
+    (load-file (downcase (concat user-emacs-directory "/hosts/" (vde/short-hostname) ".el"))))
 
 (use-package exec-path-from-shell       ; Set up environment variables
   :if (display-graphic-p)
