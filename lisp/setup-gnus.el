@@ -43,14 +43,20 @@
   (setq gnus-parameters
         '(("prv"
            (posting-style
+            (address "vincent@demeester.fr")
+            (signature-file "~/desktop/documents/.prv.signature")
             (gcc "nnimap+prv:Sent")))
           ("redhat"
            (posting-style
+            (address "vdemeest@redhat.com")
+            (signature-file "~/desktop/documents/.redhat.signature")
             (gcc "nnimap+redhat:Sent")))
           ("nnimap+redhat:INBOX"
            (display . all))
           ("vde"
            (posting-style
+            (address "vinc.demeester.fr")
+            (signature-file "~/desktop/documents/.vde.signature")
             (gcc "nnimap+vinc.demeester:Sent")))
           ("nnimap+vde:INBOX"
            (display . all))))
@@ -155,3 +161,10 @@
 (use-package gnus-dired
   :after (gnus dired)
   :hook (dired-mode . gnus-dired-mode))
+
+(use-package smtpmail
+  :config
+  (setq message-send-mail-function 'message-send-mail-with-sendmail)
+  (setq sendmail-program "msmtp")
+  (setq message-sendmail-f-is-evil 't)
+  (setq message-sendmail-extra-arguments '("--read-envelope-from")))
