@@ -58,6 +58,29 @@ This is a question I thought I needed to answer, or at least, document why I am 
 GNU/Emacs as my primary editor. [[https://protesilaos.com/][Protesilaos Stavrou]] has a [[https://protesilaos.com/codelog/2019-12-20-vlog-switch-emacs/][video]] about it, really
 interesting.
 
+There is a lot of reasons but for me, the following are the main ones:
+- *Open Source*: this is a "of course", but my editor _has to be_ open-sourced. This seems
+  to be the norm these days anyway (and for a long time, with =vim=).
+- *Lightweight*: the editor should be relatively lightweight. I don't want a full browser
+  loaded to edit files, and I want to be able to run it in a terminal, on a server. =vim=
+  can do that (and sometimes, =vim= or =vi= is enough 👼).
+- *Extensible*: to be honest, this is the most important reason. I want to be able to
+  extend my editor as much as possible.
+
+GNU/Emacs checks all the boxes for me. Even though GNU/Emacs is probably not as
+lightweight as =vim=, it is definitely lightweight compared to all the Electron-based
+editors (vscode, …). It is of course open-source, and since ages (almost as old as I am
+😅). And best of all, GNU/Emacs is extensible as you couldn't dream of. Emacs is a lisp
+interpreter, and it is designed to be extended in order to meet the user's
+needs. /Extensibility/ is the quintessential Emacs quality. You can modify any piece of
+elisp /in real time/.
+
+I'm also a huge fan of /text-based/ software, a.k.a. do whatever you can using text :
+reading mails, news, organizing notes and todos, all can be done in text. And GNU/Emacs
+shines at this. For emails and news, you've got Gnus built-in, for notes and todos, the
+wonderful =org-mode= is the best thing on earth (seriously, this is the *one* mode that
+made me switch from =vim=).
+
 ** Assumptions
 :PROPERTIES:
 :CUSTOM_ID: h:751e2708-4a84-49c4-9b1c-04439beed96d
