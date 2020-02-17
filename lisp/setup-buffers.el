@@ -88,7 +88,10 @@
            (window-width . 0.20)
            (side . right)
            (slot . 2))))
-  :bind (("<f7>" . window-toggle-side-windows)))
+  (setq window-sides-vertical nil)
+  (setq window-combination-resize t) ; Size new windows proportionally
+  :bind (("C-x +" . balance-windows-area)
+         ("<f7>" . window-toggle-side-windows)))
 
 (use-package uniquify                   ; Unique buffer names
   :custom

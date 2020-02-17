@@ -1,5 +1,4 @@
 ;;; -*- lexical-binding: t; -*-
-(setq window-combination-resize t) ; Size new windows proportionally
 
 ;;;###autoload
 (defun vde/window-split-toggle ()

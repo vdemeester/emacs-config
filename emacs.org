@@ -1038,7 +1038,10 @@ These are the initial configuration files to be imported in this file slowly but
            (window-width . 0.20)
            (side . right)
            (slot . 2))))
-  :bind (("<f7>" . window-toggle-side-windows)))
+  (setq window-sides-vertical nil)
+  (setq window-combination-resize t) ; Size new windows proportionally
+  :bind (("C-x +" . balance-windows-area)
+         ("<f7>" . window-toggle-side-windows)))
 
 (use-package uniquify                   ; Unique buffer names
   :custom
@@ -3918,7 +3921,6 @@ USAGE: (unbind-from-vde-map \"C-x m f\")
 
 #+begin_src emacs-lisp :tangle lisp/setup-windows.el
 ;;; -*- lexical-binding: t; -*-
-(setq window-combination-resize t) ; Size new windows proportionally
 
 ;;;###autoload
 (defun vde/window-split-toggle ()
