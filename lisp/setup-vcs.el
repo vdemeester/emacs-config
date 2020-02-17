@@ -91,6 +91,13 @@
               (")" . dired-git-info-mode))
   :defer 2)
 
+(use-package ediff
+  :config
+  (setq ediff-window-setup-function 'ediff-setup-windows-plain)
+  (setq ediff-split-window-function 'split-window-horizontally)
+  (setq ediff-diff-options "-w")
+  (add-hook 'ediff-after-quit-hook-internal 'winner-undo))
+
 (defun git-blame-line ()
   "Runs `git blame` on the current line and
    adds the commit id to the kill ring"
