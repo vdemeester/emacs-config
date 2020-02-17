@@ -49,6 +49,15 @@ pieces in there that won't be /tangle/, like usage example ; and I also can use 
 generate any additional file I need, whatever the programming language they are written
 in.
 
+** Why using GNU/Emacs ?
+:PROPERTIES:
+:CUSTOM_ID: h:955013f3-91b9-4d8a-889f-959aa30991e6
+:END:
+
+This is a question I thought I needed to answer, or at least, document why I am choosing
+GNU/Emacs as my primary editor. [[https://protesilaos.com/][Protesilaos Stavrou]] has a [[https://protesilaos.com/codelog/2019-12-20-vlog-switch-emacs/][video]] about it, really
+interesting.
+
 ** Assumptions
 :PROPERTIES:
 :CUSTOM_ID: h:751e2708-4a84-49c4-9b1c-04439beed96d
@@ -1000,17 +1009,17 @@ These are the initial configuration files to be imported in this file slowly but
           ;; right side window
           ("\\*wclock*"
            (display-buffer-in-side-window)
-           (window-width . 0.333)
+           (window-width . 0.20)
            (side . right)
            (slot . -1))
           ("\\*undo-tree*"
            (display-buffer-in-side-window)
-           (window-width . 0.333)
+           (window-width . 0.20)
            (side . right)
            (slot . -1))
           ("\\*\\(Flycheck\\|Package-Lint\\).*"
            (display-buffer-in-side-window)
-           (window-width . 0.333)
+           (window-width . 0.20)
            (side . right)
            (slot . 0)
            (window-parameters . ((no-other-window . t)
@@ -1018,7 +1027,7 @@ These are the initial configuration files to be imported in this file slowly but
                                                       mode-line-buffer-identification)))))
           ("\\*Faces\\*"
            (display-buffer-in-side-window)
-           (window-width . 0.333)
+           (window-width . 0.20)
            (side . right)
            (slot . 1)
            (window-parameters . ((no-other-window . t)
@@ -1026,7 +1035,7 @@ These are the initial configuration files to be imported in this file slowly but
                                                       mode-line-buffer-identification)))))
           ("\\*Custom.*"
            (display-buffer-in-side-window)
-           (window-width . 0.333)
+           (window-width . 0.20)
            (side . right)
            (slot . 2))))
   :bind (("<f7>" . window-toggle-side-windows)))

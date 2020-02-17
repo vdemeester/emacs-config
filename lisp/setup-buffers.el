@@ -59,17 +59,17 @@
           ;; right side window
           ("\\*wclock*"
            (display-buffer-in-side-window)
-           (window-width . 0.333)
+           (window-width . 0.20)
            (side . right)
            (slot . -1))
           ("\\*undo-tree*"
            (display-buffer-in-side-window)
-           (window-width . 0.333)
+           (window-width . 0.20)
            (side . right)
            (slot . -1))
           ("\\*\\(Flycheck\\|Package-Lint\\).*"
            (display-buffer-in-side-window)
-           (window-width . 0.333)
+           (window-width . 0.20)
            (side . right)
            (slot . 0)
            (window-parameters . ((no-other-window . t)
@@ -77,7 +77,7 @@
                                                       mode-line-buffer-identification)))))
           ("\\*Faces\\*"
            (display-buffer-in-side-window)
-           (window-width . 0.333)
+           (window-width . 0.20)
            (side . right)
            (slot . 1)
            (window-parameters . ((no-other-window . t)
@@ -85,7 +85,7 @@
                                                       mode-line-buffer-identification)))))
           ("\\*Custom.*"
            (display-buffer-in-side-window)
-           (window-width . 0.333)
+           (window-width . 0.20)
            (side . right)
            (slot . 2))))
   :bind (("<f7>" . window-toggle-side-windows)))
