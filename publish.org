@@ -193,7 +193,7 @@ Now, let's define projects.
            :with-footnotes t
            :with-toc nil
            :with-drawers t
-           :exclude "_setup.org\\|sbr.pm\\|.extension\\|elpa"
+           :exclude "_setup.org\\|sbr.pm\\|.extension\\|elpa\\|var"
            :html-checkbox-type 'html
            :html-preamble "<div id=\"nav\">
   <ul>
@@ -206,7 +206,7 @@ Now, let's define projects.
           ("dotemacs-static"
            :base-directory "."
            :base-extension "html\\|xml\\|css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg\\|swf\\|md\\|tar\\|gz\\|xz\\|zip\\|csv"
-           :exclude ".extension\\|elpa"
+           :exclude ".extension\\|elpa\\|var"
            :publishing-directory ,org-default-publish-dotemacs
            :recursive t
            :publishing-function org-publish-attachment

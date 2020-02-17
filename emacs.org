@@ -3,11 +3,11 @@
 
 * Overview
 :PROPERTIES:
-:CUSTOM_ID: h:958fee2e-86db-4d34-bef6-d5b4f4f73000
+:CUSTOM_ID: h:64b142be-1326-479b-ab6e-e88ca298f56d
 :END:
 ** Canonical links to this document
 :PROPERTIES:
-:CUSTOM_ID: h:11f5b93f-6dd7-483c-aa44-e10471f17c22
+:CUSTOM_ID: h:9e025e71-b8c5-4cd3-88cc-c81f1e026d13
 :END:
 
 + HTML version :: [[https://sbr.pm/dotemacs][sbr.pm/dotemacs]]
@@ -15,7 +15,7 @@
 
 ** What is this
 :PROPERTIES:
-:CUSTOM_ID: h:e9d0ae1c-244c-4ad9-b0dc-c5e53b8d49ea
+:CUSTOM_ID: h:6cf02bfd-0266-456f-be5f-728c75e3013e
 :END:
 
 The present document, referred to in the source code version as =emacs.org=, contains the
@@ -51,7 +51,7 @@ in.
 
 ** Why using GNU/Emacs ?
 :PROPERTIES:
-:CUSTOM_ID: h:955013f3-91b9-4d8a-889f-959aa30991e6
+:CUSTOM_ID: h:165fca5a-b87d-4140-963b-658a2438e769
 :END:
 
 This is a question I thought I needed to answer, or at least, document why I am choosing
@@ -83,7 +83,7 @@ made me switch from =vim=).
 
 ** Assumptions
 :PROPERTIES:
-:CUSTOM_ID: h:751e2708-4a84-49c4-9b1c-04439beed96d
+:CUSTOM_ID: h:657c38cd-d910-42c2-bd8c-8c20171a8bd5
 :END:
 
 I'll make a few assumption in the following document (that may or may not be true):
@@ -99,7 +99,7 @@ I'll make a few assumption in the following document (that may or may not be tru
 
 ** COPYING
 :PROPERTIES:
-:CUSTOM_ID: h:13ded0f2-230e-406f-85e1-979aca3b4cd6
+:CUSTOM_ID: h:d4cfb344-dcff-4144-951a-8197c5ae2c84
 :END:
 
 Copyright (c) 2013-2020 Vincent Demeester <vincent@sbr.pm>
@@ -119,7 +119,7 @@ along with this file.  If not, see <http://www.gnu.org/licenses/>.
 
 * TODO Base settings
 :PROPERTIES:
-:CUSTOM_ID: h:b5ee7306-620f-4ab8-9da5-a6c8781a93b5
+:CUSTOM_ID: h:e483cc48-eb2d-42a7-93ca-3e1a37fa6a7c
 :END:
 
 This section contains configurations that are needed prior to the setup of everything
@@ -128,7 +128,7 @@ else. Anything that needs to be configured first should be in there, this includ
 
 ** Initiazing emacs
 :PROPERTIES:
-:CUSTOM_ID: h:026adaf4-267a-4f20-bea0-80a7c2290a82
+:CUSTOM_ID: h:4886d661-e2e0-4a75-bf3f-e85aef27b50c
 :END:
 
 Starting with Emacs 27, an =early-init.el= file can be used to do early configuration
@@ -251,7 +251,7 @@ setting it to non-nil inhibit loading the ~default~ library.
 
 ** Unicode all the way
 :PROPERTIES:
-:CUSTOM_ID: h:43f6ecee-a687-4514-98da-4ff01d9ed97a
+:CUSTOM_ID: h:df45a01a-177d-4909-9ce7-a5423e0ea20f
 :END:
 
 By default, all my systems are configured and support =utf-8=, so let's just make it a
@@ -268,7 +268,7 @@ default in Emacs ; and handle special case on demand.
 
 ** Package management with =use-package=
 :PROPERTIES:
-:CUSTOM_ID: h:b9643912-2545-4b11-a91e-3be38b116a8c
+:CUSTOM_ID: h:112262a1-dd4d-4a50-a9e2-85b36bbbd95b
 :END:
 
 =use-package= is a tool that streamlines the configuration of packages. It handles
@@ -345,7 +345,7 @@ already.
 
 ** =custom.el=
 :PROPERTIES:
-:CUSTOM_ID: h:e54a289a-3c43-4dae-8740-912d8e92d28a
+:CUSTOM_ID: h:1ddaf27e-ff7c-424e-8615-dd0bd22b685f
 :END:
 
 When you install a package or use the various customisation interfaces to tweak things to
@@ -372,7 +372,7 @@ stored in a separate file.
 
 ** Loading configuration files
 :PROPERTIES:
-:CUSTOM_ID: h:76547b3f-a78b-45ca-902f-1e4cd72e3ce6
+:CUSTOM_ID: h:d6aebc56-aadb-4b01-8404-bb922d12f8a8
 :END:
 
 This =org-mode= document /tangles/ into several files in different folders :
@@ -417,17 +417,17 @@ entirely sure why yet but…)
 
 * TODO Selection candidates and search methods
 :PROPERTIES:
-:CUSTOM_ID: h:571cf8bc-a359-4d75-9d56-b35c22126cf2
+:CUSTOM_ID: h:4323a022-5419-48f7-acf9-7af94e43eddf
 :END:
 
 * TODO Directory, buffer and window management
 :PROPERTIES:
-:CUSTOM_ID: h:d93bf4bc-62c9-4873-a80e-4ddd874d64c4
+:CUSTOM_ID: h:88c7f450-bb9d-41f6-a8f9-3082a32d3179
 :END:
 
 * TODO Applications and utilities
 :PROPERTIES:
-:CUSTOM_ID: h:9bb3e4bd-c13a-4311-8af7-588fb0386a03
+:CUSTOM_ID: h:8219f8ae-d4a8-4b9d-9a4a-3e457d69751e
 :END:
 
 This section includes configurations for programs like email clients, messages, knowledge
@@ -436,12 +436,12 @@ apps" of the Emacs ecosystem.
 
 ** TODO Org-mode (personal information manager)
 :PROPERTIES:
-:CUSTOM_ID: h:e369ccf4-2d99-418d-97a2-f9aa263f26d6
+:CUSTOM_ID: h:c8fd2624-6c91-4b89-9645-4261ca85d584
 :END:
 
 ** TODO Email and newsgroup
 :PROPERTIES:
-:CUSTOM_ID: h:89b8f7f7-5eeb-410d-8f0d-babad1b28a7c
+:CUSTOM_ID: h:afa562d5-b07e-413b-8c1d-2d489fb72900
 :END:
 
 I have been back and forth on using email inside Emacs, from ~mu4e~ to ~notmuch~. In the
@@ -460,7 +460,7 @@ search them.
 
 *** Base email settings
 :PROPERTIES:
-:CUSTOM_ID: h:8d499f24-24f4-415c-a5fd-62332a68544f
+:CUSTOM_ID: h:765191a3-81cb-4e6e-9360-6a42b2a55b0f
 :END:
 
 Before configuring any email client, we need to establish some essentials: who we are,
@@ -483,7 +483,10 @@ where our credentials are stored and whether encryption is supported.
 
 *** Gnus
 :PROPERTIES:
-:CUSTOM_ID: h:ec3104a8-af27-43a0-a74c-21e76cda465b
+:CUSTOM_ID: h:0aeec7d8-b6c9-4244-8c10-2788c6e89cc5
+:END:
+:PROPERTIES:
+
 :END:
 
 The documentation describes Gnus as the /"coffee-brewing, all singing, all dancing,
@@ -520,7 +523,7 @@ that the current item is a reply to.
 
 **** Account settings
 :PROPERTIES:
-:CUSTOM_ID: h:03ed1cad-027b-4290-895a-7b98b6406221
+:CUSTOM_ID: h:be7bbb5b-4b13-49f0-8044-b79363ccba7f
 :END:
 
 Let's first configure the essentials of Gnus.
@@ -601,7 +604,7 @@ and =nnimap-authinfo-file= are needed, but I keep them for the sake of completen
 
 **** Gnus agent
 :PROPERTIES:
-:CUSTOM_ID: h:05937693-38fd-4be4-a09b-46c3e05560be
+:CUSTOM_ID: h:2beac436-62ba-4b52-acc5-559016ec477f
 :END:
 
 Gnus has something call the "agent", which represent the bridge between Gnus and the
@@ -632,12 +635,12 @@ deleted, or we can create a queue of outgoing messages when Gnus is in an unplug
 
 **** Gnus asynchronous operations
 :PROPERTIES:
-:CUSTOM_ID: h:7a3cac5e-aef5-4a57-8d98-07267089192e
+:CUSTOM_ID: h:c089372e-4aeb-4daf-96d5-77a997ff2dd0
 :END:
 
 By default, Gnus performs all its actions in a synchronous fashion. This means that Emacs
 is blocked until Gnus has finished. By enabling this library, we can use certain functions
-in a non-blocking way. I do this for [[#h:2d793cf8-83f5-4830-b73d-78385d9b96dd][sending email]].
+in a non-blocking way. I do this for [[#h:8cd8c972-ba38-40c2-b30f-68a4233593d6][sending email]].
 
 #+begin_src emacs-lisp :tangle lisp/setup-gnus.el
 (use-package gnus-async
@@ -649,7 +652,7 @@ in a non-blocking way. I do this for [[#h:2d793cf8-83f5-4830-b73d-78385d9b96dd][
 
 **** Gnus group
 :PROPERTIES:
-:CUSTOM_ID: h:b6d66b19-01fe-4ed0-902c-96b96757027b
+:CUSTOM_ID: h:4e52ab94-4e54-41df-a43e-db0c8d23a55a
 :END:
 
 Let's dig a bit more into groups :
@@ -699,7 +702,7 @@ last.
 
 **** Gnus Summary
 :PROPERTIES:
-:CUSTOM_ID: h:418a3d8c-a644-4978-8e8d-df921bd674b6
+:CUSTOM_ID: h:dfe4a692-1f0f-44c7-8d72-a1488e4ef80b
 :END:
 
 Threads should not be hidden, while messages whose root has been removed should be grouped
@@ -762,7 +765,7 @@ called with =%&user-date;=.
 
 **** Gnus intersection with Dired
 :PROPERTIES:
-:CUSTOM_ID: h:2d9681af-5c8e-48ba-b69a-94d58be5fcde
+:CUSTOM_ID: h:35901f1a-4a24-46a8-bc8f-a334cd156f2b
 :END:
 
 We can use the built-in directory editor (file manager) as a more convenient way of
@@ -782,22 +785,22 @@ Run =C-h m= inside of a Dired buffer that has =gnus-dired-mode= enabled and sear
 
 **** TODO Searching mails
 :PROPERTIES:
-:CUSTOM_ID: h:b19a4e06-22d7-4fcb-90bb-0f601f01ddbf
+:CUSTOM_ID: h:8288c9b3-cfe2-4599-a55b-9b2b1c71f524
 :END:
 
 **** TODO Subscribing to RSS
 :PROPERTIES:
-:CUSTOM_ID: h:3b82499c-2e44-4b55-b6b1-8e91c7528080
+:CUSTOM_ID: h:259bbc05-4ea6-43b7-bfef-0036434a86f8
 :END:
 
 *** TODO ~notmuch~ configuration
 :PROPERTIES:
-:CUSTOM_ID: h:5073fce5-1110-40f0-969c-74249383470b
+:CUSTOM_ID: h:b67b377e-0fbc-4237-857c-641cdf2de1cf
 :END:
 
 *** TODO Sending mails
 :PROPERTIES:
-:CUSTOM_ID: h:6ece193a-1ae8-43eb-8760-2d7c08518c28
+:CUSTOM_ID: h:8cd8c972-ba38-40c2-b30f-68a4233593d6
 :END:
 
 #+begin_src emacs-lisp :tangle lisp/setup-gnus.el
@@ -812,11 +815,11 @@ Run =C-h m= inside of a Dired buffer that has =gnus-dired-mode= enabled and sear
 
 * TODO Programming
 :PROPERTIES:
-:CUSTOM_ID: h:a6c9891a-6195-4987-b98f-fd06e1147b47
+:CUSTOM_ID: h:635a27c4-5ff9-46e4-8d42-283d316cf4d6
 :END:
 * Legacy
 :PROPERTIES:
-:CUSTOM_ID: h:66d47486-8c74-4028-a9c7-8cfe75c07e1a
+:CUSTOM_ID: h:9e392a26-fe69-4156-910f-fb1911fd8924
 :END:
 
 This holds legacy code from the previous configuration (without org-mode). This will
@@ -824,14 +827,14 @@ slowly but surely move into an org-mode header and or disappear.
 
 ** Configurations
 :PROPERTIES:
-:CUSTOM_ID: h:2080e917-9414-4a08-8fb8-f3cdbedf8642
+:CUSTOM_ID: h:2227a24c-90e4-4544-bbf0-c123122e3b39
 :END:
 
 These are the initial configuration files to be imported in this file slowly but surely.
 
 *** ~init.el~
 :PROPERTIES:
-:CUSTOM_ID: h:7a634a4a-7d15-4c66-b65d-8b5a682fe029
+:CUSTOM_ID: h:443b5480-2b61-4653-afa2-3c8da9169353
 :END:
 
 #+begin_src emacs-lisp :tangle init.el
@@ -915,7 +918,7 @@ These are the initial configuration files to be imported in this file slowly but
 
 *** ~setup-browser.el~
 :PROPERTIES:
-:CUSTOM_ID: h:79089a4f-0e9c-428c-9269-9819c139f988
+:CUSTOM_ID: h:271aa865-f85d-4e6e-9283-4a2fb457328a
 :END:
 
 #+begin_src emacs-lisp :tangle lisp/setup-browser.el
@@ -983,7 +986,7 @@ These are the initial configuration files to be imported in this file slowly but
 
 *** ~setup-buffers.el~
 :PROPERTIES:
-:CUSTOM_ID: h:3acb943f-4a00-432a-8f94-7da51a5c757c
+:CUSTOM_ID: h:98200f45-7379-42e7-be0d-7db52cd950c8
 :END:
 
 #+begin_src emacs-lisp :tangle lisp/setup-buffers.el
@@ -1144,7 +1147,7 @@ These are the initial configuration files to be imported in this file slowly but
 
 *** ~setup-compile.el~
 :PROPERTIES:
-:CUSTOM_ID: h:31c034c1-735e-4aae-affd-deb25a11a50e
+:CUSTOM_ID: h:c5d92923-4c37-44d6-9adf-a5911e950f7e
 :END:
 
 #+begin_src emacs-lisp :tangle lisp/setup-compile.el
@@ -1215,7 +1218,7 @@ These are the initial configuration files to be imported in this file slowly but
 
 *** ~setup-completion.el~
 :PROPERTIES:
-:CUSTOM_ID: h:5fda01e3-f756-47d0-8bce-c907619d3087
+:CUSTOM_ID: h:5d87a504-6cba-4cc4-a694-ce46756d2fe6
 :END:
 
 #+begin_src emacs-lisp :tangle lisp/setup-completion.el
@@ -1602,7 +1605,7 @@ repository, then the corresponding root is used instead."
 
 *** ~setup-dired.el~
 :PROPERTIES:
-:CUSTOM_ID: h:66b435e6-b66c-4d39-9414-d13ce9ae5dd9
+:CUSTOM_ID: h:739e0f3e-18f0-47c8-b510-ad5a4b09abdc
 :END:
 
 #+begin_src emacs-lisp :tangle lisp/setup-dired.el
@@ -1763,7 +1766,7 @@ repository, then the corresponding root is used instead."
 
 *** ~setup-docker.el~
 :PROPERTIES:
-:CUSTOM_ID: h:1b476ae7-21a6-4dd3-b668-221fa2e38681
+:CUSTOM_ID: h:47e8ae18-cb65-4b18-99eb-36cee80786e8
 :END:
 
 #+begin_src emacs-lisp :tangle lisp/setup-docker.el
@@ -1798,7 +1801,7 @@ repository, then the corresponding root is used instead."
 
 *** ~setup-editing.el~
 :PROPERTIES:
-:CUSTOM_ID: h:0e7ab1fa-1d49-43ac-9bd7-f84e4d7057b5
+:CUSTOM_ID: h:60b9cba7-507c-4f07-be1a-e8e71c3ae7a4
 :END:
 
 #+begin_src emacs-lisp :tangle lisp/setup-editing.el
@@ -2064,7 +2067,7 @@ instead.  This command can then be followed by the standard
 
 *** ~setup-files.el~
 :PROPERTIES:
-:CUSTOM_ID: h:f7b54e8c-f10e-4fd8-9c54-bc3c31b36915
+:CUSTOM_ID: h:2e1f18fb-5555-4c91-a134-e509eccdf67a
 :END:
 
 #+begin_src emacs-lisp :tangle lisp/setup-files.el
@@ -2226,7 +2229,7 @@ buffers."
 
 *** ~setup-go.el~
 :PROPERTIES:
-:CUSTOM_ID: h:64e5b918-3d56-40ba-a07f-e56294f1575a
+:CUSTOM_ID: h:28696bf2-7a37-493f-b760-bb4d89a5d051
 :END:
 
 #+begin_src emacs-lisp :tangle lisp/setup-go.el
@@ -2269,7 +2272,7 @@ buffers."
 
 *** ~setup-hydras.el~
 :PROPERTIES:
-:CUSTOM_ID: h:81612e01-a0c8-42c2-a1fe-34bd1b9d8002
+:CUSTOM_ID: h:c763026a-a3f2-4ed5-a6e6-1b49fa2a6b1c
 :END:
 
 #+begin_src emacs-lisp :tangle lisp/setup-hydras.el
@@ -2349,7 +2352,7 @@ Number of marked items: %(length (dired-get-marked-files))
 
 *** ~setup-keybindings.el~
 :PROPERTIES:
-:CUSTOM_ID: h:9b69d5a9-f589-4348-9798-7a03c850fcbc
+:CUSTOM_ID: h:35f0e304-7076-4b73-b148-a206db3f0bcb
 :END:
 
 #+begin_src emacs-lisp :tangle lisp/setup-keybindings.el
@@ -2398,7 +2401,7 @@ Number of marked items: %(length (dired-get-marked-files))
 
 *** ~setup-multiple-cursor.el~
 :PROPERTIES:
-:CUSTOM_ID: h:462c3e34-87b1-4c1a-b388-e698c057f15e
+:CUSTOM_ID: h:2b97e563-abdc-4f0d-95e2-b212c696196c
 :END:
 
 #+begin_src emacs-lisp :tangle lisp/setup-multiple-cursors.el
@@ -2425,7 +2428,7 @@ Number of marked items: %(length (dired-get-marked-files))
 
 *** ~setup-navigating.el~
 :PROPERTIES:
-:CUSTOM_ID: h:c5ec18c7-1153-451c-b472-33b55f1bba77
+:CUSTOM_ID: h:e082e210-60b9-446e-a85f-c97ed94854a8
 :END:
 
 #+begin_src emacs-lisp :tangle lisp/setup-navigating.el
@@ -2467,7 +2470,7 @@ Number of marked items: %(length (dired-get-marked-files))
 
 *** ~setup-nix.el~
 :PROPERTIES:
-:CUSTOM_ID: h:f82d7d6f-55bf-495d-b71f-dd4719ece06e
+:CUSTOM_ID: h:5429052a-d792-429a-9176-c9a3e3e7e130
 :END:
 
 #+begin_src emacs-lisp :tangle lisp/setup-nix.el
@@ -2488,7 +2491,7 @@ Number of marked items: %(length (dired-get-marked-files))
 
 *** ~setup-notmuch.el~
 :PROPERTIES:
-:CUSTOM_ID: h:3505ad73-785d-4849-98a6-9081c6d8e93d
+:CUSTOM_ID: h:a6256db2-c230-4261-bf4a-0f8a0f09e810
 :END:
 
 #+begin_src emacs-lisp :tangle lisp/setup-notmuch.el
@@ -2528,7 +2531,7 @@ Number of marked items: %(length (dired-get-marked-files))
 
 *** ~setup-org.el~
 :PROPERTIES:
-:CUSTOM_ID: h:b004ecf8-04cf-4671-bd41-6ecdff14887f
+:CUSTOM_ID: h:46adc0c2-75cb-4bc7-8aab-c4338a06a96d
 :END:
 
 #+begin_src emacs-lisp :tangle lisp/setup-org.el
@@ -3088,7 +3091,7 @@ activation of `org-tree-slide-mode'."
 
 *** ~setup-projectile.el~
 :PROPERTIES:
-:CUSTOM_ID: h:8b4f0172-d070-4563-808f-064d4c1fd61d
+:CUSTOM_ID: h:fcfa4636-70a0-4088-a021-7f6b2dc16208
 :END:
 
 #+begin_src emacs-lisp :tangle lisp/setup-projectile.el
@@ -3125,7 +3128,7 @@ activation of `org-tree-slide-mode'."
 
 *** ~setup-search.el~
 :PROPERTIES:
-:CUSTOM_ID: h:190839ba-ced5-4b72-b2cd-1d65603d2082
+:CUSTOM_ID: h:25d09ed7-8a16-421d-94c7-2b1dfb96ace4
 :END:
 
 #+begin_src emacs-lisp :tangle lisp/setup-search.el
@@ -3237,7 +3240,10 @@ confines of word boundaries (e.g. multiple words)."
 
 *** ~setup-shells.el~
 :PROPERTIES:
-:CUSTOM_ID: h:7b4b9a30-5e03-42f4-b5d1-c0ca1236ac3f
+:CUSTOM_ID: h:fd536392-1477-450c-965a-80bbbd1e4d81
+:END:
+:PROPERTIES:
+
 :END:
 
 #+begin_src emacs-lisp :tangle lisp/setup-shells.el
@@ -3508,7 +3514,7 @@ using either KUBECONFIG or ~/.kube/config"
 
 *** ~setup-style.el~
 :PROPERTIES:
-:CUSTOM_ID: h:3261211e-0ffb-44de-8a35-f3612d333c68
+:CUSTOM_ID: h:8ad2ded5-f9e0-4973-9c6e-99efd37aaad4
 :END:
 
 #+begin_src emacs-lisp :tangle lisp/setup-style.el
@@ -3721,7 +3727,7 @@ using either KUBECONFIG or ~/.kube/config"
 
 *** ~setup-vcs.el~
 :PROPERTIES:
-:CUSTOM_ID: h:90edb897-d72a-4433-86c7-f6f446e9ed97
+:CUSTOM_ID: h:225b08ad-d82e-46a1-9695-9d0d9ed2c17f
 :END:
 
 #+begin_src emacs-lisp :tangle lisp/setup-vcs.el
@@ -3852,7 +3858,7 @@ using either KUBECONFIG or ~/.kube/config"
 
 *** ~setup-vde-mode.el~
 :PROPERTIES:
-:CUSTOM_ID: h:d61614e2-7b13-43f3-aec8-a854bcaaeb0c
+:CUSTOM_ID: h:19bf468b-1fcd-469f-9c25-dee2e200f7e7
 :END:
 
 #+begin_src emacs-lisp :tangle lisp/00-vde-mode.el
@@ -3919,7 +3925,7 @@ USAGE: (unbind-from-vde-map \"C-x m f\")
 
 *** ~setup-web.el~
 :PROPERTIES:
-:CUSTOM_ID: h:7b53ca52-4212-4b40-bb15-d320ecfcf2d5
+:CUSTOM_ID: h:cb940809-e0af-4e9f-9c09-71c95b6cb472
 :END:
 
 #+begin_src emacs-lisp :tangle lisp/setup-web.el
@@ -3962,7 +3968,7 @@ USAGE: (unbind-from-vde-map \"C-x m f\")
 
 *** ~setup-windows.el~
 :PROPERTIES:
-:CUSTOM_ID: h:f00c62a0-5aed-4192-bfe8-c04f5e7e9cbe
+:CUSTOM_ID: h:c53d2549-1bd0-430e-a7b1-cd981d994b7a
 :END:
 
 #+begin_src emacs-lisp :tangle lisp/setup-windows.el
@@ -4053,12 +4059,12 @@ USAGE: (unbind-from-vde-map \"C-x m f\")
 
 ** External libraries
 :PROPERTIES:
-:CUSTOM_ID: h:ce167134-1188-4ffb-9d94-61ea13440551
+:CUSTOM_ID: h:96ce2856-182e-42c8-a8b3-418c38124dcc
 :END:
 
 *** ~gotest-ui.el~
 :PROPERTIES:
-:CUSTOM_ID: h:0166b379-751d-4d9d-8f7e-ac33fde2b80b
+:CUSTOM_ID: h:a94b8ba9-2d74-4fb3-a43a-58f4cd6e5141
 :END:
 
 From [[https://github.com/antifuchs/gotest-ui-mode/][antifuchs/gotest-ui-mode]].
