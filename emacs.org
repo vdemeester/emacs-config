@@ -449,6 +449,7 @@ apps" of the Emacs ecosystem.
 
 ** TODO Email and newsgroup
 :PROPERTIES:
+:header-args: :tangle config/setup-mails.el
 :CUSTOM_ID: h:afa562d5-b07e-413b-8c1d-2d489fb72900
 :END:
 
@@ -474,7 +475,7 @@ search them.
 Before configuring any email client, we need to establish some essentials: who we are,
 where our credentials are stored and whether encryption is supported.
 
-#+begin_src emacs-lisp :tangle lisp/setup-gnus.el
+#+begin_src emacs-lisp
 (use-package auth-source
   :config
   (setq auth-sources '("~/.authinfo.gpg" "~/.authinfo"))
@@ -546,7 +547,7 @@ and =nnimap-authinfo-file= are needed, but I keep them for the sake of completen
 - [[http://www.cataclysmicmutation.com/2010/11/multiple-gmail-accounts-in-gnus/][Multiple GMail Accounts in Gnus - Cataclysmic Mutation]]
 - [[https://github.com/redguardtoo/mastering-emacs-in-one-year-guide/blob/master/gnus-guide-en.org][mastering-emacs-in-one-year-guide/gnus-guide-en.org at master · redguardtoo/mastering-emacs-in-one-year-guide]]
 
-#+begin_src emacs-lisp :tangle lisp/setup-gnus.el
+#+begin_src emacs-lisp
 (use-package gnus
   :config
   (setq nnml-directory "~/desktop/gnus/mail")
@@ -622,7 +623,7 @@ already fetched from the server.  We can also use the agent to configure the han
 local messages.  For example, we can set an expiry date, after which the message is
 deleted, or we can create a queue of outgoing messages when Gnus is in an unplugged state.
 
-#+begin_src emacs-lisp :tangle lisp/setup-gnus.el
+#+begin_src emacs-lisp
 (use-package gnus-agent
   :after gnus
   :config
@@ -648,7 +649,7 @@ By default, Gnus performs all its actions in a synchronous fashion. This means t
 is blocked until Gnus has finished. By enabling this library, we can use certain functions
 in a non-blocking way. I do this for [[#h:8cd8c972-ba38-40c2-b30f-68a4233593d6][sending email]].
 
-#+begin_src emacs-lisp :tangle lisp/setup-gnus.el
+#+begin_src emacs-lisp
 (use-package gnus-async
   :after gnus
   :config
@@ -680,7 +681,7 @@ Let's dig a bit more into groups :
 Note that =gnus-group-sort-functions= requires the most important function to be declared
 last.
 
-#+begin_src emacs-lisp :tangle lisp/setup-gnus.el
+#+begin_src emacs-lisp
 (use-package gnus-group
   :after gnus
   :config
@@ -723,7 +724,7 @@ The =gnus-user-date-format-alist=, this basically adapts the date to whether the
 was within the day or the one before, else falls back to a default value. It is then
 called with =%&user-date;=.
 
-#+begin_src emacs-lisp :tangle lisp/setup-gnus.el
+#+begin_src emacs-lisp
 (use-package gnus-sum
   :after (gnus gnus-group)
   :demand
@@ -811,7 +812,7 @@ Run =C-h m= inside of a Dired buffer that has =gnus-dired-mode= enabled and sear
 "gnus" to see all the relevant key bindings and the functions they call. I only ever use
 =C-c C-m C-a= (=C-m= is the same as =RET=).
 
-#+begin_src emacs-lisp :tangle lisp/setup-gnus.el
+#+begin_src emacs-lisp
 (use-package gnus-dired
   :after (gnus dired)
   :hook (dired-mode . gnus-dired-mode))
@@ -837,7 +838,7 @@ Run =C-h m= inside of a Dired buffer that has =gnus-dired-mode= enabled and sear
 :CUSTOM_ID: h:8cd8c972-ba38-40c2-b30f-68a4233593d6
 :END:
 
-#+begin_src emacs-lisp :tangle lisp/setup-gnus.el
+#+begin_src emacs-lisp
 (use-package smtpmail
   :config
   (setq message-send-mail-function 'message-send-mail-with-sendmail)
