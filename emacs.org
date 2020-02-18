@@ -249,6 +249,14 @@ setting it to non-nil inhibit loading the ~default~ library.
 (setq inhibit-default-init t)           ; Disable the site default settings
 #+end_src
 
+One last piece to the puzzle is the default mode. Setting it to fundamental-mode means we
+won't load any /heavy/ mode at startup (like =org-mode=).
+
+#+begin_src emacs-lisp :tangle init.el
+(setq initial-major-mode 'fundamental-mode)
+#+end_src
+
+
 ** Unicode all the way
 :PROPERTIES:
 :CUSTOM_ID: h:df45a01a-177d-4909-9ce7-a5423e0ea20f
@@ -2561,7 +2569,6 @@ Number of marked items: %(length (dired-get-marked-files))
  inhibit-startup-message t            ; don't show the startup message
  inhibit-startup-screen t             ; … or screen
  initial-scratch-message nil          ; empty scratch buffer
- initial-major-mode 'org-mode  ; org-mode by default
  )
 
 (use-package s)

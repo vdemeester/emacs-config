@@ -24,7 +24,6 @@
  inhibit-startup-message t            ; don't show the startup message
  inhibit-startup-screen t             ; … or screen
  initial-scratch-message nil          ; empty scratch buffer
- initial-major-mode 'org-mode  ; org-mode by default
  )
 
 (use-package s)

@@ -33,6 +33,8 @@
 
 (setq inhibit-default-init t)           ; Disable the site default settings
 
+(setq initial-major-mode 'fundamental-mode)
+
 (prefer-coding-system 'utf-8)
 (set-default-coding-systems 'utf-8)
 (set-language-environment 'utf-8)
