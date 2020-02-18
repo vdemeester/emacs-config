@@ -66,6 +66,7 @@
   (setq gnus-read-active-file 'some)
   (setq gnus-use-dribble-file t)
   (setq gnus-always-read-dribble-file t)
+  (setq gnus-novice-user nil)
   (setq gnus-extra-headers
         '(To Newsgroups X-GM-LABELS)))
 

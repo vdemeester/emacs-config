@@ -493,9 +493,6 @@ where our credentials are stored and whether encryption is supported.
 :PROPERTIES:
 :CUSTOM_ID: h:0aeec7d8-b6c9-4244-8c10-2788c6e89cc5
 :END:
-:PROPERTIES:
-
-:END:
 
 The documentation describes Gnus as the /"coffee-brewing, all singing, all dancing,
 kitchen sink newsreader"/. It is massive, which means the learning curve is more or less
@@ -606,6 +603,7 @@ and =nnimap-authinfo-file= are needed, but I keep them for the sake of completen
   (setq gnus-read-active-file 'some)
   (setq gnus-use-dribble-file t)
   (setq gnus-always-read-dribble-file t)
+  (setq gnus-novice-user nil)
   (setq gnus-extra-headers
         '(To Newsgroups X-GM-LABELS)))
 #+end_src
