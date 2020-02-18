@@ -433,7 +433,7 @@ entirely sure why yet but…)
 :CUSTOM_ID: h:88c7f450-bb9d-41f6-a8f9-3082a32d3179
 :END:
 
-* TODO Applications and utilities
+* Applications and utilities
 :PROPERTIES:
 :CUSTOM_ID: h:8219f8ae-d4a8-4b9d-9a4a-3e457d69751e
 :END:
@@ -768,6 +768,34 @@ called with =%&user-date;=.
               ("C-M-p" . gnus-summary-prev-group)
               ("C-M-^" . gnus-summary-refer-thread)))
 #+end_src
+
+Gnus summary displays a mark for each messages, those `O`, `!`, … Let's first describe
+what are those marks (from the [[https://www.gnu.org/software/emacs/manual/html_node/gnus/Marking-Articles.html#Marking-Articles][documentation]]) and which one make the more sense for me.
+Most of those marks can be set using the =M= prefix (or =M M=) from the Summary buffer.
+
+First there is two groups of /marks/ : *unread* and *read*. Note they do not entirely map
+to what IMAP defines or what you would see in another mail UI (webmail, …).
+
++ *unread*: those will appear by default on a Summary buffer (almost 😜)
+  - =<SPC>= are the /standard/ unread, never read. Once a mail is read you can mark it back as
+    unread with =M M u u=.
+  - =!= is for /ticked/. This is similar to the *starred* thread/message on GMail (or
+    Thunderbird, … — in ~notmuch~ it appears as =flagged=). Those will always appear in
+    the summary, so this is mainly for really important message to be remembered all the
+    time.
+  - =?= is for /dormant/. This is similar to /ticked/ *but* the article will only appear
+    if there is a follow-up of the message. This would be a good use of "waiting for an
+    answer so keep it".
++ *read*: those will not appear by default on a Summary buffer
+  - =r= and =R= are /just read/ (like in the /reading session/) more or less
+  - =O= is /read/ in an older session
+  - =Y= is for /too low of a score/, this means this message got automatically read
+    because it had low score (/more on that later/).
+  - =E= is for /marked as expirable/, so that Gnus can delete/expunge them (or do
+    something else — /more on that later/).
+  - =M= is for /duplicated/.
+  - =K=, =X= are for /killed/, =C= is for /catchup/ =Q= is for /sparsely reffed article/
+    and =G= is for cancelled — not sure what this means yet…
 
 **** Gnus intersection with Dired
 :PROPERTIES:
@@ -4062,12 +4090,85 @@ USAGE: (unbind-from-vde-map \"C-x m f\")
 (provide 'setup-windows)
 #+end_src
 
-** External libraries
+* External libraries
 :PROPERTIES:
 :CUSTOM_ID: h:96ce2856-182e-42c8-a8b3-418c38124dcc
 :END:
 
-*** ~gotest-ui.el~
+** ~use-package-list.el~
+:PROPERTIES:
+:CUSTOM_ID: h:bd8804a0-df0e-4aca-b748-429ea9402cd6
+:END:
+
+#+begin_src emacs-lisp :tangle lisp/use-package-list.el
+;;; use-package-list.el --- List use-package declarations in config file
+
+;; Copyright (C) 2017 Matthew Bauer
+
+;; Author: Matthew Bauer <mjbauer95@gmail.com>
+
+;; This file is NOT part of GNU Emacs.
+
+;;; Commentary:
+
+;; ‘ensure’ packages at compile time.
+
+;;; Code:
+
+(require 'json)
+(require 'use-package)
+(require 'package)
+(eval-when-compile
+  (require 'cl))
+
+(defun use-package-list (script)
+  "Count use-package declarations listed in SCRIPT."
+
+  (defvar use-package-list--is-running t)
+  (lexical-let ((use-package-verbose t)
+                (use-package-debug t)
+                (use-package-always-ensure nil)
+                (use-package-always-defer t)
+                (use-package-list--packages nil)
+                (use-package-ensure-function 'ignore))
+    (advice-add 'use-package
+                :before (lambda (name &rest args)
+                          (unless (or (and (member :disabled args)
+                                           (plist-get args :disabled))
+                                      (and (member :ensure args)
+                                           (not (plist-get args :ensure)))
+                                      (and (not (member :ensure args))
+                                           (package-built-in-p name)))
+                            (when (and (member :ensure args)
+                                       (not (eq (plist-get args :ensure) t))
+                                       (symbolp (plist-get args :ensure)))
+                              (setq name (plist-get args :ensure)))
+                            (add-to-list 'use-package-list--packages name))))
+
+    (advice-add 'use-package-handler/:defer
+                :around (lambda (x name keyword arg rest state)
+                          (let ((body (use-package-process-keywords name rest
+                                        (plist-put state :deferred t)))
+                                (name-string (use-package-as-string name)))
+                            (dolist (command
+                                     (delete-dups (plist-get state :commands)))
+                              (fset command (lambda (&rest args))))
+                            body)))
+
+    (advice-add 'use-package-load-name :override #'ignore)
+
+    (load script nil nil t)
+
+    (princ (json-encode use-package-list--packages))
+
+    use-package-list--packages))
+
+(provide 'use-package-list)
+;;; use-package-list.el ends here
+#+end_src
+
+
+** ~gotest-ui.el~
 :PROPERTIES:
 :CUSTOM_ID: h:a94b8ba9-2d74-4fb3-a43a-58f4cd6e5141
 :END:
