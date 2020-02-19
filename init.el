@@ -3,33 +3,12 @@
   (unless (>= emacs-major-version minver)
     (error "Your Emacs is too old -- this configuration requires v%s or higher" minver)))
 
-(defvar file-name-handler-alist-original file-name-handler-alist)
-
-(setq file-name-handler-alist nil
-      message-log-max 16384
-      auto-window-vscroll nil)
-
 (defconst emacs-start-time (current-time))
 
-(when (< emacs-major-version 27)
-  (setq package-enable-at-startup nil)
-
-  (setq frame-inhibit-implied-resize t)
-
-  (menu-bar-mode -1)
-  (tool-bar-mode -1)
-  (scroll-bar-mode -1)
-  (horizontal-scroll-bar-mode -1)
-
-  (setq gc-cons-threshold 402653184
-        gc-cons-percentage 0.6)
-
-  (add-hook 'after-init-hook
-            `(lambda ()
-               (setq gc-cons-threshold 16777216 ; 16mb
-                     gc-cons-percentage 0.1
-                     file-name-handler-alist file-name-handler-alist-original)
-               (garbage-collect)) t))
+;; load early-init.el before Emacs 27.0
+(unless (featurep 'early-init)
+  (message "Early init: Emacs Version < 27.0")
+  (load (expand-file-name "early-init.el" user-emacs-directory)))
 
 (setq inhibit-default-init t)           ; Disable the site default settings
 

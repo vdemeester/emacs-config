@@ -1,6 +1,9 @@
 #+SETUPFILE: ./_setup.org
 #+TITLE: Vincent Demeester's .emacs.d
 
+#+TOC: headlines 3
+
+
 * Overview
 :PROPERTIES:
 :CUSTOM_ID: h:64b142be-1326-479b-ab6e-e88ca298f56d
@@ -184,6 +187,16 @@ We can use this to our advantage and optimize the initial loading of emacs.
         gc-cons-percentage 0.6)
   #+end_src
 
+- Another small optimization concerns on =file-name-handler-alist= : on every .el and .elc
+  file loaded during start up, it has to runs those regexps against the filename ; setting
+  it to ~nil~ and after initialization finished put the value back make the initialization
+  process quicker.
+
+  #+begin_src emacs-lisp :tangle early-init.el
+  (defvar file-name-handler-alist-original file-name-handler-alist)
+  (setq file-name-handler-alist nil)
+  #+end_src
+
   However, it is important to reset it eventually. Not doing so will cause garbage
   collection freezes during long-term interactive use. Conversely, a ~gc-cons-threshold~
   that is too small will cause stuttering.
@@ -192,18 +205,15 @@ We can use this to our advantage and optimize the initial loading of emacs.
   (add-hook 'after-init-hook
             `(lambda ()
                (setq gc-cons-threshold 16777216 ; 16mb
-                     gc-cons-percentage 0.1)
+                     gc-cons-percentage 0.1
+                     file-name-handler-alist file-name-handler-alist-original)
                (garbage-collect)) t)
   #+end_src
 
 One thing though, I am currently not necessarily running Emacs 27, so I am going to need
 to have the same configuration in ~init.el~ for a little bit of time.
 
-- /Note: the lowest emacs version I wanna support is 26 (as of today, might evolve)/
-- Another small optimization concerns on =file-name-handler-alist= : on every .el and .elc
-  file loaded during start up, it has to runs those regexps against the filename ; setting
-  it to ~nil~ and after initialization finished put the value back make the initialization
-  process quicker.
+/Note: the lowest emacs version I wanna support is 26 (as of today, might evolve)/
 
 #+begin_src emacs-lisp :tangle init.el
 ;;; -*- lexical-binding: t; -*-
@@ -211,33 +221,13 @@ to have the same configuration in ~init.el~ for a little bit of time.
   (unless (>= emacs-major-version minver)
     (error "Your Emacs is too old -- this configuration requires v%s or higher" minver)))
 
-(defvar file-name-handler-alist-original file-name-handler-alist)
-
-(setq file-name-handler-alist nil
-      message-log-max 16384
-      auto-window-vscroll nil)
-
 (defconst emacs-start-time (current-time))
 
-(when (< emacs-major-version 27)
-  (setq package-enable-at-startup nil)
+;; load early-init.el before Emacs 27.0
+(unless (featurep 'early-init)
+  (message "Early init: Emacs Version < 27.0")
+  (load (expand-file-name "early-init.el" user-emacs-directory)))
 
-  (setq frame-inhibit-implied-resize t)
-
-  (menu-bar-mode -1)
-  (tool-bar-mode -1)
-  (scroll-bar-mode -1)
-  (horizontal-scroll-bar-mode -1)
-
-  (setq gc-cons-threshold 402653184
-        gc-cons-percentage 0.6)
-
-  (add-hook 'after-init-hook
-            `(lambda ()
-               (setq gc-cons-threshold 16777216 ; 16mb
-                     gc-cons-percentage 0.1
-                     file-name-handler-alist file-name-handler-alist-original)
-               (garbage-collect)) t))
 #+end_src
 
 We also want our configuration to be working the same on any computer, this means we want

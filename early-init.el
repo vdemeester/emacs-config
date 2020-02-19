@@ -10,8 +10,12 @@
 (setq gc-cons-threshold 402653184
       gc-cons-percentage 0.6)
 
+(defvar file-name-handler-alist-original file-name-handler-alist)
+(setq file-name-handler-alist nil)
+
 (add-hook 'after-init-hook
           `(lambda ()
              (setq gc-cons-threshold 16777216 ; 16mb
-                   gc-cons-percentage 0.1)
+                   gc-cons-percentage 0.1
+                   file-name-handler-alist file-name-handler-alist-original)
              (garbage-collect)) t)
