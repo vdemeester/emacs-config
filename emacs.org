@@ -360,7 +360,7 @@ When you install a package or use the various customisation interfaces to tweak 
 your liking, Emacs will append a piece of elisp to your init file. I prefer to have that
 stored in a separate file.
 
-#+begin_src emacs-lisp : tangle init.el
+#+begin_src emacs-lisp :tangle init.el
 (defconst vde/custom-file (locate-user-emacs-file "custom.el")
   "File used to store settings from Customization UI.")
 
