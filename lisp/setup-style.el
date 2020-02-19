@@ -2,10 +2,7 @@
 ;;; ¯\_(ツ)_/¯
 ;;; - Iosevka (https://github.com/be5invis/Iosevka)
 ;;; - Fira Sans (https://github.com/mozilla/Fira/)
-(setq font-height 110)
-(cond
- ((string= (system-name) "hokkaido")
-  (setq font-height 100)))
+(defconst font-height 130)
 ;; Middle/Near East: שלום, السّلام عليكم
 (when (member "Noto Sans Arabic" (font-family-list))
   (set-fontset-font t 'arabic "Noto Sans Arabic"))
@@ -17,10 +14,10 @@
   (set-fontset-font t 'ethiopic "Noto Sans Ethiopic"))
 
 (set-face-attribute 'default nil
-                    :family "Fira Code" ; "Overpass Mono" to try someday
+                    :family "Ubuntu Mono"
                     :height font-height)
 (set-face-attribute 'variable-pitch nil
-                    :family "Fira Sans"
+                    :family "Ubuntu Sans"
                     :height font-height
                     :weight 'regular)
 
@@ -29,10 +26,10 @@
   "Reset fonts to my preferences."
   (interactive)
   (set-face-attribute 'default nil
-                      :family "Fira Code"
+                      :family "Ubuntu Mono"
                       :height font-height)
   (set-face-attribute 'variable-pitch nil
-                      :family "Fira Sans"
+                      :family "Ubuntu Sans"
                       :height font-height
                       :weight 'regular))
 
