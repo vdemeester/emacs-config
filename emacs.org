@@ -227,7 +227,6 @@ to have the same configuration in ~init.el~ for a little bit of time.
 (unless (featurep 'early-init)
   (message "Early init: Emacs Version < 27.0")
   (load (expand-file-name "early-init.el" user-emacs-directory)))
-
 #+end_src
 
 We also want our configuration to be working the same on any computer, this means we want
@@ -247,7 +246,7 @@ won't load any /heavy/ mode at startup (like =org-mode=).
 #+end_src
 
 
-** Unicode all the way
+*** Unicode all the way
 :PROPERTIES:
 :CUSTOM_ID: h:df45a01a-177d-4909-9ce7-a5423e0ea20f
 :END:
