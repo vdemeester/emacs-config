@@ -109,43 +109,9 @@
 (if (file-exists-p (downcase (concat user-emacs-directory "/hosts/" (vde/short-hostname) ".el")))
     (load-file (downcase (concat user-emacs-directory "/hosts/" (vde/short-hostname) ".el"))))
 
-(use-package exec-path-from-shell       ; Set up environment variables
-  :if (display-graphic-p)
-  :unless (eq system-type 'windows-nt)
-  :config
-  (setq exec-path-from-shell-variables
-        '("PATH"               ; Full path
-          "INFOPATH"           ; Info directories
-          "GOPATH"             ; Golang path
-          ))
-
-  (exec-path-from-shell-initialize))
-
-(use-package no-littering               ; Keep .emacs.d clean
-  :config
-  (require 'recentf)
-  (add-to-list 'recentf-exclude no-littering-var-directory)
-  (add-to-list 'recentf-exclude no-littering-etc-directory)
-
-  (setq
-   create-lockfiles nil
-   delete-old-versions t
-   kept-new-versions 6
-   kept-old-versions 2
-   version-control t)
-
-  (setq
-   backup-directory-alist
-   `((".*" . ,(no-littering-expand-var-file-name "backup/")))
-   auto-save-file-name-transforms
-   `((".*" ,(no-littering-expand-var-file-name "auto-save/") t))))
-
 (setenv "PAGER" "cat")
 (setenv "TERM" "xterm-256color")
 (setenv "NOTMUCH_CONFIG" (expand-file-name ".config/notmuch/notmuchrc" (getenv "HOME")))
-
-(use-package server                     ; The server of `emacsclient'
-  :config (or (server-running-p) (server-mode)))
 
 (use-package pinentry
   :config

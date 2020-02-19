@@ -274,7 +274,7 @@ default in Emacs ; and handle special case on demand.
 #+end_src
 
 
-** Package management with =use-package=
+*** Package management with =use-package=
 :PROPERTIES:
 :CUSTOM_ID: h:112262a1-dd4d-4a50-a9e2-85b36bbbd95b
 :END:
@@ -351,7 +351,7 @@ already.
   (require 'use-package))
 #+end_src
 
-** =custom.el=
+*** =custom.el=
 :PROPERTIES:
 :CUSTOM_ID: h:1ddaf27e-ff7c-424e-8615-dd0bd22b685f
 :END:
@@ -378,7 +378,7 @@ stored in a separate file.
   (load vde/custom-file 'no-error 'no-message))
 #+end_src
 
-** Loading configuration files
+*** Loading configuration files
 :PROPERTIES:
 :CUSTOM_ID: h:d6aebc56-aadb-4b01-8404-bb922d12f8a8
 :END:
@@ -422,6 +422,102 @@ entirely sure why yet but…)
     (load-file (downcase (concat user-emacs-directory "/hosts/" (vde/short-hostname) ".el"))))
 #+end_src
 
+** ~PATH~'s customization
+:PROPERTIES:
+:header-args: :tangle config/00-paths.el
+:CUSTOM_ID: h:2a72b00e-ea97-4a3b-a70c-cbbe648df428
+:END:
+
+To make sure my emacs instance and my user environment setup is always /similar/, I use
+=exec-path-from-shell=.
+
+#+begin_quote
+Ever find that a command works in your shell, but not in Emacs?
+
+This happens a lot on OS X, where an Emacs instance started from the GUI inherits a
+default set of environment variables.
+
+This library solves this problem by copying important environment variables from the
+user's shell: it works by asking your shell to print out the variables of interest, then
+copying them into the Emacs environment.
+#+end_quote
+
+#+begin_src emacs-lisp
+(use-package exec-path-from-shell       ; Set up environment variables
+  :if (display-graphic-p)
+  :unless (eq system-type 'windows-nt)
+  :config
+  (setq exec-path-from-shell-variables
+        '("PATH"               ; Full path
+          "INFOPATH"           ; Info directories
+          "GOPATH"             ; Golang path
+          ))
+  (exec-path-from-shell-initialize))
+#+end_src
+
+** Keep emacs clean
+:PROPERTIES:
+:header-args: :tangle config/00-clean.el
+:CUSTOM_ID: h:8a9d7d0d-0900-4261-a9e3-923a0afc1324
+:END:
+
+I want to keep the =~/.emacs.d= folder as clean as possible. The [[https://github.com/emacscollective/no-littering][no-littering]] project
+helps wit that.
+
+#+begin_quote
+The default paths used to store configuration files and persistent data are not consistent
+across Emacs packages. This isn't just a problem with third-party packages but even with
+built-in packages.
+
+Some packages put these files directly in user-emacs-directory or $HOME or in a
+subdirectory of either of the two or elsewhere. Furthermore sometimes file names are used
+that don't provide any insight into what package might have created them.
+
+This package sets out to fix this by changing the values of path variables to put
+configuration files in no-littering-etc-directory (defaulting to ~/.emacs.d/etc/) and
+persistent data files in no-littering-var-directory (defaulting to ~/.emacs.d/var/), and
+by using descriptive file names and subdirectories when appropriate. This is similar to a
+color-theme; a "path-theme" if you will.
+#+end_quote
+
+Let's configure it *and* make sure we load it as soon as possible (hence the =config/00-clean.el=)
+
+#+begin_src emacs-lisp
+(use-package no-littering               ; Keep .emacs.d clean
+  :config
+  (require 'recentf)
+  (add-to-list 'recentf-exclude no-littering-var-directory)
+  (add-to-list 'recentf-exclude no-littering-etc-directory)
+
+  ;; Move this in its own thing
+  (setq
+   create-lockfiles nil
+   delete-old-versions t
+   kept-new-versions 6
+   kept-old-versions 2
+   version-control t)
+
+  (setq
+   backup-directory-alist
+   `((".*" . ,(no-littering-expand-var-file-name "backup/")))
+   auto-save-file-name-transforms
+   `((".*" ,(no-littering-expand-var-file-name "auto-save/") t))))
+#+end_src
+
+
+** Server mode
+:PROPERTIES:
+:header-args: :tangle config/01-server.el
+:CUSTOM_ID: h:51ffd089-63c6-4ba6-8cc5-4c888521ef3a
+:END:
+
+My current setup involves a =emacs --daemon= systemd service. We want to start the server
+if it's not already running, so that =emacsclient= can connect to it.
+
+#+begin_src emacs-lisp
+(use-package server
+  :config (or (server-running-p) (server-mode)))
+#+end_src
 
 * TODO Selection candidates and search methods
 :PROPERTIES:
@@ -873,43 +969,9 @@ These are the initial configuration files to be imported in this file slowly but
 :END:
 
 #+begin_src emacs-lisp :tangle init.el
-(use-package exec-path-from-shell       ; Set up environment variables
-  :if (display-graphic-p)
-  :unless (eq system-type 'windows-nt)
-  :config
-  (setq exec-path-from-shell-variables
-        '("PATH"               ; Full path
-          "INFOPATH"           ; Info directories
-          "GOPATH"             ; Golang path
-          ))
-
-  (exec-path-from-shell-initialize))
-
-(use-package no-littering               ; Keep .emacs.d clean
-  :config
-  (require 'recentf)
-  (add-to-list 'recentf-exclude no-littering-var-directory)
-  (add-to-list 'recentf-exclude no-littering-etc-directory)
-
-  (setq
-   create-lockfiles nil
-   delete-old-versions t
-   kept-new-versions 6
-   kept-old-versions 2
-   version-control t)
-
-  (setq
-   backup-directory-alist
-   `((".*" . ,(no-littering-expand-var-file-name "backup/")))
-   auto-save-file-name-transforms
-   `((".*" ,(no-littering-expand-var-file-name "auto-save/") t))))
-
 (setenv "PAGER" "cat")
 (setenv "TERM" "xterm-256color")
 (setenv "NOTMUCH_CONFIG" (expand-file-name ".config/notmuch/notmuchrc" (getenv "HOME")))
-
-(use-package server                     ; The server of `emacsclient'
-  :config (or (server-running-p) (server-mode)))
 
 (use-package pinentry
   :config
