@@ -537,8 +537,120 @@ apps" of the Emacs ecosystem.
 
 ** TODO Org-mode (personal information manager)
 :PROPERTIES:
+:header-args: :tangle config/setup-org.el
 :CUSTOM_ID: h:c8fd2624-6c91-4b89-9645-4261ca85d584
 :END:
+
+I am an heavy user of [[https://orgmode.org/][=org-mode=]]. This is most likely *the one* mode that made me switch
+back to GNU/Emacs years back.
+
+#+begin_quote
+Org mode is for keeping notes, maintaining TODO lists, planning projects, and authoring
+documents with a fast and effective plain-text system.
+#+end_quote
+
+I'm going to quote [[https://protesilaos.com/dotemacs/#h:4e8347de-415e-4804-b383-d61499e05ca1][Protesilaos Stavrou]] too as he describe it way better than I would do.
+
+#+begin_quote
+ Org offers you the basic tools to organise your life in super-efficient ways using
+ nothing but plain text.
+
+In its purest form, Org is a markup language that is similar to Markdown: symbols are used
+to denote the meaning of a construct in its context, such as what may represent a headline
+element or a phrase that calls for emphasis.
+
+What lends Org its super powers though is everything else built around it: a rich corpus
+of elisp functions that automate, link, combine, enhance, structure, or otherwise enrich
+the process of using this otherwise simple markup language. This very document is written
+in org-mode while its website version is produced by a function that exports Org notation
+into its HTML equivalent.
+#+end_quote
+
+I am using =org-mode= for managing my tasks and partly my daily agenda, for /journaling/,
+knowledge database (taking notes on stuff) and publishing documents (right now mainly on
+[[https://sbr.pm][sbr.pm]]). I have been using =org-mode= for a while now, I feel some of my configuration may
+be heavily /tailored/ to my needs.
+
+*** TODO Base settings
+:PROPERTIES:
+:CUSTOM_ID: h:9287c076-1944-4c13-b4e4-c7cbc6587358
+:END:
+
+First, let's define some basic constants, mainly on how my main =org= folder is organized.
+
+#+begin_src emacs-lisp
+(defconst org-directory "~/desktop/org/")
+(defconst org-default-projects-dir (concat org-directory "projects") "Primary tasks directory.")
+(defconst org-default-technical-dir (concat org-directory "technical") "Directory of shareable, technical notes.")
+(defconst org-default-personal-dir (concat org-directory "personal") "Directory of un-shareable, personal notes.")
+(defconst org-default-completed-dir (concat org-directory "archive/projects") "Directory of completed project files.")
+(defconst org-default-inbox-file (concat org-directory "projects/inbox.org") "New stuff collected in this file.")
+(defconst org-default-next-file (concat org-directory "projects/next.org") "Todo *next* collected in this file.")
+(defconst org-default-incubate-file (concat org-directory "projects/incubate.org") "Ideas simmering on back burner.")
+(defconst org-default-notes-file (concat org-directory "personal/notes.org") "Non-actionable, personal notes.")
+(defconst org-default-journal-file (concat org-directory "personal/journal.org") "Journaling stuff.")
+#+end_src
+
+In a nutshell, I am currently trying the following organization, with =~/desktop/org/= as
+the base of all =org-mode= things:
+
++ =projects= is the main /TODO/ folder. It holds todos and current projects along with ideas.
+  - =inbox.org= is my inbox, where most of my captured todo, ideas and link will be store,
+    waiting for reviews.
+  - =incubate.org= is where I store my ideas that could become projects at some point. It
+    is also waiting for reviews (once a week more or less).
+  - =next.org= is where simple todos are stored, quick one shot /things/ that do not need
+    a project to be created.
+  - ={project}.org= are files that holds a project information and todos. It can be
+    /long-lived/ projects (like =redhat.org= or =tekton.org=) or, prefered, /short-lived/
+    projects, like =rework-infra.org= or =tekton-beta.org=. Once a project is marked as
+    done or completed, it either goes into the =archive=, or into =technical= ; if it can
+    be published.
++ =technical= is the public / to-be-published documents and /public/ knowledge base. It can holds todos, but its main
+  purpose is to be publish, at [[https://sbr.pm][sbr.pm]]. Thus, it's organization is the same as the
+  website.
++ =personal= is my private knowledge base. Those are private information or notes that I
+  don't want to publish *and* might be encrypted (using =gnupg=).
++ =archive= holds all archived files (projects, todos from =projects= files, …)
+
+I want a way to quickly jump to certain =org-mode= files, like =next.org= or the
+=inbox.org=. For this, we can use the emacs [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Registers.html][registers]] and more accurately the [[https://www.gnu.org/software/emacs/manual/html_node/emacs/File-Registers.html#File-Registers][file
+registers]].
+
+#+begin_src emacs-lisp
+(set-register ?i `(file . ,org-default-inbox-file))
+(set-register ?I `(file . ,org-default-incubate-file))
+(set-register ?N `(file . ,org-default-next-file))
+(set-register ?n `(file . ,org-default-notes-file))
+(set-register ?j `(file . ,org-default-journal-file))
+#+end_src
+
+With this, I can jump to the inbox with ~C-x r j i~, to the journal using ~C-x r j j~, …
+
+*** TODO Agenda
+:PROPERTIES:
+:CUSTOM_ID: h:ba2a773a-88d1-4df9-a98c-5e547ee50691
+:END:
+
+*** TODO Capture
+:PROPERTIES:
+:CUSTOM_ID: h:b29abe71-6e9a-4ddf-8519-453170212777
+:END:
+
+*** TODO Archiving
+:PROPERTIES:
+:CUSTOM_ID: h:fc91dae6-27dc-43de-98bb-09cfcd666ee3
+:END:
+
+*** TODO Exporting
+:PROPERTIES:
+:CUSTOM_ID: h:afad00e0-367c-4c7b-b191-e3ed72be754b
+:END:
+
+#+begin_src emacs-lisp
+(defconst site-directory "~/desktop/sites/")
+#+end_src
+
 
 ** TODO Email and newsgroup
 :PROPERTIES:
@@ -2630,23 +2742,6 @@ Number of marked items: %(length (dired-get-marked-files))
 
 #+begin_src emacs-lisp :tangle config/setup-org.el
 ;;; -*- lexical-binding: t; -*-
-(defvar org-directory "~/desktop/org/")
-(defvar site-directory "~/desktop/sites/")
-
-(defvar org-default-projects-dir (concat org-directory "projects") "Primary tasks directory.")
-(defvar org-default-technical-dir (concat org-directory "technical") "Directory of shareable, technical notes.")
-(defvar org-default-personal-dir (concat org-directory "personal") "Directory of un-shareable, personal notes.")
-(defvar org-default-completed-dir (concat org-directory "projects/completed") "Directory of completed project files.")
-(defvar org-default-inbox-file (concat org-directory "projects/inbox.org") "New stuff collected in this file.")
-(defvar org-default-incubate-file (concat org-directory "projects/incubate.org") "Ideas simmering on back burner.")
-(defvar org-default-notes-file (concat org-directory "personal/notes.org") "Non-actionable, personal notes.")
-(defvar org-default-media-file (concat org-directory "projects/media.org") "Links to other things to check out.")
-(defvar org-default-journal-file (concat org-directory "personal/journal.org") "Journaling stuff.")
-
-(set-register ?i `(file . ,org-default-inbox-file))
-(set-register ?I `(file . ,org-default-incubate-file))
-(set-register ?j `(file . ,org-default-journal-file))
-(set-register ?m `(file . ,org-default-media-file))
 
 (defvar org-default-publish-technical (concat site-directory "sbr.pm/technical"))
 
@@ -2713,11 +2808,9 @@ Number of marked items: %(length (dired-get-marked-files))
         org-outline-path-complete-in-steps nil
         org-refile-allow-creating-parent-nodes 'confirm)
 
-  (setq org-refile-targets (append '((org-default-media-file :level . 1)
-                                     (org-default-inbox-file :level . 0))
+  (setq org-refile-targets (append '((org-default-inbox-file :level . 0))
                                    (->>
                                     (directory-files org-default-projects-dir nil ".org")
-                                    (-remove-item (file-name-base org-default-media-file))
                                     (--remove (s-starts-with? "." it))
                                     (--map (format "%s/%s" org-default-projects-dir it))
                                     (--map `(,it :level . 1)))))
@@ -3660,7 +3753,6 @@ using either KUBECONFIG or ~/.kube/config"
   :custom
   (use-file-dialog nil)
   (use-dialog-box nil)
-  (inhibit-splash-screen t)
   (echo-keystrokes 0.1) ; Faster echo keystrokes
   (line-number-display-limit-width 10000) ;; Avoid showing ?? in the mode line when we have long lines.
   (display-time-world-list '(("Europe/London" "London")

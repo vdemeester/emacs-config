@@ -1,21 +1,23 @@
-;;; -*- lexical-binding: t; -*-
-(defvar org-directory "~/desktop/org/")
-(defvar site-directory "~/desktop/sites/")
-
-(defvar org-default-projects-dir (concat org-directory "projects") "Primary tasks directory.")
-(defvar org-default-technical-dir (concat org-directory "technical") "Directory of shareable, technical notes.")
-(defvar org-default-personal-dir (concat org-directory "personal") "Directory of un-shareable, personal notes.")
-(defvar org-default-completed-dir (concat org-directory "projects/completed") "Directory of completed project files.")
-(defvar org-default-inbox-file (concat org-directory "projects/inbox.org") "New stuff collected in this file.")
-(defvar org-default-incubate-file (concat org-directory "projects/incubate.org") "Ideas simmering on back burner.")
-(defvar org-default-notes-file (concat org-directory "personal/notes.org") "Non-actionable, personal notes.")
-(defvar org-default-media-file (concat org-directory "projects/media.org") "Links to other things to check out.")
-(defvar org-default-journal-file (concat org-directory "personal/journal.org") "Journaling stuff.")
+(defconst org-directory "~/desktop/org/")
+(defconst org-default-projects-dir (concat org-directory "projects") "Primary tasks directory.")
+(defconst org-default-technical-dir (concat org-directory "technical") "Directory of shareable, technical notes.")
+(defconst org-default-personal-dir (concat org-directory "personal") "Directory of un-shareable, personal notes.")
+(defconst org-default-completed-dir (concat org-directory "archive/projects") "Directory of completed project files.")
+(defconst org-default-inbox-file (concat org-directory "projects/inbox.org") "New stuff collected in this file.")
+(defconst org-default-next-file (concat org-directory "projects/next.org") "Todo *next* collected in this file.")
+(defconst org-default-incubate-file (concat org-directory "projects/incubate.org") "Ideas simmering on back burner.")
+(defconst org-default-notes-file (concat org-directory "personal/notes.org") "Non-actionable, personal notes.")
+(defconst org-default-journal-file (concat org-directory "personal/journal.org") "Journaling stuff.")
 
 (set-register ?i `(file . ,org-default-inbox-file))
 (set-register ?I `(file . ,org-default-incubate-file))
+(set-register ?N `(file . ,org-default-next-file))
+(set-register ?n `(file . ,org-default-notes-file))
 (set-register ?j `(file . ,org-default-journal-file))
-(set-register ?m `(file . ,org-default-media-file))
+
+(defconst site-directory "~/desktop/sites/")
+
+;;; -*- lexical-binding: t; -*-
 
 (defvar org-default-publish-technical (concat site-directory "sbr.pm/technical"))
 
@@ -82,11 +84,9 @@
         org-outline-path-complete-in-steps nil
         org-refile-allow-creating-parent-nodes 'confirm)
 
-  (setq org-refile-targets (append '((org-default-media-file :level . 1)
-                                     (org-default-inbox-file :level . 0))
+  (setq org-refile-targets (append '((org-default-inbox-file :level . 0))
                                    (->>
                                     (directory-files org-default-projects-dir nil ".org")
-                                    (-remove-item (file-name-base org-default-media-file))
                                     (--remove (s-starts-with? "." it))
                                     (--map (format "%s/%s" org-default-projects-dir it))
                                     (--map `(,it :level . 1)))))
