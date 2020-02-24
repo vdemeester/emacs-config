@@ -12,7 +12,11 @@
 
 (setq inhibit-default-init t)           ; Disable the site default settings
 
-(setq initial-major-mode 'fundamental-mode)
+(setq inhibit-startup-message t
+      inhibit-startup-screen t)
+
+(setq initial-major-mode 'fundamental-mode
+      initial-scratch-message nil)
 
 (prefer-coding-system 'utf-8)
 (set-default-coding-systems 'utf-8)

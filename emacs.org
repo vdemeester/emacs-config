@@ -238,13 +238,22 @@ setting it to non-nil inhibit loading the ~default~ library.
 (setq inhibit-default-init t)           ; Disable the site default settings
 #+end_src
 
-One last piece to the puzzle is the default mode. Setting it to fundamental-mode means we
-won't load any /heavy/ mode at startup (like =org-mode=).
+We also want to inhibit some initial default start messages and screen. The default screen
+will be as bare as possible.
 
 #+begin_src emacs-lisp :tangle init.el
-(setq initial-major-mode 'fundamental-mode)
+(setq inhibit-startup-message t
+      inhibit-startup-screen t)
 #+end_src
 
+One last piece to the puzzle is the default mode. Setting it to fundamental-mode means we
+won't load any /heavy/ mode at startup (like =org-mode=). We also want this scratch buffer
+to be empty, so let's set it as well
+
+#+begin_src emacs-lisp :tangle init.el
+(setq initial-major-mode 'fundamental-mode
+      initial-scratch-message nil)
+#+end_src
 
 *** Unicode all the way
 :PROPERTIES:
@@ -261,7 +270,6 @@ default in Emacs ; and handle special case on demand.
 (set-selection-coding-system 'utf-8)
 (set-terminal-coding-system 'utf-8)
 #+end_src
-
 
 *** Package management with =use-package=
 :PROPERTIES:
