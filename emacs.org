@@ -590,6 +590,9 @@ knowledge database (taking notes on stuff) and publishing documents (right now m
 [[https://sbr.pm][sbr.pm]]). I have been using =org-mode= for a while now, I feel some of my configuration may
 be heavily /tailored/ to my needs.
 
+The /base/ user keybinding for =org-mode= (and related modes) is =C-c o= (e.g. showing
+agenda is =C-c o a=, capture is =C-c o c=, …).
+
 *** TODO Base settings
 :PROPERTIES:
 :CUSTOM_ID: h:9287c076-1944-4c13-b4e4-c7cbc6587358
@@ -598,7 +601,7 @@ be heavily /tailored/ to my needs.
 First, let's define some basic constants, mainly on how my main =org= folder is organized.
 
 #+begin_src emacs-lisp
-(defconst org-directory "~/desktop/org/")
+(defconst org-directory "~/desktop/org/" "org-mode directory, where most of the org-mode file lives")
 (defconst org-default-projects-dir (concat org-directory "projects") "Primary tasks directory.")
 (defconst org-default-technical-dir (concat org-directory "technical") "Directory of shareable, technical notes.")
 (defconst org-default-personal-dir (concat org-directory "personal") "Directory of un-shareable, personal notes.")
@@ -611,7 +614,7 @@ First, let's define some basic constants, mainly on how my main =org= folder is 
 #+end_src
 
 In a nutshell, I am currently trying the following organization, with =~/desktop/org/= as
-the base of all =org-mode= things:
+the base of almost all =org-mode= things:
 
 + =projects= is the main /TODO/ folder. It holds todos and current projects along with ideas.
   - =inbox.org= is my inbox, where most of my captured todo, ideas and link will be store,
@@ -632,6 +635,9 @@ the base of all =org-mode= things:
   don't want to publish *and* might be encrypted (using =gnupg=).
 + =archive= holds all archived files (projects, todos from =projects= files, …)
 
+Additionnaly, I may have =org-mode= files and /todos/ in other files, like in my
+=~/.emacs.d= folder or my [[https://github.com/vdemeester/home][=home=]] configuration.
+
 I want a way to quickly jump to certain =org-mode= files, like =next.org= or the
 =inbox.org=. For this, we can use the emacs [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Registers.html][registers]] and more accurately the [[https://www.gnu.org/software/emacs/manual/html_node/emacs/File-Registers.html#File-Registers][file
 registers]].
@@ -646,15 +652,175 @@ registers]].
 
 With this, I can jump to the inbox with ~C-x r j i~, to the journal using ~C-x r j j~, …
 
+Let's setup the base of =org-mode=, with the following things in mind:
+
+- Agenda :: =org-agenda-files= contains =~/desktop/org/=, =~/.emacs.d/= and
+  =~/.config/nixpkgs/=. The rest of the configuration will happen when configuring
+  =org-agenda=.
+- Navigation and key bindings ::
+  + As said before, =C-c o= is the prefix of my user specific keybindings
+    - =C-c o l= is to store the link (default keybinding is =C-c C-l=)
+    - =C-c o r r= is to refile a task from an org-mode buffer (default keybinding is =C-c
+      C-w=, and there is a different keybinding when in an org-mode agenda buffer)
+  + Activating [[https://orgmode.org/manual/Speed-Keys.html][/speed commands/]], aka being able to use one keystroke to do some action (like
+    changing the TODO state, …)
+  + =C-a=, =C-e= and =C-k= should be =org-mode= aware. This is achieved by setting
+    =org-special-ctrl-a/e= and =org-special-ctrl-k= to =t=.
+- To-do settings :: My current setup of /todo-keywords/ (a.k.a. =org-todo-keywords=) might
+  be more complicated that it should be but I've been using it a while
+  now. =org-todo-keywords= is a list of sequences, I have three:
+  + =TODO= → =NEXT= → =STARTED= → =DONE= /or/ =CANCELED=
+  + =WAITING= → =SOMEDAY= → move to a =TODO= or =CANCELED=
+  + =IDEA= → move to a =TODO= or =CANCELED=
+
+  I am leaning towards simplifying this, especially as =NEXT= is not really useful (I have
+  =next.org= for this), and =IDEA= or =WAITING= are not really used either (=IDEA= goes
+  into =incubate.org= and I don't seem to use =WAITING=).
+
+  /I need to update and document =org-todo-state-tags-triggers= too/
+- Tags ::
+- Refile ::
+
+/The =ensure org-plus-contrib= is there to make sure I am loading the =org= module from my
+nix configuration and not the built-in =org= module (that might lag in terms of version)/
+
+#+begin_src emacs-lisp
+(use-package org
+  :ensure org-plus-contrib ;; load from the package instead of internal
+  :mode (("\\.org$" . org-mode))
+  :config
+  (setq org-agenda-files `(,org-default-projects-dir
+                           ,user-emacs-directory
+                           "~/.config/nixpkgs")
+        org-agenda-file-regexp "^[a-zA-Z0-9-_]+.org$"
+        org-use-speed-commands t
+        org-special-ctrl-a/e t
+        org-special-ctrl-k t
+        org-todo-keywords '((sequence "TODO(t)" "NEXT(n)" "STARTED(s)" "|" "DONE(d!)" "CANCELED(c@/!)")
+                            (sequence "WAITING(w@/!)" "SOMEDAY(s)" "|" "CANCELED(c@/!)")
+                            (sequence "IDEA(i)" "|" "CANCELED(c@/!)"))
+        org-todo-state-tags-triggers '(("CANCELLED" ("CANCELLED" . t))
+                                       ("WAITING" ("WAITING" . t))
+                                       (done ("WAITING"))
+                                       ("TODO" ("WAITING") ("CANCELLED"))
+                                       ("NEXT" ("WAITING") ("CANCELLED"))
+                                       ("DONE" ("WAITING") ("CANCELLED"))))
+  :bind (("C-c o l" . org-store-link)
+         ("C-c o r r" . org-refile)))
+#+end_src
+
+*** TODO Habits
+
+#+begin_src emacs-lisp
+(use-package org-habit
+  :after (org)
+  :config
+  (setq org-habit-show-habits-only-for-today nil
+        org-habit-graph-column 80))
+#+end_src
+
 *** TODO Agenda
 :PROPERTIES:
 :CUSTOM_ID: h:ba2a773a-88d1-4df9-a98c-5e547ee50691
 :END:
 
+#+begin_src emacs-lisp
+(use-package org-agenda
+  :after (org)
+  :config
+  (setq org-agenda-span 'day
+        org-agenda-include-diary t
+        org-agenda-window-setup 'current-window
+        org-agenda-skip-scheduled-if-done nil
+        org-agenda-compact-blocks t
+        org-agenda-sticky t)
+  :commands (org-agenda)
+  :bind (("C-c o a" . org-agenda)
+         ("<f12>" . org-agenda)
+         ("C-c o r a" . org-agenda-refile)))
+#+end_src
+
+*** TODO Sources
+
+#+begin_src emacs-lisp
+(use-package org-src
+  :after (org)
+  :config
+  (setq org-src-fontify-natively t
+        org-src-tab-acts-natively t
+        org-src-window-setup 'split-window-right
+        org-edit-src-content-indentation 0))
+#+end_src
+
+
 *** TODO Capture
 :PROPERTIES:
 :CUSTOM_ID: h:b29abe71-6e9a-4ddf-8519-453170212777
 :END:
+
+#+begin_src emacs-lisp
+(use-package org-capture
+  :after org
+  :commands (org-capture)
+  :bind (("C-c o c" . org-capture)))
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package org-protocol
+  :after org)
+#+end_src
+
+
+*** TODO Clocking
+
+#+begin_src emacs-lisp
+(use-package org-clock
+  :after org
+  :commands (org-clock-in org-clock-out org-clock-goto)
+  :bind (("<f11>" . org-clock-goto)))
+#+end_src
+
+
+*** TODO Links
+:PROPERTIES:
+:CUSTOM_ID: h:afc81fbb-f7a0-401c-8b56-19f51edebd88
+:END:
+
+#+begin_src emacs-lisp
+(use-package ol-eshell
+  :after (org))
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package ol-git-link
+  :after (org))
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package ol-gnus
+  :after (org))
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package ol-irc
+  :after (org))
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package ol-info
+  :after (org))
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package ol-man
+  :after (org))
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package ol-notmuch
+  :after (org))
+#+end_src
+
 
 *** TODO Archiving
 :PROPERTIES:
@@ -667,7 +833,8 @@ With this, I can jump to the inbox with ~C-x r j i~, to the journal using ~C-x r
 :END:
 
 #+begin_src emacs-lisp
-(defconst site-directory "~/desktop/sites/")
+(defconst site-directory "~/desktop/sites/" "website folder that holds exported org-mode files and more.")
+(defconst org-default-publish-technical (concat site-directory "sbr.pm/technical") "publish directory for the technical org-mode files.")
 #+end_src
 
 
@@ -2762,15 +2929,6 @@ Number of marked items: %(length (dired-get-marked-files))
 #+begin_src emacs-lisp :tangle config/setup-org.el
 ;;; -*- lexical-binding: t; -*-
 
-(defvar org-default-publish-technical (concat site-directory "sbr.pm/technical"))
-
-;; Use `org-mode' instead of `lisp-interaction-mode' for scratch buffer
-(setq
- inhibit-startup-message t            ; don't show the startup message
- inhibit-startup-screen t             ; … or screen
- initial-scratch-message nil          ; empty scratch buffer
- )
-
 (use-package s)
 
 (use-package org
@@ -2779,48 +2937,16 @@ Number of marked items: %(length (dired-get-marked-files))
   :commands (org-capture org-agenda)
   :ensure org-plus-contrib
   :hook (org-mode . vde/org-mode-hook)
-  :bind (("C-c o c" . org-capture)
-         ("C-c o l" . org-store-link)
-         ("C-c o r r" . org-refile)
-         ("C-c o r a" . org-agenda-refile)
-         ("C-c o a" . org-agenda)
-         ("<f12>" . org-agenda)
-         ("<f11>" . org-clock-goto))
   :config
   (use-package find-lisp)
   (setq org-modules '(org-crypt
                       org-docview
-                      org-habit
                       org-id
-                      org-info
-                      org-irc
-                      org-protocol
-                      ol-gnus
-                      ol-man
-                      ol-git-link
-                      ol-notmuch))
-  (setq org-todo-keywords
-        '((sequence "TODO(t)" "NEXT(n)" "STARTED(s)" "|" "DONE(d!)" "CANCELED(c@/!)")
-          (sequence "WAITING(w@/!)" "SOMEDAY(s)" "|" "CANCELED(c@/!)")
-          (sequence "IDEA(i)" "|" "CANCELED(c@/!)")))
-  (setq org-todo-state-tags-triggers '(
-                                       ("CANCELLED" ("CANCELLED" . t))
-                                       ("WAITING" ("WAITING" . t))
-                                       (done ("WAITING"))
-                                       ("TODO" ("WAITING") ("CANCELLED"))
-                                       ("NEXT" ("WAITING") ("CANCELLED"))
-                                       ("DONE" ("WAITING") ("CANCELLED"))))
+                      org-protocol))
   (setq org-blank-before-new-entry '((heading . t)
                                      (plain-list-item . nil)))
 
-  (setq org-habit-show-habits-only-for-today nil)
-  (setq org-habit-graph-column 80)
-  (setq org-agenda-files (list org-default-projects-dir))
-  (setq org-agenda-file-regexp "^[a-z0-9-_]+.org")
-
-  (setq org-agenda-include-diary t)
   (setq org-use-property-inheritance t)
-
   (setq org-enforce-todo-dependencies t)
 
   (setq org-refile-use-outline-path 'file
@@ -2834,26 +2960,17 @@ Number of marked items: %(length (dired-get-marked-files))
                                     (--map (format "%s/%s" org-default-projects-dir it))
                                     (--map `(,it :level . 1)))))
 
-  (setq org-indirect-buffer-display 'dedicated-frame)
-  (setq org-use-speed-commands t)
-
   (setq org-log-done (quote time))
   (setq org-log-redeadline (quote time))
   (setq org-log-reschedule (quote time))
   (setq org-log-into-drawer t)
 
   (setq org-fontify-whole-heading-line t)
-  (setq org-src-fontify-natively t)
-  (setq org-src-tab-acts-natively t)
-  (setq org-edit-src-content-indentation 0)
 
   (setq org-pretty-entities t)
   (setq org-insert-heading-respect-content t)
   (setq org-ellipsis " …")
 
-  (setq org-agenda-window-setup (quote current-window))
-  (setq org-special-ctrl-a/e t)
-  (setq org-special-ctrl-k t)
   (setq org-yank-adjusted-subtrees t)
 
   (setcar (nthcdr 4 org-emphasis-regexp-components) 10)
@@ -2868,15 +2985,11 @@ Number of marked items: %(length (dired-get-marked-files))
                               ("@link" . ?i) ("@read" . ?r) ("@project" . ?p)
                               (:endgroup . nil)
                               )))
-  (setq org-agenda-skip-scheduled-if-done nil)
 
   (use-package org-super-agenda
     :config (org-super-agenda-mode))
 
-  (setq org-agenda-span 'day
-        org-agenda-compact-blocks t
-        org-super-agenda-header-separator "")
-  (setq org-agenda-sticky t)
+  (setq org-super-agenda-header-separator "")
   (setq org-agenda-custom-commands
         `(("n" "Personal agenda"
            ((agenda "")

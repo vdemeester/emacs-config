@@ -1,4 +1,4 @@
-(defconst org-directory "~/desktop/org/")
+(defconst org-directory "~/desktop/org/" "org-mode directory, where most of the org-mode file lives")
 (defconst org-default-projects-dir (concat org-directory "projects") "Primary tasks directory.")
 (defconst org-default-technical-dir (concat org-directory "technical") "Directory of shareable, technical notes.")
 (defconst org-default-personal-dir (concat org-directory "personal") "Directory of un-shareable, personal notes.")
@@ -15,18 +15,95 @@
 (set-register ?n `(file . ,org-default-notes-file))
 (set-register ?j `(file . ,org-default-journal-file))
 
-(defconst site-directory "~/desktop/sites/")
+(use-package org
+  :ensure org-plus-contrib ;; load from the package instead of internal
+  :mode (("\\.org$" . org-mode))
+  :config
+  (setq org-agenda-files `(,org-default-projects-dir
+                           ,user-emacs-directory
+                           "~/.config/nixpkgs")
+        org-agenda-file-regexp "^[a-zA-Z0-9-_]+.org$"
+        org-use-speed-commands t
+        org-special-ctrl-a/e t
+        org-special-ctrl-k t
+        org-todo-keywords '((sequence "TODO(t)" "NEXT(n)" "STARTED(s)" "|" "DONE(d!)" "CANCELED(c@/!)")
+                            (sequence "WAITING(w@/!)" "SOMEDAY(s)" "|" "CANCELED(c@/!)")
+                            (sequence "IDEA(i)" "|" "CANCELED(c@/!)"))
+        org-todo-state-tags-triggers '(("CANCELLED" ("CANCELLED" . t))
+                                       ("WAITING" ("WAITING" . t))
+                                       (done ("WAITING"))
+                                       ("TODO" ("WAITING") ("CANCELLED"))
+                                       ("NEXT" ("WAITING") ("CANCELLED"))
+                                       ("DONE" ("WAITING") ("CANCELLED"))))
+  :bind (("C-c o l" . org-store-link)
+         ("C-c o r r" . org-refile)))
+
+(use-package org-habit
+  :after (org)
+  :config
+  (setq org-habit-show-habits-only-for-today nil
+        org-habit-graph-column 80))
+
+(use-package org-agenda
+  :after (org)
+  :config
+  (setq org-agenda-span 'day
+        org-agenda-include-diary t
+        org-agenda-window-setup 'current-window
+        org-agenda-skip-scheduled-if-done nil
+        org-agenda-compact-blocks t
+        org-agenda-sticky t)
+  :commands (org-agenda)
+  :bind (("C-c o a" . org-agenda)
+         ("<f12>" . org-agenda)
+         ("C-c o r a" . org-agenda-refile)))
+
+(use-package org-src
+  :after (org)
+  :config
+  (setq org-src-fontify-natively t
+        org-src-tab-acts-natively t
+        org-src-window-setup 'split-window-right
+        org-edit-src-content-indentation 0))
+
+(use-package org-capture
+  :after org
+  :commands (org-capture)
+  :bind (("C-c o c" . org-capture)))
+
+(use-package org-protocol
+  :after org)
+
+(use-package org-clock
+  :after org
+  :commands (org-clock-in org-clock-out org-clock-goto)
+  :bind (("<f11>" . org-clock-goto)))
+
+(use-package ol-eshell
+  :after (org))
+
+(use-package ol-git-link
+  :after (org))
+
+(use-package ol-gnus
+  :after (org))
+
+(use-package ol-irc
+  :after (org))
+
+(use-package ol-info
+  :after (org))
+
+(use-package ol-man
+  :after (org))
+
+(use-package ol-notmuch
+  :after (org))
+
+(defconst site-directory "~/desktop/sites/" "website folder that holds exported org-mode files and more.")
+(defconst org-default-publish-technical (concat site-directory "sbr.pm/technical") "publish directory for the technical org-mode files.")
 
 ;;; -*- lexical-binding: t; -*-
-
-(defvar org-default-publish-technical (concat site-directory "sbr.pm/technical"))
-
-;; Use `org-mode' instead of `lisp-interaction-mode' for scratch buffer
-(setq
- inhibit-startup-message t            ; don't show the startup message
- inhibit-startup-screen t             ; … or screen
- initial-scratch-message nil          ; empty scratch buffer
- )
 
 (use-package s)
 
@@ -36,48 +113,16 @@
   :commands (org-capture org-agenda)
   :ensure org-plus-contrib
   :hook (org-mode . vde/org-mode-hook)
-  :bind (("C-c o c" . org-capture)
-         ("C-c o l" . org-store-link)
-         ("C-c o r r" . org-refile)
-         ("C-c o r a" . org-agenda-refile)
-         ("C-c o a" . org-agenda)
-         ("<f12>" . org-agenda)
-         ("<f11>" . org-clock-goto))
   :config
   (use-package find-lisp)
   (setq org-modules '(org-crypt
                       org-docview
-                      org-habit
                       org-id
-                      org-info
-                      org-irc
-                      org-protocol
-                      ol-gnus
-                      ol-man
-                      ol-git-link
-                      ol-notmuch))
-  (setq org-todo-keywords
-        '((sequence "TODO(t)" "NEXT(n)" "STARTED(s)" "|" "DONE(d!)" "CANCELED(c@/!)")
-          (sequence "WAITING(w@/!)" "SOMEDAY(s)" "|" "CANCELED(c@/!)")
-          (sequence "IDEA(i)" "|" "CANCELED(c@/!)")))
-  (setq org-todo-state-tags-triggers '(
-                                       ("CANCELLED" ("CANCELLED" . t))
-                                       ("WAITING" ("WAITING" . t))
-                                       (done ("WAITING"))
-                                       ("TODO" ("WAITING") ("CANCELLED"))
-                                       ("NEXT" ("WAITING") ("CANCELLED"))
-                                       ("DONE" ("WAITING") ("CANCELLED"))))
+                      org-protocol))
   (setq org-blank-before-new-entry '((heading . t)
                                      (plain-list-item . nil)))
 
-  (setq org-habit-show-habits-only-for-today nil)
-  (setq org-habit-graph-column 80)
-  (setq org-agenda-files (list org-default-projects-dir))
-  (setq org-agenda-file-regexp "^[a-z0-9-_]+.org")
-
-  (setq org-agenda-include-diary t)
   (setq org-use-property-inheritance t)
-
   (setq org-enforce-todo-dependencies t)
 
   (setq org-refile-use-outline-path 'file
@@ -91,26 +136,17 @@
                                     (--map (format "%s/%s" org-default-projects-dir it))
                                     (--map `(,it :level . 1)))))
 
-  (setq org-indirect-buffer-display 'dedicated-frame)
-  (setq org-use-speed-commands t)
-
   (setq org-log-done (quote time))
   (setq org-log-redeadline (quote time))
   (setq org-log-reschedule (quote time))
   (setq org-log-into-drawer t)
 
   (setq org-fontify-whole-heading-line t)
-  (setq org-src-fontify-natively t)
-  (setq org-src-tab-acts-natively t)
-  (setq org-edit-src-content-indentation 0)
 
   (setq org-pretty-entities t)
   (setq org-insert-heading-respect-content t)
   (setq org-ellipsis " …")
 
-  (setq org-agenda-window-setup (quote current-window))
-  (setq org-special-ctrl-a/e t)
-  (setq org-special-ctrl-k t)
   (setq org-yank-adjusted-subtrees t)
 
   (setcar (nthcdr 4 org-emphasis-regexp-components) 10)
@@ -125,15 +161,11 @@
                               ("@link" . ?i) ("@read" . ?r) ("@project" . ?p)
                               (:endgroup . nil)
                               )))
-  (setq org-agenda-skip-scheduled-if-done nil)
 
   (use-package org-super-agenda
     :config (org-super-agenda-mode))
 
-  (setq org-agenda-span 'day
-        org-agenda-compact-blocks t
-        org-super-agenda-header-separator "")
-  (setq org-agenda-sticky t)
+  (setq org-super-agenda-header-separator "")
   (setq org-agenda-custom-commands
         `(("n" "Personal agenda"
            ((agenda "")
