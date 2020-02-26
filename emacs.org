@@ -100,6 +100,25 @@ I'll make a few assumption in the following document (that may or may not be tru
 - Any function I wrote is going to be prefixed by ~vde/~ so that it doesn't conflicts with
   function that would have been defined elsewhere.
 
+As it is detailed in each part of this configuration, I am trying to setup keybinding in a
+/mnemonics/ way so it's easy to remember (and use). This is what [[https://www.spacemacs.org/][spacemacs]] does with evil
+keybindings (aka vim-like keybindings). I am staying with the /standard/ emacs keybinding
+as much as possible (as there is already some mnemonics in there).
+
+There are countless jokes and comics on Emacs’s seemingly ridiculous keybindings. Good
+laughs indeed, but at the end of day, it’s not incomprehensible. It has well-defined
+conventions listed at [[https://www.gnu.org/software/emacs/manual/html%5Fnode/elisp/Key-Binding-Conventions.html][Emacs Key Bindings Convention]]. In summary, the general rules are:
+
++ =C-x= reserved for Emacs native essential keybindings: buffer, window, frame, file, directory, etc…
++ =C-c= reserved for user and major mode:
+  - =C-c letter= reserved for user. =<F5>=-=<F9>= reserved for user.
+  - =C-c C-letter= reserved for major mode.
++ Don’t rebind =C-g=, =C-h= and =ESC=.
+
+To give a small example, most of my personal =org-mode= keybinding will start with =C-c
+o=, as it is reserved for user, and =o= is for =org-mode=. For version control, it's gonna
+be =C-c v=, for projects it's gonna be =C-c p=, etc…
+
 ** COPYING
 :PROPERTIES:
 :CUSTOM_ID: h:d4cfb344-dcff-4144-951a-8197c5ae2c84
