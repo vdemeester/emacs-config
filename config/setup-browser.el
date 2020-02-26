@@ -48,7 +48,7 @@
           ("youtube.com" . browse-url-generic)
           ("amazon.com" . browse-url-generic)
           ("slideshare.net" . browse-url-generic)
-          ("." . eww-browse-url)))
+          ("." . browse-url-generic)))
   (setq shr-external-browser 'browse-url-generic)
   (setq browse-url-generic-program (executable-find "firefox"))
   (add-hook 'eww-mode-hook #'toggle-word-wrap)
