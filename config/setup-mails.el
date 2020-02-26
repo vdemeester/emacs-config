@@ -50,14 +50,14 @@
            (posting-style
             (address "vdemeest@redhat.com")
             (signature-file "~/desktop/documents/.redhat.signature")
-            (gcc "nnimap+redhat:Sent")))
+            (gcc "nnimap+redhat:[Gmail]/Sent Mail")))
           ("nnimap+redhat:INBOX"
            (display . all))
           ("vde"
            (posting-style
             (address "vinc.demeester.fr")
             (signature-file "~/desktop/documents/.vde.signature")
-            (gcc "nnimap+vinc.demeester:Sent")))
+            (gcc "nnimap+vde:[Gmail]/Sent Mail")))
           ("nnimap+vde:INBOX"
            (display . all))))
   (setq gnus-agent t)
