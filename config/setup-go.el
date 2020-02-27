@@ -7,7 +7,7 @@
     :config
     (setq company-go-show-annotation t)
     (push 'company-go company-backends))
-  (setq gofmt-command "goimports")
+  ;;(setq gofmt-command "goimports")
   (if (not (executable-find "goimports"))
       (warn "go-mode: couldn't find goimports; no code formatting/fixed imports on save")
     (add-hook 'before-save-hook 'gofmt-before-save))
