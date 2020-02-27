@@ -157,7 +157,7 @@
 
   (setq org-yank-adjusted-subtrees t)
 
-  (setcar (nthcdr 4 org-emphasis-regexp-components)
+  (setcar (nthcdr 4 org-emphasis-regexp-components) 10)
 
   (use-package org-super-agenda
     :config (org-super-agenda-mode))
