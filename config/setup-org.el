@@ -34,7 +34,22 @@
                                        (done ("WAITING"))
                                        ("TODO" ("WAITING") ("CANCELLED"))
                                        ("NEXT" ("WAITING") ("CANCELLED"))
-                                       ("DONE" ("WAITING") ("CANCELLED"))))
+                                       ("DONE" ("WAITING") ("CANCELLED")))
+        org-use-tag-inheritance t
+        org-tag-alist '(("linux") ("nixos") ("emacs") ("org")
+                        ("openshift") ("redhat") ("tektoncd") ("kubernetes") ("knative" ) ("docker")
+                        ("docs") ("code") ("review")
+                        (:startgroup . nil)
+                        ("@home" . ?h) ("@work" . ?w) ("@errand" . ?e) ("@health" . ?l)
+                        (:endgroup . nil)
+                        (:startgroup . nil)
+                        ("@link" . ?i) ("@read" . ?r) ("@project" . ?p)
+                        (:endgroup . nil))
+        org-use-property-inheritance t
+        org-log-done 'time
+        org-log-redeadline 'time
+        org-log-reschedule 'time
+        org-log-into-drawer t)
   :bind (("C-c o l" . org-store-link)
          ("C-c o r r" . org-refile)))
 
@@ -121,8 +136,6 @@
                       org-protocol))
   (setq org-blank-before-new-entry '((heading . t)
                                      (plain-list-item . nil)))
-
-  (setq org-use-property-inheritance t)
   (setq org-enforce-todo-dependencies t)
 
   (setq org-refile-use-outline-path 'file
@@ -136,11 +149,6 @@
                                     (--map (format "%s/%s" org-default-projects-dir it))
                                     (--map `(,it :level . 1)))))
 
-  (setq org-log-done (quote time))
-  (setq org-log-redeadline (quote time))
-  (setq org-log-reschedule (quote time))
-  (setq org-log-into-drawer t)
-
   (setq org-fontify-whole-heading-line t)
 
   (setq org-pretty-entities t)
@@ -149,18 +157,7 @@
 
   (setq org-yank-adjusted-subtrees t)
 
-  (setcar (nthcdr 4 org-emphasis-regexp-components) 10)
-
-  (setq org-tag-alist (quote (("linux") ("nixos") ("emacs") ("org")
-                              ("openshift") ("redhat") ("tektoncd") ("kubernetes") ("knative" ) ("docker")
-                              ("docs") ("code") ("review")
-                              (:startgroup . nil)
-                              ("@home" . ?h) ("@work" . ?w) ("@errand" . ?e) ("@health" . ?l)
-                              (:endgroup . nil)
-                              (:startgroup . nil)
-                              ("@link" . ?i) ("@read" . ?r) ("@project" . ?p)
-                              (:endgroup . nil)
-                              )))
+  (setcar (nthcdr 4 org-emphasis-regexp-components) 10
 
   (use-package org-super-agenda
     :config (org-super-agenda-mode))
