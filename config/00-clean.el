@@ -1,10 +1,8 @@
 (use-package recentf
-  :custom
-  (recentf-max-menu-items 15)
-  (recentf-max-saved-items 200)
-  (recentf-auto-cleanup 360)
-  (recentf-show-file-shortcuts-flag nil)
   :config
+  (setq recentf-max-saved-items 200
+        recentf-auto-cleanup 360
+        recentf-show-file-shortcuts-flag nil)
   (recentf-mode 1)
   (add-to-list 'recentf-exclude "^/\\(?:ssh\\|su\\|sudo\\)?:")
   ;; Magic advice to rename entries in recentf when moving files in
@@ -35,15 +33,7 @@
                   recentf-list))
     recentf-cleanup)
 
-  (advice-add 'dired-rename-file :after #'rjs/recentf-rename-notify)
-
-  (defun contrib/recentf-add-dired-directory ()
-    "Include Dired buffers in the list.  Particularly useful when
-combined with a completion framework's ability to display virtual
-buffers."
-    (when (and (stringp dired-directory)
-               (equal "" (file-name-nondirectory dired-directory)))
-      (recentf-add-file dired-directory))))
+  (advice-add 'dired-rename-file :after #'rjs/recentf-rename-notify))
 
 (use-package no-littering               ; Keep .emacs.d clean
   :config

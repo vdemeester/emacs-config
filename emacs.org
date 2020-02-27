@@ -496,16 +496,24 @@ by using descriptive file names and subdirectories when appropriate. This is sim
 color-theme; a "path-theme" if you will.
 #+end_quote
 
-Let's configure it *and* make sure we load it as soon as possible (hence the =config/00-clean.el=)
+Let's configure it *and* make sure we load it as soon as possible (hence the
+=config/00-clean.el=).
+
+As I am loading =recentf= during this cleanup part, I need to setup recentf before 😅. In
+a gist:
+
+- I keep about 200 items.
+- I don't want the /auto-cleanup/ of recentf items to happen when the mode is loaded (a.k.a.
+  at startup). It is configured to run after 360s of idle time.
+- I don't really want to show the Nth number of the items.
+- I don't want recentf to save remote, =su= and =sudo= items (=ssh:=, =sudo:=, …)
 
 #+begin_src emacs-lisp
 (use-package recentf
-  :custom
-  (recentf-max-menu-items 15)
-  (recentf-max-saved-items 200)
-  (recentf-auto-cleanup 360)
-  (recentf-show-file-shortcuts-flag nil)
   :config
+  (setq recentf-max-saved-items 200
+        recentf-auto-cleanup 360
+        recentf-show-file-shortcuts-flag nil)
   (recentf-mode 1)
   (add-to-list 'recentf-exclude "^/\\(?:ssh\\|su\\|sudo\\)?:")
   ;; Magic advice to rename entries in recentf when moving files in
@@ -536,15 +544,7 @@ Let's configure it *and* make sure we load it as soon as possible (hence the =co
                   recentf-list))
     recentf-cleanup)
 
-  (advice-add 'dired-rename-file :after #'rjs/recentf-rename-notify)
-
-  (defun contrib/recentf-add-dired-directory ()
-    "Include Dired buffers in the list.  Particularly useful when
-combined with a completion framework's ability to display virtual
-buffers."
-    (when (and (stringp dired-directory)
-               (equal "" (file-name-nondirectory dired-directory)))
-      (recentf-add-file dired-directory))))
+  (advice-add 'dired-rename-file :after #'rjs/recentf-rename-notify))
 
 (use-package no-littering               ; Keep .emacs.d clean
   :config
