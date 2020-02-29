@@ -93,8 +93,16 @@ exporter to use. Not tangle currently as it doesn't work 😓.
   (setq org-html-format-headline-function 'my-org-html-format-headline-function)
 #+end_src
 
-I also use some custom links… They are define in my [[https://github.com/vdemeester/emacs-config][emacs configuration]] repository :
-[[https://github.com/vdemeester/emacs-config/blob/master/lisp/setup-org.el][~setup-org.el~]].
+I also use some custom links… First thing first, I want the =att:= link to be supporting
+when exporting
+
+#+begin_src emacs-lisp :tangle yes
+(require 'org-attach)
+(setq org-link-abbrev-alist '(("att" . org-attach-expand-link)))
+#+end_src
+
+
+They are define in my [[https://github.com/vdemeester/emacs-config][emacs configuration]] repository : [[https://github.com/vdemeester/emacs-config/blob/master/lisp/setup-org.el][~setup-org.el~]].
 
 #+begin_src emacs-lisp :tangle yes
   (org-link-set-parameters "tag"
