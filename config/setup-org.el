@@ -15,6 +15,7 @@
 (set-register ?n `(file . ,org-default-notes-file))
 (set-register ?j `(file . ,org-default-journal-file))
 
+(use-package s)
 (use-package org
   :ensure org-plus-contrib ;; load from the package instead of internal
   :mode (("\\.org$" . org-mode))
@@ -45,22 +46,86 @@
                         (:startgroup . nil)
                         ("@link" . ?i) ("@read" . ?r) ("@project" . ?p)
                         (:endgroup . nil))
-        org-use-property-inheritance t
         org-log-done 'time
         org-log-redeadline 'time
         org-log-reschedule 'time
-        org-log-into-drawer t)
+        org-log-into-drawer t
+        org-enforce-todo-dependencies t
+        org-refile-targets (append '((org-default-inbox-file :level . 0))
+                                   (->>
+                                    (directory-files org-default-projects-dir nil ".org")
+                                    (--remove (s-starts-with? "." it))
+                                    (--map (format "%s/%s" org-default-projects-dir it))
+                                    (--map `(,it :level . 1))))
+        org-refile-use-outline-path 'file
+        org-refile-allow-creating-parent-nodes 'confirm
+        org-outline-path-complete-in-steps nil
+        org-columns-default-format "%80ITEM(Task) %TODO %3PRIORITY %10Effort(Effort){:} %10CLOCKSUM"
+        org-fontify-whole-heading-line t
+        org-pretty-entities t
+        org-ellipsis " …"
+        org-use-property-inheritance t
+        org-global-properties (quote (("EFFORT_ALL" . "0:15 0:30 0:45 1:00 2:00 3:00 4:00 5:00 6:00 0:00")
+                                      ("STYLE_ALL" . "habit")))
+        org-blank-before-new-entry '((heading . t)
+                                     (plain-list-item . nil))
+        org-insert-heading-respect-content t
+        org-yank-adjusted-subtrees t)
+  (setcar (nthcdr 4 org-emphasis-regexp-components) 10)
   :bind (("C-c o l" . org-store-link)
-         ("C-c o r r" . org-refile)))
+         ("C-c o r r" . org-refile))
+  :hook (org-mode . vde/org-mode-hook))
 
-(use-package org-habit
+(defun vde/org-mode-hook ()
+  "Org-mode hook"
+  (setq show-trailing-whitespace t)
+  (when (not (eq major-mode 'org-agenda-mode))
+    (setq fill-column 90)
+    (auto-revert-mode)
+    (auto-fill-mode)
+    (flyspell-mode)
+    (org-indent-mode)
+    (smartparens-mode)))
+
+(use-package org-id
   :after (org)
   :config
-  (setq org-habit-show-habits-only-for-today nil
-        org-habit-graph-column 80))
+  (setq org-id-link-to-org-use-id 'create-if-interactive-and-no-custom-id)
+  (defun eos/org-custom-id-get (&optional pom create prefix)
+    "Get the CUSTOM_ID property of the entry at point-or-marker POM.
+   If POM is nil, refer to the entry at point. If the entry does
+   not have an CUSTOM_ID, the function returns nil. However, when
+   CREATE is non nil, create a CUSTOM_ID if none is present
+   already. PREFIX will be passed through to `org-id-new'. In any
+   case, the CUSTOM_ID of the entry is returned."
+    (interactive)
+    (org-with-point-at pom
+      (let ((id (org-entry-get nil "CUSTOM_ID")))
+        (cond
+         ((and id (stringp id) (string-match "\\S-" id))
+          id)
+         (create
+          (setq id (org-id-new (concat prefix "h")))
+          (org-entry-put pom "CUSTOM_ID" id)
+          (org-id-add-location id (buffer-file-name (buffer-base-buffer)))
+          id)))))
+
+  (defun eos/org-add-ids-to-headlines-in-file ()
+    "Add CUSTOM_ID properties to all headlines in the
+   current file which do not already have one."
+    (interactive)
+    (org-map-entries (lambda ()
+                       (eos/org-custom-id-get (point) 'create)))))
+
+(use-package org-crypt
+  :after (org)
+  :config
+  (org-crypt-use-before-save-magic)
+  (setq org-tags-exclude-from-inheritance '("crypt")))
 
 (use-package org-agenda
   :after (org)
+  :commands (org-agenda)
   :config
   (setq org-agenda-span 'day
         org-agenda-include-diary t
@@ -72,6 +137,12 @@
   :bind (("C-c o a" . org-agenda)
          ("<f12>" . org-agenda)
          ("C-c o r a" . org-agenda-refile)))
+
+(use-package org-habit
+  :after (org)
+  :config
+  (setq org-habit-show-habits-only-for-today nil
+        org-habit-graph-column 80))
 
 (use-package org-src
   :after (org)
@@ -94,6 +165,10 @@
   :commands (org-clock-in org-clock-out org-clock-goto)
   :bind (("<f11>" . org-clock-goto)))
 
+(use-package org-attach
+  :config
+  (setq org-link-abbrev-alist '(("att" . org-attach-expand-link))))
+
 (use-package ol-eshell
   :after (org))
 
@@ -115,49 +190,39 @@
 (use-package ol-notmuch
   :after (org))
 
+(use-package ob-async
+  :after (org))
+
+(use-package ob-go
+  :after (org))
+
+(use-package ob-http
+  :after (org))
+
 (defconst site-directory "~/desktop/sites/" "website folder that holds exported org-mode files and more.")
 (defconst org-default-publish-technical (concat site-directory "sbr.pm/technical") "publish directory for the technical org-mode files.")
 
-;;; -*- lexical-binding: t; -*-
+(use-package ox-publish
+  :after (org ox)
+  :config
+  (setq org-html-coding-system 'utf-8-unix))
+(use-package ox-slack
+  :after ox)
+(use-package ox-hugo
+  :after ox
+  :commands (org-hugo-slug)
+  :bind (:map vde-mode-map
+              ("C-c G" . org-hugo-export-wim-to-md))
+  :config
+  (use-package ox-hugo-auto-export))
 
-(use-package s)
+;;; -*- lexical-binding: t; -*-
 
 (use-package org
   :defer t
-  :mode (("\\.org$" . org-mode))
-  :commands (org-capture org-agenda)
   :ensure org-plus-contrib
-  :hook (org-mode . vde/org-mode-hook)
   :config
   (use-package find-lisp)
-  (setq org-modules '(org-crypt
-                      org-docview
-                      org-id
-                      org-protocol))
-  (setq org-blank-before-new-entry '((heading . t)
-                                     (plain-list-item . nil)))
-  (setq org-enforce-todo-dependencies t)
-
-  (setq org-refile-use-outline-path 'file
-        org-outline-path-complete-in-steps nil
-        org-refile-allow-creating-parent-nodes 'confirm)
-
-  (setq org-refile-targets (append '((org-default-inbox-file :level . 0))
-                                   (->>
-                                    (directory-files org-default-projects-dir nil ".org")
-                                    (--remove (s-starts-with? "." it))
-                                    (--map (format "%s/%s" org-default-projects-dir it))
-                                    (--map `(,it :level . 1)))))
-
-  (setq org-fontify-whole-heading-line t)
-
-  (setq org-pretty-entities t)
-  (setq org-insert-heading-respect-content t)
-  (setq org-ellipsis " …")
-
-  (setq org-yank-adjusted-subtrees t)
-
-  (setcar (nthcdr 4 org-emphasis-regexp-components) 10)
 
   (use-package org-super-agenda
     :config (org-super-agenda-mode))
@@ -246,12 +311,6 @@ Callers of this function already widen the buffer view."
           (when (member (nth 2 (org-heading-components)) org-todo-keywords-1)
             (setq is-subproject t))))
       (and is-a-task is-subproject)))
-
-  ;; Set default column view headings: Task Effort Clock_Summary
-  (setq org-columns-default-format "%80ITEM(Task) %TODO %3PRIORITY %10Effort(Effort){:} %10CLOCKSUM")
-
-  (setq org-global-properties (quote (("Effort_ALL" . "0:15 0:30 0:45 1:00 2:00 3:00 4:00 5:00 6:00 0:00")
-                                      ("STYLE_ALL" . "habit"))))
 
   (org-clock-persistence-insinuate)
   ;; Show lot of clocking history so it's easy to pick items off the C-F11 list
@@ -459,81 +518,8 @@ like this : [[pt:REGEXP:FOLDER]]"
               (file-relative-name file dir))))
   )
 
-(defun vde/org-mode-hook ()
-  "Org-mode hook"
-  (setq show-trailing-whitespace t)
-  (when (not (eq major-mode 'org-agenda-mode))
-    (setq fill-column 90)
-    (auto-revert-mode)
-    (auto-fill-mode)
-    (flyspell-mode)
-    (org-indent-mode)
-    (smartparens-mode)))
-
-(use-package org-id
-  :after org
-  :custom
-  (org-id-link-to-org-use-id 'create-if-interactive-and-no-custom-id)
-  :config
-  (defun eos/org-custom-id-get (&optional pom create prefix)
-    "Get the CUSTOM_ID property of the entry at point-or-marker POM.
-   If POM is nil, refer to the entry at point. If the entry does
-   not have an CUSTOM_ID, the function returns nil. However, when
-   CREATE is non nil, create a CUSTOM_ID if none is present
-   already. PREFIX will be passed through to `org-id-new'. In any
-   case, the CUSTOM_ID of the entry is returned."
-    (interactive)
-    (org-with-point-at pom
-      (let ((id (org-entry-get nil "CUSTOM_ID")))
-        (cond
-         ((and id (stringp id) (string-match "\\S-" id))
-          id)
-         (create
-          (setq id (org-id-new (concat prefix "h")))
-          (org-entry-put pom "CUSTOM_ID" id)
-          (org-id-add-location id (buffer-file-name (buffer-base-buffer)))
-          id)))))
-
-  (defun eos/org-add-ids-to-headlines-in-file ()
-    "Add CUSTOM_ID properties to all headlines in the
-   current file which do not already have one."
-    (interactive)
-    (org-map-entries (lambda ()
-                       (eos/org-custom-id-get (point) 'create)))))
-
-(use-package ob-go
-  :after (org))
-(use-package ob-async
-  :after (org))
-(use-package ob-http
-  :after (org))
-
-(use-package org-crypt
-  :after (org)
-  :config
-  (org-crypt-use-before-save-magic)
-  (setq org-tags-exclude-from-inheritance (quote ("crypt"))))
-
 (use-package smartparens-org
   :after org-mode)
-
-(use-package ox-publish
-  :config
-  (setq org-html-coding-system 'utf-8-unix))
-(use-package ox-slack
-  :after ox)
-(use-package ox-hugo
-  :after ox
-  :commands (org-hugo-slug)
-  :bind (:map vde-mode-map
-              ("C-c G" . org-hugo-export-wim-to-md))
-  :config
-  (use-package ox-hugo-auto-export))
-
-(use-package org-notify
-  :after org
-  :config
-  (org-notify-start))
 
 (use-package org-capture-pop-frame)
 

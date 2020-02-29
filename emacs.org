@@ -640,9 +640,11 @@ be heavily /tailored/ to my needs.
 The /base/ user keybinding for =org-mode= (and related modes) is =C-c o= (e.g. showing
 agenda is =C-c o a=, capture is =C-c o c=, …).
 
-*** TODO Base settings
+*** Base settings                                                  :ATTACH:
 :PROPERTIES:
 :CUSTOM_ID: h:9287c076-1944-4c13-b4e4-c7cbc6587358
+:ID:       1f74bbae-c4a1-4723-977e-e48900fcd1c7
+:Attachments: 2020-02-29-13-46-08.png
 :END:
 
 First, let's define some basic constants, mainly on how my main =org= folder is organized.
@@ -735,7 +737,32 @@ Let's setup the base of =org-mode=, with the following things in mind:
 - Refile :: In the =org-mode= jargon, this means moving an entry from one heading (parent
   entry) to another. This move can be done across files. =org-mode= displays a list of
   choice, this list is controlled by the =org-refile-targets= variable.
+
+  The =org-refile-targets= is pretty powerful if you read the doc. You specify a list of
+  file and some /search/ options for org to build its list from. Those options can be the
+  level of the entry, some tag, regular expression, … In my case, I want this list to be
+  all the =org= file in the =project= folder and also the =inbox.org= file. For the inbox,
+  I want to look only at level 0 (aka root), for the other, I want to look at level 1 (aka
+  root and sub entries).
+
+  I also changed the default way to show the refile targets (=level1/level2/level3=) to
+  include the file name. When refiling, you can either do the completion hierarchically
+  (select the file, then the first level, …) or you can display all the choice at once. I
+  tend to prefer having all the choice at once and let my completion framework (=ivy= as
+  of now) to do the /fuzzy/ selection.
+
+  Finally, I want to be able to create new node if I want, while refiling, so I'm setting
+  =org-refile-allow-creating-parent-nodes= to =confirm=, to ask me if I am sure 👼.
 - User Interface ::
+  + I want, by default, to display the effort and clock summary on org columns, so I am
+    setting the =org-columns-default-format= to do that.
+
+    [[att:2020-02-29-13-46-08.png]]
+
+  + I want to /fontify/ the whole header line (it tends to look better for some theme)
+  + I want things /pretty/, hence the =org-pretty-entities= 😹
+  + When a entry (or a drawer) is closed, I like having a visual cue that it is. I chose
+    the =…= character to show that. It can be set with =org-ellipsis=.
 - Logging :: =org-mode= allows to write the time (or a note) on a entry state change, this
   is achieved by the =org-log-*= variables. On marking entries as =DONE= or when
   rescheduling them (or changing the deadline), I want to mark the time.
@@ -747,11 +774,20 @@ Let's setup the base of =org-mode=, with the following things in mind:
   + I am setting up =org-use-property-inheritance= to make children node inherit their
     parent property. It has a cost on search but I feel, as for tag inheritance, it is
     worth the cost.
+  + Still on properties, =org-global-properties= allows you to add values to properties
+    that will show in the completion when setting those. For example, setting =EFFORT_ALL=
+    to a list, will give you those options when you are trying to set the effort property.
+  + I am setting =org-enforce-todo-dependencies= to make sure a parent entry cannot be
+    mark as done if children are not in complete state (=DONE=, =CANCELLED=, …).
+  + I want to add a new blank line whenever I create a new entry *but* I don't want that
+    extra new blank line when adding a new list item. =org-blank-before-new-entry= allow
+    to customize that behavior.
 
 /The =ensure org-plus-contrib= is there to make sure I am loading the =org= module from my
 nix configuration and not the built-in =org= module (that might lag in terms of version)/
 
 #+begin_src emacs-lisp
+(use-package s)
 (use-package org
   :ensure org-plus-contrib ;; load from the package instead of internal
   :mode (("\\.org$" . org-mode))
@@ -782,23 +818,102 @@ nix configuration and not the built-in =org= module (that might lag in terms of 
                         (:startgroup . nil)
                         ("@link" . ?i) ("@read" . ?r) ("@project" . ?p)
                         (:endgroup . nil))
-        org-use-property-inheritance t
         org-log-done 'time
         org-log-redeadline 'time
         org-log-reschedule 'time
-        org-log-into-drawer t)
+        org-log-into-drawer t
+        org-enforce-todo-dependencies t
+        org-refile-targets (append '((org-default-inbox-file :level . 0))
+                                   (->>
+                                    (directory-files org-default-projects-dir nil ".org")
+                                    (--remove (s-starts-with? "." it))
+                                    (--map (format "%s/%s" org-default-projects-dir it))
+                                    (--map `(,it :level . 1))))
+        org-refile-use-outline-path 'file
+        org-refile-allow-creating-parent-nodes 'confirm
+        org-outline-path-complete-in-steps nil
+        org-columns-default-format "%80ITEM(Task) %TODO %3PRIORITY %10Effort(Effort){:} %10CLOCKSUM"
+        org-fontify-whole-heading-line t
+        org-pretty-entities t
+        org-ellipsis " …"
+        org-use-property-inheritance t
+        org-global-properties (quote (("EFFORT_ALL" . "0:15 0:30 0:45 1:00 2:00 3:00 4:00 5:00 6:00 0:00")
+                                      ("STYLE_ALL" . "habit")))
+        org-blank-before-new-entry '((heading . t)
+                                     (plain-list-item . nil))
+        org-insert-heading-respect-content t
+        org-yank-adjusted-subtrees t)
+  (setcar (nthcdr 4 org-emphasis-regexp-components) 10)
   :bind (("C-c o l" . org-store-link)
-         ("C-c o r r" . org-refile)))
+         ("C-c o r r" . org-refile))
+  :hook (org-mode . vde/org-mode-hook))
 #+end_src
 
-*** TODO Habits
+I've set-up an =org-mode= hook to add few modes to the default setup.
+- I am really annoyed by trailing white-space so I want them to be shown
+- If the major mod is not =org-agenda-mode= (a sub-mode of =org-mode=)
+  + I set the =fill-column= to ~90~ (instead of the usual ~80~), and I enable =auto-fill= mode.
+  + I turn on =auto-revert-mode= so that the buffer is always up-to-date.
+  + I really like =smartparens= when programming, and I find it also really useful when
+    editing notes in =org-mode=.
+  + I like to have header indented, so I'm enabling =org-indent-mode=.
+  + And of course, I want =flyspell= to be enable so I quickly see my /writing/ mistakes.
 
 #+begin_src emacs-lisp
-(use-package org-habit
+(defun vde/org-mode-hook ()
+  "Org-mode hook"
+  (setq show-trailing-whitespace t)
+  (when (not (eq major-mode 'org-agenda-mode))
+    (setq fill-column 90)
+    (auto-revert-mode)
+    (auto-fill-mode)
+    (flyspell-mode)
+    (org-indent-mode)
+    (smartparens-mode)))
+#+end_src
+
+Let's also use =org-id=…
+
+#+begin_src emacs-lisp
+(use-package org-id
   :after (org)
   :config
-  (setq org-habit-show-habits-only-for-today nil
-        org-habit-graph-column 80))
+  (setq org-id-link-to-org-use-id 'create-if-interactive-and-no-custom-id)
+  (defun eos/org-custom-id-get (&optional pom create prefix)
+    "Get the CUSTOM_ID property of the entry at point-or-marker POM.
+   If POM is nil, refer to the entry at point. If the entry does
+   not have an CUSTOM_ID, the function returns nil. However, when
+   CREATE is non nil, create a CUSTOM_ID if none is present
+   already. PREFIX will be passed through to `org-id-new'. In any
+   case, the CUSTOM_ID of the entry is returned."
+    (interactive)
+    (org-with-point-at pom
+      (let ((id (org-entry-get nil "CUSTOM_ID")))
+        (cond
+         ((and id (stringp id) (string-match "\\S-" id))
+          id)
+         (create
+          (setq id (org-id-new (concat prefix "h")))
+          (org-entry-put pom "CUSTOM_ID" id)
+          (org-id-add-location id (buffer-file-name (buffer-base-buffer)))
+          id)))))
+
+  (defun eos/org-add-ids-to-headlines-in-file ()
+    "Add CUSTOM_ID properties to all headlines in the
+   current file which do not already have one."
+    (interactive)
+    (org-map-entries (lambda ()
+                       (eos/org-custom-id-get (point) 'create)))))
+#+end_src
+
+… and =org-crypt= (for encrypted =org-mode= files).
+
+#+begin_src emacs-lisp
+(use-package org-crypt
+  :after (org)
+  :config
+  (org-crypt-use-before-save-magic)
+  (setq org-tags-exclude-from-inheritance '("crypt")))
 #+end_src
 
 *** TODO Agenda
@@ -806,9 +921,21 @@ nix configuration and not the built-in =org= module (that might lag in terms of 
 :CUSTOM_ID: h:ba2a773a-88d1-4df9-a98c-5e547ee50691
 :END:
 
+The =org-mode= agenda is *the* source of my day-to-day organization. This is how I know
+what I have to do that, what I can do. This is also where I log my work (see /Clocking/
+below).
+
+#+begin_quote
+Due to the way Org works, TODO items, time-stamped items, and tagged headlines can be
+scattered throughout a file or even a number of files.  To get an overview of open action
+items, or of events that are important for a particular date, this information must be
+collected, sorted and displayed in an organized way.
+#+end_quote
+
 #+begin_src emacs-lisp
 (use-package org-agenda
   :after (org)
+  :commands (org-agenda)
   :config
   (setq org-agenda-span 'day
         org-agenda-include-diary t
@@ -822,7 +949,49 @@ nix configuration and not the built-in =org= module (that might lag in terms of 
          ("C-c o r a" . org-agenda-refile)))
 #+end_src
 
+*** Habits                                                         :ATTACH:
+:PROPERTIES:
+:CUSTOM_ID: h:291bae2c-f3eb-4c2a-9415-606afa28ac86
+:ID:       17a3ed73-aaca-4a18-8ed1-3efe7bac855a
+:Attachments: 2020-02-29-14-41-59.png
+:END:
+
+Org has the ability to track the consistency of a special category of
+TODO, called /habits/.
+
+#+begin_quote
+What’s really useful about habits is that they are displayed along
+with a consistency graph, to show how consistent you’ve been at getting
+that task done in the past.  This graph shows every day that the task
+was done over the past three weeks, with colors for each day.  The
+colors used are:
+
+Blue
+     If the task was not to be done yet on that day.
+Green
+     If the task could have been done on that day.
+Yellow
+     If the task was going to be overdue the next day.
+Red
+     If the task was overdue on that day.
+#+end_quote
+
+This look as followed in the agenda.
+
+[[att:2020-02-29-14-41-59.png]]
+
+#+begin_src emacs-lisp
+(use-package org-habit
+  :after (org)
+  :config
+  (setq org-habit-show-habits-only-for-today nil
+        org-habit-graph-column 80))
+#+end_src
+
 *** TODO Sources
+:PROPERTIES:
+:CUSTOM_ID: h:82c3b800-9d80-408d-b3b6-54dc15b0590c
+:END:
 
 #+begin_src emacs-lisp
 (use-package org-src
@@ -833,7 +1002,6 @@ nix configuration and not the built-in =org= module (that might lag in terms of 
         org-src-window-setup 'split-window-right
         org-edit-src-content-indentation 0))
 #+end_src
-
 
 *** TODO Capture
 :PROPERTIES:
@@ -852,8 +1020,10 @@ nix configuration and not the built-in =org= module (that might lag in terms of 
   :after org)
 #+end_src
 
-
 *** TODO Clocking
+:PROPERTIES:
+:CUSTOM_ID: h:264afe05-79e3-4bff-aafc-9fc726c4034b
+:END:
 
 #+begin_src emacs-lisp
 (use-package org-clock
@@ -862,11 +1032,17 @@ nix configuration and not the built-in =org= module (that might lag in terms of 
   :bind (("<f11>" . org-clock-goto)))
 #+end_src
 
-
 *** TODO Links
 :PROPERTIES:
 :CUSTOM_ID: h:afc81fbb-f7a0-401c-8b56-19f51edebd88
 :END:
+
+#+begin_src emacs-lisp
+(use-package org-attach
+  :config
+  (setq org-link-abbrev-alist '(("att" . org-attach-expand-link))))
+#+end_src
+
 
 #+begin_src emacs-lisp
 (use-package ol-eshell
@@ -903,11 +1079,31 @@ nix configuration and not the built-in =org= module (that might lag in terms of 
   :after (org))
 #+end_src
 
-
 *** TODO Archiving
 :PROPERTIES:
 :CUSTOM_ID: h:fc91dae6-27dc-43de-98bb-09cfcd666ee3
 :END:
+
+*** TODO Litterate programming
+:PROPERTIES:
+:CUSTOM_ID: h:b5f6beba-6195-4ff0-a194-502ac2a9e3da
+:END:
+
+#+begin_src emacs-lisp
+(use-package ob-async
+  :after (org))
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package ob-go
+  :after (org))
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package ob-http
+  :after (org))
+#+end_src
+
 
 *** TODO Exporting
 :PROPERTIES:
@@ -917,6 +1113,22 @@ nix configuration and not the built-in =org= module (that might lag in terms of 
 #+begin_src emacs-lisp
 (defconst site-directory "~/desktop/sites/" "website folder that holds exported org-mode files and more.")
 (defconst org-default-publish-technical (concat site-directory "sbr.pm/technical") "publish directory for the technical org-mode files.")
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package ox-publish
+  :after (org ox)
+  :config
+  (setq org-html-coding-system 'utf-8-unix))
+(use-package ox-slack
+  :after ox)
+(use-package ox-hugo
+  :after ox
+  :commands (org-hugo-slug)
+  :bind (:map vde-mode-map
+              ("C-c G" . org-hugo-export-wim-to-md))
+  :config
+  (use-package ox-hugo-auto-export))
 #+end_src
 
 
@@ -2965,44 +3177,11 @@ Number of marked items: %(length (dired-get-marked-files))
 #+begin_src emacs-lisp :tangle config/setup-org.el
 ;;; -*- lexical-binding: t; -*-
 
-(use-package s)
-
 (use-package org
   :defer t
-  :mode (("\\.org$" . org-mode))
-  :commands (org-capture org-agenda)
   :ensure org-plus-contrib
-  :hook (org-mode . vde/org-mode-hook)
   :config
   (use-package find-lisp)
-  (setq org-modules '(org-crypt
-                      org-docview
-                      org-id
-                      org-protocol))
-  (setq org-blank-before-new-entry '((heading . t)
-                                     (plain-list-item . nil)))
-  (setq org-enforce-todo-dependencies t)
-
-  (setq org-refile-use-outline-path 'file
-        org-outline-path-complete-in-steps nil
-        org-refile-allow-creating-parent-nodes 'confirm)
-
-  (setq org-refile-targets (append '((org-default-inbox-file :level . 0))
-                                   (->>
-                                    (directory-files org-default-projects-dir nil ".org")
-                                    (--remove (s-starts-with? "." it))
-                                    (--map (format "%s/%s" org-default-projects-dir it))
-                                    (--map `(,it :level . 1)))))
-
-  (setq org-fontify-whole-heading-line t)
-
-  (setq org-pretty-entities t)
-  (setq org-insert-heading-respect-content t)
-  (setq org-ellipsis " …")
-
-  (setq org-yank-adjusted-subtrees t)
-
-  (setcar (nthcdr 4 org-emphasis-regexp-components) 10)
 
   (use-package org-super-agenda
     :config (org-super-agenda-mode))
@@ -3091,12 +3270,6 @@ Callers of this function already widen the buffer view."
           (when (member (nth 2 (org-heading-components)) org-todo-keywords-1)
             (setq is-subproject t))))
       (and is-a-task is-subproject)))
-
-  ;; Set default column view headings: Task Effort Clock_Summary
-  (setq org-columns-default-format "%80ITEM(Task) %TODO %3PRIORITY %10Effort(Effort){:} %10CLOCKSUM")
-
-  (setq org-global-properties (quote (("Effort_ALL" . "0:15 0:30 0:45 1:00 2:00 3:00 4:00 5:00 6:00 0:00")
-                                      ("STYLE_ALL" . "habit"))))
 
   (org-clock-persistence-insinuate)
   ;; Show lot of clocking history so it's easy to pick items off the C-F11 list
@@ -3304,81 +3477,8 @@ like this : [[pt:REGEXP:FOLDER]]"
               (file-relative-name file dir))))
   )
 
-(defun vde/org-mode-hook ()
-  "Org-mode hook"
-  (setq show-trailing-whitespace t)
-  (when (not (eq major-mode 'org-agenda-mode))
-    (setq fill-column 90)
-    (auto-revert-mode)
-    (auto-fill-mode)
-    (flyspell-mode)
-    (org-indent-mode)
-    (smartparens-mode)))
-
-(use-package org-id
-  :after org
-  :custom
-  (org-id-link-to-org-use-id 'create-if-interactive-and-no-custom-id)
-  :config
-  (defun eos/org-custom-id-get (&optional pom create prefix)
-    "Get the CUSTOM_ID property of the entry at point-or-marker POM.
-   If POM is nil, refer to the entry at point. If the entry does
-   not have an CUSTOM_ID, the function returns nil. However, when
-   CREATE is non nil, create a CUSTOM_ID if none is present
-   already. PREFIX will be passed through to `org-id-new'. In any
-   case, the CUSTOM_ID of the entry is returned."
-    (interactive)
-    (org-with-point-at pom
-      (let ((id (org-entry-get nil "CUSTOM_ID")))
-        (cond
-         ((and id (stringp id) (string-match "\\S-" id))
-          id)
-         (create
-          (setq id (org-id-new (concat prefix "h")))
-          (org-entry-put pom "CUSTOM_ID" id)
-          (org-id-add-location id (buffer-file-name (buffer-base-buffer)))
-          id)))))
-
-  (defun eos/org-add-ids-to-headlines-in-file ()
-    "Add CUSTOM_ID properties to all headlines in the
-   current file which do not already have one."
-    (interactive)
-    (org-map-entries (lambda ()
-                       (eos/org-custom-id-get (point) 'create)))))
-
-(use-package ob-go
-  :after (org))
-(use-package ob-async
-  :after (org))
-(use-package ob-http
-  :after (org))
-
-(use-package org-crypt
-  :after (org)
-  :config
-  (org-crypt-use-before-save-magic)
-  (setq org-tags-exclude-from-inheritance (quote ("crypt"))))
-
 (use-package smartparens-org
   :after org-mode)
-
-(use-package ox-publish
-  :config
-  (setq org-html-coding-system 'utf-8-unix))
-(use-package ox-slack
-  :after ox)
-(use-package ox-hugo
-  :after ox
-  :commands (org-hugo-slug)
-  :bind (:map vde-mode-map
-              ("C-c G" . org-hugo-export-wim-to-md))
-  :config
-  (use-package ox-hugo-auto-export))
-
-(use-package org-notify
-  :after org
-  :config
-  (org-notify-start))
 
 (use-package org-capture-pop-frame)
 
