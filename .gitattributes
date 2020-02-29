@@ -5,3 +5,4 @@ bootstrap.sh linguist-generated=true
 update.sh linguist-generated=true
 .gitattributes linguist-generated=true
 .gitignore linguist-generated=true
+*.png filter=lfs diff=lfs merge=lfs -text
