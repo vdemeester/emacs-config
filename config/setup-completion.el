@@ -235,20 +235,6 @@ repository, then the corresponding root is used instead."
                                         ;https://github.com/abo-abo/swiper/issues/427
                   ))))
 
-(use-package ivy-posframe
-  :delight
-  :custom
-  (ivy-posframe-height-alist
-   '((swiper . 15)
-     (swiper-isearch . 15)
-     (t . 10)))
-  (ivy-posframe-display-functions-alist
-   '((complete-symbol . ivy-posframe-display-at-point)
-     ;;(t . ivy-posframe-display-at-frame-center)
-     (counsel-M-x . ivy-posframe-display-at-frame-bottom-left)))
-  :config
-  (ivy-posframe-mode 1))
-
 (use-package company
   :commands global-company-mode
   :init
