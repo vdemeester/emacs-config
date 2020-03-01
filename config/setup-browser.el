@@ -3,7 +3,6 @@
   :commands (eww
              eww-browse-url)
   :custom
-  (browse-url-browser-function 'eww-browse-url)
   (shr-use-fonts nil)
   (shr-use-colors nil)
   (shr-max-image-proportion 0.2)
