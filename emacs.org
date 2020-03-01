@@ -1533,11 +1533,28 @@ Run =C-h m= inside of a Dired buffer that has =gnus-dired-mode= enabled and sear
 :PROPERTIES:
 :CUSTOM_ID: h:93826a52-2f51-437b-8625-ce7cd36d53b6
 :END:
-** TODO Mouse
+** Mouse
 :PROPERTIES:
 :CUSTOM_ID: h:cb0ad0e0-62a8-469a-970d-074a423b720d
 :header-args: :tangle config/setup-mouse.el
 :END:
+
+The value of mouse-wheel-scroll-amount means the following:
+
+- By default scroll by one line.
+- Hold down Shift to do so by five lines.
+- Hold down Meta to scroll half a screen.
+- Hold down Control to adjust the size of the text. This is added in Emacs 27.
+
+By enabling mouse-drag-copy-region we automatically place the mouse selection to the kill
+ring. This is the same behaviour as terminal emulators that place the selection to the
+clipboard (or the primary selection).
+
+The other options in short:
+
+- Hide mouse pointer while typing.
+- Enable mouse scroll.
+- Faster wheel movement means faster scroll.
 
 #+begin_src emacs-lisp
 (use-package mouse
@@ -1547,6 +1564,9 @@ Run =C-h m= inside of a Dired buffer that has =gnus-dired-mode= enabled and sear
           ((shift) . 5)
           ((meta) . 0.5)
           ((control) . text-scale)))
+  (setq make-pointer-invisible t
+        mouse-wheel-progressive-speed t
+        mouse-wheel-follow-mouse t)
   :hook (after-init . mouse-wheel-mode))
 #+end_src
 
