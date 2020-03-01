@@ -567,7 +567,6 @@ a gist:
    `((".*" ,(no-littering-expand-var-file-name "auto-save/") t))))
 #+end_src
 
-
 ** Server mode
 :PROPERTIES:
 :header-args: :tangle config/01-server.el
@@ -1130,7 +1129,6 @@ This look as followed in the agenda.
   (use-package ox-hugo-auto-export))
 #+end_src
 
-
 ** TODO Email and newsgroup
 :PROPERTIES:
 :header-args: :tangle config/setup-mails.el
@@ -1531,11 +1529,33 @@ Run =C-h m= inside of a Dired buffer that has =gnus-dired-mode= enabled and sear
   (setq message-sendmail-extra-arguments '("--read-envelope-from")))
 #+end_src
 
+* User interface and interactions
+:PROPERTIES:
+:CUSTOM_ID: h:93826a52-2f51-437b-8625-ce7cd36d53b6
+:END:
+** TODO Mouse
+:PROPERTIES:
+:CUSTOM_ID: h:cb0ad0e0-62a8-469a-970d-074a423b720d
+:header-args: :tangle config/setup-mouse.el
+:END:
+
+#+begin_src emacs-lisp
+(use-package mouse
+  :config
+  (setq mouse-wheel-scroll-amount
+        '(1
+          ((shift) . 5)
+          ((meta) . 0.5)
+          ((control) . text-scale)))
+  :hook (after-init . mouse-wheel-mode))
+#+end_src
+
 
 * TODO Programming
 :PROPERTIES:
 :CUSTOM_ID: h:635a27c4-5ff9-46e4-8d42-283d316cf4d6
 :END:
+
 * Legacy
 :PROPERTIES:
 :CUSTOM_ID: h:9e392a26-fe69-4156-910f-fb1911fd8924
