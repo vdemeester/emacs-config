@@ -770,6 +770,9 @@ Let's setup the base of =org-mode=, with the following things in mind:
   Additionally, when I log those state changes, I don't want them to pollute the content
   of the to-do (aka description, …). Setting =org-log-int-drawer= will insert those logs
   in a =LOGBOOK= drawer (same as the property drawer).
+- Archiving :: I don't want to pollute my current folder with =_archive= files, so I am
+  redefining =org-archive-location= to archive to my =org-default-completed-dir=, also
+  using =datetree= to put archived items in a datetree.
 - Miscellaneous ::
   + I am setting up =org-use-property-inheritance= to make children node inherit their
     parent property. It has a cost on search but I feel, as for tag inheritance, it is
@@ -836,6 +839,7 @@ nix configuration and not the built-in =org= module (that might lag in terms of 
         org-fontify-whole-heading-line t
         org-pretty-entities t
         org-ellipsis " …"
+        org-archive-location (concat org-default-completed-dir "/%s::datetree/")
         org-use-property-inheritance t
         org-global-properties (quote (("EFFORT_ALL" . "0:15 0:30 0:45 1:00 2:00 3:00 4:00 5:00 6:00 0:00")
                                       ("STYLE_ALL" . "habit")))
@@ -1078,11 +1082,6 @@ This look as followed in the agenda.
 (use-package ol-notmuch
   :after (org))
 #+end_src
-
-*** TODO Archiving
-:PROPERTIES:
-:CUSTOM_ID: h:fc91dae6-27dc-43de-98bb-09cfcd666ee3
-:END:
 
 *** TODO Litterate programming
 :PROPERTIES:

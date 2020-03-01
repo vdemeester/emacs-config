@@ -64,6 +64,7 @@
         org-fontify-whole-heading-line t
         org-pretty-entities t
         org-ellipsis " …"
+        org-archive-location (concat org-default-completed-dir "/%s::datetree/")
         org-use-property-inheritance t
         org-global-properties (quote (("EFFORT_ALL" . "0:15 0:30 0:45 1:00 2:00 3:00 4:00 5:00 6:00 0:00")
                                       ("STYLE_ALL" . "habit")))
