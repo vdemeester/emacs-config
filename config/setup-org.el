@@ -128,12 +128,35 @@
   :after (org)
   :commands (org-agenda)
   :config
+  (use-package org-super-agenda
+    :config (org-super-agenda-mode))
   (setq org-agenda-span 'day
+        org-agenda-start-on-weekday 1
         org-agenda-include-diary t
         org-agenda-window-setup 'current-window
         org-agenda-skip-scheduled-if-done nil
         org-agenda-compact-blocks t
-        org-agenda-sticky t)
+        org-agenda-sticky t
+        org-super-agenda-header-separator ""
+        org-agenda-custom-commands
+        `(("n" "Personal agenda"
+           ((agenda "")
+            (tags-todo "+TODO=\"NEXT\""
+                       ((org-agenda-overriding-header "Next items")))
+            (tags-todo "@work-goals"
+                       ((org-agenda-skip-function '(org-agenda-skip-if nil '(scheduled deadline)))
+                        (org-agenda-overriding-header "Work")))
+            (tags-todo "@home-goals"
+                       ((org-agenda-skip-function '(org-agenda-skip-if nil '(scheduled deadline)))
+                        (org-agenda-overriding-header "Home"))))
+           ((org-super-agenda-groups
+             '((:name "Important" :priority "A")
+               (:name "Done" :log closed)
+               (:name "Scheduled" :time-grid t)
+               (:name "Work" :tag "@work")
+               (:name "Perso" :tag "@home")
+               (:habit t))))
+           (org-agenda-list))))
   :commands (org-agenda)
   :bind (("C-c o a" . org-agenda)
          ("<f12>" . org-agenda)
@@ -224,30 +247,6 @@
   :ensure org-plus-contrib
   :config
   (use-package find-lisp)
-
-  (use-package org-super-agenda
-    :config (org-super-agenda-mode))
-
-  (setq org-super-agenda-header-separator "")
-  (setq org-agenda-custom-commands
-        `(("n" "Personal agenda"
-           ((agenda "")
-            (tags-todo "+TODO=\"NEXT\""
-                       ((org-agenda-overriding-header "Next items")))
-            (tags-todo "@work-goals"
-                       ((org-agenda-skip-function '(org-agenda-skip-if nil '(scheduled deadline)))
-                        (org-agenda-overriding-header "Work")))
-            (tags-todo "@home-goals"
-                       ((org-agenda-skip-function '(org-agenda-skip-if nil '(scheduled deadline)))
-                        (org-agenda-overriding-header "Home"))))
-           ((org-super-agenda-groups
-             '((:name "Important" :priority "A")
-               (:name "Done" :log closed)
-               (:name "Scheduled" :time-grid t)
-               (:name "Work" :tag "@work")
-               (:name "Perso" :tag "@home")
-               (:habit t))))
-           (org-agenda-list))))
 
   (defun vde/is-project-p ()
     "Any task with a todo keyword subtask"

@@ -935,17 +935,50 @@ items, or of events that are important for a particular date, this information m
 collected, sorted and displayed in an organized way.
 #+end_quote
 
+Invoking =org-agenda= presents a list of possible options. There as a list of built-in
+agenda views, where =a= shows all the items that have date assigned to them (=SCHEDULED=
+or =DEADLINE=), =t= for listing to-dos, =T= for listing to-dos with a specific state and
+=m= for more advanced matching possibilities.
+
+I am using [[https://github.com/alphapapa/org-super-agenda/][=org-super-agenda=]] to /supercharge/ the =org-mode= agenda 👼 to define my own
+agenda views. This allows to group things and overall set-up the agenda view I want. This
+agenda view uses the =n= key.
+
+
 #+begin_src emacs-lisp
 (use-package org-agenda
   :after (org)
   :commands (org-agenda)
   :config
+  (use-package org-super-agenda
+    :config (org-super-agenda-mode))
   (setq org-agenda-span 'day
+        org-agenda-start-on-weekday 1
         org-agenda-include-diary t
         org-agenda-window-setup 'current-window
         org-agenda-skip-scheduled-if-done nil
         org-agenda-compact-blocks t
-        org-agenda-sticky t)
+        org-agenda-sticky t
+        org-super-agenda-header-separator ""
+        org-agenda-custom-commands
+        `(("n" "Personal agenda"
+           ((agenda "")
+            (tags-todo "+TODO=\"NEXT\""
+                       ((org-agenda-overriding-header "Next items")))
+            (tags-todo "@work-goals"
+                       ((org-agenda-skip-function '(org-agenda-skip-if nil '(scheduled deadline)))
+                        (org-agenda-overriding-header "Work")))
+            (tags-todo "@home-goals"
+                       ((org-agenda-skip-function '(org-agenda-skip-if nil '(scheduled deadline)))
+                        (org-agenda-overriding-header "Home"))))
+           ((org-super-agenda-groups
+             '((:name "Important" :priority "A")
+               (:name "Done" :log closed)
+               (:name "Scheduled" :time-grid t)
+               (:name "Work" :tag "@work")
+               (:name "Perso" :tag "@home")
+               (:habit t))))
+           (org-agenda-list))))
   :commands (org-agenda)
   :bind (("C-c o a" . org-agenda)
          ("<f12>" . org-agenda)
@@ -3206,30 +3239,6 @@ Number of marked items: %(length (dired-get-marked-files))
   :ensure org-plus-contrib
   :config
   (use-package find-lisp)
-
-  (use-package org-super-agenda
-    :config (org-super-agenda-mode))
-
-  (setq org-super-agenda-header-separator "")
-  (setq org-agenda-custom-commands
-        `(("n" "Personal agenda"
-           ((agenda "")
-            (tags-todo "+TODO=\"NEXT\""
-                       ((org-agenda-overriding-header "Next items")))
-            (tags-todo "@work-goals"
-                       ((org-agenda-skip-function '(org-agenda-skip-if nil '(scheduled deadline)))
-                        (org-agenda-overriding-header "Work")))
-            (tags-todo "@home-goals"
-                       ((org-agenda-skip-function '(org-agenda-skip-if nil '(scheduled deadline)))
-                        (org-agenda-overriding-header "Home"))))
-           ((org-super-agenda-groups
-             '((:name "Important" :priority "A")
-               (:name "Done" :log closed)
-               (:name "Scheduled" :time-grid t)
-               (:name "Work" :tag "@work")
-               (:name "Perso" :tag "@home")
-               (:habit t))))
-           (org-agenda-list))))
 
   (defun vde/is-project-p ()
     "Any task with a todo keyword subtask"
