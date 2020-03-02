@@ -1684,11 +1684,12 @@ These are the initial configuration files to be imported in this file slowly but
 (use-package shr
   :commands (eww
              eww-browse-url)
-  :custom
-  (shr-use-fonts nil)
-  (shr-use-colors nil)
-  (shr-max-image-proportion 0.2)
-  (shr-width (current-fill-column)))
+  :config
+  (setq shr-use-fonts nil
+        shr-use-colors nil
+        shr-max-image-proportion 0.2
+        shr-width (current-fill-column)
+        browse-url-browser-function 'browse-url-generic))
 
 (use-package shr-tag-pre-highlight
   :after shr
