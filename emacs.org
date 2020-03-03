@@ -421,7 +421,7 @@ Now, in order to load ~lisp~ and ~config~ files, it's just a matter of calling t
 function with the right argument.
 
 #+begin_src emacs-lisp :tangle init.el
-(vde/el-load-dir (concat user-emacs-directory "/lisp/"))
+(add-to-list 'load-path (concat user-emacs-directory "lisp/"))
 (vde/el-load-dir (concat user-emacs-directory "/config/"))
 #+end_src
 
@@ -4542,14 +4542,15 @@ using either KUBECONFIG or ~/.kube/config"
 ;;; Theme
 (setq custom-safe-themes t)    ; Treat themes as safe
 
-;; (use-package doom-themes
-;;   :config
-;;   (load-theme 'doom-one-light t)
-;;   (doom-themes-visual-bell-config)
-;;   (doom-themes-org-config))
-(use-package emacs
-  :config
-  (load-theme 'shortbrain-light))
+(if (string= (system-name) "wakasu")
+    (use-package shortbrain-light-theme
+      :config
+      (load-theme 'shortbrain-light))
+  (use-package doom-themes
+    :config
+    (load-theme 'doom-one-light t)
+    (doom-themes-visual-bell-config)
+    (doom-themes-org-config)))
 
 (use-package solaire-mode
   :config
@@ -4816,7 +4817,7 @@ using either KUBECONFIG or ~/.kube/config"
 :CUSTOM_ID: h:19bf468b-1fcd-469f-9c25-dee2e200f7e7
 :END:
 
-#+begin_src emacs-lisp :tangle lisp/00-vde-mode.el
+#+begin_src emacs-lisp :tangle config/00-vde-mode.el
 ;;; -*- lexical-binding: t; -*-
 (defvar vde-special-keymap-prefix (kbd "C-x m")
   "`vde-mode' keymap prefix.

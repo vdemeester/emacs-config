@@ -66,11 +66,15 @@
 ;;; Theme
 (setq custom-safe-themes t)    ; Treat themes as safe
 
-(use-package doom-themes
-  :config
-  (load-theme 'doom-one-light t)
-  (doom-themes-visual-bell-config)
-  (doom-themes-org-config))
+(if (string= (system-name) "wakasu")
+    (use-package shortbrain-light-theme
+      :config
+      (load-theme 'shortbrain-light))
+  (use-package doom-themes
+    :config
+    (load-theme 'doom-one-light t)
+    (doom-themes-visual-bell-config)
+    (doom-themes-org-config)))
 
 (use-package solaire-mode
   :config
@@ -181,12 +185,12 @@
 (defun set-light-theme ()
   "Set the light theme with some customization if needed."
   (interactive)
-  (load-theme 'doom-one-light t))
+  (load-theme 'shortbrain-light t))
 
 (defun set-dark-theme ()
   "Set the dark theme with some customization if needed."
   (interactive)
-  (load-theme 'doom-one t))
+  (load-theme 'shortbrain t))
 
 (defun theme-switcher ()
   (interactive)

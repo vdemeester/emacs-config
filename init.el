@@ -97,7 +97,7 @@
       (while files
         (load-file (concat dir (pop files))))))
 
-(vde/el-load-dir (concat user-emacs-directory "/lisp/"))
+(add-to-list 'load-path (concat user-emacs-directory "lisp/"))
 (vde/el-load-dir (concat user-emacs-directory "/config/"))
 
 (defun vde/short-hostname ()
