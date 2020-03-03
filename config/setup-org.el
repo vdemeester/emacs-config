@@ -552,7 +552,6 @@ activation of `org-tree-slide-mode'."
           (setq cursor-type '(bar . 1)))
       (darkroom-tentative-mode -1)
       (org-indent-mode -1)
-      (prot/fonts-per-monitor)
       (setq cursor-type 'box)))
   :bind (("<f8>" . org-tree-slide-mode)
          :map org-tree-slide-mode-map

@@ -1302,15 +1302,13 @@ and =nnimap-authinfo-file= are needed, but I keep them for the sake of completen
           ("redhat"
            (posting-style
             (address "vdemeest@redhat.com")
-            (signature-file "~/desktop/documents/.redhat.signature")
-            (gcc "nnimap+redhat:[Gmail]/Sent Mail")))
+            (signature-file "~/desktop/documents/.redhat.signature")))
           ("nnimap+redhat:INBOX"
            (display . all))
           ("vde"
            (posting-style
             (address "vinc.demeester.fr")
-            (signature-file "~/desktop/documents/.vde.signature")
-            (gcc "nnimap+vde:[Gmail]/Sent Mail")))
+            (signature-file "~/desktop/documents/.vde.signature")))
           ("nnimap+vde:INBOX"
            (display . all))))
   (setq gnus-agent t)
@@ -3545,7 +3543,6 @@ activation of `org-tree-slide-mode'."
           (setq cursor-type '(bar . 1)))
       (darkroom-tentative-mode -1)
       (org-indent-mode -1)
-      (prot/fonts-per-monitor)
       (setq cursor-type 'box)))
   :bind (("<f8>" . org-tree-slide-mode)
          :map org-tree-slide-mode-map
@@ -3711,9 +3708,6 @@ confines of word boundaries (e.g. multiple words)."
 *** ~setup-shells.el~
 :PROPERTIES:
 :CUSTOM_ID: h:fd536392-1477-450c-965a-80bbbd1e4d81
-:END:
-:PROPERTIES:
-
 :END:
 
 #+begin_src emacs-lisp :tangle config/setup-shells.el
