@@ -185,6 +185,7 @@
 
    ;; Erroneous whitespace
    `(whitespace-line ((,class (:foreground ,error-fg :background ,error-bg))))
+   `(whitespace-space ((,class (:foreground ,builtin-fg :background ,hl-line-bg))))
 
    ;; Language syntax highlighting
    `(font-lock-builtin-face ((,class (:foreground ,builtin-fg))))
