@@ -5749,3 +5749,8 @@ Whenever a test enters this state, it is automatically expanded."
 
 ;;; gotest-ui.el ends here
 #+end_src
+
+* Local Variables
+# Local Variables:
+# eval: (add-hook 'after-save-hook (lambda ()(org-babel-tangle)) nil t)
+# End:
