@@ -1606,15 +1606,31 @@ The other options in short:
 :CUSTOM_ID: h:18fcf62d-a919-4614-803d-f5d28bc47985
 :END:
 
-*** TODO My own theme
+*** TODO My own theme                                              :ATTACH:
 :PROPERTIES:
 :CUSTOM_ID: h:1a7c1e91-d3c5-4395-b956-8001a1a1a393
+:ID:       83bc2073-0681-4fe9-bcf7-3070bd1ab695
+:Attachments: 2020-03-03-21-57-41.png 2020-03-03-21-59-22.png
 :END:
 
 I navigate between themes, but the more I use Emacs (or any editor really), the more I
-lean towards writing my own.
+lean towards writing my own. Those theme are base on [[https://github.com/Jannis/emacs-constant-theme][=emacs-constant-theme=]] which is "A
+calm, almost monochrome color theme for Emacs with a dark and light variant".
+
+My main goal is to make a theme that, at least for syntax highlighting, differs from the
+usual color(ful) themes. The reason come from a [[https://www.linusakesson.net/programming/syntaxhighlighting/][bunch]] [[https://jameshfisher.com/2014/05/11/your-syntax-highlighter-is-wrong/][of]] [[https://www.robertmelton.com/project/syntax-highlighting-off/][articles]] and [[https://asylum.madhouse-project.org/blog/2018/09/06/the-brutalist-path/][repositories]] that
+discuss how, /maybe/ the way we see and use syntax highlighting today is not optimum. This
+is a _touchy_ subject to see the least but it does make sense to me: I want to highlight
+comments (because they may be important to understand the code), and I don't want to
+highlight the language keyword more than the actual code.
+
+I wrote two version, a dark one and a light one. I currently mainly use the light theme
+(as this is when I do work 😅).
 
 - dark theme
+
+  [[att:2020-03-03-21-59-22.png]]
+
   #+begin_src emacs-lisp :tangle lisp/shortbrain-theme.el
   ;;; shortbrain-theme.el --- A calm, dark, almost monochrome color theme based on emacs-constant-theme
 
@@ -1854,6 +1870,9 @@ lean towards writing my own.
 
   #+end_src
 - light theme
+
+  [[att:2020-03-03-21-57-41.png]]
+
   #+begin_src emacs-lisp :tangle lisp/shortbrain-light-theme.el
   ;;; shortbrain-light-theme.el --- A calm, light, almost monochrome color theme based on emacs-shortbrain-theme.
 
