@@ -6,7 +6,7 @@
 (defconst emacs-start-time (current-time))
 
 ;; load early-init.el before Emacs 27.0
-(unless (featurep 'early-init)
+(unless (>= emacs-major-version 27)
   (message "Early init: Emacs Version < 27.0")
   (load (expand-file-name "early-init.el" user-emacs-directory)))
 
