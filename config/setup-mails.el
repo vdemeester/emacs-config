@@ -68,6 +68,11 @@
   (setq gnus-extra-headers
         '(To Newsgroups X-GM-LABELS)))
 
+(use-package mml-sec
+  :config
+  (setq mml-secure-openpgp-signers
+        '("8C4E8DDA04C18C6B503BD2DBB7E7CF1C634256FA")))
+
 (use-package gnus-agent
   :after gnus
   :config

@@ -1321,6 +1321,16 @@ and =nnimap-authinfo-file= are needed, but I keep them for the sake of completen
         '(To Newsgroups X-GM-LABELS)))
 #+end_src
 
+Let's also give to gnus my GnuPG key.
+
+#+begin_src emacs-lisp
+(use-package mml-sec
+  :config
+  (setq mml-secure-openpgp-signers
+        '("8C4E8DDA04C18C6B503BD2DBB7E7CF1C634256FA")))
+#+end_src
+
+
 **** Gnus agent
 :PROPERTIES:
 :CUSTOM_ID: h:2beac436-62ba-4b52-acc5-559016ec477f
