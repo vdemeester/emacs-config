@@ -1649,6 +1649,8 @@ I wrote two version, a dark one and a light one. I currently mainly use the ligh
 **** Light theme
 :PROPERTIES:
 :CUSTOM_ID: h:8997adc9-8681-4d3a-a118-616866895f93
+:ID:       83bc2073-0681-4fe9-bcf7-3070bd1ab695
+:Attachments: 2020-03-03-21-57-41.png
 :END:
 
   [[att:2020-03-03-21-57-41.png]]
@@ -1932,6 +1934,8 @@ I wrote two version, a dark one and a light one. I currently mainly use the ligh
 **** Dark theme
 :PROPERTIES:
 :CUSTOM_ID: h:e986baca-a7dc-463e-85ee-ea10fb69bf0f
+:ID:       83bc2073-0681-4fe9-bcf7-3070bd1ab695
+:Attachments: 2020-03-03-21-57-41.png
 :END:
 
   [[att:2020-03-03-21-59-22.png]]
