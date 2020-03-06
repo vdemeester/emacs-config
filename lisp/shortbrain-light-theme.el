@@ -71,6 +71,20 @@
     (primary-800 . "#028080")
     (primary-900 . "#006666")
 
+    ;; Greens
+    (default-green . "#0be541")
+    (green . "#0be441")
+    (green-50 . "#e7feec")
+    (green-100 . "#b6fcc7")
+    (green-200 . "#85f9a2")
+    (green-300 . "#3cf66b")
+    (green-400 . "#0be441")
+    (green-500 . "#0adb3f")
+    (green-600 . "#09c338")
+    (green-700 . "#08aa31")
+    (green-800 . "#07922a")
+    (green-900 . "#067a23")
+
     ;; Reds
     (default-red. "#f24965")
     (red . "#f24965")
@@ -144,6 +158,14 @@
       (error-fg                 (shortbrain-light-theme-color 'white))
       (error-bg                 (shortbrain-light-theme-color 'red))
 
+      ;; Org
+      (org-color-1              (shortbrain-light-theme-color 'green-900))
+      (org-color-2              (shortbrain-light-theme-color 'purple))
+      (org-color-3              (shortbrain-light-theme-color 'primary-700))
+      (org-color-4              (shortbrain-light-theme-color 'primary-500))
+      (org-color-5              (shortbrain-light-theme-color 'primary-400))
+      (org-meta-fg              (shortbrain-light-theme-color 'primary-900))
+
       ;; Language syntax highlighting
       (variable-fg              (shortbrain-light-theme-color 'black))
       (function-fg              (shortbrain-light-theme-color 'grey-900))
@@ -202,6 +224,16 @@
    `(font-lock-type-face ((,class (:foreground ,type-fg))))
    `(font-lock-variable-name-face ((,class (:foreground ,variable-fg))))
    `(font-lock-warning-face ((,class (:foreground ,warning-fg :background ,warning-bg))))
+
+   ;; Org
+   `(org-level-1 ((,class (:foreground ,org-color-1 :bold t :height 1.2))))
+   `(org-level-2 ((,class (:foreground ,org-color-2 :bold t :height 1.1))))
+   `(org-level-3 ((,class (:foreground ,org-color-3 :bold t :height 1.0))))
+   `(org-level-4 ((,class (:foreground ,org-color-4 :bold t :height 1.0))))
+   `(org-level-5 ((,class (:foreground ,org-color-5 :bold t :height 1.0))))
+   `(org-level-6 ((,class (:foreground ,org-color-5 :bold t :height 1.0))))
+   `(org-document-title ((,class (:bold t :foreground ,org-meta-fg :height 1.4))))
+   `(org-meta-line ((,class (:foreground ,org-meta-fg :bold t))))
 
    ;; Avy
    `(avy-lead-face   ((,class (:background ,search-bg-0 :foreground ,search-fg))))

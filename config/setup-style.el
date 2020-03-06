@@ -185,12 +185,16 @@
 (defun set-light-theme ()
   "Set the light theme with some customization if needed."
   (interactive)
-  (load-theme 'shortbrain-light t))
+  (use-package shortbrain-light-theme
+    :config
+    (load-theme 'shortbrain-light t)))
 
 (defun set-dark-theme ()
   "Set the dark theme with some customization if needed."
   (interactive)
-  (load-theme 'shortbrain t))
+  (use-package shortbrain-theme
+    :config
+    (load-theme 'shortbrain t)))
 
 (defun theme-switcher ()
   (interactive)
