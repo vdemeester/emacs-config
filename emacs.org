@@ -1647,6 +1647,9 @@ I wrote two version, a dark one and a light one. I currently mainly use the ligh
 (as this is when I do work 😅).
 
 **** Light theme
+:PROPERTIES:
+:CUSTOM_ID: h:8997adc9-8681-4d3a-a118-616866895f93
+:END:
 
   [[att:2020-03-03-21-57-41.png]]
 
@@ -1927,6 +1930,9 @@ I wrote two version, a dark one and a light one. I currently mainly use the ligh
   #+end_src
 
 **** Dark theme
+:PROPERTIES:
+:CUSTOM_ID: h:e986baca-a7dc-463e-85ee-ea10fb69bf0f
+:END:
 
   [[att:2020-03-03-21-59-22.png]]
 
@@ -5806,6 +5812,9 @@ Whenever a test enters this state, it is automatically expanded."
 #+end_src
 
 * Local Variables
+:PROPERTIES:
+:CUSTOM_ID: h:58879ff0-e44a-4fca-b148-5a3db7c41b8e
+:END:
 # Local Variables:
 # eval: (add-hook 'after-save-hook (lambda ()(org-babel-tangle)) nil t)
 # End:
