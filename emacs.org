@@ -1204,7 +1204,6 @@ where our credentials are stored and whether encryption is supported.
   (epa-file-enable))
 #+end_src
 
-
 *** Gnus
 :PROPERTIES:
 :CUSTOM_ID: h:0aeec7d8-b6c9-4244-8c10-2788c6e89cc5
@@ -1559,6 +1558,16 @@ Run =C-h m= inside of a Dired buffer that has =gnus-dired-mode= enabled and sear
   (setq message-sendmail-f-is-evil 't)
   (setq message-sendmail-extra-arguments '("--read-envelope-from")))
 #+end_src
+
+#+begin_src emacs-lisp
+(use-package message
+  :config
+  (setq mail-user-agent 'message-user-agent
+        message-wide-reply-confirm-recipients t
+        message-default-charset 'utf-8)
+  (add-to-list 'mm-body-charset-encoding-alist '(utf-8 . base64)))
+#+end_src
+
 
 * User interface and interactions
 :PROPERTIES:

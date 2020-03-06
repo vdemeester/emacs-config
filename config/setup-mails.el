@@ -167,3 +167,10 @@
   (setq sendmail-program "msmtp")
   (setq message-sendmail-f-is-evil 't)
   (setq message-sendmail-extra-arguments '("--read-envelope-from")))
+
+(use-package message
+  :config
+  (setq mail-user-agent 'message-user-agent
+        message-wide-reply-confirm-recipients t
+        message-default-charset 'utf-8)
+  (add-to-list 'mm-body-charset-encoding-alist '(utf-8 . base64)))
