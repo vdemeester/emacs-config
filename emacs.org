@@ -1079,38 +1079,26 @@ This look as followed in the agenda.
   (setq org-link-abbrev-alist '(("att" . org-attach-expand-link))))
 #+end_src
 
-
 #+begin_src emacs-lisp
+;; my personal
+(use-package ol-github
+  :after (org))
+(use-package ol-gitlab
+  :after (org))
+
+;; built-in org-mode
 (use-package ol-eshell
   :after (org))
-#+end_src
-
-#+begin_src emacs-lisp
 (use-package ol-git-link
   :after (org))
-#+end_src
-
-#+begin_src emacs-lisp
 (use-package ol-gnus
   :after (org))
-#+end_src
-
-#+begin_src emacs-lisp
 (use-package ol-irc
   :after (org))
-#+end_src
-
-#+begin_src emacs-lisp
 (use-package ol-info
   :after (org))
-#+end_src
-
-#+begin_src emacs-lisp
 (use-package ol-man
   :after (org))
-#+end_src
-
-#+begin_src emacs-lisp
 (use-package ol-notmuch
   :after (org))
 #+end_src
@@ -3535,33 +3523,6 @@ like this : [[pt:REGEXP:FOLDER]]"
         (ripgrep-regexp exp (file-name-as-directory (expand-file-name folder)))))
     )
 
-  (org-link-set-parameters "gh"
-                           :follow #'vde/follow-gh-link
-                           :export #'vde/org-gh-export
-                           :face '(:foreground "DimGrey" :underline t))
-  (defun vde/org-gh-export (link description format)
-    "Export a github page link from Org files."
-    (let ((path (vde/gh-get-url link))
-          (desc (or description link)))
-      (cond
-       ((eq format 'html) (format "<a hrefl=\"_blank\" href=\"%s\">%s</a>" path desc))
-       ((eq format 'latex) (format "\\href{%s}{%s}" path desc))
-       ((eq format 'texinfo) (format "@uref{%s,%s}" path desc))
-       ((eq format 'ascii) (format "%s (%s)" desc path))
-       (t path))))
-  (defun vde/follow-gh-link (issue)
-    "Browse github issue/pr specified"
-    (browse-url (vde/gh-get-url issue)))
-
-  (defun vde/gh-get-url (path)
-    "Translate org-mode link `gh:foo/bar#1' to github url."
-    (setq expressions (split-string path "#"))
-    (setq project (nth 0 expressions))
-    (setq issue (nth 1 expressions))
-    (if issue
-        (format "https://github.com/%s/issues/%s" project issue)
-      (format "https://github.com/%s" project)))
-
   (org-link-set-parameters
    "org"
    :complete (lambda () (+org-link-read-file "org" org-directory))
@@ -4603,7 +4564,7 @@ USAGE: (unbind-from-vde-map \"C-x m f\")
 :CUSTOM_ID: h:bd8804a0-df0e-4aca-b748-429ea9402cd6
 :END:
 
-#+INCLUDE: "lisp/use-package-list.el" src lisp/use-package-list.el
+#+INCLUDE: "lisp/use-package-list.el" src emacs-lisp
 
 ** ~gotest-ui.el~
 :PROPERTIES:
@@ -4612,7 +4573,24 @@ USAGE: (unbind-from-vde-map \"C-x m f\")
 
 From [[https://github.com/antifuchs/gotest-ui-mode/][antifuchs/gotest-ui-mode]].
 
-#+INCLUDE: "lisp/gotest-ui.el" src lisp/gotest-ui.el
+#+INCLUDE: "lisp/gotest-ui.el" src emacs-lisp
+
+** Org mode links
+:PROPERTIES:
+:CUSTOM_ID: h:80cc4939-759a-456b-8dfd-220dd8b48727
+:END:
+
+I am defining additonal org-mode links for my day to day usage.
+
+- ~ol-github.el~: link to GitHub repositories, issues and pull-requests.
+
+  #+INCLUDE: "lisp/ol-github.el" src emacs-lisp
+
+- ~ol-gitlab.el~: link to GitLab repositories, issues and merge-requests.
+
+  #+INCLUDE: "lisp/ol-gitlab.el" src emacs-lisp
+
+More to comes…
 
 * Local Variables
 :PROPERTIES:

@@ -193,24 +193,25 @@
   :config
   (setq org-link-abbrev-alist '(("att" . org-attach-expand-link))))
 
+;; my personal
+(use-package ol-github
+  :after (org))
+(use-package ol-gitlab
+  :after (org))
+
+;; built-in org-mode
 (use-package ol-eshell
   :after (org))
-
 (use-package ol-git-link
   :after (org))
-
 (use-package ol-gnus
   :after (org))
-
 (use-package ol-irc
   :after (org))
-
 (use-package ol-info
   :after (org))
-
 (use-package ol-man
   :after (org))
-
 (use-package ol-notmuch
   :after (org))
 
@@ -477,33 +478,6 @@ like this : [[pt:REGEXP:FOLDER]]"
         (setq folder (nth 1 expressions))
         (ripgrep-regexp exp (file-name-as-directory (expand-file-name folder)))))
     )
-
-  (org-link-set-parameters "gh"
-                           :follow #'vde/follow-gh-link
-                           :export #'vde/org-gh-export
-                           :face '(:foreground "DimGrey" :underline t))
-  (defun vde/org-gh-export (link description format)
-    "Export a github page link from Org files."
-    (let ((path (vde/gh-get-url link))
-          (desc (or description link)))
-      (cond
-       ((eq format 'html) (format "<a hrefl=\"_blank\" href=\"%s\">%s</a>" path desc))
-       ((eq format 'latex) (format "\\href{%s}{%s}" path desc))
-       ((eq format 'texinfo) (format "@uref{%s,%s}" path desc))
-       ((eq format 'ascii) (format "%s (%s)" desc path))
-       (t path))))
-  (defun vde/follow-gh-link (issue)
-    "Browse github issue/pr specified"
-    (browse-url (vde/gh-get-url issue)))
-
-  (defun vde/gh-get-url (path)
-    "Translate org-mode link `gh:foo/bar#1' to github url."
-    (setq expressions (split-string path "#"))
-    (setq project (nth 0 expressions))
-    (setq issue (nth 1 expressions))
-    (if issue
-        (format "https://github.com/%s/issues/%s" project issue)
-      (format "https://github.com/%s" project)))
 
   (org-link-set-parameters
    "org"
