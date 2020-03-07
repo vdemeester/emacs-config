@@ -4069,7 +4069,9 @@ like this : [[pt:REGEXP:FOLDER]]"
     (setq expressions (split-string path "#"))
     (setq project (nth 0 expressions))
     (setq issue (nth 1 expressions))
-    (format "https://github.com/%s/issues/%s" project issue))
+    (if issue
+        (format "https://github.com/%s/issues/%s" project issue)
+      (format "https://github.com/%s" project)))
 
   (org-link-set-parameters
    "org"

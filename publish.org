@@ -168,7 +168,9 @@ They are define in my [[https://github.com/vdemeester/emacs-config][emacs config
     (setq expressions (split-string path "#"))
     (setq project (nth 0 expressions))
     (setq issue (nth 1 expressions))
-    (format "https://github.com/%s/issues/%s" project issue))
+    (if issue
+        (format "https://github.com/%s/issues/%s" project issue)
+      (format "https://github.com/%s" project)))
 
   (org-link-set-parameters
    "org"
