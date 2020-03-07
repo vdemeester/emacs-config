@@ -162,6 +162,20 @@
          ("<f12>" . org-agenda)
          ("C-c o r a" . org-agenda-refile)))
 
+(use-package org-gcal
+  :after (org)
+  :config
+  (require 'netrc)
+
+  (defun get-authinfo (host port)
+    (let* ((netrc (netrc-parse (expand-file-name "~/.authinfo.gpg")))
+           (hostentry (netrc-machine netrc host port port)))
+      (when hostentry (netrc-get hostentry "password"))))
+
+  (setq org-gcal-client-id "959564825992-kvc7ofe9640cpc8ibgjqqgpi15e89nkn.apps.googleusercontent.com"
+        org-gcal-client-secret (get-authinfo "gcal.api" "9999")
+        org-gcal-file-alist '(("vdemeest@redhat.com" . "~/desktop/org/projects/schedule.org"))))
+
 (use-package org-habit
   :after (org)
   :config
