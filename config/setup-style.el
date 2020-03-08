@@ -66,15 +66,9 @@
 ;;; Theme
 (setq custom-safe-themes t)    ; Treat themes as safe
 
-(if (string= (system-name) "wakasu")
-    (use-package shortbrain-light-theme
-      :config
-      (load-theme 'shortbrain-light))
-  (use-package doom-themes
-    :config
-    (load-theme 'doom-one-light t)
-    (doom-themes-visual-bell-config)
-    (doom-themes-org-config)))
+(use-package shortbrain-light-theme
+  :config
+  (load-theme 'shortbrain-light))
 
 (use-package solaire-mode
   :config
