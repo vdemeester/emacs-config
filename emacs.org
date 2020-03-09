@@ -2341,6 +2341,10 @@ repository, then the corresponding root is used instead."
   (lsp-eldoc-render-all nil)
   (lsp-enable-snippet nil)
   (lsp-enable-links nil)
+  (lsp-enable-folding nil)
+  (lsp-enable-completion-at-point nil) ;; company-lsp takes care of it ?
+  (lsp-diagnostic-package :none)
+  (lsp-restart 'auto-restart)
   (lsp-ui-sideline-enable nil)
   (lsp-ui-sideline-show-hover nil)
   (lsp-ui-sideline-delay 2.0)
@@ -2349,8 +2353,22 @@ repository, then the corresponding root is used instead."
   (lsp-ui-doc-max-height 15)
   (lsp-document-highlight-delay 2.0)
   (lsp-auto-guess-root t)
-  (lsp-ui-flycheck-enable t)
+  (lsp-ui-flycheck-enable nil)
+  ;; @see https://github.com/emacs-lsp/lsp-mode/pull/1498
+  ;; and read code related to auto configure
+  ;; require clients could be slow and that's only thing auto configure
+  ;; could do for me. Manual loading of client is faster.
+  (lsp-auto-configure nil)
   (lsp-prefer-flymake nil) ; Use flycheck instead of flymake
+  :config
+  ;; don't ping LSP lanaguage server too frequently
+  (defvar lsp-on-touch-time 0)
+  (defadvice lsp-on-change (around lsp-on-change-hack activate)
+    ;; don't run `lsp-on-change' too frequently
+    (when (> (- (float-time (current-time))
+                lsp-on-touch-time) 30) ;; 30 seconds
+      (setq lsp-on-touch-time (float-time (current-time)))
+      ad-do-it))))
   :hook ((go-mode . lsp-deferred)
          (python-mode . lsp-deferred)))
 
