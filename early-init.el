@@ -15,7 +15,7 @@
 
 (add-hook 'after-init-hook
           `(lambda ()
-             (setq gc-cons-threshold 16777216 ; 16mb
+             (setq gc-cons-threshold 67108864 ; 64mb
                    gc-cons-percentage 0.1
                    file-name-handler-alist file-name-handler-alist-original)
              (garbage-collect)) t)
