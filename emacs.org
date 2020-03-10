@@ -427,6 +427,18 @@ version out of the load path.
        load-path))
 #+end_src
 
+*** Pinentry
+:PROPERTIES:
+:CUSTOM_ID: h:1f016a1a-f4ef-4ef0-be01-1fd68ca0d951
+:END:
+
+#+begin_src emacs-lisp :tangle init.el
+(use-package pinentry
+  :config
+  (setenv "INSIDE_EMACS" (format "%s,comint" emacs-version))
+  (pinentry-start))
+#+end_src
+
 *** Loading configuration files
 :PROPERTIES:
 :CUSTOM_ID: h:d6aebc56-aadb-4b01-8404-bb922d12f8a8

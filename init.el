@@ -100,6 +100,11 @@
          (string-match-p "org$" x))
        load-path))
 
+(use-package pinentry
+  :config
+  (setenv "INSIDE_EMACS" (format "%s,comint" emacs-version))
+  (pinentry-start))
+
 (defun vde/el-load-dir (dir)
   "Load el files from the given folder"
   (let ((files (directory-files dir nil "\.el$")))
@@ -137,7 +142,7 @@
   "Do we have git?")
 
 (defvar *sys/full*
-  (member (vde/short-hostname) '("naruhodo")) ; "wakasu" <- put wakasu back in
+  (member (vde/short-hostname) '("wakasu")) ; "naruhodo" <- put naruhodo back in
   "Is it a full system ?")
 (defvar *sys/light*
   (not *sys/full*)
@@ -148,11 +153,6 @@
 
 (if (file-exists-p (downcase (concat user-emacs-directory "/hosts/" (vde/short-hostname) ".el")))
     (load-file (downcase (concat user-emacs-directory "/hosts/" (vde/short-hostname) ".el"))))
-
-(use-package pinentry
-  :config
-  (setenv "INSIDE_EMACS" (format "%s,comint" emacs-version))
-  (pinentry-start))
 
 (let ((elapsed (float-time (time-subtract (current-time)
                                           emacs-start-time))))
