@@ -316,7 +316,7 @@ repository, then the corresponding root is used instead."
     (when (> (- (float-time (current-time))
                 lsp-on-touch-time) 30) ;; 30 seconds
       (setq lsp-on-touch-time (float-time (current-time)))
-      ad-do-it))))
+      ad-do-it))
   :hook ((go-mode . lsp-deferred)
          (python-mode . lsp-deferred)))
 
