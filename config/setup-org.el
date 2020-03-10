@@ -71,7 +71,9 @@
         org-blank-before-new-entry '((heading . t)
                                      (plain-list-item . nil))
         org-insert-heading-respect-content t
-        org-yank-adjusted-subtrees t)
+        org-yank-adjusted-subtrees t
+        org-image-actual-width nil
+        org-startup-with-inline-images nil)
   (setcar (nthcdr 4 org-emphasis-regexp-components) 10)
   :bind (("C-c o l" . org-store-link)
          ("C-c o r r" . org-refile))
@@ -429,12 +431,8 @@ Switch projects and subprojects from STARTED back to TODO"
      ;;(ledger . t)
      (latex . t)
      (python . t)
-     ;;(rust . t)
      (shell . t)
-     ;;(typescript . t)
      ))
-
-  (setq org-latex-listings t)
 
   (setq org-list-demote-modify-bullet
         '(("+" . "-") ("-" . "+")))
