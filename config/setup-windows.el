@@ -31,22 +31,6 @@
    ;; The function does not expect arguments
    (t (funcall func))))
 
-(defun vde/restore-window-configuration (config)
-  "Kill current buffer and restore the window configuration in CONFIG."
-  (interactive)
-  (kill-this-buffer)
-  (set-window-configuration config))
-
-(defun vde/pop-window-configuration ()
-  "Restore the previous window configuration and clear current window."
-  (interactive)
-  (let ((config (pop vde/saved-window-configuration)))
-    (if config
-        (vde/restore-window-configuration config)
-      (if (> (length (window-list)) 1)
-          (delete-window)
-        (bury-buffer)))))
-
 (use-package eyebrowse                  ; Easy workspaces creation and switching
   :init (eyebrowse-mode t)
   :config

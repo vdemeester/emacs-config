@@ -9,20 +9,7 @@
                ("<tab>" . completion-at-point)))
   :config
   (unbind-key "C-c C-l" shell-mode-map)
-  (bind-key "C-c C-l" #'counsel-shell-history shell-mode-map)
-
-  (defun vde/comint-delchar-or-eof-or-kill-buffer (arg)
-    "Restore window configuration if process is dead, otherwise delete ARG."
-    (interactive "p")
-    (if (null (get-buffer-process (current-buffer)))
-        (vde/pop-window-configuration)
-      (comint-delchar-or-maybe-eof arg)))
-
-  (add-hook 'shell-mode-hook
-            (lambda ()
-              (bind-key "C-d" #'vde/comint-delchar-or-eof-or-kill-buffer
-                        shell-mode-map)))
-  )
+  (bind-key "C-c C-l" #'counsel-shell-history shell-mode-map))
 
 (use-package eshell                     ; Emacs command shell
   :bind* ("C-x m t" . eshell-here)

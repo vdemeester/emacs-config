@@ -1,5 +1,11 @@
-#+SETUPFILE: ./_setup.org
 #+TITLE: vdemeester's .emacs.d
+#+AUTHOR: Vincent Demeester
+#+EMAIL: vincent@sbr.pm
+#+EXPORT_EXCLUDE_TAGS: noexport
+#+CREATOR: Emacs 27.0.90 (Org mode 9.3)
+#+LANGUAGE: en
+#+HTML_HEAD: <link rel="stylesheet" type="text/css" href="./notes.css"/>
+#+OPTIONS: html-style:nil
 
 #+BEGIN_QUOTE
 My emacs setup is tested to work only with emacs 26.1 and newer versions. If you are on

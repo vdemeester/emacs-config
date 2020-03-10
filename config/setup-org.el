@@ -86,7 +86,10 @@
     (setq fill-column 90)
     (auto-revert-mode)
     (auto-fill-mode)
-    (org-indent-mode)))
+    (org-indent-mode)
+    (add-hook 'after-save-hook #'save-and-update-includes nil 'make-it-local)))
+
+;; (add-hook 'before-save-hook #'save-and-update-includes)
 
 (use-package org-id
   :after (org)
@@ -304,12 +307,8 @@
 (use-package ox-hugo
   :after ox
   :commands (org-hugo-slug)
-  :bind (:map vde-mode-map
-              ("C-c G" . org-hugo-export-wim-to-md))
   :config
   (use-package ox-hugo-auto-export))
-
-;;; -*- lexical-binding: t; -*-
 
 (use-package org
   :defer t

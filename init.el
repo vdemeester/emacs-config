@@ -1,4 +1,5 @@
-;;; -*- lexical-binding: t; -*-
+;;; init.el --- -*- lexical-binding: t -*-
+;; +CheckVer
 (let ((minver 26))
   (unless (>= emacs-major-version minver)
     (error "Your Emacs is too old -- this configuration requires v%s or higher" minver)))
@@ -9,24 +10,33 @@
 (unless (>= emacs-major-version 27)
   (message "Early init: Emacs Version < 27.0")
   (load (expand-file-name "early-init.el" user-emacs-directory)))
+;; -CheckVer
 
+;; Inhibit
 (setq inhibit-default-init t)           ; Disable the site default settings
 
 (setq inhibit-startup-message t
       inhibit-startup-screen t)
+;; -Inhibit
 
+;; Confirm
 (setq confirm-kill-emacs #'y-or-n-p)
+;; -Confirm
 
+;; DefaultMode
 (setq initial-major-mode 'fundamental-mode
       initial-scratch-message nil)
+;; -DefaultMode
 
+;; Unicode
 (prefer-coding-system 'utf-8)
 (set-default-coding-systems 'utf-8)
 (set-language-environment 'utf-8)
 (set-selection-coding-system 'utf-8)
 (set-terminal-coding-system 'utf-8)
+;; -Unicode
 
-;;; package setup
+;;; UsePackageSetup
 (require 'package)
 
 (setq package-archives
@@ -76,7 +86,9 @@
 
 (eval-when-compile
   (require 'use-package))
+;; -UsePackageSetup
 
+;; CustomFile
 (defconst vde/custom-file (locate-user-emacs-file "custom.el")
   "File used to store settings from Customization UI.")
 
@@ -92,19 +104,25 @@
     (write-region "" nil custom-file))
 
   (load vde/custom-file 'no-error 'no-message))
+;; -CustomFile
 
+;; NoBuiltinOrg
 (require 'cl-seq)
 (setq load-path
       (cl-remove-if
        (lambda (x)
          (string-match-p "org$" x))
        load-path))
+;; -NoBuiltinOrg
 
+;; PinEntry
 (use-package pinentry
   :config
   (setenv "INSIDE_EMACS" (format "%s,comint" emacs-version))
   (pinentry-start))
+;; -PinEntry
 
+;; LoadCfgFunc
 (defun vde/el-load-dir (dir)
   "Load el files from the given folder"
   (let ((files (directory-files dir nil "\.el$")))
@@ -115,7 +133,9 @@
   "Return hostname in short (aka wakasu.local -> wakasu)"
   (string-match "[0-9A-Za-z-]+" system-name)
   (substring system-name (match-beginning 0) (match-end 0)))
+;; -LoadCfgFunc
 
+;; CfgConstant
 (defconst *sys/gui*
   (display-graphic-p)
   "Are we running on a GUI Emacs ?")
@@ -147,13 +167,20 @@
 (defvar *sys/light*
   (not *sys/full*)
   "Is it a light system ?")
+;; -CfgConstant
 
+;; CfgLoad
 (add-to-list 'load-path (concat user-emacs-directory "lisp/"))
+(require 'init-func)
 (vde/el-load-dir (concat user-emacs-directory "/config/"))
+;; -CfgLoad
 
+;; CfgHostLoad
 (if (file-exists-p (downcase (concat user-emacs-directory "/hosts/" (vde/short-hostname) ".el")))
     (load-file (downcase (concat user-emacs-directory "/hosts/" (vde/short-hostname) ".el"))))
+;; -CfgHostLoad
 
+;; LastInit
 (let ((elapsed (float-time (time-subtract (current-time)
                                           emacs-start-time))))
   (message "Loading %s...done (%.3fs)" load-file-name elapsed))
@@ -165,3 +192,4 @@
                      (time-subtract (current-time) emacs-start-time))))
                (message "Loading %s...done (%.3fs) [after-init]"
                         ,load-file-name elapsed))) t)
+;; -LastInit

@@ -1,6 +1,4 @@
 (use-package multiple-cursor
-  :bind (:map vde-mode-map
-              ("C-S-c C-S-c" . mc/edit-lines))
   :bind (:map region-bindings-mode-map
               ("a" . mc/mark-all-like-this)
               ("p" . mc/mark-previous-like-this)
