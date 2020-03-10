@@ -86,8 +86,7 @@
     (setq fill-column 90)
     (auto-revert-mode)
     (auto-fill-mode)
-    (org-indent-mode)
-    (smartparens-mode)))
+    (org-indent-mode)))
 
 (use-package org-id
   :after (org)

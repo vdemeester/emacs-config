@@ -923,10 +923,7 @@ I've set-up an =org-mode= hook to add few modes to the default setup.
 - If the major mod is not =org-agenda-mode= (a sub-mode of =org-mode=)
   + I set the =fill-column= to ~90~ (instead of the usual ~80~), and I enable =auto-fill= mode.
   + I turn on =auto-revert-mode= so that the buffer is always up-to-date.
-  + I really like =smartparens= when programming, and I find it also really useful when
-    editing notes in =org-mode=.
   + I like to have header indented, so I'm enabling =org-indent-mode=.
-  + And of course, I want =flyspell= to be enable so I quickly see my /writing/ mistakes.
 
 #+begin_src emacs-lisp
 (defun vde/org-mode-hook ()
@@ -936,8 +933,7 @@ I've set-up an =org-mode= hook to add few modes to the default setup.
     (setq fill-column 90)
     (auto-revert-mode)
     (auto-fill-mode)
-    (org-indent-mode)
-    (smartparens-mode)))
+    (org-indent-mode)))
 #+end_src
 
 Let's also use =org-id=…
