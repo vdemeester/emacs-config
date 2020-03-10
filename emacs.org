@@ -438,6 +438,22 @@ entirely sure why yet but…)
     (load-file (downcase (concat user-emacs-directory "/hosts/" (vde/short-hostname) ".el"))))
 #+end_src
 
+*** Remove built-in =org-mode=
+
+I want to make sure I am using the installed version of =orgmode= (from my org
+configuration) instead of the built-in one. To do that safely, let's remove the built-in
+version out of the load path.
+
+#+begin_src emacs-lisp :tangle init.el
+(require 'cl-seq)
+(setq load-path
+      (cl-remove-if
+       (lambda (x)
+         (string-match-p "org$" x))
+       load-path))
+#+end_src
+
+
 ** ~PATH~'s customization
 :PROPERTIES:
 :header-args: :tangle config/00-paths.el
@@ -993,6 +1009,7 @@ Let's try to get my work calendar entries in my agenda too. It is a little bit t
 #+begin_src emacs-lisp
 (use-package org-gcal
   :after (org)
+  :commands (org-gcal-fetch)
   :config
   (require 'netrc)
 
@@ -3328,6 +3345,7 @@ Number of marked items: %(length (dired-get-marked-files))
          ("C-c n w" . avy-goto-word-1)))
 
 (use-package helpful
+  :unless noninteractive
   :bind (("C-c h F" . helpful-function)
          ("C-c h C" . helpful-command)
          ("C-c h M" . helpful-macro)

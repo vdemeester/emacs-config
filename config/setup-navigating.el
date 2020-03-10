@@ -6,6 +6,7 @@
          ("C-c n w" . avy-goto-word-1)))
 
 (use-package helpful
+  :unless noninteractive
   :bind (("C-c h F" . helpful-function)
          ("C-c h C" . helpful-command)
          ("C-c h M" . helpful-macro)

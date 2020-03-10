@@ -166,6 +166,7 @@
 
 (use-package org-gcal
   :after (org)
+  :commands (org-gcal-fetch)
   :config
   (require 'netrc)
 
