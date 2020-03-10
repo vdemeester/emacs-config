@@ -1063,12 +1063,109 @@ This look as followed in the agenda.
 :CUSTOM_ID: h:b29abe71-6e9a-4ddf-8519-453170212777
 :END:
 
+The =org-capture= tool is a powerful way to quickly produce some kind of structured
+information with little interruption of your workflow. With =org-agenda=, this is one of
+the most used feature of =org-mode= (at least for me).
+
+Each template is accessed via a key. These are listed in a buffer when you call
+=org-capture=. Unique keys give direct access to their template, whereas templates that
+share a common initial key will produce a second selection list with the remaining
+options. This is very interesting when you want to group some capture template together
+(like templates related to /work/, …).
+
 #+begin_src emacs-lisp
 (use-package org-capture
   :after org
   :commands (org-capture)
-  :bind (("C-c o c" . org-capture)))
+  :config
 #+end_src
+
+Some of my capture template are big and hard to read if embedded in the =emacs-lisp=
+code. The good thing is that =org-mode= is able to load the template from files too 💃.
+
+Here is a list of my templates:
+- Default :: /I need to rework those/
+
+  #+begin_src emacs-lisp
+  (add-to-list 'org-capture-templates
+               `("t" "Task Entry" entry
+                 (file ,org-default-inbox-file)
+                 "* %?\n:PROPERTIES:\n:CREATED:%U\n:END:\n\n%i\n\nFrom: %a"
+                 :empty-lines 1))
+  (add-to-list 'org-capture-templates
+               `("r" "PR Review" entry
+                 (file ,org-default-inbox-file)
+                 "* TODO review gh:%^{issue} :review:\n:PROPERTIES:\n:CREATED:%U\n:END:\n\n%i\n%?\nFrom: %a"
+                 :empty-lines 1))
+  (add-to-list 'org-capture-templates
+               `("l" "Link" entry
+                 (file ,org-default-inbox-file)
+                 "* %a\n%U\n%?\n%i"
+                 :empty-lines 1))
+  (add-to-list 'org-capture-templates
+               '("n" "Thought or Note"  entry
+                 (file org-default-notes-file)
+                 "* %?\n\n  %i\n\n  See: %a" :empty-lines 1))
+  #+end_src
+
+- journaling :: As I use =org-mode= for my /journal/ too, I need capture entry for
+  it. I currently have two types of journal entry :
+  + standard: one title and some text
+
+    #+INCLUDE: "etc/orgmode/journal.org" src org
+
+    #+begin_src emacs-lisp
+    (add-to-list 'org-capture-templates
+                 `("j" "Journal entry" entry
+                   (file+datetree ,org-default-journal-file)
+                   (file ,(concat user-emacs-directory "/etc/orgmode/journal.org"))
+                   :empty-lines 1 :clock-in t :clock-resume t))
+    #+end_src
+
+  + worklog: related to work, to be able to say what I did, what I wanted to do, problems,
+    … during the daily
+
+    #+INCLUDE: "etc/orgmode/worklog.org" src org
+
+    #+begin_src emacs-lisp
+    (add-to-list 'org-capture-templates
+                 `("w" "Worklog (journal) entry" entry
+                   (file+datetree ,org-default-journal-file)
+                   (file ,(concat user-emacs-directory "/etc/orgmode/worklog.org"))
+                   :unnarrowed t))
+    #+end_src
+
+- weekly review :: each and every week, I am going through this item to make my review of
+  the week.
+
+  #+INCLUDE: "etc/orgmode/weekly.org" src org
+
+  #+begin_src emacs-lisp
+  (add-to-list 'org-capture-templates
+               `("e" "Weekly review" entry
+                 (file+datetree,org-default-journal-file)
+                 (file ,(concat user-emacs-directory "/etc/orgmode/weekly.org"))
+                 :clock-in t :clock-resume t :unnarrowed t))
+  #+end_src
+- blog posts ::
+  #+begin_src emacs-lisp
+  (add-to-list 'org-capture-templates
+               `("b" "Blog post"))
+  (add-to-list 'org-capture-templates
+               `("bp" "Blog post" entry
+                 (file+headline "~/src/github.com/vdemeester/blog/content-org/posts.org" "Blog Ideas")
+                 "* %?\n:PROPERTIES:\n:END:\n"))
+  (add-to-list 'org-capture-templates
+               `("bl" "Blog link post" entry
+                 (file+olp "~/src/github.com/vdemeester/blog/content-org/links.org" "Link")
+                 "* %a\n%?\n%i"))
+  #+end_src
+
+
+#+begin_src emacs-lisp
+:bind (("C-c o c" . org-capture)))
+#+end_src
+
 
 #+begin_src emacs-lisp
 (use-package org-protocol
@@ -1084,6 +1181,8 @@ This look as followed in the agenda.
 (use-package org-clock
   :after org
   :commands (org-clock-in org-clock-out org-clock-goto)
+  :config
+  (setq org-clock-clocked-in-display nil)
   :bind (("<f11>" . org-clock-goto)))
 #+end_src
 
@@ -2368,7 +2467,7 @@ repository, then the corresponding root is used instead."
     (when (> (- (float-time (current-time))
                 lsp-on-touch-time) 30) ;; 30 seconds
       (setq lsp-on-touch-time (float-time (current-time)))
-      ad-do-it))))
+      ad-do-it))
   :hook ((go-mode . lsp-deferred)
          (python-mode . lsp-deferred)))
 
@@ -3424,69 +3523,8 @@ Switch projects and subprojects from STARTED back to TODO"
         org-startup-with-inline-images t)
 
   ;; Tasks (-> inbox)
-  (add-to-list 'org-capture-templates
-               `("t" "Task Entry" entry
-                 (file ,org-default-inbox-file)
-                 "* %?\n:PROPERTIES:\n:CREATED:%U\n:END:\n\n%i\n\nFrom: %a"
-                 :empty-lines 1))
-  (add-to-list 'org-capture-templates
-               `("r" "PR Review" entry
-                 (file ,org-default-inbox-file)
-                 "* TODO review gh:%^{issue} :review:\n:PROPERTIES:\n:CREATED:%U\n:END:\n\n%i\n%?\nFrom: %a"
-                 :empty-lines 1))
-  (add-to-list 'org-capture-templates
-               `("l" "Link" entry
-                 (file ,org-default-inbox-file)
-                 "* %a\n%U\n%?\n%i"
-                 :empty-lines 1))
-  (add-to-list 'org-capture-templates
-               '("n" "Thought or Note"  entry
-                 (file org-default-notes-file)
-                 "* %?\n\n  %i\n\n  See: %a" :empty-lines 1))
 
   ;; Journal
-  (add-to-list 'org-capture-templates
-               `("j" "Journal entry" entry
-                 (file+datetree ,org-default-journal-file)
-                 "* %^{title}\n%U\n%?\n%i\nFrom: %a"
-                 :empty-lines 1 :clock-in t :clock-resume t))
-  (add-to-list 'org-capture-templates
-               `("w" "Worklog (journal) entry" entry
-                 (file+datetree ,org-default-journal-file)
-                 "* worklog :@work:log:\n%U\n** Today\n%?\n** Next (later today, tomorrow)\n"
-                 :unnarrowed t))
-  (add-to-list 'org-capture-templates
-               `("e" "Weekly review" entry
-                 (file+datetree,org-default-journal-file)
-                 "* weekly review :weekly:review:\n%U
-
-- [ ] review [[file:../projects/inbox.org][~inbox.org~]]
-  Clean the file by either
-  - refiling it to ~incubate.org~
-  - removing it / archiving it
-- [ ] review [[file:../projects/incubate.org][~incubate.org~]]
-  - Is something worth becoming a project
-  - Is something not worth thinking about anymore ?
-- [ ] empty mail inbox (and create task if needed)
-  - [ ] work
-  - [ ] perso
-- [ ] Review next week ~F12 n w f~
-- [ ] review ~org-mode~ workflow
-  - *what works, what doesn't ?*
-  - *is there task / stuck projects ?*
-  - *enhancement possible ?*
-- [ ] export previous agenda (somewhere)"
-                 :clock-in t :clock-resume t :unnarrowed t))
-
-  ;; Olds, most likely to remove
-  (add-to-list 'org-capture-templates
-               `("b" "Blog post" entry
-                 (file+headline "~/src/github.com/vdemeester/blog/content-org/posts.org" "Blog Ideas")
-                 "* %?\n:PROPERTIES:\n:END:\n"))
-  (add-to-list 'org-capture-templates
-               `("bl" "Blog link post" entry
-                 (file+olp "~/src/github.com/vdemeester/blog/content-org/links.org" "Link")
-                 "* %a\n%?\n%i"))
 
   (setq org-ditaa-jar-path "/home/vincent/.nix-profile/lib/ditaa.jar") ;; FIXME(vdemeester) remove /home/vincent
   ;; org-babel

@@ -193,7 +193,58 @@
 (use-package org-capture
   :after org
   :commands (org-capture)
-  :bind (("C-c o c" . org-capture)))
+  :config
+
+(add-to-list 'org-capture-templates
+             `("t" "Task Entry" entry
+               (file ,org-default-inbox-file)
+               "* %?\n:PROPERTIES:\n:CREATED:%U\n:END:\n\n%i\n\nFrom: %a"
+               :empty-lines 1))
+(add-to-list 'org-capture-templates
+             `("r" "PR Review" entry
+               (file ,org-default-inbox-file)
+               "* TODO review gh:%^{issue} :review:\n:PROPERTIES:\n:CREATED:%U\n:END:\n\n%i\n%?\nFrom: %a"
+               :empty-lines 1))
+(add-to-list 'org-capture-templates
+             `("l" "Link" entry
+               (file ,org-default-inbox-file)
+               "* %a\n%U\n%?\n%i"
+               :empty-lines 1))
+(add-to-list 'org-capture-templates
+             '("n" "Thought or Note"  entry
+               (file org-default-notes-file)
+               "* %?\n\n  %i\n\n  See: %a" :empty-lines 1))
+
+(add-to-list 'org-capture-templates
+             `("j" "Journal entry" entry
+               (file+datetree ,org-default-journal-file)
+               (file ,(concat user-emacs-directory "/etc/orgmode/journal.org"))
+               :empty-lines 1 :clock-in t :clock-resume t))
+
+(add-to-list 'org-capture-templates
+             `("w" "Worklog (journal) entry" entry
+               (file+datetree ,org-default-journal-file)
+               (file ,(concat user-emacs-directory "/etc/orgmode/worklog.org"))
+               :unnarrowed t))
+
+(add-to-list 'org-capture-templates
+             `("e" "Weekly review" entry
+               (file+datetree,org-default-journal-file)
+               (file ,(concat user-emacs-directory "/etc/orgmode/weekly.org"))
+               :clock-in t :clock-resume t :unnarrowed t))
+
+(add-to-list 'org-capture-templates
+             `("b" "Blog post"))
+(add-to-list 'org-capture-templates
+             `("bp" "Blog post" entry
+               (file+headline "~/src/github.com/vdemeester/blog/content-org/posts.org" "Blog Ideas")
+               "* %?\n:PROPERTIES:\n:END:\n"))
+(add-to-list 'org-capture-templates
+             `("bl" "Blog link post" entry
+               (file+olp "~/src/github.com/vdemeester/blog/content-org/links.org" "Link")
+               "* %a\n%?\n%i"))
+
+:bind (("C-c o c" . org-capture)))
 
 (use-package org-protocol
   :after org)
@@ -201,6 +252,8 @@
 (use-package org-clock
   :after org
   :commands (org-clock-in org-clock-out org-clock-goto)
+  :config
+  (setq org-clock-clocked-in-display nil)
   :bind (("<f11>" . org-clock-goto)))
 
 (use-package org-attach
@@ -358,69 +411,8 @@ Switch projects and subprojects from STARTED back to TODO"
         org-startup-with-inline-images t)
 
   ;; Tasks (-> inbox)
-  (add-to-list 'org-capture-templates
-               `("t" "Task Entry" entry
-                 (file ,org-default-inbox-file)
-                 "* %?\n:PROPERTIES:\n:CREATED:%U\n:END:\n\n%i\n\nFrom: %a"
-                 :empty-lines 1))
-  (add-to-list 'org-capture-templates
-               `("r" "PR Review" entry
-                 (file ,org-default-inbox-file)
-                 "* TODO review gh:%^{issue} :review:\n:PROPERTIES:\n:CREATED:%U\n:END:\n\n%i\n%?\nFrom: %a"
-                 :empty-lines 1))
-  (add-to-list 'org-capture-templates
-               `("l" "Link" entry
-                 (file ,org-default-inbox-file)
-                 "* %a\n%U\n%?\n%i"
-                 :empty-lines 1))
-  (add-to-list 'org-capture-templates
-               '("n" "Thought or Note"  entry
-                 (file org-default-notes-file)
-                 "* %?\n\n  %i\n\n  See: %a" :empty-lines 1))
 
   ;; Journal
-  (add-to-list 'org-capture-templates
-               `("j" "Journal entry" entry
-                 (file+datetree ,org-default-journal-file)
-                 "* %^{title}\n%U\n%?\n%i\nFrom: %a"
-                 :empty-lines 1 :clock-in t :clock-resume t))
-  (add-to-list 'org-capture-templates
-               `("w" "Worklog (journal) entry" entry
-                 (file+datetree ,org-default-journal-file)
-                 "* worklog :@work:log:\n%U\n** Today\n%?\n** Next (later today, tomorrow)\n"
-                 :unnarrowed t))
-  (add-to-list 'org-capture-templates
-               `("e" "Weekly review" entry
-                 (file+datetree,org-default-journal-file)
-                 "* weekly review :weekly:review:\n%U
-
-- [ ] review [[file:../projects/inbox.org][~inbox.org~]]
-  Clean the file by either
-  - refiling it to ~incubate.org~
-  - removing it / archiving it
-- [ ] review [[file:../projects/incubate.org][~incubate.org~]]
-  - Is something worth becoming a project
-  - Is something not worth thinking about anymore ?
-- [ ] empty mail inbox (and create task if needed)
-  - [ ] work
-  - [ ] perso
-- [ ] Review next week ~F12 n w f~
-- [ ] review ~org-mode~ workflow
-  - *what works, what doesn't ?*
-  - *is there task / stuck projects ?*
-  - *enhancement possible ?*
-- [ ] export previous agenda (somewhere)"
-                 :clock-in t :clock-resume t :unnarrowed t))
-
-  ;; Olds, most likely to remove
-  (add-to-list 'org-capture-templates
-               `("b" "Blog post" entry
-                 (file+headline "~/src/github.com/vdemeester/blog/content-org/posts.org" "Blog Ideas")
-                 "* %?\n:PROPERTIES:\n:END:\n"))
-  (add-to-list 'org-capture-templates
-               `("bl" "Blog link post" entry
-                 (file+olp "~/src/github.com/vdemeester/blog/content-org/links.org" "Link")
-                 "* %a\n%?\n%i"))
 
   (setq org-ditaa-jar-path "/home/vincent/.nix-profile/lib/ditaa.jar") ;; FIXME(vdemeester) remove /home/vincent
   ;; org-babel
