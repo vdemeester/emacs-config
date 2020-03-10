@@ -55,62 +55,6 @@ Otherwise, use `counsel-projectile-switch-project'."
       (ivy-mode 1))
     ))
 
-(use-package ivy-hydra                  ; Additional bindings for Ivy
-  :after ivy)
-
-(use-package ivy-rich
-  :after ivy
-  :custom
-  (ivy-virtual-abbreviate 'full
-                          ivy-rich-switch-buffer-align-virtual-buffer t
-                          ivy-rich-path-style 'abbrev)
-  :config (ivy-rich-mode 1))
-
-(use-package prescient
-  :custom
-  (prescient-history-length 50)
-  ;; (prescient-save-file "~/.emacs.d/prescient-items")
-  (prescient-filter-method '(fuzzy initialism regexp))
-  :config
-  (prescient-persist-mode 1))
-
-;;; Default rg arguments
-;; https://github.com/BurntSushi/ripgrep
-(defconst vde/rg-arguments
-  `("--no-ignore-vcs"                   ;Ignore files/dirs ONLY from `.ignore'
-    "--line-number"                     ;Line numbers
-    "--smart-case"
-    "--max-columns" "150"      ;Emacs doesn't handle long line lengths very well
-    "--ignore-file" ,(expand-file-name ".ignore" (getenv "HOME")))
-  "Default rg arguments used in the functions in `counsel' and `projectile' packages.")
-
-(use-package ivy-prescient
-  :after (prescient ivy)
-  :custom
-  (ivy-prescient-sort-commands
-   '(:not swiper ivy-switch-buffer counsel-switch-buffer))
-  (ivy-prescient-retain-classic-highlighting t)
-  (ivy-prescient-enable-filtering t)
-  (ivy-prescient-enable-sorting t)
-  :config
-  (defun prot/ivy-prescient-filters (str)
-    "Specify an exception for `prescient-filter-method'.
-
-This new rule can be used to tailor the results of individual
-Ivy-powered commands, using `ivy-prescient-re-builder'."
-    (let ((prescient-filter-method '(literal regexp)))
-      (ivy-prescient-re-builder str)))
-
-  (setq ivy-re-builders-alist
-        '((counsel-rg . prot/ivy-prescient-filters)
-          (counsel-grep . prot/ivy-prescient-filters)
-          (counsel-yank-pop . prot/ivy-prescient-filters)
-          (swiper . prot/ivy-prescient-filters)
-          (swiper-isearch . prot/ivy-prescient-filters)
-          (swiper-all . prot/ivy-prescient-filters)
-          (t . ivy-prescient-re-builder)))
-  (ivy-prescient-mode 1))
-
 (use-package counsel
   :after ivy
   :custom
@@ -235,6 +179,7 @@ repository, then the corresponding root is used instead."
                                         ;https://github.com/abo-abo/swiper/issues/427
                   ))))
 
+
 (use-package company
   :commands global-company-mode
   :init
@@ -269,115 +214,174 @@ repository, then the corresponding root is used instead."
           company-etags
           company-keywords)))
 
-(use-package company-prescient
-  :ensure company
-  :after (company prescient)
-  :config
-  (company-prescient-mode 1))
+;;; Default rg arguments
+;; https://github.com/BurntSushi/ripgrep
+(defconst vde/rg-arguments
+  `("--no-ignore-vcs"                   ;Ignore files/dirs ONLY from `.ignore'
+    "--line-number"                     ;Line numbers
+    "--smart-case"
+    "--max-columns" "150"      ;Emacs doesn't handle long line lengths very well
+    "--ignore-file" ,(expand-file-name ".ignore" (getenv "HOME")))
+  "Default rg arguments used in the functions in `counsel' and `projectile' packages.")
 
-(use-package company-emoji
-  :ensure company
-  :config
-  (add-to-list 'company-backends 'company-emoji))
 
-(use-package lsp-mode
-  :commands (lsp lsp-deferred)
-  :custom
-  (lsp-enable-file-watchers nil)
-  (lsp-gopls-staticcheck t)
-  (lsp-gopls-complete-unimported t)
-  (lsp-eldoc-render-all nil)
-  (lsp-enable-snippet nil)
-  (lsp-enable-links nil)
-  (lsp-enable-folding nil)
-  (lsp-enable-completion-at-point nil) ;; company-lsp takes care of it ?
-  (lsp-diagnostic-package :none)
-  (lsp-restart 'auto-restart)
-  (lsp-ui-sideline-enable nil)
-  (lsp-ui-sideline-show-hover nil)
-  (lsp-ui-sideline-delay 2.0)
-  (lsp-ui-doc-enable nil)
-  (lsp-ui-doc-max-width 30)
-  (lsp-ui-doc-max-height 15)
-  (lsp-document-highlight-delay 2.0)
-  (lsp-auto-guess-root t)
-  (lsp-ui-flycheck-enable nil)
-  ;; @see https://github.com/emacs-lsp/lsp-mode/pull/1498
-  ;; and read code related to auto configure
-  ;; require clients could be slow and that's only thing auto configure
-  ;; could do for me. Manual loading of client is faster.
-  (lsp-auto-configure nil)
-  (lsp-prefer-flymake nil) ; Use flycheck instead of flymake
-  :config
-  ;; don't ping LSP lanaguage server too frequently
-  (defvar lsp-on-touch-time 0)
-  (defadvice lsp-on-change (around lsp-on-change-hack activate)
-    ;; don't run `lsp-on-change' too frequently
-    (when (> (- (float-time (current-time))
-                lsp-on-touch-time) 30) ;; 30 seconds
-      (setq lsp-on-touch-time (float-time (current-time)))
-      ad-do-it))
-  :hook ((go-mode . lsp-deferred)
-         (python-mode . lsp-deferred)))
+(if *sys/full*
+    (progn
+      (use-package ivy-rich
+        :after ivy
+        :custom
+        (ivy-virtual-abbreviate 'full
+                                ivy-rich-switch-buffer-align-virtual-buffer t
+                                ivy-rich-path-style 'abbrev)
+        :config (ivy-rich-mode 1))
 
-;; lsp-ui: This contains all the higher level UI modules of lsp-mode, like flycheck support and code lenses.
-;; https://github.com/emacs-lsp/lsp-ui
-(use-package lsp-ui
-  :after lsp-mode
-  ;;:hook ((lsp-mode . lsp-ui-mode)
-  ;;       (lsp-ui-mode . lsp-ui-peek-mode))
-  :config
-  (define-key lsp-ui-mode-map [remap xref-find-definitions] #'lsp-ui-peek-find-definitions)
-  (define-key lsp-ui-mode-map [remap xref-find-references] #'lsp-ui-peek-find-references))
+      (use-package prescient
+        :custom
+        (prescient-history-length 50)
+        ;; (prescient-save-file "~/.emacs.d/prescient-items")
+        (prescient-filter-method '(fuzzy initialism regexp))
+        :config
+        (prescient-persist-mode 1))
 
-;;Set up before-save hooks to format buffer and add/delete imports.
-;;Make sure you don't have other gofmt/goimports hooks enabled.
-(defun lsp-go-install-save-hooks ()
-  (add-hook 'before-save-hook #'lsp-format-buffer t t)
-  (add-hook 'before-save-hook #'lsp-organize-imports t t))
-(add-hook 'go-mode-hook #'lsp-go-install-save-hooks)
 
-(with-eval-after-load "company"
-  (use-package company-lsp
-    :after lsp-mode
-    :config
-    (push 'company-lsp company-backends)))
+      (use-package ivy-prescient
+        :after (prescient ivy)
+        :custom
+        (ivy-prescient-sort-commands
+         '(:not swiper ivy-switch-buffer counsel-switch-buffer))
+        (ivy-prescient-retain-classic-highlighting t)
+        (ivy-prescient-enable-filtering t)
+        (ivy-prescient-enable-sorting t)
+        :config
+        (defun prot/ivy-prescient-filters (str)
+          "Specify an exception for `prescient-filter-method'.
 
-(with-eval-after-load "projectile"
-  (defun my-set-projectile-root ()
-    (when lsp--cur-workspace
-      (setq projectile-project-root (lsp--workspace-root lsp--cur-workspace))))
-  (add-hook 'lsp-before-open-hook #'my-set-projectile-root))
+This new rule can be used to tailor the results of individual
+Ivy-powered commands, using `ivy-prescient-re-builder'."
+          (let ((prescient-filter-method '(literal regexp)))
+            (ivy-prescient-re-builder str)))
 
-(use-package dap-mode
-  :after lsp-mode
-  :bind (:map dap-mode-map
-              ([f9] . dap-debug)
-              ;; ([f9] . dap-continue)
-              ;; ([S-f9] . dap-disconnect)
-              ;; ([f10] . dap-next)
-              ;; ([f11] . dap-step-in)
-              ;; ([S-f11] . dap-step-out)
-              ([C-f9] . dap-hide/show-ui))
-  :hook (dap-stopped-hook . (lambda (arg) (call-interactively #'dap-hydra)))
-  :config
-  ;; FIXME: Create nice solution instead of a hack
-  (defvar dap-hide/show-ui-hidden? t)
-  (defun dap-hide/show-ui ()
-    "Hide/show dap ui. FIXME"
-    (interactive)
-    (if dap-hide/show-ui-hidden?
-        (progn
-          (setq dap-hide/show-ui-hidden? nil)
-          (dap-ui-locals)
-          (dap-ui-repl))
-      (dolist (buf '("*dap-ui-inspect*" "*dap-ui-locals*" "*dap-ui-repl*" "*dap-ui-sessions*"))
-        (when (get-buffer buf)
-          (kill-buffer buf)))
-      (setq dap-hide/show-ui-hidden? t)))
+        (setq ivy-re-builders-alist
+              '((counsel-rg . prot/ivy-prescient-filters)
+                (counsel-grep . prot/ivy-prescient-filters)
+                (counsel-yank-pop . prot/ivy-prescient-filters)
+                (swiper . prot/ivy-prescient-filters)
+                (swiper-isearch . prot/ivy-prescient-filters)
+                (swiper-all . prot/ivy-prescient-filters)
+                (t . ivy-prescient-re-builder)))
+        (ivy-prescient-mode 1))
 
-  (dap-mode)
-  (dap-ui-mode)
-  (dap-tooltip-mode))
+      (use-package company-prescient
+        :ensure company
+        :after (company prescient)
+        :config
+        (company-prescient-mode 1))
+
+      (use-package company-emoji
+        :ensure company
+        :config
+        (add-to-list 'company-backends 'company-emoji))
+
+      (use-package lsp-mode
+        :commands (lsp lsp-deferred)
+        :custom
+        (lsp-enable-file-watchers nil)
+        (lsp-gopls-staticcheck t)
+        (lsp-gopls-complete-unimported t)
+        (lsp-eldoc-render-all nil)
+        (lsp-enable-snippet nil)
+        (lsp-enable-links nil)
+        (lsp-enable-folding nil)
+        (lsp-enable-completion-at-point nil) ;; company-lsp takes care of it ?
+        (lsp-diagnostic-package :none)
+        (lsp-restart 'auto-restart)
+        (lsp-ui-sideline-enable nil)
+        (lsp-ui-sideline-show-hover nil)
+        (lsp-ui-sideline-delay 2.0)
+        (lsp-ui-doc-enable nil)
+        (lsp-ui-doc-max-width 30)
+        (lsp-ui-doc-max-height 15)
+        (lsp-document-highlight-delay 2.0)
+        (lsp-auto-guess-root t)
+        (lsp-ui-flycheck-enable nil)
+        ;; @see https://github.com/emacs-lsp/lsp-mode/pull/1498
+        ;; and read code related to auto configure
+        ;; require clients could be slow and that's only thing auto configure
+        ;; could do for me. Manual loading of client is faster.
+        (lsp-auto-configure nil)
+        (lsp-prefer-flymake nil) ; Use flycheck instead of flymake
+        :config
+        ;; don't ping LSP lanaguage server too frequently
+        (defvar lsp-on-touch-time 0)
+        (defadvice lsp-on-change (around lsp-on-change-hack activate)
+          ;; don't run `lsp-on-change' too frequently
+          (when (> (- (float-time (current-time))
+                      lsp-on-touch-time) 30) ;; 30 seconds
+            (setq lsp-on-touch-time (float-time (current-time)))
+            ad-do-it))
+        :hook ((go-mode . lsp-deferred)
+               (python-mode . lsp-deferred)))
+
+      ;; lsp-ui: This contains all the higher level UI modules of lsp-mode, like flycheck support and code lenses.
+      ;; https://github.com/emacs-lsp/lsp-ui
+      (use-package lsp-ui
+        :after lsp-mode
+        ;;:hook ((lsp-mode . lsp-ui-mode)
+        ;;       (lsp-ui-mode . lsp-ui-peek-mode))
+        :config
+        (define-key lsp-ui-mode-map [remap xref-find-definitions] #'lsp-ui-peek-find-definitions)
+        (define-key lsp-ui-mode-map [remap xref-find-references] #'lsp-ui-peek-find-references))
+
+      ;;Set up before-save hooks to format buffer and add/delete imports.
+      ;;Make sure you don't have other gofmt/goimports hooks enabled.
+      (defun lsp-go-install-save-hooks ()
+        (add-hook 'before-save-hook #'lsp-format-buffer t t)
+        (add-hook 'before-save-hook #'lsp-organize-imports t t))
+      (add-hook 'go-mode-hook #'lsp-go-install-save-hooks)
+
+      (with-eval-after-load "company"
+        (use-package company-lsp
+          :after lsp-mode
+          :config
+          (push 'company-lsp company-backends)))
+
+      (with-eval-after-load "projectile"
+        (defun my-set-projectile-root ()
+          (when lsp--cur-workspace
+            (setq projectile-project-root (lsp--workspace-root lsp--cur-workspace))))
+        (add-hook 'lsp-before-open-hook #'my-set-projectile-root))
+
+      (use-package dap-mode
+        :after lsp-mode
+        :bind (:map dap-mode-map
+                    ([f9] . dap-debug)
+                    ;; ([f9] . dap-continue)
+                    ;; ([S-f9] . dap-disconnect)
+                    ;; ([f10] . dap-next)
+                    ;; ([f11] . dap-step-in)
+                    ;; ([S-f11] . dap-step-out)
+                    ([C-f9] . dap-hide/show-ui))
+        :hook (dap-stopped-hook . (lambda (arg) (call-interactively #'dap-hydra)))
+        :config
+        ;; FIXME: Create nice solution instead of a hack
+        (defvar dap-hide/show-ui-hidden? t)
+        (defun dap-hide/show-ui ()
+          "Hide/show dap ui. FIXME"
+          (interactive)
+          (if dap-hide/show-ui-hidden?
+              (progn
+                (setq dap-hide/show-ui-hidden? nil)
+                (dap-ui-locals)
+                (dap-ui-repl))
+            (dolist (buf '("*dap-ui-inspect*" "*dap-ui-locals*" "*dap-ui-repl*" "*dap-ui-sessions*"))
+              (when (get-buffer buf)
+                (kill-buffer buf)))
+            (setq dap-hide/show-ui-hidden? t)))
+
+        (dap-mode)
+        (dap-ui-mode)
+        (dap-tooltip-mode))
+
+      ))
 
 (provide 'setup-completion)

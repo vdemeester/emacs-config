@@ -86,7 +86,6 @@
     (setq fill-column 90)
     (auto-revert-mode)
     (auto-fill-mode)
-    (flyspell-mode)
     (org-indent-mode)
     (smartparens-mode)))
 
