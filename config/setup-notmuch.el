@@ -1,3 +1,4 @@
+(setenv "NOTMUCH_CONFIG" (expand-file-name ".config/notmuch/notmuchrc" (getenv "HOME")))
 (use-package notmuch
   :defer t
   :bind ("<f6>" . notmuch)

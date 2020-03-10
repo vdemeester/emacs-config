@@ -15,6 +15,8 @@
 (setq inhibit-startup-message t
       inhibit-startup-screen t)
 
+(setq confirm-kill-emacs #'y-or-n-p)
+
 (setq initial-major-mode 'fundamental-mode
       initial-scratch-message nil)
 
@@ -91,6 +93,13 @@
 
   (load vde/custom-file 'no-error 'no-message))
 
+(require 'cl-seq)
+(setq load-path
+      (cl-remove-if
+       (lambda (x)
+         (string-match-p "org$" x))
+       load-path))
+
 (defun vde/el-load-dir (dir)
   "Load el files from the given folder"
   (let ((files (directory-files dir nil "\.el$")))
@@ -140,32 +149,10 @@
 (if (file-exists-p (downcase (concat user-emacs-directory "/hosts/" (vde/short-hostname) ".el")))
     (load-file (downcase (concat user-emacs-directory "/hosts/" (vde/short-hostname) ".el"))))
 
-(require 'cl-seq)
-(setq load-path
-      (cl-remove-if
-       (lambda (x)
-         (string-match-p "org$" x))
-       load-path))
-
-(setenv "PAGER" "cat")
-(setenv "TERM" "xterm-256color")
-(setenv "NOTMUCH_CONFIG" (expand-file-name ".config/notmuch/notmuchrc" (getenv "HOME")))
-
 (use-package pinentry
   :config
   (setenv "INSIDE_EMACS" (format "%s,comint" emacs-version))
   (pinentry-start))
-
-;; Confirm before quitting Emacs
-(setq confirm-kill-emacs #'y-or-n-p)
-
-;; C-up/down onn console
-(when (not window-system)
-  (define-key function-key-map "\eO1;5A"    [C-up])
-  (define-key function-key-map "\eO1;5B"  [C-down])
-  (define-key function-key-map "\eO1;5C" [C-right])
-  (define-key function-key-map "\eO1;5D"  [C-left])
-  )
 
 (let ((elapsed (float-time (time-subtract (current-time)
                                           emacs-start-time))))
@@ -178,14 +165,3 @@
                      (time-subtract (current-time) emacs-start-time))))
                (message "Loading %s...done (%.3fs) [after-init]"
                         ,load-file-name elapsed))) t)
-
-(put 'narrow-to-page 'disabled nil)
-(put 'narrow-to-region 'disabled nil)
-
-(put 'magit-diff-edit-hunk-commit 'disabled nil)
-;; Local Variables:
-;; coding: utf-8
-;; indent-tabs-mode: nil
-;; End:
-;;; Finalization
-;;; init.el ends here

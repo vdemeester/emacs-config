@@ -8,3 +8,6 @@
           "GOPATH"             ; Golang path
           ))
   (exec-path-from-shell-initialize))
+
+(setenv "PAGER" "cat")
+(setenv "TERM" "xterm-256color")

@@ -49,7 +49,7 @@
 
   ;; Free C-c C-w for Eyebrowse
   (unbind-key "C-c C-w" git-commit-mode-map)  )
-
+(put 'magit-diff-edit-hunk-commit 'disabled nil)
 (use-package magit-repos
   :after magit
   :commands magit-list-repositories

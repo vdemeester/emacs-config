@@ -273,6 +273,13 @@ will be as bare as possible.
       inhibit-startup-screen t)
 #+end_src
 
+Let's also use =y= or =n= instead of =yes= and =no= when exiting Emacs.
+
+#+begin_src emacs-lisp :tangle init.el
+(setq confirm-kill-emacs #'y-or-n-p)
+#+end_src
+
+
 One last piece to the puzzle is the default mode. Setting it to fundamental-mode means we
 won't load any /heavy/ mode at startup (like =org-mode=). We also want this scratch buffer
 to be empty, so let's set it as well
@@ -402,6 +409,24 @@ stored in a separate file.
   (load vde/custom-file 'no-error 'no-message))
 #+end_src
 
+*** Remove built-in =org-mode=
+:PROPERTIES:
+:CUSTOM_ID: h:9462c0d7-03be-4231-8f22-ce1a04be32b1
+:END:
+
+I want to make sure I am using the installed version of =orgmode= (from my org
+configuration) instead of the built-in one. To do that safely, let's remove the built-in
+version out of the load path.
+
+#+begin_src emacs-lisp :tangle init.el
+(require 'cl-seq)
+(setq load-path
+      (cl-remove-if
+       (lambda (x)
+         (string-match-p "org$" x))
+       load-path))
+#+end_src
+
 *** Loading configuration files
 :PROPERTIES:
 :CUSTOM_ID: h:d6aebc56-aadb-4b01-8404-bb922d12f8a8
@@ -483,27 +508,40 @@ entirely sure why yet but…)
     (load-file (downcase (concat user-emacs-directory "/hosts/" (vde/short-hostname) ".el"))))
 #+end_src
 
-*** Remove built-in =org-mode=
+*** Pinentry
 :PROPERTIES:
-:CUSTOM_ID: h:9462c0d7-03be-4231-8f22-ce1a04be32b1
+:CUSTOM_ID: h:1f016a1a-f4ef-4ef0-be01-1fd68ca0d951
 :END:
 
-I want to make sure I am using the installed version of =orgmode= (from my org
-configuration) instead of the built-in one. To do that safely, let's remove the built-in
-version out of the load path.
+#+begin_src emacs-lisp :tangle init.el
+(use-package pinentry
+  :config
+  (setenv "INSIDE_EMACS" (format "%s,comint" emacs-version))
+  (pinentry-start))
+#+end_src
+
+*** Counting the time of loading
+:PROPERTIES:
+:CUSTOM_ID: h:2b645e95-6776-4f5b-a318-e5a915943881
+:END:
 
 #+begin_src emacs-lisp :tangle init.el
-(require 'cl-seq)
-(setq load-path
-      (cl-remove-if
-       (lambda (x)
-         (string-match-p "org$" x))
-       load-path))
+(let ((elapsed (float-time (time-subtract (current-time)
+                                          emacs-start-time))))
+  (message "Loading %s...done (%.3fs)" load-file-name elapsed))
+
+(add-hook 'after-init-hook
+          `(lambda ()
+             (let ((elapsed
+                    (float-time
+                     (time-subtract (current-time) emacs-start-time))))
+               (message "Loading %s...done (%.3fs) [after-init]"
+                        ,load-file-name elapsed))) t)
 #+end_src
 
 ** ~PATH~'s customization
 :PROPERTIES:
-:header-args: :tangle config/00-paths.el
+:header-args: :tangle config/00-environments.el
 :CUSTOM_ID: h:2a72b00e-ea97-4a3b-a70c-cbbe648df428
 :END:
 
@@ -532,7 +570,11 @@ copying them into the Emacs environment.
           "GOPATH"             ; Golang path
           ))
   (exec-path-from-shell-initialize))
+
+(setenv "PAGER" "cat")
+(setenv "TERM" "xterm-256color")
 #+end_src
+
 
 ** Keep emacs clean
 :PROPERTIES:
@@ -1854,56 +1896,6 @@ slowly but surely move into an org-mode header and or disappear.
 :END:
 
 These are the initial configuration files to be imported in this file slowly but surely.
-
-*** ~init.el~
-:PROPERTIES:
-:CUSTOM_ID: h:443b5480-2b61-4653-afa2-3c8da9169353
-:END:
-
-#+begin_src emacs-lisp :tangle init.el
-(setenv "PAGER" "cat")
-(setenv "TERM" "xterm-256color")
-(setenv "NOTMUCH_CONFIG" (expand-file-name ".config/notmuch/notmuchrc" (getenv "HOME")))
-
-(use-package pinentry
-  :config
-  (setenv "INSIDE_EMACS" (format "%s,comint" emacs-version))
-  (pinentry-start))
-
-;; Confirm before quitting Emacs
-(setq confirm-kill-emacs #'y-or-n-p)
-
-;; C-up/down onn console
-(when (not window-system)
-  (define-key function-key-map "\eO1;5A"    [C-up])
-  (define-key function-key-map "\eO1;5B"  [C-down])
-  (define-key function-key-map "\eO1;5C" [C-right])
-  (define-key function-key-map "\eO1;5D"  [C-left])
-  )
-
-(let ((elapsed (float-time (time-subtract (current-time)
-                                          emacs-start-time))))
-  (message "Loading %s...done (%.3fs)" load-file-name elapsed))
-
-(add-hook 'after-init-hook
-          `(lambda ()
-             (let ((elapsed
-                    (float-time
-                     (time-subtract (current-time) emacs-start-time))))
-               (message "Loading %s...done (%.3fs) [after-init]"
-                        ,load-file-name elapsed))) t)
-
-(put 'narrow-to-page 'disabled nil)
-(put 'narrow-to-region 'disabled nil)
-
-(put 'magit-diff-edit-hunk-commit 'disabled nil)
-;; Local Variables:
-;; coding: utf-8
-;; indent-tabs-mode: nil
-;; End:
-;;; Finalization
-;;; init.el ends here
-#+end_src
 
 *** ~setup-buffers.el~
 :PROPERTIES:
@@ -3380,6 +3372,7 @@ Number of marked items: %(length (dired-get-marked-files))
 :END:
 
 #+begin_src emacs-lisp :tangle config/setup-notmuch.el
+(setenv "NOTMUCH_CONFIG" (expand-file-name ".config/notmuch/notmuchrc" (getenv "HOME")))
 (use-package notmuch
   :defer t
   :bind ("<f6>" . notmuch)
@@ -4343,7 +4336,7 @@ using either KUBECONFIG or ~/.kube/config"
 
   ;; Free C-c C-w for Eyebrowse
   (unbind-key "C-c C-w" git-commit-mode-map)  )
-
+(put 'magit-diff-edit-hunk-commit 'disabled nil)
 (use-package magit-repos
   :after magit
   :commands magit-list-repositories
