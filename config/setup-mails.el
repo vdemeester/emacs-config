@@ -173,9 +173,22 @@
   (setq message-sendmail-f-is-evil 't)
   (setq message-sendmail-extra-arguments '("--read-envelope-from")))
 
+(use-package sendmail
+  :defer t
+  :commands (mail-mode mail-text)
+  :defines (send-mail-function)
+  :config
+  (setq send-mail-function 'sendmail-send-it
+        sendmail-program "/home/vincent/bin/msmtp"))
+
 (use-package message
+  :commands (message-mode message-cite-original-without-signature)
   :config
   (setq mail-user-agent 'message-user-agent
         message-wide-reply-confirm-recipients t
-        message-default-charset 'utf-8)
-  (add-to-list 'mm-body-charset-encoding-alist '(utf-8 . base64)))
+        message-default-charset 'utf-8
+        message-default-mail-headers "Cc: \nBcc: \n"
+        message-kill-buffer-on-exit t
+        message-generate-headers-first t)
+  (add-to-list 'mm-body-charset-encoding-alist '(utf-8 . base64))
+  (add-hook 'message-mode-hook 'turn-on-auto-fill))
