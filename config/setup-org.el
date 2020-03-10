@@ -408,7 +408,7 @@ Switch projects and subprojects from STARTED back to TODO"
 
   ;; images
   (setq org-image-actual-width nil
-        org-startup-with-inline-images t)
+        org-startup-with-inline-images nil)
 
   ;; Tasks (-> inbox)
 
