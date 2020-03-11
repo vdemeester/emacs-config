@@ -897,19 +897,7 @@ search them.
 Before configuring any email client, we need to establish some essentials: who we are,
 where our credentials are stored and whether encryption is supported.
 
-#+begin_src emacs-lisp
-(use-package auth-source
-  :config
-  (setq auth-sources '("~/.authinfo.gpg" "~/.authinfo"))
-  (setq user-full-name "Vincent Demeester")
-  (setq user-mail-address "vincent@sbr.pm"))
-
-(use-package epa-file
-  :config
-  (setq epa-file-cache-passphrase-for-symmetric-encryption t)
-  :init
-  (epa-file-enable))
-#+end_src
+#+INCLUDE: "./config/setup-mails.el" src emacs-lisp :range-begin "AuthSource" :range-end "-AuthSource" :lines "4-9"
 
 *** Gnus
 :PROPERTIES:
@@ -968,74 +956,11 @@ and =nnimap-authinfo-file= are needed, but I keep them for the sake of completen
 - [[http://www.cataclysmicmutation.com/2010/11/multiple-gmail-accounts-in-gnus/][Multiple GMail Accounts in Gnus - Cataclysmic Mutation]]
 - [[https://github.com/redguardtoo/mastering-emacs-in-one-year-guide/blob/master/gnus-guide-en.org][mastering-emacs-in-one-year-guide/gnus-guide-en.org at master · redguardtoo/mastering-emacs-in-one-year-guide]]
 
-#+begin_src emacs-lisp
-(use-package gnus
-  :config
-  (setq nnml-directory "~/desktop/gnus/mail")
-  (setq nnfolder-directory "~/desktop/gnus/archive")
-  (setq nndraft-directory "~/desktop/gnus/drafts")
-  (setq nnmh-directory "~/desktop/gnus/drafts")
-  (setq gnus-article-save-directory "~/desktop/gnus/news")
-  (setq gnus-home-directory "~/desktop/gnus")
-  (setq gnus-kill-files-directory "~/desktop/gnus/news")
-  (setq gnus-cache-directory "~/desktop/gnus/news/cache")
-  (setq gnus-startup-file "~/desktop/gnus/newsrc")
-  (setq mail-source-directory "~/desktop/gnus/mail")
-  (setq gnus-registry-cache-file "~/desktop/gnus/gnus.registry.eld")
-  (setq gnus-select-method '(nnnil))
-  (setq nntp-authinfo-file "~/.authinfo.gpg")
-  (setq gnus-secondary-select-methods
-        '((nntp "news.gwene.org")
-          (nnimap "prv"
-                  (nnimap-address "mail.gandi.net")
-                  (nnimap-stream ssl)
-                  (nnimap-authinfo-file "~/.authinfo.gpg"))
-          (nnimap "redhat"
-                  (nnimap-address "imap.gmail.com")
-                  (nnimap-stream ssl)
-                  (nnimap-authinfo-file "~/.authinfo.gpg"))
-          (nnimap "vde"
-                  (nnimap-address "imap.gmail.com")
-                  (nnimap-stream ssl)
-                  (nnimap-authinfo-file "~/.authinfo.gpg"))
-          ))
-  (setq gnus-parameters
-        '(("prv"
-           (posting-style
-            (address "vincent@demeester.fr")
-            (signature-file "~/desktop/documents/.prv.signature")
-            (gcc "nnimap+prv:Sent")))
-          ("redhat"
-           (posting-style
-            (address "vdemeest@redhat.com")
-            (signature-file "~/desktop/documents/.redhat.signature")))
-          ("nnimap+redhat:INBOX"
-           (display . all))
-          ("vde"
-           (posting-style
-            (address "vinc.demeester.fr")
-            (signature-file "~/desktop/documents/.vde.signature")))
-          ("nnimap+vde:INBOX"
-           (display . all))))
-  (setq gnus-agent t)
-  (setq mail-user-agent 'gnus-user-agent) ; also works with `sendmail-user-agent'
-  (setq gnus-check-new-newsgroups 'ask-server)
-  (setq gnus-read-active-file 'some)
-  (setq gnus-use-dribble-file t)
-  (setq gnus-always-read-dribble-file t)
-  (setq gnus-novice-user nil)
-  (setq gnus-extra-headers
-        '(To Newsgroups X-GM-LABELS)))
-#+end_src
+#+INCLUDE: "./config/setup-mails.el" src emacs-lisp :range-begin "GnusCfg" :range-end "-GnusCfg" :lines "20-77"
 
 Let's also give to gnus my GnuPG key.
 
-#+begin_src emacs-lisp
-(use-package mml-sec
-  :config
-  (setq mml-secure-openpgp-signers
-        '("8C4E8DDA04C18C6B503BD2DBB7E7CF1C634256FA")))
-#+end_src
+#+INCLUDE: "./config/setup-mails.el" src emacs-lisp :range-begin "GnusMmlSec" :range-end "-GnusMmlSec" :lines "80-84"
 
 
 **** Gnus agent
@@ -1052,22 +977,7 @@ already fetched from the server.  We can also use the agent to configure the han
 local messages.  For example, we can set an expiry date, after which the message is
 deleted, or we can create a queue of outgoing messages when Gnus is in an unplugged state.
 
-#+begin_src emacs-lisp
-(use-package gnus-agent
-  :after gnus
-  :config
-  (setq gnus-agent-article-alist-save-format 1)  ; uncompressed
-  (setq gnus-agent-cache t)
-  (setq gnus-agent-confirmation-function 'y-or-n-p)
-  (setq gnus-agent-consider-all-articles nil)
-  (setq gnus-agent-directory "~/desktop/gnus/agent/")
-  (setq gnus-agent-enable-expiration 'ENABLE)
-  (setq gnus-agent-expire-all nil)
-  (setq gnus-agent-expire-days 30)
-  (setq gnus-agent-mark-unread-after-downloaded t)
-  (setq gnus-agent-queue-mail t)        ; queue if unplugged
-  (setq gnus-agent-synchronize-flags nil))
-#+end_src
+#+INCLUDE: "./config/setup-mails.el" src emacs-lisp :range-begin "GnusAgent" :range-end "-GnusAgent" :lines "87-101"
 
 **** Gnus asynchronous operations
 :PROPERTIES:
@@ -1078,13 +988,7 @@ By default, Gnus performs all its actions in a synchronous fashion. This means t
 is blocked until Gnus has finished. By enabling this library, we can use certain functions
 in a non-blocking way. I do this for [[#h:8cd8c972-ba38-40c2-b30f-68a4233593d6][sending email]].
 
-#+begin_src emacs-lisp
-(use-package gnus-async
-  :after gnus
-  :config
-  (setq gnus-asynchronous t)
-  (setq gnus-use-article-prefetch 30))
-#+end_src
+#+INCLUDE: "./config/setup-mails.el" src emacs-lisp :range-begin "GnusAsync" :range-end "-GnusAsync" :lines "104-109"
 
 **** Gnus group
 :PROPERTIES:
@@ -1110,31 +1014,7 @@ Let's dig a bit more into groups :
 Note that =gnus-group-sort-functions= requires the most important function to be declared
 last.
 
-#+begin_src emacs-lisp
-(use-package gnus-group
-  :after gnus
-  :config
-  (setq gnus-level-subscribed 6)
-  (setq gnus-level-unsubscribed 7)
-  (setq gnus-level-zombie 8)
-  (setq gnus-group-sort-function
-        '((gnus-group-sort-by-unread)
-          (gnus-group-sort-by-alphabet)
-          (gnus-group-sort-by-rank)))
-  (setq gnus-group-mode-line-format "Gnus: %%b")
-  :hook
-  (gnus-select-group-hook . gnus-group-set-timestamp)
-  :bind (:map gnus-agent-group-mode-map
-              ("M-n" . gnus-topic-goto-next-topic)
-              ("M-p" . gnus-topic-goto-previous-topic)))
-
-(use-package gnus-topic
-  :after (gnus gnus-group)
-  :config
-  (setq gnus-topic-display-empty-topics t)
-  :hook
-  (gnus-group-mode . gnus-topic-mode))
-#+end_src
+#+INCLUDE: "./config/setup-mails.el" src emacs-lisp :range-begin "GnusGroup" :range-end "-GnusGroup" :lines "112-128"
 
 **** Gnus Summary
 :PROPERTIES:
@@ -1153,51 +1033,7 @@ The =gnus-user-date-format-alist=, this basically adapts the date to whether the
 was within the day or the one before, else falls back to a default value. It is then
 called with =%&user-date;=.
 
-#+begin_src emacs-lisp
-(use-package gnus-sum
-  :after (gnus gnus-group)
-  :demand
-  :config
-  (setq gnus-auto-select-first nil)
-  (setq gnus-summary-ignore-duplicates t)
-  (setq gnus-suppress-duplicates t)
-  (setq gnus-summary-goto-unread nil)
-  (setq gnus-summary-make-false-root 'adopt)
-  (setq gnus-summary-thread-gathering-function 'gnus-gather-threads-by-subject)
-  (setq gnus-thread-sort-functions
-        '((not gnus-thread-sort-by-number)
-          (not gnus-thread-sort-by-date)))
-  (setq gnus-subthread-sort-functions
-        'gnus-thread-sort-by-date)
-  (setq gnus-thread-hide-subtree nil)
-  (setq gnus-thread-ignore-subject t)
-  (setq gnus-user-date-format-alist
-        '(((gnus-seconds-today) . "Today at %R")
-          ((+ 86400 (gnus-seconds-today)) . "Yesterday, %R")
-          (t . "%Y-%m-%d %R")))
-  (setq gnus-summary-line-format "%U%R%z %-16,16&user-date;  %4L:%-30,30f  %B%S\n")
-  (setq gnus-summary-mode-line-format "Gnus: %p (%U)")
-  (setq gnus-sum-thread-tree-false-root "")
-  (setq gnus-sum-thread-tree-indent " ")
-  (setq gnus-sum-thread-tree-leaf-with-other "├─➤ ")
-  (setq gnus-sum-thread-tree-root "")
-  (setq gnus-sum-thread-tree-single-leaf "└─➤ ")
-  (setq gnus-sum-thread-tree-vertical "│")
-  :hook
-  (gnus-summary-exit-hook . gnus-topic-sort-groups-by-alphabet)
-  (gnus-summary-exit-hook . gnus-group-sort-groups-by-rank)
-  :bind (:map gnus-agent-summary-mode-map
-              ("<delete>" . gnus-summary-delete-article)
-              ("n" . gnus-summary-next-article)
-              ("p" . gnus-summary-prev-article)
-              ("N" . gnus-summary-next-unread-article)
-              ("P" . gnus-summary-prev-unread-article)
-              ("M-n" . gnus-summary-next-thread)
-              ("M-p" . gnus-summary-prev-thread)
-              ("C-M-n" . gnus-summary-next-group)
-              ("C-M-p" . gnus-summary-prev-group)
-              ("C-M-^" . gnus-summary-refer-thread)))
-#+end_src
+#+INCLUDE: "./config/setup-mails.el" src emacs-lisp :range-begin "GnusSummary" :range-end "-GnusSummary" :lines "140-183"
 
 Gnus summary displays a mark for each messages, those `O`, `!`, … Let's first describe
 what are those marks (from the [[https://www.gnu.org/software/emacs/manual/html_node/gnus/Marking-Articles.html#Marking-Articles][documentation]]) and which one make the more sense for me.
@@ -1241,11 +1077,7 @@ Run =C-h m= inside of a Dired buffer that has =gnus-dired-mode= enabled and sear
 "gnus" to see all the relevant key bindings and the functions they call. I only ever use
 =C-c C-m C-a= (=C-m= is the same as =RET=).
 
-#+begin_src emacs-lisp
-(use-package gnus-dired
-  :after (gnus dired)
-  :hook (dired-mode . gnus-dired-mode))
-#+end_src
+#+INCLUDE: "./config/setup-mails.el" src emacs-lisp :range-begin "GnusDired" :range-end "-GnusDired" :lines "186-189"
 
 **** TODO Searching mails
 :PROPERTIES:
@@ -1257,46 +1089,21 @@ Run =C-h m= inside of a Dired buffer that has =gnus-dired-mode= enabled and sear
 :CUSTOM_ID: h:259bbc05-4ea6-43b7-bfef-0036434a86f8
 :END:
 
-*** TODO ~notmuch~ configuration
-:PROPERTIES:
-:CUSTOM_ID: h:b67b377e-0fbc-4237-857c-641cdf2de1cf
-:END:
-
 *** TODO Sending mails
 :PROPERTIES:
 :CUSTOM_ID: h:8cd8c972-ba38-40c2-b30f-68a4233593d6
 :END:
 
-#+begin_src emacs-lisp
-(use-package smtpmail
-  :config
-  (setq message-send-mail-function 'message-send-mail-with-sendmail)
-  (setq sendmail-program "msmtp")
-  (setq message-sendmail-f-is-evil 't)
-  (setq message-sendmail-extra-arguments '("--read-envelope-from")))
+#+INCLUDE: "./config/setup-mails.el" src emacs-lisp :range-begin "SendmailCfg" :range-end "-SendmailCfg" :lines "193-207"
 
-(use-package sendmail
-  :defer t
-  :commands (mail-mode mail-text)
-  :defines (send-mail-function)
-  :config
-  (setq send-mail-function 'sendmail-send-it
-        sendmail-program "/home/vincent/bin/msmtp"))
-#+end_src
+#+INCLUDE: "./config/setup-mails.el" src emacs-lisp :range-begin "MessageCfg" :range-end "-MessageCfg" :lines "210-221"
 
-#+begin_src emacs-lisp
-(use-package message
-  :commands (message-mode message-cite-original-without-signature)
-  :config
-  (setq mail-user-agent 'message-user-agent
-        message-wide-reply-confirm-recipients t
-        message-default-charset 'utf-8
-        message-default-mail-headers "Cc: \nBcc: \n"
-        message-kill-buffer-on-exit t
-        message-generate-headers-first t)
-  (add-to-list 'mm-body-charset-encoding-alist '(utf-8 . base64))
-  (add-hook 'message-mode-hook 'turn-on-auto-fill))
-#+end_src
+*** TODO ~notmuch~ configuration
+:PROPERTIES:
+:CUSTOM_ID: h:b67b377e-0fbc-4237-857c-641cdf2de1cf
+:END:
+
+#+INCLUDE: "./config/setup-mails.el" src emacs-lisp :range-begin "Notmuch" :range-end "-Notmuch" :lines "224-241"
 
 * User interface and interactions
 :PROPERTIES:

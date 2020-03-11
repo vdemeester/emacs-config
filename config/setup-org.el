@@ -589,3 +589,4 @@ activation of `org-tree-slide-mode'."
   :after magit)
 
 (provide 'setup-org)
+;;; setup-org.el ends here

@@ -1,15 +1,22 @@
+;;; setup-mails.el --- -*- lexical-binding: t -*-
+
+;; AuthSource
 (use-package auth-source
   :config
   (setq auth-sources '("~/.authinfo.gpg" "~/.authinfo"))
   (setq user-full-name "Vincent Demeester")
   (setq user-mail-address "vincent@sbr.pm"))
+;; -AuthSource
 
+;; EPA
 (use-package epa-file
   :config
   (setq epa-file-cache-passphrase-for-symmetric-encryption t)
   :init
   (epa-file-enable))
+;; -EPA
 
+;; GnusCfg
 (use-package gnus
   :config
   (setq nnml-directory "~/desktop/gnus/mail")
@@ -67,12 +74,16 @@
   (setq gnus-novice-user nil)
   (setq gnus-extra-headers
         '(To Newsgroups X-GM-LABELS)))
+;; -GnusCfg
 
+;; GnusMmlSec
 (use-package mml-sec
   :config
   (setq mml-secure-openpgp-signers
         '("8C4E8DDA04C18C6B503BD2DBB7E7CF1C634256FA")))
+;; -GnusMmlSec
 
+;; GnusAgent
 (use-package gnus-agent
   :after gnus
   :config
@@ -87,13 +98,17 @@
   (setq gnus-agent-mark-unread-after-downloaded t)
   (setq gnus-agent-queue-mail t)        ; queue if unplugged
   (setq gnus-agent-synchronize-flags nil))
+;; -GnusAgent
 
+;; GnusAsync
 (use-package gnus-async
   :after gnus
   :config
   (setq gnus-asynchronous t)
   (setq gnus-use-article-prefetch 30))
+;; -GnusAsync
 
+;; GnusGroup
 (use-package gnus-group
   :after gnus
   :config
@@ -110,14 +125,18 @@
   :bind (:map gnus-agent-group-mode-map
               ("M-n" . gnus-topic-goto-next-topic)
               ("M-p" . gnus-topic-goto-previous-topic)))
+;; -GnusGroup
 
+;; GnusTopic
 (use-package gnus-topic
   :after (gnus gnus-group)
   :config
   (setq gnus-topic-display-empty-topics t)
   :hook
   (gnus-group-mode . gnus-topic-mode))
+;; -GnusTopic
 
+;; GnusSummary
 (use-package gnus-sum
   :after (gnus gnus-group)
   :demand
@@ -161,11 +180,16 @@
               ("C-M-n" . gnus-summary-next-group)
               ("C-M-p" . gnus-summary-prev-group)
               ("C-M-^" . gnus-summary-refer-thread)))
+;; -GnusSummary
 
+;; GnusDired
 (use-package gnus-dired
   :after (gnus dired)
   :hook (dired-mode . gnus-dired-mode))
+;; -GnusDired
 
+
+;; SendmailCfg
 (use-package smtpmail
   :config
   (setq message-send-mail-function 'message-send-mail-with-sendmail)
@@ -180,7 +204,9 @@
   :config
   (setq send-mail-function 'sendmail-send-it
         sendmail-program "/home/vincent/bin/msmtp"))
+;; -SendmailCfg
 
+;; MessageCfg
 (use-package message
   :commands (message-mode message-cite-original-without-signature)
   :config
@@ -192,3 +218,27 @@
         message-generate-headers-first t)
   (add-to-list 'mm-body-charset-encoding-alist '(utf-8 . base64))
   (add-hook 'message-mode-hook 'turn-on-auto-fill))
+;; -MessageCfg
+
+;; Notmuch
+(if *sys/full*
+    (progn
+      (setenv "NOTMUCH_CONFIG" (expand-file-name ".config/notmuch/notmuchrc" (getenv "HOME")))
+      (use-package notmuch
+        :defer t
+        :bind ("<f6>" . notmuch)
+        :config
+        (setq notmuch-search-oldest-first nil
+              mail-user-agent 'message-user-agent
+              notmuch-tree-show-out t)
+        (setq notmuch-saved-searches
+              '((:key "i" :name "inbox" :query "tag:Inbox")
+                (:key "r" :name "redhat inbox folder" :query "folder:redhat/Inbox")
+                (:key "p" :name "perso inbox folder" :query "folder:perso/Inbox")
+                (:key "u" :name "unread" :query "tag:unread")
+                (:key "F" :name "flagged" :query "tag:flagged")
+                (:key "S" :name "sent" :query "tag:Sent Mail"))))))
+;; -Notmuch
+
+(provide 'setup-mails)
+;;; setup-mails ends here
