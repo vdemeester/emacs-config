@@ -1,5 +1,11 @@
-#+SETUPFILE: ./_setup.org
 #+TITLE: Publish dotemacs notes using Emacs org-mode
+#+AUTHOR: Vincent Demeester
+#+EMAIL: vincent@sbr.pm
+#+EXPORT_EXCLUDE_TAGS: noexport
+#+CREATOR: Emacs 27.0.90 (Org mode 9.3)
+#+LANGUAGE: en
+#+HTML_HEAD: <link rel="stylesheet" type="text/css" href="./notes.css"/>
+#+OPTIONS: html-style:nil
 
 This document is a literate version of my publishing /script/ on publishing my dotemacs
 notes (that uses [[https://orgmode.org][=org-mode=]]).

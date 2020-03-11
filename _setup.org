@@ -1,7 +1,0 @@
-
-#+STARTUP: showall
-
-#+OPTIONS: ':t *:t -:t ::t <:t H:3 \n:nil ^:t arch:headline author:t c:nil
-#+OPTIONS: creator:comment d:(not LOGBOOK) date:t e:t email:nil f:t inline:nil
-#+OPTIONS: num:t p:nil pri:t stat:t tags:t tasks:t tex:t timestamp:t toc:nil
-#+OPTIONS: todo:t |:t
