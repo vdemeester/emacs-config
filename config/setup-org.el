@@ -310,6 +310,10 @@
   :after (org))
 (use-package ol-gitlab
   :after (org))
+(use-package ol-ripgrep
+  :after (org))
+(use-package ol-grep
+  :after (org))
 
 ;; built-in org-mode
 (use-package ol-eshell
@@ -495,39 +499,6 @@ Switch projects and subprojects from STARTED back to TODO"
     "Display a list of TODO headlines with tag TAG.
 With prefix argument, also display headlines without a TODO keyword."
     (org-tags-view (null current-prefix-arg) tag))
-
-  (org-link-set-parameters "grep"
-                           :follow #'vde/follow-grep-link
-                           :face '(:foreground "DarkRed" :underline t))
-  (defun vde/follow-grep-link (regexp)
-    "Run `rgrep' with REGEXP and FOLDER as argument,
-like this : [[grep:REGEXP:FOLDER]]."
-    (setq expressions (split-string regexp ":"))
-    (setq exp (nth 0 expressions))
-    (grep-compute-defaults)
-    (if (= (length expressions) 1)
-        (progn
-          (rgrep exp "*" (expand-file-name "./")))
-      (progn
-        (setq folder (nth 1 expressions))
-        (rgrep exp "*" (expand-file-name folder))))
-    )
-
-  (org-link-set-parameters "rg"
-                           :follow #'vde/follow-rg-link
-                           :face '(:foreground "DarkGreen" :underline t))
-  (defun vde/follow-rg-link (regexp)
-    "Run `ripgrep-regexp` with REXEP and FOLDER as argument,
-like this : [[pt:REGEXP:FOLDER]]"
-    (setq expressions (split-string regexp ":"))
-    (setq exp (nth 0 expressions))
-    (if (= (length expressions) 1)
-        (progn
-          (ripgrep-regexp exp (expand-file-name "./")))
-      (progn
-        (setq folder (nth 1 expressions))
-        (ripgrep-regexp exp (file-name-as-directory (expand-file-name folder)))))
-    )
 
   (org-link-set-parameters
    "org"
