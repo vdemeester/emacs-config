@@ -562,18 +562,7 @@ agenda is =C-c o a=, capture is =C-c o c=, …).
 
 First, let's define some basic constants, mainly on how my main =org= folder is organized.
 
-#+begin_src emacs-lisp
-(defconst org-directory "~/desktop/org/" "org-mode directory, where most of the org-mode file lives")
-(defconst org-default-projects-dir (concat org-directory "projects") "Primary tasks directory.")
-(defconst org-default-technical-dir (concat org-directory "technical") "Directory of shareable, technical notes.")
-(defconst org-default-personal-dir (concat org-directory "personal") "Directory of un-shareable, personal notes.")
-(defconst org-default-completed-dir (concat org-directory "archive/projects") "Directory of completed project files.")
-(defconst org-default-inbox-file (concat org-directory "projects/inbox.org") "New stuff collected in this file.")
-(defconst org-default-next-file (concat org-directory "projects/next.org") "Todo *next* collected in this file.")
-(defconst org-default-incubate-file (concat org-directory "projects/incubate.org") "Ideas simmering on back burner.")
-(defconst org-default-notes-file (concat org-directory "personal/notes.org") "Non-actionable, personal notes.")
-(defconst org-default-journal-file (concat org-directory "personal/journal.org") "Journaling stuff.")
-#+end_src
+#+INCLUDE: "./config/setup-org.el" src emacs-lisp :range-begin "OrgConstants" :range-end "-OrgConstants" :lines "4-14"
 
 In a nutshell, I am currently trying the following organization, with =~/desktop/org/= as
 the base of almost all =org-mode= things:
@@ -604,13 +593,7 @@ I want a way to quickly jump to certain =org-mode= files, like =next.org= or the
 =inbox.org=. For this, we can use the emacs [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Registers.html][registers]] and more accurately the [[https://www.gnu.org/software/emacs/manual/html_node/emacs/File-Registers.html#File-Registers][file
 registers]].
 
-#+begin_src emacs-lisp
-(set-register ?i `(file . ,org-default-inbox-file))
-(set-register ?I `(file . ,org-default-incubate-file))
-(set-register ?N `(file . ,org-default-next-file))
-(set-register ?n `(file . ,org-default-notes-file))
-(set-register ?j `(file . ,org-default-journal-file))
-#+end_src
+#+INCLUDE: "./config/setup-org.el" src emacs-lisp :range-begin "OrgRegisters" :range-end "-OrgRegisters" :lines "17-22"
 
 With this, I can jump to the inbox with ~C-x r j i~, to the journal using ~C-x r j j~, …
 
@@ -703,71 +686,7 @@ Let's setup the base of =org-mode=, with the following things in mind:
 /The =ensure org-plus-contrib= is there to make sure I am loading the =org= module from my
 nix configuration and not the built-in =org= module (that might lag in terms of version)/
 
-#+begin_src emacs-lisp
-(use-package s)
-(use-package org
-  :ensure org-plus-contrib ;; load from the package instead of internal
-  :mode (("\\.org$" . org-mode))
-  :config
-  (setq org-agenda-files `(,org-default-projects-dir
-                           ,user-emacs-directory
-                           "~/.config/nixpkgs")
-        org-agenda-file-regexp "^[a-zA-Z0-9-_]+.org$"
-        org-use-speed-commands t
-        org-special-ctrl-a/e t
-        org-special-ctrl-k t
-        org-todo-keywords '((sequence "TODO(t)" "NEXT(n)" "STARTED(s)" "|" "DONE(d!)" "CANCELED(c@/!)")
-                            (sequence "WAITING(w@/!)" "SOMEDAY(s)" "|" "CANCELED(c@/!)")
-                            (sequence "IDEA(i)" "|" "CANCELED(c@/!)"))
-        org-todo-state-tags-triggers '(("CANCELLED" ("CANCELLED" . t))
-                                       ("WAITING" ("WAITING" . t))
-                                       (done ("WAITING"))
-                                       ("TODO" ("WAITING") ("CANCELLED"))
-                                       ("NEXT" ("WAITING") ("CANCELLED"))
-                                       ("DONE" ("WAITING") ("CANCELLED")))
-        org-use-tag-inheritance t
-        org-tag-alist '(("linux") ("nixos") ("emacs") ("org")
-                        ("openshift") ("redhat") ("tektoncd") ("kubernetes") ("knative" ) ("docker")
-                        ("docs") ("code") ("review")
-                        (:startgroup . nil)
-                        ("@home" . ?h) ("@work" . ?w) ("@errand" . ?e) ("@health" . ?l)
-                        (:endgroup . nil)
-                        (:startgroup . nil)
-                        ("@link" . ?i) ("@read" . ?r) ("@project" . ?p)
-                        (:endgroup . nil))
-        org-log-done 'time
-        org-log-redeadline 'time
-        org-log-reschedule 'time
-        org-log-into-drawer t
-        org-enforce-todo-dependencies t
-        org-refile-targets (append '((org-default-inbox-file :level . 0))
-                                   (->>
-                                    (directory-files org-default-projects-dir nil ".org")
-                                    (--remove (s-starts-with? "." it))
-                                    (--map (format "%s/%s" org-default-projects-dir it))
-                                    (--map `(,it :level . 1))))
-        org-refile-use-outline-path 'file
-        org-refile-allow-creating-parent-nodes 'confirm
-        org-outline-path-complete-in-steps nil
-        org-columns-default-format "%80ITEM(Task) %TODO %3PRIORITY %10Effort(Effort){:} %10CLOCKSUM"
-        org-fontify-whole-heading-line t
-        org-pretty-entities t
-        org-ellipsis " …"
-        org-archive-location (concat org-default-completed-dir "/%s::datetree/")
-        org-use-property-inheritance t
-        org-global-properties (quote (("EFFORT_ALL" . "0:15 0:30 0:45 1:00 2:00 3:00 4:00 5:00 6:00 0:00")
-                                      ("STYLE_ALL" . "habit")))
-        org-blank-before-new-entry '((heading . t)
-                                     (plain-list-item . nil))
-        org-insert-heading-respect-content t
-        org-yank-adjusted-subtrees t
-        org-image-actual-width nil
-        org-startup-with-inline-images nil)
-  (setcar (nthcdr 4 org-emphasis-regexp-components) 10)
-  :bind (("C-c o l" . org-store-link)
-         ("C-c o r r" . org-refile))
-  :hook (org-mode . vde/org-mode-hook))
-#+end_src
+#+INCLUDE: "./config/setup-org.el" src emacs-lisp :range-begin "OrgMain" :range-end "-OrgMain" :lines "25-88"
 
 I've set-up an =org-mode= hook to add few modes to the default setup.
 - I am really annoyed by trailing white-space so I want them to be shown
@@ -776,60 +695,15 @@ I've set-up an =org-mode= hook to add few modes to the default setup.
   + I turn on =auto-revert-mode= so that the buffer is always up-to-date.
   + I like to have header indented, so I'm enabling =org-indent-mode=.
 
-#+begin_src emacs-lisp
-(defun vde/org-mode-hook ()
-  "Org-mode hook"
-  (setq show-trailing-whitespace t)
-  (when (not (eq major-mode 'org-agenda-mode))
-    (setq fill-column 90)
-    (auto-revert-mode)
-    (auto-fill-mode)
-    (org-indent-mode)))
-#+end_src
+#+INCLUDE: "./config/setup-org.el" src emacs-lisp :range-begin "OrgHook" :range-end "-OrgHook" :lines "91-100"
 
 Let's also use =org-id=…
 
-#+begin_src emacs-lisp
-(use-package org-id
-  :after (org)
-  :config
-  (setq org-id-link-to-org-use-id 'create-if-interactive-and-no-custom-id)
-  (defun eos/org-custom-id-get (&optional pom create prefix)
-    "Get the CUSTOM_ID property of the entry at point-or-marker POM.
-   If POM is nil, refer to the entry at point. If the entry does
-   not have an CUSTOM_ID, the function returns nil. However, when
-   CREATE is non nil, create a CUSTOM_ID if none is present
-   already. PREFIX will be passed through to `org-id-new'. In any
-   case, the CUSTOM_ID of the entry is returned."
-    (interactive)
-    (org-with-point-at pom
-      (let ((id (org-entry-get nil "CUSTOM_ID")))
-        (cond
-         ((and id (stringp id) (string-match "\\S-" id))
-          id)
-         (create
-          (setq id (org-id-new (concat prefix "h")))
-          (org-entry-put pom "CUSTOM_ID" id)
-          (org-id-add-location id (buffer-file-name (buffer-base-buffer)))
-          id)))))
-
-  (defun eos/org-add-ids-to-headlines-in-file ()
-    "Add CUSTOM_ID properties to all headlines in the
-   current file which do not already have one."
-    (interactive)
-    (org-map-entries (lambda ()
-                       (eos/org-custom-id-get (point) 'create)))))
-#+end_src
+#+INCLUDE: "./config/setup-org.el" src emacs-lisp :range-begin "OrgId" :range-end "-OrgId" :lines "103-132"
 
 … and =org-crypt= (for encrypted =org-mode= files).
 
-#+begin_src emacs-lisp
-(use-package org-crypt
-  :after (org)
-  :config
-  (org-crypt-use-before-save-magic)
-  (setq org-tags-exclude-from-inheritance '("crypt")))
-#+end_src
+#+INCLUDE: "./config/setup-org.el" src emacs-lisp :range-begin "OrgCrypt" :range-end "-OrgCrypt" :lines "135-140"
 
 *** TODO Agenda
 :PROPERTIES:
@@ -856,66 +730,11 @@ I am using [[https://github.com/alphapapa/org-super-agenda/][=org-super-agenda=]
 agenda views. This allows to group things and overall set-up the agenda view I want. This
 agenda view uses the =n= key.
 
-
-#+begin_src emacs-lisp
-(use-package org-agenda
-  :after (org)
-  :commands (org-agenda)
-  :config
-  (use-package org-super-agenda
-    :config (org-super-agenda-mode))
-  (setq org-agenda-span 'day
-        org-agenda-start-on-weekday 1
-        org-agenda-include-diary t
-        org-agenda-window-setup 'current-window
-        org-agenda-skip-scheduled-if-done nil
-        org-agenda-compact-blocks t
-        org-agenda-sticky t
-        org-super-agenda-header-separator ""
-        org-agenda-custom-commands
-        `(("n" "Personal agenda"
-           ((agenda "")
-            (tags-todo "+TODO=\"NEXT\""
-                       ((org-agenda-overriding-header "Next items")))
-            (tags-todo "@work-goals"
-                       ((org-agenda-skip-function '(org-agenda-skip-if nil '(scheduled deadline)))
-                        (org-agenda-overriding-header "Work")))
-            (tags-todo "@home-goals"
-                       ((org-agenda-skip-function '(org-agenda-skip-if nil '(scheduled deadline)))
-                        (org-agenda-overriding-header "Home"))))
-           ((org-super-agenda-groups
-             '((:name "Important" :priority "A")
-               (:name "Done" :log closed)
-               (:name "Scheduled" :time-grid t)
-               (:name "Work" :tag "@work")
-               (:name "Perso" :tag "@home")
-               (:habit t))))
-           (org-agenda-list))))
-  :commands (org-agenda)
-  :bind (("C-c o a" . org-agenda)
-         ("<f12>" . org-agenda)
-         ("C-c o r a" . org-agenda-refile)))
-#+end_src
+#+INCLUDE: "./config/setup-org.el" src emacs-lisp :range-begin "OrgAgenda" :range-end "-OrgAgenda" :lines "143-180"
 
 Let's try to get my work calendar entries in my agenda too. It is a little bit tricky 👼.
 
-#+begin_src emacs-lisp
-(use-package org-gcal
-  :after (org)
-  :commands (org-gcal-fetch)
-  :config
-  (require 'netrc)
-
-  (defun get-authinfo (host port)
-    (let* ((netrc (netrc-parse (expand-file-name "~/.authinfo.gpg")))
-           (hostentry (netrc-machine netrc host port port)))
-      (when hostentry (netrc-get hostentry "password"))))
-
-  (setq org-gcal-client-id "959564825992-kvc7ofe9640cpc8ibgjqqgpi15e89nkn.apps.googleusercontent.com"
-        org-gcal-client-secret (get-authinfo "gcal.api" "9999")
-        org-gcal-file-alist '(("vdemeest@redhat.com" . "~/desktop/org/projects/schedule.org"))))
-#+end_src
-
+#+INCLUDE: "./config/setup-org.el" src emacs-lisp :range-begin "OrgGcal" :range-end "-OrgGcal" :lines "183-197"
 
 *** Habits                                                         :ATTACH:
 :PROPERTIES:
@@ -948,28 +767,14 @@ This look as followed in the agenda.
 
 [[att:2020-02-29-14-41-59.png]]
 
-#+begin_src emacs-lisp
-(use-package org-habit
-  :after (org)
-  :config
-  (setq org-habit-show-habits-only-for-today nil
-        org-habit-graph-column 80))
-#+end_src
+#+INCLUDE: "./config/setup-org.el" src emacs-lisp :range-begin "OrgHabit" :range-end "-OrgHabit" :lines "200-205"
 
 *** TODO Sources
 :PROPERTIES:
 :CUSTOM_ID: h:82c3b800-9d80-408d-b3b6-54dc15b0590c
 :END:
 
-#+begin_src emacs-lisp
-(use-package org-src
-  :after (org)
-  :config
-  (setq org-src-fontify-natively t
-        org-src-tab-acts-natively t
-        org-src-window-setup 'split-window-right
-        org-edit-src-content-indentation 0))
-#+end_src
+#+INCLUDE: "./config/setup-org.el" src emacs-lisp :range-begin "OrgSrc" :range-end "-OrgSrc" :lines "208-215"
 
 *** TODO Capture
 :PROPERTIES:
@@ -986,6 +791,7 @@ share a common initial key will produce a second selection list with the remaini
 options. This is very interesting when you want to group some capture template together
 (like templates related to /work/, …).
 
+#+INCLUDE: "./config/setup-org.el" src emacs-lisp :range-begin "OrgCaptureStart" :range-end "-OrgCaptureStart" :lines "218-222"
 #+begin_src emacs-lisp
 (use-package org-capture
   :after org
@@ -999,27 +805,7 @@ code. The good thing is that =org-mode= is able to load the template from files 
 Here is a list of my templates:
 - Default :: /I need to rework those/
 
-  #+begin_src emacs-lisp
-  (add-to-list 'org-capture-templates
-               `("t" "Task Entry" entry
-                 (file ,org-default-inbox-file)
-                 "* %?\n:PROPERTIES:\n:CREATED:%U\n:END:\n\n%i\n\nFrom: %a"
-                 :empty-lines 1))
-  (add-to-list 'org-capture-templates
-               `("r" "PR Review" entry
-                 (file ,org-default-inbox-file)
-                 "* TODO review gh:%^{issue} :review:\n:PROPERTIES:\n:CREATED:%U\n:END:\n\n%i\n%?\nFrom: %a"
-                 :empty-lines 1))
-  (add-to-list 'org-capture-templates
-               `("l" "Link" entry
-                 (file ,org-default-inbox-file)
-                 "* %a\n%U\n%?\n%i"
-                 :empty-lines 1))
-  (add-to-list 'org-capture-templates
-               '("n" "Thought or Note"  entry
-                 (file org-default-notes-file)
-                 "* %?\n\n  %i\n\n  See: %a" :empty-lines 1))
-  #+end_src
+  #+INCLUDE: "./config/setup-org.el" src emacs-lisp :range-begin "OrgCaptureOldTemplate" :range-end "-OrgCaptureOldTemplate" :lines "225-244"
 
 - journaling :: As I use =org-mode= for my /journal/ too, I need capture entry for
   it. I currently have two types of journal entry :
@@ -1027,157 +813,61 @@ Here is a list of my templates:
 
     #+INCLUDE: "etc/orgmode/journal.org" src org
 
-    #+begin_src emacs-lisp
-    (add-to-list 'org-capture-templates
-                 `("j" "Journal entry" entry
-                   (file+datetree ,org-default-journal-file)
-                   (file ,(concat user-emacs-directory "/etc/orgmode/journal.org"))
-                   :empty-lines 1 :clock-in t :clock-resume t))
-    #+end_src
+    #+INCLUDE: "./config/setup-org.el" src emacs-lisp :range-begin "OrgCaptureJournal" :range-end "-OrgCaptureJournal" :lines "247-252"
 
   + worklog: related to work, to be able to say what I did, what I wanted to do, problems,
     … during the daily
 
     #+INCLUDE: "etc/orgmode/worklog.org" src org
 
-    #+begin_src emacs-lisp
-    (add-to-list 'org-capture-templates
-                 `("w" "Worklog (journal) entry" entry
-                   (file+datetree ,org-default-journal-file)
-                   (file ,(concat user-emacs-directory "/etc/orgmode/worklog.org"))
-                   :unnarrowed t))
-    #+end_src
+    #+INCLUDE: "./config/setup-org.el" src emacs-lisp :range-begin "OrgCaptureWorklog" :range-end "-OrgCaptureWorklog" :lines "255-260"
 
 - weekly review :: each and every week, I am going through this item to make my review of
   the week.
 
   #+INCLUDE: "etc/orgmode/weekly.org" src org
 
-  #+begin_src emacs-lisp
-  (add-to-list 'org-capture-templates
-               `("e" "Weekly review" entry
-                 (file+datetree,org-default-journal-file)
-                 (file ,(concat user-emacs-directory "/etc/orgmode/weekly.org"))
-                 :clock-in t :clock-resume t :unnarrowed t))
-  #+end_src
+  #+INCLUDE: "./config/setup-org.el" src emacs-lisp :range-begin "OrgCaptureWeekly" :range-end "-OrgCaptureWeekly" :lines "263-268"
+
 - blog posts ::
-  #+begin_src emacs-lisp
-  (add-to-list 'org-capture-templates
-               `("b" "Blog post"))
-  (add-to-list 'org-capture-templates
-               `("bp" "Blog post" entry
-                 (file+headline "~/src/github.com/vdemeester/blog/content-org/posts.org" "Blog Ideas")
-                 "* %?\n:PROPERTIES:\n:END:\n"))
-  (add-to-list 'org-capture-templates
-               `("bl" "Blog link post" entry
-                 (file+olp "~/src/github.com/vdemeester/blog/content-org/links.org" "Link")
-                 "* %a\n%?\n%i"))
-  #+end_src
 
+  #+INCLUDE: "./config/setup-org.el" src emacs-lisp :range-begin "OrgCaptureBlog" :range-end "-OrgCaptureBlog" :lines "271-281"
 
-#+begin_src emacs-lisp
-:bind (("C-c o c" . org-capture)))
-#+end_src
+#+INCLUDE: "./config/setup-org.el" src emacs-lisp :range-begin "OrgCaptureEnd" :range-end "-OrgCaptureEnd" :lines "284-285"
 
-
-#+begin_src emacs-lisp
-(use-package org-protocol
-  :after org)
-#+end_src
+#+INCLUDE: "./config/setup-org.el" src emacs-lisp :range-begin "OrgProtocol" :range-end "-OrgProtocol" :lines "288-290"
 
 *** TODO Clocking
 :PROPERTIES:
 :CUSTOM_ID: h:264afe05-79e3-4bff-aafc-9fc726c4034b
 :END:
 
-#+begin_src emacs-lisp
-(use-package org-clock
-  :after org
-  :commands (org-clock-in org-clock-out org-clock-goto)
-  :config
-  (setq org-clock-clocked-in-display nil)
-  :bind (("<f11>" . org-clock-goto)))
-#+end_src
+#+INCLUDE: "./config/setup-org.el" src emacs-lisp :range-begin "OrgClock" :range-end "-OrgClock" :lines "293-299"
 
 *** TODO Links
 :PROPERTIES:
 :CUSTOM_ID: h:afc81fbb-f7a0-401c-8b56-19f51edebd88
 :END:
 
-#+begin_src emacs-lisp
-(use-package org-attach
-  :config
-  (setq org-link-abbrev-alist '(("att" . org-attach-expand-link))))
-#+end_src
+#+INCLUDE: "./config/setup-org.el" src emacs-lisp :range-begin "OrgAttach" :range-end "-OrgAttach" :lines "302-305"
 
-#+begin_src emacs-lisp
-;; my personal
-(use-package ol-github
-  :after (org))
-(use-package ol-gitlab
-  :after (org))
-
-;; built-in org-mode
-(use-package ol-eshell
-  :after (org))
-(use-package ol-git-link
-  :after (org))
-(use-package ol-gnus
-  :after (org))
-(use-package ol-irc
-  :after (org))
-(use-package ol-info
-  :after (org))
-(use-package ol-man
-  :after (org))
-(use-package ol-notmuch
-  :after (org))
-#+end_src
+#+INCLUDE: "./config/setup-org.el" src emacs-lisp :range-begin "OrgLinks" :range-end "-OrgLinks" :lines "308-329"
 
 *** TODO Litterate programming
 :PROPERTIES:
 :CUSTOM_ID: h:b5f6beba-6195-4ff0-a194-502ac2a9e3da
 :END:
 
-#+begin_src emacs-lisp
-(use-package ob-async
-  :after (org))
-#+end_src
-
-#+begin_src emacs-lisp
-(use-package ob-go
-  :after (org))
-#+end_src
-
-#+begin_src emacs-lisp
-(use-package ob-http
-  :after (org))
-#+end_src
-
+#+INCLUDE: "./config/setup-org.el" src emacs-lisp :range-begin "OrgBabel" :range-end "-OrgBabel" :lines "332-340"
 
 *** TODO Exporting
 :PROPERTIES:
 :CUSTOM_ID: h:afad00e0-367c-4c7b-b191-e3ed72be754b
 :END:
 
-#+begin_src emacs-lisp
-(defconst site-directory "~/desktop/sites/" "website folder that holds exported org-mode files and more.")
-(defconst org-default-publish-technical (concat site-directory "sbr.pm/technical") "publish directory for the technical org-mode files.")
-#+end_src
+#+INCLUDE: "./config/setup-org.el" src emacs-lisp :range-begin "OrgExportConstants" :range-end "-OrgExportConstants" :lines "343-345"
 
-#+begin_src emacs-lisp
-(use-package ox-publish
-  :after (org ox)
-  :config
-  (setq org-html-coding-system 'utf-8-unix))
-(use-package ox-slack
-  :after ox)
-(use-package ox-hugo
-  :after ox
-  :commands (org-hugo-slug)
-  :config
-  (use-package ox-hugo-auto-export))
-#+end_src
+#+INCLUDE: "./config/setup-org.el" src emacs-lisp :range-begin "OrgExportCfg" :range-end "-OrgExportCfg" :lines "348-359"
 
 ** TODO Email and newsgroup
 :PROPERTIES:

@@ -70,7 +70,7 @@
         org-columns-default-format "%80ITEM(Task) %TODO %3PRIORITY %10Effort(Effort){:} %10CLOCKSUM"
         org-fontify-whole-heading-line t
         org-pretty-entities t
-        org-ellipsis "⤵"
+        org-ellipsis " ⤵"
         org-archive-location (concat org-default-completed-dir "/%s::datetree/")
         org-use-property-inheritance t
         org-global-properties (quote (("EFFORT_ALL" . "0:15 0:30 0:45 1:00 2:00 3:00 4:00 5:00 6:00 0:00")
@@ -340,11 +340,11 @@
 ;; -OrgBabel
 
 ;; OrgExportConstants
-(defconst site-directory "~/desktop/sites/" "website folder that holds exported org-mode files and more.")
-(defconst org-default-publish-technical (concat site-directory "sbr.pm/technical") "publish directory for the technical org-mode files.")
-;; OrgExportConstants
+(defconst site-directory "~/desktop/sites/" "Website folder that holds exported orgmode files and more.")
+(defconst org-default-publish-technical (concat site-directory "sbr.pm/technical") "Publish directory for the technical orgmode files.")
+;; -OrgExportConstants
 
-;; OrgExport
+;; OrgExportCfg
 (use-package ox-publish
   :after (org ox)
   :config
@@ -356,7 +356,7 @@
   :commands (org-hugo-slug)
   :config
   (use-package ox-hugo-auto-export))
-;; OrgExport
+;; -OrgExportCfg
 
 (use-package org
   :defer t
