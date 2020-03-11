@@ -1256,4 +1256,8 @@ I am defining additonal org-mode links for my day to day usage.
 
   #+INCLUDE: lisp/ol-ripgrep.el src emacs-lisp
 
+- ~ol-grep.el~: link to a =grep= search buffer.
+
+  #+INCLUDE: lisp/ol-grep.el src emacs-lisp
+
 And that's all folks 💃
