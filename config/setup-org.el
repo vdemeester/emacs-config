@@ -80,7 +80,8 @@
         org-insert-heading-respect-content t
         org-yank-adjusted-subtrees t
         org-image-actual-width nil
-        org-startup-with-inline-images nil)
+        org-startup-with-inline-images nil
+        org-list-demote-modify-bullet '(("+" . "-") ("-" . "+")))
   (setcar (nthcdr 4 org-emphasis-regexp-components) 10)
   :bind (("C-c o l" . org-store-link)
          ("C-c o r r" . org-refile))
@@ -483,9 +484,6 @@ Switch projects and subprojects from STARTED back to TODO"
      (python . t)
      (shell . t)
      ))
-
-  (setq org-list-demote-modify-bullet
-        '(("+" . "-") ("-" . "+")))
 
   (add-to-list 'ispell-skip-region-alist '(":\\(PROPERTIES\\|LOGBOOK\\):" ":END:"))
   (add-to-list 'ispell-skip-region-alist '("#\\+BEGIN_SRC" "#\\+END_SRC"))
