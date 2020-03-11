@@ -1,3 +1,6 @@
+;;; setup-org.el --- -*- lexical-binding: t -*-
+
+;; OrgConstants
 (defconst org-directory "~/desktop/org/" "org-mode directory, where most of the org-mode file lives")
 (defconst org-default-projects-dir (concat org-directory "projects") "Primary tasks directory.")
 (defconst org-default-technical-dir (concat org-directory "technical") "Directory of shareable, technical notes.")
@@ -8,13 +11,17 @@
 (defconst org-default-incubate-file (concat org-directory "projects/incubate.org") "Ideas simmering on back burner.")
 (defconst org-default-notes-file (concat org-directory "personal/notes.org") "Non-actionable, personal notes.")
 (defconst org-default-journal-file (concat org-directory "personal/journal.org") "Journaling stuff.")
+;; -OrgConstants
 
+;; OrgRegisters
 (set-register ?i `(file . ,org-default-inbox-file))
 (set-register ?I `(file . ,org-default-incubate-file))
 (set-register ?N `(file . ,org-default-next-file))
 (set-register ?n `(file . ,org-default-notes-file))
 (set-register ?j `(file . ,org-default-journal-file))
+;; -OrgRegisters
 
+;; OrgMain
 (use-package s)
 (use-package org
   :ensure org-plus-contrib ;; load from the package instead of internal
@@ -63,7 +70,7 @@
         org-columns-default-format "%80ITEM(Task) %TODO %3PRIORITY %10Effort(Effort){:} %10CLOCKSUM"
         org-fontify-whole-heading-line t
         org-pretty-entities t
-        org-ellipsis " …"
+        org-ellipsis "⤵"
         org-archive-location (concat org-default-completed-dir "/%s::datetree/")
         org-use-property-inheritance t
         org-global-properties (quote (("EFFORT_ALL" . "0:15 0:30 0:45 1:00 2:00 3:00 4:00 5:00 6:00 0:00")
@@ -78,7 +85,9 @@
   :bind (("C-c o l" . org-store-link)
          ("C-c o r r" . org-refile))
   :hook (org-mode . vde/org-mode-hook))
+;; -OrgMain
 
+;; OrgHook
 (defun vde/org-mode-hook ()
   "Org-mode hook"
   (setq show-trailing-whitespace t)
@@ -88,9 +97,9 @@
     (auto-fill-mode)
     (org-indent-mode)
     (add-hook 'after-save-hook #'save-and-update-includes nil 'make-it-local)))
+;; -OrgHook
 
-;; (add-hook 'before-save-hook #'save-and-update-includes)
-
+;; OrgId
 (use-package org-id
   :after (org)
   :config
@@ -120,13 +129,17 @@
     (interactive)
     (org-map-entries (lambda ()
                        (eos/org-custom-id-get (point) 'create)))))
+;; -OrgId
 
+;; OrgCrypt
 (use-package org-crypt
   :after (org)
   :config
   (org-crypt-use-before-save-magic)
   (setq org-tags-exclude-from-inheritance '("crypt")))
+;; -OrgCrypt
 
+;; OrgAgenda
 (use-package org-agenda
   :after (org)
   :commands (org-agenda)
@@ -164,7 +177,9 @@
   :bind (("C-c o a" . org-agenda)
          ("<f12>" . org-agenda)
          ("C-c o r a" . org-agenda-refile)))
+;; -OrgAgenda
 
+;; OrgGcal
 (use-package org-gcal
   :after (org)
   :commands (org-gcal-fetch)
@@ -179,13 +194,17 @@
   (setq org-gcal-client-id "959564825992-kvc7ofe9640cpc8ibgjqqgpi15e89nkn.apps.googleusercontent.com"
         org-gcal-client-secret (get-authinfo "gcal.api" "9999")
         org-gcal-file-alist '(("vdemeest@redhat.com" . "~/desktop/org/projects/schedule.org"))))
+;; -OrgGcal
 
+;; OrgHabit
 (use-package org-habit
   :after (org)
   :config
   (setq org-habit-show-habits-only-for-today nil
         org-habit-graph-column 80))
+;; -OrgHabit
 
+;; OrgSrc
 (use-package org-src
   :after (org)
   :config
@@ -193,77 +212,99 @@
         org-src-tab-acts-natively t
         org-src-window-setup 'split-window-right
         org-edit-src-content-indentation 0))
+;; -OrgSrc
 
+;; OrgCaptureStart
 (use-package org-capture
   :after org
   :commands (org-capture)
   :config
+  ;; -OrgCaptureStart
 
-(add-to-list 'org-capture-templates
-             `("t" "Task Entry" entry
-               (file ,org-default-inbox-file)
-               "* %?\n:PROPERTIES:\n:CREATED:%U\n:END:\n\n%i\n\nFrom: %a"
-               :empty-lines 1))
-(add-to-list 'org-capture-templates
-             `("r" "PR Review" entry
-               (file ,org-default-inbox-file)
-               "* TODO review gh:%^{issue} :review:\n:PROPERTIES:\n:CREATED:%U\n:END:\n\n%i\n%?\nFrom: %a"
-               :empty-lines 1))
-(add-to-list 'org-capture-templates
-             `("l" "Link" entry
-               (file ,org-default-inbox-file)
-               "* %a\n%U\n%?\n%i"
-               :empty-lines 1))
-(add-to-list 'org-capture-templates
-             '("n" "Thought or Note"  entry
-               (file org-default-notes-file)
-               "* %?\n\n  %i\n\n  See: %a" :empty-lines 1))
+  ;; OrgCaptureOldTemplate
+  (add-to-list 'org-capture-templates
+               `("t" "Task Entry" entry
+                 (file ,org-default-inbox-file)
+                 "* %?\n:PROPERTIES:\n:CREATED:%U\n:END:\n\n%i\n\nFrom: %a"
+                 :empty-lines 1))
+  (add-to-list 'org-capture-templates
+               `("r" "PR Review" entry
+                 (file ,org-default-inbox-file)
+                 "* TODO review gh:%^{issue} :review:\n:PROPERTIES:\n:CREATED:%U\n:END:\n\n%i\n%?\nFrom: %a"
+                 :empty-lines 1))
+  (add-to-list 'org-capture-templates
+               `("l" "Link" entry
+                 (file ,org-default-inbox-file)
+                 "* %a\n%U\n%?\n%i"
+                 :empty-lines 1))
+  (add-to-list 'org-capture-templates
+               '("n" "Thought or Note"  entry
+                 (file org-default-notes-file)
+                 "* %?\n\n  %i\n\n  See: %a" :empty-lines 1))
+  ;; -OrgCaptureOldTemplate
 
-(add-to-list 'org-capture-templates
-             `("j" "Journal entry" entry
-               (file+datetree ,org-default-journal-file)
-               (file ,(concat user-emacs-directory "/etc/orgmode/journal.org"))
-               :empty-lines 1 :clock-in t :clock-resume t))
+  ;; OrgCaptureJournal
+  (add-to-list 'org-capture-templates
+               `("j" "Journal entry" entry
+                 (file+datetree ,org-default-journal-file)
+                 (file ,(concat user-emacs-directory "/etc/orgmode/journal.org"))
+                 :empty-lines 1 :clock-in t :clock-resume t))
+  ;; -OrgCaptureJournal
 
-(add-to-list 'org-capture-templates
-             `("w" "Worklog (journal) entry" entry
-               (file+datetree ,org-default-journal-file)
-               (file ,(concat user-emacs-directory "/etc/orgmode/worklog.org"))
-               :unnarrowed t))
+  ;; OrgCaptureWorklog
+  (add-to-list 'org-capture-templates
+               `("w" "Worklog (journal) entry" entry
+                 (file+datetree ,org-default-journal-file)
+                 (file ,(concat user-emacs-directory "/etc/orgmode/worklog.org"))
+                 :unnarrowed t))
+  ;; -OrgCaptureWorklog
 
-(add-to-list 'org-capture-templates
-             `("e" "Weekly review" entry
-               (file+datetree,org-default-journal-file)
-               (file ,(concat user-emacs-directory "/etc/orgmode/weekly.org"))
-               :clock-in t :clock-resume t :unnarrowed t))
+  ;; OrgCaptureWeekly
+  (add-to-list 'org-capture-templates
+               `("e" "Weekly review" entry
+                 (file+datetree,org-default-journal-file)
+                 (file ,(concat user-emacs-directory "/etc/orgmode/weekly.org"))
+                 :clock-in t :clock-resume t :unnarrowed t))
+  ;; -OrgCaptureWeekly
 
-(add-to-list 'org-capture-templates
-             `("b" "Blog post"))
-(add-to-list 'org-capture-templates
-             `("bp" "Blog post" entry
-               (file+headline "~/src/github.com/vdemeester/blog/content-org/posts.org" "Blog Ideas")
-               "* %?\n:PROPERTIES:\n:END:\n"))
-(add-to-list 'org-capture-templates
-             `("bl" "Blog link post" entry
-               (file+olp "~/src/github.com/vdemeester/blog/content-org/links.org" "Link")
-               "* %a\n%?\n%i"))
+  ;; OrgCaptureBlog
+  (add-to-list 'org-capture-templates
+               `("b" "Blog post"))
+  (add-to-list 'org-capture-templates
+               `("bp" "Blog post" entry
+                 (file+headline "~/src/github.com/vdemeester/blog/content-org/posts.org" "Blog Ideas")
+                 "* %?\n:PROPERTIES:\n:END:\n"))
+  (add-to-list 'org-capture-templates
+               `("bl" "Blog link post" entry
+                 (file+olp "~/src/github.com/vdemeester/blog/content-org/links.org" "Link")
+                 "* %a\n%?\n%i"))
+  ;; -OrgCaptureBlog
 
-:bind (("C-c o c" . org-capture)))
+  ;; OrgCaptureEnd
+  :bind (("C-c o c" . org-capture)))
+;; -OrgCaptureEnd
 
+;; OrgProtocol
 (use-package org-protocol
   :after org)
+;; -OrgProtocol
 
+;; OrgClock
 (use-package org-clock
   :after org
   :commands (org-clock-in org-clock-out org-clock-goto)
   :config
   (setq org-clock-clocked-in-display nil)
   :bind (("<f11>" . org-clock-goto)))
+;; -OrgClock
 
+;; OrgAttach
 (use-package org-attach
   :config
   (setq org-link-abbrev-alist '(("att" . org-attach-expand-link))))
+;; -OrgAttach
 
+;; OrgLinks
 ;; my personal
 (use-package ol-github
   :after (org))
@@ -285,7 +326,9 @@
   :after (org))
 (use-package ol-notmuch
   :after (org))
+;; -OrgLinks
 
+;; OrgBabel
 (use-package ob-async
   :after (org))
 
@@ -294,10 +337,14 @@
 
 (use-package ob-http
   :after (org))
+;; -OrgBabel
 
+;; OrgExportConstants
 (defconst site-directory "~/desktop/sites/" "website folder that holds exported org-mode files and more.")
 (defconst org-default-publish-technical (concat site-directory "sbr.pm/technical") "publish directory for the technical org-mode files.")
+;; OrgExportConstants
 
+;; OrgExport
 (use-package ox-publish
   :after (org ox)
   :config
@@ -309,6 +356,7 @@
   :commands (org-hugo-slug)
   :config
   (use-package ox-hugo-auto-export))
+;; OrgExport
 
 (use-package org
   :defer t
