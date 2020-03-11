@@ -837,37 +837,50 @@ Here is a list of my templates:
 
 #+INCLUDE: "./config/setup-org.el" src emacs-lisp :range-begin "OrgProtocol" :range-end "-OrgProtocol" :lines "289-291"
 
-*** TODO Clocking
+*** Clocking
 :PROPERTIES:
 :CUSTOM_ID: h:264afe05-79e3-4bff-aafc-9fc726c4034b
 :END:
 
-#+INCLUDE: "./config/setup-org.el" src emacs-lisp :range-begin "OrgClock" :range-end "-OrgClock" :lines "294-300"
+I am heavily using the clocking along with =org-agenda=. My usual workflow, related to
+clocking is :
+
+- I bring the Agenda up
+- I clock the task I am working on, using =I= in the agenda
+- When I stop working on the task
+  + if the task is completed, I use =t d= to mark it as done, the clock should
+    automatically stop.
+  + if the task is not completed, I use =O= to stop the clock
+
+In addition to that workflow, I want to switch the state of the task to =STARTED= when I
+am clocking-in, if it's not already =STARTED=.
+
+#+INCLUDE: "./config/setup-org.el" src emacs-lisp :range-begin "OrgClock" :range-end "-OrgClock" :lines "294-387"
 
 *** TODO Links
 :PROPERTIES:
 :CUSTOM_ID: h:afc81fbb-f7a0-401c-8b56-19f51edebd88
 :END:
 
-#+INCLUDE: "./config/setup-org.el" src emacs-lisp :range-begin "OrgAttach" :range-end "-OrgAttach" :lines "303-306"
+#+INCLUDE: "./config/setup-org.el" src emacs-lisp :range-begin "OrgAttach" :range-end "-OrgAttach" :lines "390-393"
 
-#+INCLUDE: "./config/setup-org.el" src emacs-lisp :range-begin "OrgLinks" :range-end "-OrgLinks" :lines "309-334"
+#+INCLUDE: "./config/setup-org.el" src emacs-lisp :range-begin "OrgLinks" :range-end "-OrgLinks" :lines "396-421"
 
 *** TODO Litterate programming
 :PROPERTIES:
 :CUSTOM_ID: h:b5f6beba-6195-4ff0-a194-502ac2a9e3da
 :END:
 
-#+INCLUDE: "./config/setup-org.el" src emacs-lisp :range-begin "OrgBabel" :range-end "-OrgBabel" :lines "337-345"
+#+INCLUDE: "./config/setup-org.el" src emacs-lisp :range-begin "OrgBabel" :range-end "-OrgBabel" :lines "424-432"
 
 *** TODO Exporting
 :PROPERTIES:
 :CUSTOM_ID: h:afad00e0-367c-4c7b-b191-e3ed72be754b
 :END:
 
-#+INCLUDE: "./config/setup-org.el" src emacs-lisp :range-begin "OrgExportConstants" :range-end "-OrgExportConstants" :lines "348-350"
+#+INCLUDE: "./config/setup-org.el" src emacs-lisp :range-begin "OrgExportConstants" :range-end "-OrgExportConstants" :lines "435-437"
 
-#+INCLUDE: "./config/setup-org.el" src emacs-lisp :range-begin "OrgExportCfg" :range-end "-OrgExportCfg" :lines "353-364"
+#+INCLUDE: "./config/setup-org.el" src emacs-lisp :range-begin "OrgExportCfg" :range-end "-OrgExportCfg" :lines "440-451"
 
 ** TODO Email and newsgroup
 :PROPERTIES:
