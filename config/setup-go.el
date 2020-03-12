@@ -7,13 +7,16 @@
     :config
     (setq company-go-show-annotation t)
     (push 'company-go company-backends))
-  ;(setq gofmt-command "goimports")
+                                        ;(setq gofmt-command "goimports")
   (if (not (executable-find "goimports"))
       (warn "go-mode: couldn't find goimports; no code formatting/fixed imports on save")
     (add-hook 'before-save-hook 'gofmt-before-save))
   (if (not (string-match "go" compile-command))   ; set compile command default
       (set (make-local-variable 'compile-command)
            "go build -v && go test -v && go vet")))
+
+(use-package lsp-go
+  :after (lsp-mode go-mode))
 
 (use-package flycheck-golangci-lint
   :hook (go-mode . flycheck-golangci-lint-setup)
