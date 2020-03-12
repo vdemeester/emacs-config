@@ -218,33 +218,33 @@ Ivy-powered commands, using `ivy-prescient-re-builder'."
 
       (use-package lsp-mode
         :commands (lsp lsp-deferred)
-        :custom
-        (lsp-enable-file-watchers nil)
-        (lsp-gopls-staticcheck t)
-        (lsp-gopls-complete-unimported t)
-        (lsp-eldoc-render-all nil)
-        (lsp-enable-snippet nil)
-        (lsp-enable-links nil)
-        (lsp-enable-folding nil)
-        (lsp-enable-completion-at-point nil) ;; company-lsp takes care of it ?
-        (lsp-diagnostic-package :none)
-        (lsp-restart 'auto-restart)
-        (lsp-ui-sideline-enable nil)
-        (lsp-ui-sideline-show-hover nil)
-        (lsp-ui-sideline-delay 2.0)
-        (lsp-ui-doc-enable nil)
-        (lsp-ui-doc-max-width 30)
-        (lsp-ui-doc-max-height 15)
-        (lsp-document-highlight-delay 2.0)
-        (lsp-auto-guess-root t)
-        (lsp-ui-flycheck-enable nil)
-        ;; @see https://github.com/emacs-lsp/lsp-mode/pull/1498
-        ;; and read code related to auto configure
-        ;; require clients could be slow and that's only thing auto configure
-        ;; could do for me. Manual loading of client is faster.
-        (lsp-auto-configure nil)
-        (lsp-prefer-flymake nil) ; Use flycheck instead of flymake
         :config
+        (setq lsp-enable-file-watchers nil
+              lsp-gopls-staticcheck t
+              lsp-gopls-complete-unimported t
+              lsp-eldoc-render-all nil
+              lsp-enable-snippet nil
+              lsp-enable-links nil
+              lsp-enable-folding nil
+              lsp-enable-completion-at-point t
+              lsp-diagnostic-package :auto
+              lsp-restart 'auto-restart
+              lsp-ui-sideline-enable nil
+              lsp-ui-sideline-show-hover nil
+              lsp-ui-sideline-delay 2.0
+              lsp-ui-doc-enable nil
+              lsp-ui-doc-max-width 30
+              lsp-ui-doc-max-height 15
+              lsp-document-highlight-delay 2.0
+              lsp-auto-guess-root t
+              lsp-ui-flycheck-enable nil
+              ;; @see https://github.com/emacs-lsp/lsp-mode/pull/1498
+              ;; and read code related to auto configure
+              ;; require clients could be slow and that's only thing auto configure
+              ;; could do for me. Manual loading of client is faster.
+              lsp-auto-configure t
+                                        ; Use flycheck instead of flymake
+              lsp-prefer-flymake nil)
         ;; don't ping LSP lanaguage server too frequently
         (defvar lsp-on-touch-time 0)
         (defadvice lsp-on-change (around lsp-on-change-hack activate)
