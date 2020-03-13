@@ -16,13 +16,22 @@
            "go build -v && go test -v && go vet")))
 
 (use-package lsp-go
-  :after (lsp-mode go-mode))
+  :after (lsp-mode go-mode)
+  :config
+  ;;Set up before-save hooks to format buffer and add/delete imports.
+  ;;Make sure you don't have other gofmt/goimports hooks enabled.
+  (defun lsp-go-install-save-hooks ()
+    ;;   (add-hook 'before-save-hook #'lsp-format-buffer t t)
+    (add-hook 'before-save-hook #'lsp-organize-imports t t))
+  (add-hook 'go-mode-hook #'lsp-go-install-save-hooks)
+  )
 
 (use-package flycheck-golangci-lint
   :hook (go-mode . flycheck-golangci-lint-setup)
   :config (setq flycheck-golangci-lint-tests t))
 
 (use-package dap-go
+  :disabled
   :after dap-mode)
 
 (use-package gotest

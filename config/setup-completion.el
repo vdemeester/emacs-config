@@ -97,7 +97,6 @@ Otherwise, use `counsel-projectile-switch-project'."
         (lambda (x) (delete-file (expand-file-name x ivy--directory)))
         ,(propertize "delete" 'face 'font-lock-warning-face))))
 
-    (push '(counsel-rg . "--glob '**' -- ") ivy-initial-inputs-alist)
     ;; counsel-rg
     ;; Redefine `counsel-rg-base-command' with my required options, especially
     ;; the `--follow' option to allow search through symbolic links (part of
@@ -229,15 +228,7 @@ Ivy-powered commands, using `ivy-prescient-re-builder'."
               lsp-enable-completion-at-point t
               lsp-diagnostic-package :auto
               lsp-restart 'auto-restart
-              lsp-ui-sideline-enable nil
-              lsp-ui-sideline-show-hover nil
-              lsp-ui-sideline-delay 2.0
-              lsp-ui-doc-enable nil
-              lsp-ui-doc-max-width 30
-              lsp-ui-doc-max-height 15
-              lsp-document-highlight-delay 2.0
               lsp-auto-guess-root t
-              lsp-ui-flycheck-enable nil
               ;; @see https://github.com/emacs-lsp/lsp-mode/pull/1498
               ;; and read code related to auto configure
               ;; require clients could be slow and that's only thing auto configure
@@ -256,23 +247,6 @@ Ivy-powered commands, using `ivy-prescient-re-builder'."
         :hook ((go-mode . lsp-deferred)
                (python-mode . lsp-deferred)))
 
-      ;; lsp-ui: This contains all the higher level UI modules of lsp-mode, like flycheck support and code lenses.
-      ;; https://github.com/emacs-lsp/lsp-ui
-      (use-package lsp-ui
-        :after lsp-mode
-        ;;:hook ((lsp-mode . lsp-ui-mode)
-        ;;       (lsp-ui-mode . lsp-ui-peek-mode))
-        :config
-        (define-key lsp-ui-mode-map [remap xref-find-definitions] #'lsp-ui-peek-find-definitions)
-        (define-key lsp-ui-mode-map [remap xref-find-references] #'lsp-ui-peek-find-references))
-
-      ;;Set up before-save hooks to format buffer and add/delete imports.
-      ;;Make sure you don't have other gofmt/goimports hooks enabled.
-      (defun lsp-go-install-save-hooks ()
-        (add-hook 'before-save-hook #'lsp-format-buffer t t)
-        (add-hook 'before-save-hook #'lsp-organize-imports t t))
-      (add-hook 'go-mode-hook #'lsp-go-install-save-hooks)
-
       (with-eval-after-load "company"
         (use-package company-lsp
           :after lsp-mode
@@ -286,6 +260,7 @@ Ivy-powered commands, using `ivy-prescient-re-builder'."
         (add-hook 'lsp-before-open-hook #'my-set-projectile-root))
 
       (use-package dap-mode
+        :disabled
         :after lsp-mode
         :bind (:map dap-mode-map
                     ([f9] . dap-debug)
