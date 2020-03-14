@@ -162,7 +162,7 @@
   "Do we have git?")
 
 (defvar *sys/full*
-  (member (vde/short-hostname) '("wakasu")) ; "naruhodo" <- put naruhodo back in
+  (member (vde/short-hostname) '("wakasu" "naruhodo")) ; "naruhodo" <- put naruhodo back in
   "Is it a full system ?")
 (defvar *sys/light*
   (not *sys/full*)
