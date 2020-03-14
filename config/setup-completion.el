@@ -147,6 +147,11 @@ Otherwise, use `counsel-projectile-switch-project'."
           company-etags
           company-keywords)))
 
+(use-package company-emoji
+  :ensure company
+  :config
+  (add-to-list 'company-backends 'company-emoji))
+
 ;;; Default rg arguments
 ;; https://github.com/BurntSushi/ripgrep
 (defconst vde/rg-arguments
@@ -209,11 +214,6 @@ Ivy-powered commands, using `ivy-prescient-re-builder'."
         :after (company prescient)
         :config
         (company-prescient-mode 1))
-
-      (use-package company-emoji
-        :ensure company
-        :config
-        (add-to-list 'company-backends 'company-emoji))
 
       (use-package lsp-mode
         :commands (lsp lsp-deferred)
