@@ -250,10 +250,10 @@
                  :empty-lines 1))
   ;; -OrgCaptureTask
 
-  ;; OrgCaptureJournal
+  ;; OrgCaptureJournalBase
   (add-to-list 'org-capture-templates
                `("j" "Journal"))
-  ;; -OrgCaptureJournal
+  ;; -OrgCaptureJournalBase
 
   ;; OrgCaptureJournalEntry
   (add-to-list 'org-capture-templates

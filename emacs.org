@@ -792,12 +792,6 @@ options. This is very interesting when you want to group some capture template t
 (like templates related to /work/, …).
 
 #+INCLUDE: "./config/setup-org.el" src emacs-lisp :range-begin "OrgCaptureStart" :range-end "-OrgCaptureStart" :lines "220-224"
-#+begin_src emacs-lisp
-(use-package org-capture
-  :after org
-  :commands (org-capture)
-  :config
-#+end_src
 
 Some of my capture template are big and hard to read if embedded in the =emacs-lisp=
 code. The good thing is that =org-mode= is able to load the template from files too 💃.
@@ -814,7 +808,7 @@ Here is a list of my templates:
 - journaling :: As I use =org-mode= for my /journal/ too, I need capture entry for
   it. I currently have two types of journal entry :
 
-  #+INCLUDE: "./config/setup-org.el" src emacs-lisp :range-begin "OrgCaptureJournal" :range-end "-OrgCaptureJournal" :lines "254-256"
+  #+INCLUDE: "./config/setup-org.el" src emacs-lisp :range-begin "OrgCaptureJournalBase" :range-end "-OrgCaptureJournalBase" :lines "254-256"
 
   + standard: one title and some text
 
