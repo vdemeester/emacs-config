@@ -225,16 +225,6 @@
 
   ;; OrgCaptureOldTemplate
   (add-to-list 'org-capture-templates
-               `("t" "Task Entry" entry
-                 (file ,org-default-inbox-file)
-                 "* %?\n:PROPERTIES:\n:CREATED:%U\n:END:\n\n%i\n\nFrom: %a"
-                 :empty-lines 1))
-  (add-to-list 'org-capture-templates
-               `("r" "PR Review" entry
-                 (file ,org-default-inbox-file)
-                 "* TODO review gh:%^{issue} :review:\n:PROPERTIES:\n:CREATED:%U\n:END:\n\n%i\n%?\nFrom: %a"
-                 :empty-lines 1))
-  (add-to-list 'org-capture-templates
                `("l" "Link" entry
                  (file ,org-default-inbox-file)
                  "* %a\n%U\n%?\n%i"
@@ -245,17 +235,39 @@
                  "* %?\n\n  %i\n\n  See: %a" :empty-lines 1))
   ;; -OrgCaptureOldTemplate
 
+  ;; OrgCaptureTask
+  (add-to-list 'org-capture-templates
+               `("t" "Tasks"))
+  (add-to-list 'org-capture-templates
+               `("tt" "New task" entry
+                 (file ,org-default-inbox-file)
+                 "* %?\n:PROPERTIES:\n:CREATED:%U\n:END:\n\n%i\n\nFrom: %a"
+                 :empty-lines 1))
+  (add-to-list 'org-capture-templates
+               `("tr" "PR Review" entry
+                 (file ,org-default-inbox-file)
+                 "* TODO review gh:%^{issue} :review:\n:PROPERTIES:\n:CREATED:%U\n:END:\n\n%i\n%?\nFrom: %a"
+                 :empty-lines 1))
+  ;; -OrgCaptureTask
+
   ;; OrgCaptureJournal
   (add-to-list 'org-capture-templates
-               `("j" "Journal entry" entry
+               `("j" "Journal"))
+  ;; -OrgCaptureJournal
+
+  ;; OrgCaptureJournalEntry
+  (add-to-list 'org-capture-templates
+               `("j" "Journal entry"))
+  (add-to-list 'org-capture-templates
+               `("jj" "Journal entry" entry
                  (file+datetree ,org-default-journal-file)
                  (file ,(concat user-emacs-directory "/etc/orgmode/journal.org"))
                  :empty-lines 1 :clock-in t :clock-resume t))
-  ;; -OrgCaptureJournal
+  ;; -OrgCaptureJournalEntry
 
   ;; OrgCaptureWorklog
   (add-to-list 'org-capture-templates
-               `("w" "Worklog (journal) entry" entry
+               `("jw" "Worklog (journal) entry" entry
                  (file+datetree ,org-default-journal-file)
                  (file ,(concat user-emacs-directory "/etc/orgmode/worklog.org"))
                  :unnarrowed t))
@@ -263,7 +275,7 @@
 
   ;; OrgCaptureWeekly
   (add-to-list 'org-capture-templates
-               `("e" "Weekly review" entry
+               `("je" "Weekly review" entry
                  (file+datetree,org-default-journal-file)
                  (file ,(concat user-emacs-directory "/etc/orgmode/weekly.org"))
                  :clock-in t :clock-resume t :unnarrowed t))
