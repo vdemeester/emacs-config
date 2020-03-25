@@ -1,4 +1,4 @@
-#+TITLE: vdemeester's .emacs.d
+#+TITLE: vdemeester's .emacs.d (DEPRECATED)
 #+AUTHOR: Vincent Demeester
 #+EMAIL: vincent@sbr.pm
 #+EXPORT_EXCLUDE_TAGS: noexport
@@ -6,6 +6,8 @@
 #+LANGUAGE: en
 #+HTML_HEAD: <link rel="stylesheet" type="text/css" href="./notes.css"/>
 #+OPTIONS: html-style:nil
+
+*This repository is deprecated and won't be updated anymore. It now lives on the [[https://gitlab.com/vdemeester/home][~home~]] repository (on Gitlab)*
 
 #+BEGIN_QUOTE
 My emacs setup is tested to work only with emacs 26.1 and newer versions. If you are on
